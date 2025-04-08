@@ -1,1 +1,526 @@
-<html>uhuha</html>
+
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      :root {
+        --bg-color: #121212;
+        --container-bg: #1e1e1e;
+        --text-color: #e0e0e0;
+        --heading-color: #ffffff;
+        --subheading-color: #58a6ff;
+        --link-color: #58a6ff;
+        --border-color: #333333;
+        --item-hover: #2a2a2a;
+        --shadow: 0 4px 12px rgba(0,0,0,0.2);
+        --accent-color: #58a6ff;
+        --tooltip-bg: #2a2a2a;
+        --tooltip-text: #e0e0e0;
+        --table-header-bg: #2a2a2a;
+        --table-header-text: #ffffff;
+        --table-row-odd: #1e1e1e;
+        --table-row-even: #252525;
+      }
+      
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        line-height: 1.5;
+        color: var(--text-color);
+        background-color: var(--bg-color);
+        margin: 0;
+        padding: 0;
+      }
+      
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 15px;
+      }
+      
+      .card {
+        background-color: var(--container-bg);
+        border-radius: 8px;
+        box-shadow: var(--shadow);
+        padding: 16px;
+        margin-bottom: 16px;
+        transition: all 0.2s ease;
+      }
+      
+      .card:hover {
+        box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+      }
+
+      .header-p {
+        margin: 0.2em 0;
+        font-weight: 500;
+        letter-spacing: -0.02em;
+        font-size: 14px;
+      }
+
+      .subreddit {
+        text-align: right;
+      }
+      
+      h2 {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--heading-color);
+        margin-top: 0;
+        margin-bottom: 12px;
+        padding-bottom: 6px;
+        border-bottom: 2px solid var(--accent-color);
+      }
+      
+      h3 {
+        font-size: 16px;
+        font-weight: 500;
+        color: var(--subheading-color);
+        margin-bottom: 8px;
+      }
+      
+      a {
+        color: var(--link-color);
+        text-decoration: none;
+        transition: color 0.2s ease;
+      }
+      
+      a:hover {
+        color: var(--accent-color);
+        text-decoration: underline;
+      }
+      
+      /* Weather Table Styles */
+      .weather-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+        border-radius: 6px;
+        overflow: hidden;
+      }
+      
+      .weather-table th {
+        background-color: var(--table-header-bg);
+        color: var(--table-header-text);
+        font-weight: 500;
+        text-align: left;
+        padding: 8px 12px;
+        font-size: 14px;
+      }
+      
+      .weather-table td {
+        padding: 8px 12px;
+        border-bottom: 1px solid var(--border-color);
+        font-size: 14px;
+      }
+      
+      .weather-table tr:nth-child(odd) {
+        background-color: var(--table-row-odd);
+      }
+      
+      .weather-table tr:nth-child(even) {
+        background-color: var(--table-row-even);
+      }
+      
+      .weather-table tr:last-child td {
+        border-bottom: none;
+      }
+      
+      .comic {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 12px 0;
+      }
+      
+      .comic-title {
+        font-weight: 600;
+        margin-bottom: 8px;
+        text-align: center;
+        font-size: 15px;
+      }
+      
+      .comic img {
+        max-width: 600px;
+        max-height: auto;
+        object-fit: contain;
+        border-radius: 6px;
+        margin-bottom: 6px;
+        cursor: pointer;
+      }
+      
+      .comic-number {
+        font-size: 12px;
+        color: var(--text-color);
+        opacity: 0.7;
+        margin-top: 3px;
+      }
+      
+      .item-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      
+      .item-list li {
+        padding: 8px 10px;
+        border-bottom: 1px solid var(--border-color);
+        position: relative;
+        font-size: 14px;
+      }
+      
+      .item-list li:last-child {
+        border-bottom: none;
+      }
+      
+      .item-list li:hover {
+        background-color: var(--item-hover);
+        border-radius: 4px;
+      }
+      
+      .item-content {
+        display: none;
+        position: absolute;
+        z-index: 10;
+        background-color: var(--tooltip-bg);
+        color: var(--tooltip-text);
+        border-radius: 6px;
+        padding: 15px;
+        width: 90%;
+        max-width: 100%;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: 100%;
+        font-size: 13px;
+        line-height: 1.4;
+        overflow: auto;
+        max-height: 250px;
+        border: 4px solid var(--border-color);
+      }
+
+      .item-content::-webkit-scrollbar {
+        display: none;
+      }
+
+      .item-list li:hover .item-content {
+        display: block;
+      }
+      
+      .item-list li::before {
+        content: "•";
+        color: var(--accent-color);
+        font-weight: bold;
+        display: inline-block;
+        width: 1em;
+        margin-left: -0.5em;
+      }
+      
+      @media (max-width: 600px) {
+        .container {
+          padding: 10px;
+        }
+        
+        .card {
+          padding: 12px;
+          margin-bottom: 12px;
+        }
+        
+        .item-content {
+          width: 95%;
+          left: 2.5%;
+          transform: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+  
+      <div class="card">
+        <h2>Huginn Daily</h2>
+        <p class="header-p">Tuesday, April 8, 2025, 16:38:13</p>
+        <p class="header-p">9f63b965-0c25-4b34-8d36-4a76d7c9dc6d</p>
+      </div>
+  
+      <div class="card">
+        <h2>Weather</h2>
+        <table class="weather-table">
+          <tr>
+            <th>Summary</th>
+            <td>⛅️ Mostly Cloudy</td>
+          </tr>
+          <tr>
+            <th>Temperature Range</th>
+            <td>14°C to 24°C (57°F to 75°F)</td>
+          </tr>
+          <tr>
+            <th>Feels Like</th>
+            <td>Low: 52°F | High: 68°F</td>
+          </tr>
+          <tr>
+            <th>Humidity</th>
+            <td>47%</td>
+          </tr>
+          <tr>
+            <th>Wind</th>
+            <td>8 km/h (5 mph), Direction: 122.17°</td>
+          </tr>
+          <tr>
+            <th>Precipitation</th>
+            <td>Probability: 0%, Type: rain</td>
+          </tr>
+          <tr>
+            <th>Sunrise / Sunset</th>
+            <td>🌅 06:25 AM / 🌇 07:14 PM</td>
+          </tr>
+          <tr>
+            <th>Moon Phase</th>
+            <td>Waxing Gibbous (36%)</td>
+          </tr>
+          <tr>
+            <th>Cloud Cover</th>
+            <td>76%</td>
+          </tr>
+          <tr>
+            <th>Pressure</th>
+            <td>1012.79 hPa</td>
+          </tr>
+          <tr>
+            <th>Dew Point</th>
+            <td>43.2°F</td>
+          </tr>
+          <tr>
+            <th>Visibility</th>
+            <td>10.0 miles</td>
+          </tr>
+        </table>
+      </div>
+  
+      <div class="card">
+        <h2>XKCD</h2>
+  
+        <div class="comic">
+          <a href="//imgs.xkcd.com/comics/tariffs.png" target="_blank">
+            <img src="//imgs.xkcd.com/comics/tariffs.png" alt="Tariffs">
+          </a>
+        </div>
+  
+      </div>
+  
+      <div class="card">
+        <h2>Reddit</h2>
+  
+        <h3 class="subreddit">r/golang</h3>
+        <ul class="item-list">
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1ju2uck/multiplayer_pacman_with_go_and_flutter/" target="_blank">Multiplayer Pacman with go and flutter</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Built Multiplayer Pacman with Go and Flutter.</p> <p>hosted: <a href="https://multipacman.dumbapps.org/">multipacman.dumbapps.org</a><br/> GitHub: <a href="https://github.com/RA341/multipacman">https://github.com/RA341/multipacman</a></p> <p>Is it good? Ehh... The UI? It exists. </p> <p>But it was fun to make, and yes, I couldn&#39;t figure out how to center the usernames on the characters. </p> <p>The server is hosted in us-central I think. I can&#39;t be bothered to open GCP&#39;s horrible UI (I don&#39;t use <del>spyware</del> Chrome, so closer, the better). </p> <p>Hopefully, it does not break, try to cheat I dare you</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/descendent-of-apes"> /u/descendent-of-apes </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1ju2uck/multiplayer_pacman_with_go_and_flutter/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1ju2uck/multiplayer_pacman_with_go_and_flutter/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1ju0jtt/introducing_stoglr_the_simple_feature_toggler/" target="_blank">introducing stoglr: the simple feature toggler</a>
+            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/golang/comments/1ju0jtt/introducing_stoglr_the_simple_feature_toggler/">  </a> </td><td> <!-- SC_OFF --><div class="md"><p>A client asked me to build them a super simple feature toggle system last year. This isn&#39;t it, but it is a recreation of it in Go. I&#39;m primarily a Kotlin\Spring developer, but I&#39;ve been doing that for 4 years straight so I wanted to try something new. I&#39;ve always been attracted to Go because of it&#39;s simplicity and the power of it&#39;s standard library.</p> <p>So, why might we want a simpler feature toggle system?</p> <p>Tools like Launchdarkly and Unleash come quite a few features and are a bit heavy. Often times when users see feature, they feel like they have to use them. Feature toggles as a concept are dead simple: if enabled, run code, else don&#39;t run that code/do something else. The implementation, in my humble opinion, should be just as simple.</p> <p>Would love some feedback! This is still a work in progress, but it&#39;s fully functional for Go projects. Other languages will be supported soon!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/LuckyMcBeast"> /u/LuckyMcBeast </a> <br/> <span><a href="https://github.com/LuckyMcBeast/stoglr">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1ju0jtt/introducing_stoglr_the_simple_feature_toggler/">[comments]</a></span> </td></tr></table></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1jty3l4/proposal_to_make_gomaxprocs_container_aware/" target="_blank">Proposal to make GOMAXPROCS container aware</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>My friend Michael Pratt on the Go team is proposing to change the default GOMAXPROCS so that it takes into account the current cgroup CPU limits places on the process much like the Uber automaxprocs package.</p> <p><a href="https://go.dev/issue/73193">https://go.dev/issue/73193</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/ianmlewis"> /u/ianmlewis </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1jty3l4/proposal_to_make_gomaxprocs_container_aware/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1jty3l4/proposal_to_make_gomaxprocs_container_aware/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1jtvv8s/having_some_confusion_about_the_proper_way_to_use/" target="_blank">Having some confusion about the "proper" way to use interfaces for unit tests / mocking</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>So I have this &quot;database client&quot;</p> <p>```</p> <pre><code>type DatabaseClient struct{} func NewDatabaseClient() *DatabaseClient { return &amp;DatabaseClient{} } type TxnInterface interface { Exec(ctx context.Context, sql string, arguments ...interface{}) (pgconn.CommandTag, error) QueryRow(ctx context.Context, sql string, args ...interface{}) pgx.Row } func (dc *DatabaseClient) RecordRawEvent(event models.RawEvent, txn TxnInterface, ctx context.Context) error { ... } </code></pre> <p>```</p> <p>which is called by</p> <p>```</p> <pre><code>type eventDCInterface interface { RecordRawEvent(event models.RawEvent, txn pgx.Tx, ctx context.Context) error } type EventHandler struct { connectionPool *pgxpool.Pool dataClient eventDCInterface } func NewEventHandler(connectionPool *pgxpool.Pool, dataClient eventDCInterface) *EventHandler { return &amp;EventHandler{ connectionPool: connectionPool, dataClient: dataClient, } } func (h *EventHandler) RecordRawEvent(w http.ResponseWriter, r *http.Request) { ... } </code></pre> <p>```</p> <p>when I try to start the server I get</p> <p>```</p> <p>#14 7.789 cmd/app/main.go:81:4: cannot use db_client (variable of type *client.DatabaseClient) as handlers.eventDCInterface value in argument to handlers.NewEventHandler: *client.DatabaseClient does not implement handlers.eventDCInterface (wrong type for method RecordRawEvent)</p> <p>#14 7.789 have RecordRawEvent(models.RawEvent, client.TxnInterface, context.Context) error</p> <p>#14 7.789 want RecordRawEvent(models.RawEvent, pgx.Tx, context.Context) error<br/> ```</p> <p>So, I&#39;m thinking that the solution is that I basically need to define the txn interface publicly at some higher level package, and import it into both the database client and the event handler. But that somehow seems wrong...</p> <p>What&#39;s the right way to think about this? Would appreciate links to blog posts / existing git repos too :) Thank you in advance. </p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/JustF0rSaving"> /u/JustF0rSaving </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1jtvv8s/having_some_confusion_about_the_proper_way_to_use/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1jtvv8s/having_some_confusion_about_the_proper_way_to_use/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1jtv4rc/go_zero_values/" target="_blank">Go zero values</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>This is a followup to <a href="https://www.reddit.com/r/golang/comments/1jqiama/remind_me_why_zero_values/">a conversation we&#39;ve had a few days ago on this sub</a>. I figured it might be useful for some!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/ImYoric"> /u/ImYoric </a> <br/> <span><a href="https://yoric.github.io/post/go-nil-values/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1jtv4rc/go_zero_values/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1jts2j8/thunder_minimalist_backend_framework_roast_me_d/" target="_blank">Thunder - Minimalist backend framework - roast me :D</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi everyone, I developed tool (I call it framework rather than starter kit) for developers so they can develop microsevices.<br/> Thunder has dedicated CLI to deploy on kubernetes, build docker image, serve, test and init project.</p> <p><a href="https://github.com/Raezil/Thunder">https://github.com/Raezil/Thunder</a></p> <p>Checkout website as well <a href="https://raezil.github.io/Thunder/">https://raezil.github.io/Thunder/</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/No_Expert_5059"> /u/No_Expert_5059 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1jts2j8/thunder_minimalist_backend_framework_roast_me_d/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1jts2j8/thunder_minimalist_backend_framework_roast_me_d/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1jtr4xh/seeking_feedback_on_my_first_tiny_go_api_project/" target="_blank">Seeking Feedback on My First tiny Go API Project (I'm new to go)</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hello community ,<br/> I’ve been working with PHP for a while and decided to switch to Go. I built this project called gobank in 3 days (i learned go from a book and it toked me 25days). At first, I followed Anthony GG&#39;s playlist, but then I decided to do it on my own .<br/> I’d appreciate any feedback on what I could improve or if I missed any best practices. I’m always looking to learn and improve.<br/> Here’s the project: <a href="https://github.com/LAGGOUNE-Walid/gobank">https://github.com/LAGGOUNE-Walid/gobank</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Laggoune_walid"> /u/Laggoune_walid </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1jtr4xh/seeking_feedback_on_my_first_tiny_go_api_project/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1jtr4xh/seeking_feedback_on_my_first_tiny_go_api_project/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1jtpqd0/im_making_a_go_module_and_im_out_of_ideas/" target="_blank">I'm making a go module and I'm out of ideas</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;m making a go module that let&#39;s you &quot;play with words&quot; and I&#39;m out of ideas. If anybody has any, I would like to hear them! Here is the link: <a href="https://t.co/RvZgdGBFal">https://github.com/Aroulis8/fuzzywords</a> I&#39;m also open to any code suggestions/critics. (If there are any mistakes sorry!English is not my main language)</p> <p>(Also wrote the same post on twitter(X, whatever you want to call it), but nobody responded.)</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Aroulis8"> /u/Aroulis8 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1jtpqd0/im_making_a_go_module_and_im_out_of_ideas/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1jtpqd0/im_making_a_go_module_and_im_out_of_ideas/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1jtpfll/i_am_working_on_podium_its_like_kubernetes_but/" target="_blank">I am working on Podium. It's like Kubernetes but this is meant to be easy, consume fewer resources</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>No need to understand complex concepts like pods, deployments, services, etc.</p> <p>Here is what it can do:</p> <p>Container Lifecycle Management Health Checking Automatic Recovery Persistent Storage Lightweight Wanna contribute? You are welcome</p> <p>It&#39;s written in Go</p> <p><a href="https://github.com/odlemon/podium.git">https://github.com/odlemon/podium.git</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Independent_Seat9918"> /u/Independent_Seat9918 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1jtpfll/i_am_working_on_podium_its_like_kubernetes_but/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1jtpfll/i_am_working_on_podium_its_like_kubernetes_but/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1jtpeet/create_response_header_in_gin_middleware/" target="_blank">create response header in gin middleware</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi Guys,<br/> Unable to add response header in gin middleware can anyone please help.....</p> <p>Psuedo code is shared below.</p> <p>when I debug like c.writer.header() it shows header but header is not passed to client.</p> <p>fmt.Println(&quot;Final response headers:&quot;, c.Writer.Header())</p> <p>Please guide....</p> <pre><code>func ResponseSignatureMiddleware() gin.HandlerFunc { return func(c *gin.Context) { respBody := &amp;bytes.Buffer{} writer := &amp;bodyCaptureWriter{ResponseWriter: c.Writer, body: respBody} c.Writer = writer c.Next() //some code c.Writer.Header().Set(&quot;X-Sig&quot;, sigHeader) } } </code></pre> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/madugula007"> /u/madugula007 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1jtpeet/create_response_header_in_gin_middleware/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1jtpeet/create_response_header_in_gin_middleware/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1jtohsx/wife_crocheted_me_a_go_gopher_wizard/" target="_blank">Wife crocheted me a Go gopher wizard 😍</a>
+            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/golang/comments/1jtohsx/wife_crocheted_me_a_go_gopher_wizard/">  </a> </td><td> &#32; submitted by &#32; <a href="https://www.reddit.com/user/JerseyMilker"> /u/JerseyMilker </a> <br/> <span><a href="https://x.com/jesseleite85/status/1909266161423839427">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1jtohsx/wife_crocheted_me_a_go_gopher_wizard/">[comments]</a></span> </td></tr></table></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1jtny0o/bubbles_tea_buttons/" target="_blank">Bubbles Tea Buttons</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>How can I make a button in bubbles tea (I&#39;m already using bubbles for textinputs)?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Acrobatic_Click_6763"> /u/Acrobatic_Click_6763 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1jtny0o/bubbles_tea_buttons/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1jtny0o/bubbles_tea_buttons/">[comments]</a></span></div>
+          </li>
+  
+        </ul>
+  
+        <h3 class="subreddit">r/gamedev</h3>
+        <ul class="item-list">
+  
+          <li>
+            <a href="https://www.reddit.com/r/gamedev/comments/1ju2qh9/make_something_small_please_your_future_career/" target="_blank">Make something small. Please. Your (future) career damn near depends on it.</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I see so many folks want to make these grand things. Whether that is for a portfolio piece or an actual game. So this is my 2 cents as someone who has been in multiple AAA interviews for candidates that range from juniors to Directors. </p> <p>Motivation always dies out after the first couple months in this industry. It&#39;s fun, flashy, cool, etc. at first but then it&#39;s a burden and &quot;too hard&quot; or &quot;over scoped&quot; when you are really neck deep in the shits. I really think it&#39;s killing folks chances at 1. Launching something and 2. Getting their foot into the industry. Trying to build something with complex systems, crazy graphics and genre defining gameplay is only going to make you depressed in a few short months.</p> <p>Now you feel like you wasted months and getting imposter syndrome from folks talking about stuff on Linkedin.</p> <p>Instead, take your time and build something small and launch it. Something that can be beat in a hour, maybe 2. Get feedback or simply just look at what you made and grow off that. 9/10 you know exactly where the pain points are. Reiterate on the design again, and again, and again until you are ACTIVELY learning from it. Finish something small, work on a beautiful corner. You can learn so much by simply just finishing. That&#39;s the key. You can have the most incredibly worded resume but that portfolio is and will forever be king. I need to know I can trust you when shit is HOT in the kitchen to get the work done. We are all under the gun, as you can see looking at the window at the industry.</p> <p>Of course there are the special game dev god chosen ones who we all know about but you should go into this industry thinking it &quot;could&quot; happen to you. Not that it &quot;will&quot;. Start small, learn, create, fail and do it again. You got this. Don&#39;t take yourself out before you even begin.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Federal-Pension1586"> /u/Federal-Pension1586 </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1ju2qh9/make_something_small_please_your_future_career/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1ju2qh9/make_something_small_please_your_future_career/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/gamedev/comments/1ju00pg/whats_a_game_with_bad_graphics_that_you_couldnt/" target="_blank">What's a game with bad graphics that you couldn't stop playing?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;m asking to understand features other than graphics that are really important to games, specially for game devs. Can you describe what features let you hooked on?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/masterid000"> /u/masterid000 </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1ju00pg/whats_a_game_with_bad_graphics_that_you_couldnt/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1ju00pg/whats_a_game_with_bad_graphics_that_you_couldnt/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/gamedev/comments/1jtzakh/i_ported_my_game_to_xbox_and_released_it_about/" target="_blank">I ported my game to Xbox and released it about two weeks ago. Without breaking any NDA, here's how it went</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Three years after releasing my game on Steam, I decided to make a sequel. But knowing how slow I am with churning out games (it&#39;s been 10 years since I started making this game!), I have to secure another source of income. That&#39;s when I decided to take a leap of faith and port the game to Xbox.</p> <p><strong>1. How long did it take?</strong></p> <p>From the moment I submitted my game pitch to ID@Xbox (<a href="https://www.xbox.com/en-US/games/id">https://www.xbox.com/en-US/games/id</a>), till the moment of official release, date-to-date exactly one year. Not by design; purely by chance.</p> <p><strong>2. How did I get accepted by ID@Xbox?</strong></p> <p>Prior to signing up, I already implemented extensive gamepad support for my game. It needed a lot more work to be comfortable, but fully functional. With 700+ reviews at 86% on Steam I could prove to them that there&#39;s some popularity, and I also provided a build for Xbox team to play as part of the submission.</p> <p><strong>3. How was the porting process?</strong></p> <p>I was in somewhat a &quot;uncharted territory&quot; and had a pretty rough time understanding how to get started and how to implement all the required features. Due to NDA, you will see zero reliable &quot;tutorial&quot; online anywhere. Therefore I relied heavily on Microsoft and Unity support, who were very patiently providing me with guidance and samples. I know as small devs we tend to research everything online and try to solve the problems ourselves, but you won&#39;t find anything useful; Talking directly to Microsoft and Unity support is the way to go.</p> <p>Aside from coding, optimization was also a huge undertaking, because I was dead set on releasing the game on both newer and older platforms. At first I thought the game ran like crap because I had too many polygons/lights/shadow/Gfx, but after doing extensive profiling it turned out that the bottleneck was my inefficient code. After a couple of months of refactoring, I was able to achieve 40 FPS on medium quality on Xbox One.</p> <p>Memory usage was also another big challenge on older platforms. Unlike PC which has RAM + VRAM, Xbox uses the same memory pool for both rendering and execution. Once the allocation goes beyond the available RAM, the game just crashes. So I had to do memory profiling and cut out a lot of fluff - mostly audio files, which take up a ton of memory even when they are pretty small on the disk.</p> <p>There had been numerous times when I got so stuck and intimidated that I just wanted to quit. I&#39;m glad I followed through.</p> <p><strong>4. What about certification?</strong></p> <p>Under NDA I can&#39;t say much here; but it&#39;s really not as bad as it seems when you first start tackling it. Microsoft support team is very serious about ensuring the success of your game, and they&#39;ll help you in any way they can to get you to the finish line. The certification process took me about one month to complete.</p> <p><strong>5. How was the gameplay adapted for console?</strong></p> <p>Although I already made controller support for Steam Deck, it was still quite rudimentary. The UI is very complex due to the sheer amount of functions I added over the years from player requests, and it features a Tetris-style inventory with hundreds of types of items. So I tried to make inventory management more doable by automatically switching to a &quot;snap movement&quot; when the cursor hovers over an inventory grid, which feels similar to when you use a soft keyboard with controller. Even up until the release day, I was still adding small QoL enhancements here and there.</p> <p><strong>6. How did the game sell?</strong></p> <p>I really suck at marketing. I tried sending out keys to many influencers and gaming news sites, only two ever responded. After all, a game that first came out in 2021 is no news and it won&#39;t make any money for them. But I&#39;d like to give a shoutout to <a href="https://www.thexboxhub.com/tunguska-the-visitation-complete-edition-reminds-of-the-horrors-of-s-t-a-l-k-e-r-on-xbox/">TheXboxHub</a> who did a coverage very quickly!</p> <p>So I mainly relied on Steam to market for my Xbox game... I know it sounds absurd :) I timed the Xbox release five days after a Daily Deal on Steam, which garnered millions of page visits; I then posted an announcement for the Xbox release on my Steam page before the Daily Deal started so that millions of players would see it. Also, I scheduled a Fanatical bundle to start 3 days before the Xbox release and that funneled a lot of traffic as well. I wish I could see the amount of wishlists I got for Xbox, but I haven&#39;t figured out how to check that. Since release day, the game sold 632 copies so far, but that is without a launch discount, because I forgot to schedule that xD</p> <p>After all, it was a rewarding experience and a brag-worthy chapter of my life. I think it will help support me and my family while I focus on making the sequel (bigger, longer, and uncut, hopefully); but most importantly, having my work published on console feels great :)</p> <p><strong>Conclusion:</strong></p> <p>If you have a game on Steam that&#39;s doing well, definitely consider porting it to Xbox. The ID@Xbox team is very supportive and I believe it&#39;ll worth your time and effort.</p> <p><strong>P.S.</strong> here&#39;s the Xbox link: <a href="https://www.xbox.com/en-US/games/store/tunguska-the-visitation-complete-edition/9MWG97WDMQ2V/0010">https://www.xbox.com/en-US/games/store/tunguska-the-visitation-complete-edition/9MWG97WDMQ2V/0010</a></p> <p>The review sucks right now, but I honestly don&#39;t expect much. I&#39;m not a console gamer so I really don&#39;t know what console players like vs. PC players. Also the combat controls is a learning curve even for M&amp;K players, let alone controllers. But I know that it&#39;s just how things are with a top-down shooter that is not a bullet hell, and even Foxhole suffers complaints about its aiming mechanism. I think I tried the best I can and I at least made some players happy. Cheers!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Rotorist"> /u/Rotorist </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1jtzakh/i_ported_my_game_to_xbox_and_released_it_about/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1jtzakh/i_ported_my_game_to_xbox_and_released_it_about/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/gamedev/comments/1jtvvl0/as_a_solo_dev_is_it_worth_starting_your_own/" target="_blank">As a solo dev, is it worth starting your own studio or just going by with sole proprietorship?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I am currently developing my first game and I&#39;m at the stage where I want to start a Steam/Google Play page so I can start advertising it better. However, I&#39;m stuck in wonder if it is worth starting an incorporated business to open these pages or do it under my name as sole proprietor. I&#39;m located in Ontario, Canada so if any devs from the area have experience in this I would love to hear your thoughts!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/jienl"> /u/jienl </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1jtvvl0/as_a_solo_dev_is_it_worth_starting_your_own/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1jtvvl0/as_a_solo_dev_is_it_worth_starting_your_own/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/gamedev/comments/1jtrhku/ive_made_over_1280_input_icons_for_use_in_your/" target="_blank">I've made over 1,280 input icons for use in your games! (public domain, CC0)</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>More than a year ago I started creating icons attempting to make the biggest and most up-to-date package available. After several updates my package now includes and covers;</p> <ul> <li>Xbox 360, Xbox One &amp; Xbox Series</li> <li>PlayStation® 1 – 5</li> <li>Steam Deck</li> <li>Steam Controller</li> <li>Nintendo Switch</li> <li>Nintendo Switch 2</li> <li>Nintendo Wii</li> <li>Nintendo Wii U</li> <li>Nintendo Gamecube</li> <li>Playdate</li> <li>Keyboard &amp; mouse</li> <li>Touch gestures</li> <li>Generic controls</li> <li>Flairs</li> </ul> <p>Each of the included icons come in SVG format, two PNG sizes, in two spritesheet sizes <em>(including XML)</em> and two fonts <em>(TTF and OTF)</em> with character map! The package also includes an overview, and best practices on using the icons. Best of all, it&#39;s completely free. No charge, no need to credit - just use them in your project without any worry.</p> <p><strong>Download:</strong> <a href="https://kenney.nl/assets/input-prompts">https://kenney.nl/assets/input-prompts</a></p> <p>I&#39;d love feedback, or ideas on how to make the package even better!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/KenNL"> /u/KenNL </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1jtrhku/ive_made_over_1280_input_icons_for_use_in_your/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1jtrhku/ive_made_over_1280_input_icons_for_use_in_your/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/gamedev/comments/1jtpe35/steam_shared_a_big_postgdc_2025_update_for_devs/" target="_blank">Steam shared a big post-GDC 2025 update for devs — worth a read</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Really appreciate how developer-friendly the Steam platform is. Valve has just released a super useful <strong>Spring 2025 update for developers</strong> following GDC.</p> <p>Highly recommend checking out:</p> <ul> <li>2024 marketing insights – what actually worked on the platform;</li> <li>Updated guidance on managing player expectations, optimizing Early Access, and working with feedback during development.</li> <li>Best practices for localization – how language support affects visibility, store reach, and player engagement.</li> </ul> <p><strong>Read the full update here:</strong><br/> <a href="https://store.steampowered.com/news/group/4145017/view/532094139769028776">https://store.steampowered.com/news/group/4145017/view/532094139769028776</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/INFERNIUMI"> /u/INFERNIUMI </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1jtpe35/steam_shared_a_big_postgdc_2025_update_for_devs/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1jtpe35/steam_shared_a_big_postgdc_2025_update_for_devs/">[comments]</a></span></div>
+          </li>
+  
+        </ul>
+  
+        <h3 class="subreddit">r/rust</h3>
+        <ul class="item-list">
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1ju2iwd/idea_publish_clippy_rule_configs_to_cratesio_and/" target="_blank">Idea: Publish Clippy rule configs to crates.io and extend clippy configs in your Cargo.toml</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I have about 14 projects, they all use my custom clippy config with about 100 rules.</p> <p>I want to keep it in sync. When I update the clippy config in 1 place, it updates everywhere. This isn&#39;t possible to do at the moment</p> <p>Other languages allow you to do this. For example, ESLint in JavaScript.</p> <p>You will have an additional key like this in <code>Cargo.toml</code>&#39;s <code>lints</code> section</p> <p><code> [lints.clippy] extends = &quot;my-clippy-config@1&quot; </code></p> <p>Whatever rules are in <code>my-clippy-config</code> will be merged into your own config. Your rules will take priority.</p> <hr/> <p>On the other side, you will now be able to publish any clippy configuration on crates.io. This will just be 1 TOML file, with only a major version. </p> <p>Each new update is a version bump. This is nothing like a crate of course, but we already have a system for publishing and hosting files for Rust ecosystem, we could re-use it for this.</p> <p>Thoughts on this idea?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/nikitarevenco"> /u/nikitarevenco </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1ju2iwd/idea_publish_clippy_rule_configs_to_cratesio_and/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1ju2iwd/idea_publish_clippy_rule_configs_to_cratesio_and/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1jtzhmu/confused_about_function_arguments_and_is_some/" target="_blank">Confused about function arguments and is_some()</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><pre><code>pub fn test(arg: Option&lt;bool&gt;) { if arg.is_some() { if arg { println!(&quot;arg is true&quot;); } /* The above returns: mismatched types expected type `bool` found enum `Option&lt;bool&gt;`rustcClick for full compiler diagnostic main.rs(4, 17): consider using `Option::expect` to unwrap the `Option&lt;bool&gt;` value, panicking if the value is an `Option::None`: `.expect(&quot;REASON&quot;)` value: Option&lt;bool&gt; */ } } pub fn main() { test(Some(true)); } My question: Why does the compiler not recognise that arg is a bool if it can only be passed in to the function as a bool? In what scenario could arg not be a bool if it has a value? Because we can&#39;t do this: pub fn main() { test(Some(&quot;a string&quot;.to_string())); } /* mismatched types expected `bool`, found `String`rustcClick for full compiler diagnostic main.rs(21, 10): arguments to this enum variant are incorrect main.rs(21, 10): the type constructed contains `String` due to the type of the argument passed */ What am I missing? It feels like double checking the arg type for no purpose. Update: Just to clarify, I know how to implement the correct code. I guess I&#39;m trying to understand if in the compilers pov there is a possiblity that arg can ever contain anything other than a bool type. </code></pre> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Every_Effective1482"> /u/Every_Effective1482 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1jtzhmu/confused_about_function_arguments_and_is_some/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1jtzhmu/confused_about_function_arguments_and_is_some/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1jtz5zy/code_review_request_elo_calculator_python_package/" target="_blank">Code Review Request: Elo Calculator Python Package</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>This is my first Rust project after completing the Rustlings course. </p> <p>It&#39;s an elo calculator that allows for simple calculations, but also supports some more complex features such as supporting multiplayer matches and calculating elo updates for a sequence of events. </p> <p>I used this project to explore developing a CLI, a server and Python bindings, but the final release of this project is in the form of a Python package available via PyPI. While I&#39;m open to feedback on any aspect, I&#39;m particularly interested in how I could improve the lib/ and python_bindings/ content. More information is in the README.</p> <p>Thanks!</p> <p>Github: <a href="https://github.com/a-s-g93/elo-calculator">https://github.com/a-s-g93/elo-calculator</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/sandor93"> /u/sandor93 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1jtz5zy/code_review_request_elo_calculator_python_package/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1jtz5zy/code_review_request_elo_calculator_python_package/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1jtw560/servo_ai_policy_update_proposal/" target="_blank">Servo AI Policy Update Proposal</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/Kobzol"> /u/Kobzol </a> <br/> <span><a href="https://github.com/servo/servo/discussions/36379">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1jtw560/servo_ai_policy_update_proposal/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1jtw01f/i_built_a_rustbased_intelligent_proxy_server_for/" target="_blank">I built a rust-based intelligent proxy server for prompts.</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hello! I built ArchGW [1] - an open-source intelligent proxy server for prompts and agentic workloads - written in Rust and built on top of Envoy. </p> <p>Arch moves the pesky handling and processing of prompts: routing prompts to agents or specifc tools, clarifying user inputs, unifying access and observability to any LLM - outside application code so that you can move faster </p> <p>We&#39;ve talked to 100s of developers at places like Twilio, GE Healthcare, Redhat, Square, etc and there was a consistent theme in building AI apps: to move past a nascent shiny demo they are left to their own devices on tracing, guardrails, routing and fast execution of common agentic operations. So I set out to fix that. 🙏 please check out the project and let us know if you like it </p> <p>[1] <a href="https://github.com/katanemo/archgw">https://github.com/katanemo/archgw</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/AdditionalWeb107"> /u/AdditionalWeb107 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1jtw01f/i_built_a_rustbased_intelligent_proxy_server_for/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1jtw01f/i_built_a_rustbased_intelligent_proxy_server_for/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1jtvgar/built_our_own_database_in_rust_from_scratch/" target="_blank">Built our own database in Rust from scratch</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi everyone, </p> <p>A friend and I have been building <strong>HelixDB</strong>, a graph-vector database written from scratch in Rust.</p> <p>It lets you combine graph and vector data in the same system, so you can store explicit relationships between vector embeddings and traverse across both graph and vector types in the same query. It&#39;s aimed at people building RAG and other AI retrieval systems.</p> <p><strong>What we’ve built so far:</strong></p> <ul> <li>A functional database engine</li> <li>Our own query language</li> <li>Native graph types</li> <li>Native vector types</li> <li>Python SDK</li> </ul> <p><strong>What’s next:</strong></p> <ul> <li>Graph traversal optimizations</li> <li>JavaScript SDK</li> <li>Rust SDK</li> </ul> <p>Would love feedback, ideas, or just to chat with anyone interested in this space :) Cheers!</p> <p><a href="https://github.com/HelixDB/helix-db">https://github.com/HelixDB/helix-db</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/MoneroXGC"> /u/MoneroXGC </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1jtvgar/built_our_own_database_in_rust_from_scratch/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1jtvgar/built_our_own_database_in_rust_from_scratch/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1jtuwon/this_month_in_redox_march_2025/" target="_blank">This Month in Redox - March 2025</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Fixed USB input support, userspace-based process manager, RSoC 2025, driver bug fixes, relibc improvements and lots more.</p> <p><a href="https://www.redox-os.org/news/this-month-250331/">https://www.redox-os.org/news/this-month-250331/</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/ribbon_45"> /u/ribbon_45 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1jtuwon/this_month_in_redox_march_2025/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1jtuwon/this_month_in_redox_march_2025/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1jtuwfe/looking_for_a_graphics_library_for_the_linux/" target="_blank">Looking for a graphics library for the Linux framebuffer</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hello !</p> <p>I&#39;m looking to develop a really simple &quot;dashboard&quot; using a Raspberry Pi, and I&#39;m looking for a simple 2d graphics library. I need to display some text, possibly bitmaps and animations but nothing more. I don&#39;t really need openGL, even less a window manager.<br/> I would like to avoid using a X server because I don&#39;t need all the functionalities, and I would like to prefer limiting resource usage to a minimum.<br/> I&#39;m looking for something similar to what SDL2 can do (select the framebuffer as output for the &quot;window&quot;), and allow me to draw shapes, text, etc.</p> <p>Is there such a tool around ? I looked at framebuffer (too basic), raqote (support for fb0 is not talked about anywhere) and pixel (same, talks about winit a lot but nothing about fb0).</p> <p>I&#39;m no expert in rust so please enlighten me !</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/nlouis56"> /u/nlouis56 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1jtuwfe/looking_for_a_graphics_library_for_the_linux/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1jtuwfe/looking_for_a_graphics_library_for_the_linux/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1jtulkk/cargowarehouse_speed_up_rust_builds_by_unifying/" target="_blank">cargo-warehouse: Speed up Rust builds by unifying dependency cache</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hey Rustaceans!</p> <p>I&#39;ve created a simple but useful tool called <strong>cargo-warehouse</strong> that solves an annoying problem - constantly recompiling the same dependencies when switching between Rust projects.</p> <p><strong>What it does:</strong><br/> cargo-warehouse creates a unified build cache directory in your home folder and sets up symbolic links from your projects to this shared cache. This way, dependencies only need to be compiled once across all your projects.</p> <p><strong>How to use:</strong></p> <ol> <li><code>cargo install cargo-warehouse</code></li> <li>Run from your project root</li> <li>It handles necessary permissions and creates the appropriate symlinks</li> </ol> <p>The tool works on both Unix and Windows systems.</p> <p><strong>Links:</strong><br/> <a href="https://crates.io/crates/cargo-warehouse">cargo-warehouse on crates.io</a></p> <p>I&#39;d appreciate any feedback or suggestions for improvement!</p> <p><em>Note: If you encounter any issues, please let me know - happy to help troubleshoot.</em></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Nichokas_"> /u/Nichokas_ </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1jtulkk/cargowarehouse_speed_up_rust_builds_by_unifying/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1jtulkk/cargowarehouse_speed_up_rust_builds_by_unifying/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1jttzz4/official_rrust_whos_hiring_thread_for_jobseekers/" target="_blank">Official /r/rust "Who's Hiring" thread for job-seekers and job-offerers [Rust 1.86]</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Welcome once again to the official <a href="/r/rust">r/rust</a> Who&#39;s Hiring thread!</p> <p>Before we begin, job-seekers should also remember to peruse the <a href="https://www.reddit.com/r/rust/comments/1ivrkhs/official_rrust_whos_hiring_thread_for_jobseekers/">prior thread</a>.</p> <p>This thread will be periodically stickied to the top of <a href="/r/rust">r/rust</a> for improved visibility.<br/> You can also find it again via the &quot;Latest Megathreads&quot; list, which is a dropdown at the top of the page on new Reddit, and a section in the sidebar under &quot;Useful Links&quot; on old Reddit.</p> <p>The thread will be refreshed and posted anew when the next version of Rust releases in six weeks.</p> <p>Please adhere to the following rules when posting:</p> <h3>Rules for individuals:</h3> <ul> <li><p>Don&#39;t create top-level comments; those are for employers.</p></li> <li><p>Feel free to reply to top-level comments with on-topic questions.</p></li> <li><p>Anyone seeking work should reply to my stickied top-level comment.</p></li> <li><p>Meta-discussion should be reserved for the distinguished comment at the very bottom.</p></li> </ul> <h3>Rules for employers:</h3> <ul> <li><p><strong>The ordering of fields in the template has been revised to make postings easier to read. If you are reusing a previous posting, please update the ordering as shown below.</strong></p></li> <li><p><strong>Remote positions: see bolded text for new requirement.</strong></p></li> <li><p>To find individuals seeking work, see the replies to the stickied top-level comment; you will need to click the &quot;more comments&quot; link at the bottom of the top-level comment in order to make these replies visible.</p></li> <li><p>To make a top-level comment you must be hiring directly; no third-party recruiters.</p></li> <li><p>One top-level comment per employer. If you have multiple job openings, please consolidate their descriptions or mention them in replies to your own top-level comment.</p></li> <li><p>Proofread your comment after posting it and edit it if necessary to correct mistakes.</p></li> <li><p>To share the space fairly with other postings and keep the thread pleasant to browse, we ask that you try to limit your posting to either 50 lines or 500 words, whichever comes first.<br/> <strong>We reserve the right to remove egregiously long postings.</strong> However, this only applies to the content of this thread; you can link to a job page elsewhere with more detail if you like.</p></li> <li><p>Please base your comment on the following template:</p></li> </ul> <p>COMPANY: <em>[Company name; optionally link to your company&#39;s website or careers page.]</em></p> <p>TYPE: <em>[Full time, part time, internship, contract, etc.]</em></p> <p>LOCATION: <em>[Where are your office or offices located? If your workplace language isn&#39;t English-speaking, please specify it.]</em></p> <p>REMOTE: <em>[Do you offer the option of working remotely? <strong>Please state clearly if remote work is restricted to certain regions or time zones, or if availability within a certain time of day is expected or required.</strong>]</em></p> <p>VISA: <em>[Does your company sponsor visas?]</em></p> <p>DESCRIPTION: <em>[What does your company do, and what are you using Rust for? How much experience are you seeking and what seniority levels are you hiring for? The more details the better.]</em></p> <p>ESTIMATED COMPENSATION: <em>[Be courteous to your potential future colleagues by attempting to provide at least a rough expectation of wages/salary.<br/> If you are listing several positions in the &quot;Description&quot; field above, then feel free to include this information inline above, and put &quot;See above&quot; in this field.<br/> If compensation is negotiable, please attempt to provide at least a base estimate from which to begin negotiations. If compensation is highly variable, then feel free to provide a range.<br/> If compensation is expected to be offset by other benefits, then please include that information here as well. If you don&#39;t have firm numbers but do have relative expectations of candidate expertise (e.g. entry-level, senior), then you may include that here.<br/> If you truly have no information, then put &quot;Uncertain&quot; here.<br/> Note that many jurisdictions (including several U.S. states) <strong>require salary ranges on job postings by law</strong>.<br/> If your company is based in one of these locations or you plan to hire employees who reside in any of these locations, you are likely subject to these laws.<br/> Other jurisdictions may require salary information to be available upon request or be provided after the first interview.<br/> To avoid issues, <strong>we recommend all postings provide salary information</strong>.<br/> You <strong>must</strong> state clearly in your posting if you are planning to compensate employees partially or fully in <strong>something other than fiat currency</strong> (e.g. cryptocurrency, stock options, equity, etc).<br/> Do <strong>not</strong> put just &quot;Uncertain&quot; in this case as the default assumption is that the compensation will be 100% fiat.<br/> Postings that fail to comply with this addendum <strong>will be removed</strong>. Thank you.]</em></p> <p>CONTACT: <em>[How can someone get in touch with you?]</em></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/DroidLogician"> /u/DroidLogician </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1jttzz4/official_rrust_whos_hiring_thread_for_jobseekers/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1jttzz4/official_rrust_whos_hiring_thread_for_jobseekers/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1jttky7/structural_changes_for_4889_throughput_in_a_rust/" target="_blank">Structural changes for +48-89% throughput in a Rust web service</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/maguichugai"> /u/maguichugai </a> <br/> <span><a href="https://sander.saares.eu/2025/03/31/structural-changes-for-48-throughput-in-a-rust-web-service/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1jttky7/structural_changes_for_4889_throughput_in_a_rust/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1jttg4m/thinking_like_a_compiler_places_and_values_in_rust/" target="_blank">Thinking like a compiler: places and values in Rust</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/steveklabnik1"> /u/steveklabnik1 </a> <br/> <span><a href="https://steveklabnik.com/writing/thinking-like-a-compiler-places-and-values-in-rust/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1jttg4m/thinking_like_a_compiler_places_and_values_in_rust/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1jtqn23/garbage_collection_for_rust_the_finalizer_frontier/" target="_blank">Garbage Collection for Rust: The Finalizer Frontier</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/steveklabnik1"> /u/steveklabnik1 </a> <br/> <span><a href="https://arxiv.org/abs/2504.01841">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1jtqn23/garbage_collection_for_rust_the_finalizer_frontier/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1jtq606/force_your_macros_callers_to_write_unsafe/" target="_blank">Force your macro's callers to write unsafe</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/joshlf_"> /u/joshlf_ </a> <br/> <span><a href="https://joshlf.com/post/2025/04/05/unsafe-macros/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1jtq606/force_your_macros_callers_to_write_unsafe/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1jtpkhs/unreachable_unwrap_failure/" target="_blank">Unreachable unwrap failure</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>This <code>unwrap</code> failed. Somebody please confirm I&#39;m not going crazy and this was <em>actually</em> caused by cosmic rays hitting the Arc refcount? (I&#39;m not using Arc::downgrade anywhere so there are no weak references)</p> <p>IMO just this code snippet alone together with the fact that there are no calls to Arc::downgrade (or unsafe blocks) should prove the unwrap failure here is unreachable without knowing the details of the pool impl or <code>ndarray</code> or anything else</p> <p>(I should note this is being run thousands to millions of times per second on hundreds of devices and it has <em>only</em> failed once)</p> <pre><code>use std::{mem, sync::Arc}; use derive_where::derive_where; use ndarray::Array1; use super::pool::Pool; #[derive(Clone)] #[derive_where(Debug)] pub(super) struct GradientInner { #[derive_where(skip)] pub(super) pool: Arc&lt;Pool&gt;, pub(super) array: Arc&lt;Array1&lt;f64&gt;&gt;, } impl GradientInner { pub(super) fn new(pool: Arc&lt;Pool&gt;, array: Array1&lt;f64&gt;) -&gt; Self { Self { array: Arc::new(array), pool } } pub(super) fn make_mut(&amp;mut self) -&gt; &amp;mut Array1&lt;f64&gt; { if Arc::strong_count(&amp;self.array) &gt; 1 { let array = match self.pool.try_uninitialized_array() { Some(mut array) =&gt; { array.assign(&amp;self.array); array } None =&gt; Array1::clone(&amp;self.array), }; let new = Arc::new(array); let old = mem::replace(&amp;mut self.array, new); if let Some(old) = Arc::into_inner(old) { // Can happen in race condition where another thread dropped its reference after the uniqueness check self.pool.put_back(old); } } Arc::get_mut(&amp;mut self.array).unwrap() // &lt;- This unwrap here failed } } </code></pre> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/dspyz"> /u/dspyz </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1jtpkhs/unreachable_unwrap_failure/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1jtpkhs/unreachable_unwrap_failure/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1jtp170/replicating_state_changes_across_language/" target="_blank">Replicating state changes across language barriers with Rust, UniFFI, and proc macros</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/cheeperz"> /u/cheeperz </a> <br/> <span><a href="https://www.tantaluspath.com/tech/rust_to_swift_state_syncing/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1jtp170/replicating_state_changes_across_language/">[comments]</a></span></div>
+          </li>
+  
+        </ul>
+  
+        <h3 class="subreddit">r/rust_gamedev</h3>
+        <ul class="item-list">
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust_gamedev/comments/1jttjpf/prototype_for_a_game_im_working_on_where_an_army/" target="_blank">Prototype for a game I'm working on where an army of Raccoons fight Mutant Trash Monsters</a>
+            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/rust_gamedev/comments/1jttjpf/prototype_for_a_game_im_working_on_where_an_army/">  </a> </td><td> <!-- SC_OFF --><div class="md"><p>This game is written in Bevy and is currently using placeholder assets from Itch.io. The core game mechanic is the player controlling a Sanitation Worker to amasses an army of Raccoons to help fight mutant garbage monsters in their city. The player picks up raccoons and throws them at the trash monsters to attack.</p> <p>I&#39;m working on tuning the gameplay loop, timings, hit points, etc. but I just wanted to build something to demonstrate the concept. There is still a lot of work to be done.</p> <p>This is my first non-trivial project in Rust and my first attempt at using Bevy but I&#39;ve been programming since 2001. Forgive the animation glitches, I&#39;m still working those out. I&#39;m working with an artist as well and am shooting for an SNES-style pixel art aesthetic. This is a spare-time project and I doubt it&#39;ll be done anytime this year. Maybe 2026.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Stackitu"> /u/Stackitu </a> <br/> <span><a href="https://v.redd.it/n0wwcbgpngte1">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust_gamedev/comments/1jttjpf/prototype_for_a_game_im_working_on_where_an_army/">[comments]</a></span> </td></tr></table></div>
+          </li>
+  
+        </ul>
+  
+      </div>
+  
+      <div class="card">
+        <h2>Movie Trailers</h2>
+        <ul class="item-list">
+  
+          <li>
+            <a href="http://www.filmjabber.com/movie-trailers/mission-impossible--the-final-reckoning.html" target="_blank">Mission: Impossible - The Final Reckoning Movie Trailer</a>
+            
+          </li>
+  
+        </ul>
+      </div>
+  
+    </div>
+  </body>
+  </html>
