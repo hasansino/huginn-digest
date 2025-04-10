@@ -1,0 +1,383 @@
+{
+  "schema_version": 1,
+  "name": "global",
+  "description": "This scenario has a few agents to get you started. Feel free to change them or delete them as you see fit!",
+  "source_url": false,
+  "guid": "ee4299225e6531c401a8bbbce0771ce4",
+  "tag_fg_color": "#ffffff",
+  "tag_bg_color": "#18dc26",
+  "icon": "globe",
+  "exported_at": "2025-04-08T15:13:32Z",
+  "agents": [
+    {
+      "type": "Agents::SchedulerAgent",
+      "name": "MorningDigestBuilderScheduler",
+      "disabled": false,
+      "guid": "1d2589ed7c78ba4d528983e3a74cce29",
+      "options": {
+        "_": "https://crontab.guru",
+        "action": "run",
+        "schedule": "30 6 * * *"
+      }
+    },
+    {
+      "type": "Agents::PostAgent",
+      "name": "MorningDigestPageCommitChange",
+      "disabled": false,
+      "guid": "257bc0fb85a32f111497c9084e3a390c",
+      "options": {
+        "post_url": "https://api.github.com/repos/hasansino/huginn-digest/contents/index.html",
+        "content_type": "json",
+        "method": "put",
+        "headers": {
+          "Accept": "application/vnd.github+json",
+          "Authorization": "Bearer {% credential GH_TOKEN %}"
+        },
+        "payload": {
+          "message": "deploy by huginn",
+          "content": "{{ digest_html_b64 }}",
+          "sha": "{{ body.sha }}"
+        },
+        "emit_events": "true",
+        "no_merge": "true",
+        "output_mode": "merge",
+        "parse_body": true
+      },
+      "schedule": "never",
+      "keep_events_for": 2592000,
+      "propagate_immediately": true
+    },
+    {
+      "type": "Agents::SchedulerAgent",
+      "name": "MorningDigestScheduler",
+      "disabled": false,
+      "guid": "26f76d72799ad9aea130834b03ac388d",
+      "options": {
+        "_": "https://crontab.guru",
+        "action": "run",
+        "schedule": "15 6 * * *"
+      }
+    },
+    {
+      "type": "Agents::WebsiteAgent",
+      "name": "XKCD",
+      "disabled": false,
+      "guid": "505c9bba65507c40e5786afff36f688c",
+      "options": {
+        "url": "https://xkcd.com",
+        "mode": "on_change",
+        "expected_update_period_in_days": 5,
+        "extract": {
+          "url": {
+            "css": "#comic img",
+            "value": "@src"
+          },
+          "title": {
+            "css": "#comic img",
+            "value": "@alt"
+          },
+          "hovertext": {
+            "css": "#comic img",
+            "value": "@title"
+          }
+        }
+      },
+      "schedule": "6am",
+      "keep_events_for": 2592000,
+      "propagate_immediately": true
+    },
+    {
+      "type": "Agents::JavaScriptAgent",
+      "name": "MorningDigestMailerBuilder",
+      "disabled": false,
+      "guid": "5570c7ad81eae63a0cb68649aa558c6c",
+      "options": {
+        "language": "JavaScript",
+        "code": "Agent.generateUUID = function () {\r\n    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {\r\n        const r = Math.random() * 16 | 0;\r\n        const v = c === 'x' ? r : (r & 0x3 | 0x8);\r\n        return v.toString(16);\r\n    });\r\n};\r\n\r\nAgent.receive = function () {\r\n    const events = this.incomingEvents();\r\n    if (!events.length) return;\r\n\r\n    const pageURL = \"https://vzjeqdcotzqyzi2a4f8ea4lv.pages.dev/\"\r\n    const uuid = this.generateUUID();\r\n    const dateTime = new Date().toLocaleString('en-US', {\r\n        timeZone: 'Europe/Athens',\r\n        weekday: 'long',\r\n        month: 'long',\r\n        day: 'numeric',\r\n        year: 'numeric',\r\n        // hour: '2-digit',\r\n        // minute: '2-digit',\r\n        // second: '2-digit',\r\n        // hour12: false\r\n    });\r\n\r\n    const items = events.reduce((acc, event) => {\r\n        if (event.payload && event.payload.events) {\r\n            return acc.concat(event.payload.events);\r\n        }\r\n        return acc;\r\n    }, []);\r\n\r\n    let weatherItem = items.find(item => item.source === 'weather');\r\n    let xkcdItems = items.filter(item => item.source === 'xkcd');\r\n    let trailerItems = items.filter(item => item.source === 'trailers');\r\n\r\n    // group by\r\n    const feedItems = items.filter(item =>\r\n        item.source !== 'weather' &&\r\n        item.source !== 'xkcd' &&\r\n        item.source !== 'trailers'\r\n    );\r\n\r\n    feedItems.sort((a, b) => new Date(b.date_published) - new Date(a.date_published));\r\n\r\n    const groupedFeeds = {};\r\n    const redditItems = {};\r\n\r\n    feedItems.forEach(item => {\r\n        if (item.source === 'reddit' && item.subreddit) {\r\n            if (!redditItems[item.subreddit]) {\r\n                redditItems[item.subreddit] = [];\r\n            }\r\n            redditItems[item.subreddit].push(item);\r\n            return;\r\n        }\r\n\r\n        if (!groupedFeeds[item.source]) {\r\n            groupedFeeds[item.source] = [];\r\n        }\r\n        groupedFeeds[item.source].push(item);\r\n    });\r\n\r\n    // Helper functions\r\n    function degreesToCardinal(degrees) {\r\n        const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];\r\n        return directions[Math.round(degrees / 45) % 8];\r\n    }\r\n\r\n    function getMoonPhaseDescription(phase) {\r\n        if (phase === 0) return \"New Moon\";\r\n        else if (phase < 0.25) return \"Waxing Crescent\";\r\n        else if (phase === 0.25) return \"First Quarter\";\r\n        else if (phase < 0.5) return \"Waxing Gibbous\";\r\n        else if (phase === 0.5) return \"Full Moon\";\r\n        else if (phase < 0.75) return \"Waning Gibbous\";\r\n        else if (phase === 0.75) return \"Last Quarter\";\r\n        else return \"Waning Crescent\";\r\n    }\r\n\r\n    // Fix XKCD image URLs\r\n    xkcdItems.forEach(comic => {\r\n        if (comic.url && comic.url.startsWith('//')) {\r\n            comic.image = `https:${comic.url}`;\r\n        } else {\r\n            comic.image = comic.url;\r\n        }\r\n    });\r\n\r\n    // Build HTML with dark theme and email-compatible tables\r\n    let html = `\r\n  <!DOCTYPE html>\r\n  <html>\r\n  <head>\r\n    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\r\n    <link href=\"https://fonts.cdnfonts.com/css/cascadia-code\" rel=\"stylesheet\">\r\n  </head>\r\n  <body style=\"font-family: 'Cascadia Code', monospace, sans-serif; margin: 0; padding: 0; background-color: #121212; color: #e0e0e0;\">\r\n    <!-- Main Container -->\r\n    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"background-color: #121212;\">\r\n        <tr>\r\n            <td align=\"center\" valign=\"top\">\r\n                <table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"margin: 20px auto; background-color: #1e1e1e;\">\r\n                    <!-- Header -->\r\n                    <tr>\r\n                        <td style=\"padding: 15px; border-bottom: 1px solid #333333;\">\r\n                            <h1 style=\"font-size: 20px; margin: 0; color: #ffffff;\">Huginn Daily <a href=\"${pageURL}\" style=\"color: #58a6ff; text-decoration: none; font-size: 16px;\">💻</a></h1>\r\n                            <p style=\"font-size: 14px; margin: 5px 0 0; color: #b0b0b0;\">${dateTime}</p>\r\n                            <p style=\"font-size: 14px; margin: 5px 0 0; color: #b0b0b0;\">${uuid}</p>\r\n                        </td>\r\n                    </tr>`;\r\n\r\n    // Weather section\r\n    if (weatherItem) {\r\n        const sunriseDate = new Date(parseInt(weatherItem.sunriseTime) * 1000);\r\n        const sunsetDate = new Date(parseInt(weatherItem.sunsetTime) * 1000);\r\n        const sunriseTime = sunriseDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });\r\n        const sunsetTime = sunsetDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });\r\n        const windDirection = degreesToCardinal(weatherItem.avewind.degrees);\r\n        const moonPhaseDesc = getMoonPhaseDescription(parseFloat(weatherItem.moonPhase));\r\n\r\n        html += `\r\n                    <!-- Weather Card -->\r\n                    <tr>\r\n                        <td style=\"padding: 15px; border-bottom: 1px solid #333333;\">\r\n                            <h2 style=\"font-size: 18px; margin: 0 0 10px 0; color: #ffffff; border-bottom: 2px solid #58a6ff; padding-bottom: 5px;\">Weather</h2>\r\n                            <table width=\"100%\" cellpadding=\"8\" cellspacing=\"0\" border=\"0\" style=\"margin-top: 10px; border-collapse: collapse;\">\r\n                                <tr style=\"background-color: #252525;\">\r\n                                    <th align=\"left\" style=\"padding: 8px; border-bottom: 1px solid #333333; font-weight: bold; color: #ffffff;\">Summary</th>\r\n                                    <td style=\"padding: 8px; border-bottom: 1px solid #333333; color: #e0e0e0;\">${weatherItem.icon || '⛅️'} ${weatherItem.conditions}</td>\r\n                                </tr>\r\n                                <tr style=\"background-color: #2a2a2a;\">\r\n                                    <th align=\"left\" style=\"padding: 8px; border-bottom: 1px solid #333333; font-weight: bold; color: #ffffff;\">Temperature Range</th>\r\n                                    <td style=\"padding: 8px; border-bottom: 1px solid #333333; color: #e0e0e0;\">${weatherItem.low.celsius}°C to ${weatherItem.high.celsius}°C (${weatherItem.low.fahrenheit}°F to ${weatherItem.high.fahrenheit}°F)</td>\r\n                                </tr>\r\n                                <tr style=\"background-color: #252525;\">\r\n                                    <th align=\"left\" style=\"padding: 8px; border-bottom: 1px solid #333333; font-weight: bold; color: #ffffff;\">Feels Like</th>\r\n                                    <td style=\"padding: 8px; border-bottom: 1px solid #333333; color: #e0e0e0;\">Low: ${weatherItem.low.fahrenheit_apparent}°F | High: ${weatherItem.high.fahrenheit_apparent}°F</td>\r\n                                </tr>\r\n                                <tr style=\"background-color: #2a2a2a;\">\r\n                                    <th align=\"left\" style=\"padding: 8px; border-bottom: 1px solid #333333; font-weight: bold; color: #ffffff;\">Humidity</th>\r\n                                    <td style=\"padding: 8px; border-bottom: 1px solid #333333; color: #e0e0e0;\">${weatherItem.avehumidity}%</td>\r\n                                </tr>\r\n                                <tr style=\"background-color: #252525;\">\r\n                                    <th align=\"left\" style=\"padding: 8px; border-bottom: 1px solid #333333; font-weight: bold; color: #ffffff;\">Wind</th>\r\n                                    <td style=\"padding: 8px; border-bottom: 1px solid #333333; color: #e0e0e0;\">${weatherItem.avewind.kph} km/h (${weatherItem.avewind.mph} mph), ${windDirection}</td>\r\n                                </tr>\r\n                                <tr style=\"background-color: #2a2a2a;\">\r\n                                    <th align=\"left\" style=\"padding: 8px; border-bottom: 1px solid #333333; font-weight: bold; color: #ffffff;\">Dew Point</th>\r\n                                    <td style=\"padding: 8px; border-bottom: 1px solid #333333; color: #e0e0e0;\">${weatherItem.dewPoint}°F</td>\r\n                                </tr>\r\n                                <tr style=\"background-color: #252525;\">\r\n                                    <th align=\"left\" style=\"padding: 8px; border-bottom: 1px solid #333333; font-weight: bold; color: #ffffff;\">Cloud Cover</th>\r\n                                    <td style=\"padding: 8px; border-bottom: 1px solid #333333; color: #e0e0e0;\">${(weatherItem.cloudCover * 100).toFixed(0)}%</td>\r\n                                </tr>\r\n                                <tr style=\"background-color: #2a2a2a;\">\r\n                                    <th align=\"left\" style=\"padding: 8px; border-bottom: 1px solid #333333; font-weight: bold; color: #ffffff;\">Pressure</th>\r\n                                    <td style=\"padding: 8px; border-bottom: 1px solid #333333; color: #e0e0e0;\">${weatherItem.pressure} hPa</td>\r\n                                </tr>\r\n                                <tr style=\"background-color: #252525;\">\r\n                                    <th align=\"left\" style=\"padding: 8px; border-bottom: 1px solid #333333; font-weight: bold; color: #ffffff;\">Sunrise/Sunset</th>\r\n                                    <td style=\"padding: 8px; border-bottom: 1px solid #333333; color: #e0e0e0;\">🌅 ${sunriseTime} / 🌇 ${sunsetTime}</td>\r\n                                </tr>\r\n                                <tr style=\"background-color: #2a2a2a;\">\r\n                                    <th align=\"left\" style=\"padding: 8px; font-weight: bold; color: #ffffff;\">Moon Phase</th>\r\n                                    <td style=\"padding: 8px; color: #e0e0e0;\">${moonPhaseDesc} (${(parseFloat(weatherItem.moonPhase) * 100).toFixed(0)}%)</td>\r\n                                </tr>\r\n                            </table>\r\n                        </td>\r\n                    </tr>`;\r\n    }\r\n\r\n    // XKCD section\r\n    if (xkcdItems && xkcdItems.length > 0) {\r\n        html += `\r\n                    <!-- XKCD Card -->\r\n                    <tr>\r\n                        <td style=\"padding: 15px; border-bottom: 1px solid #333333;\">\r\n                            <h2 style=\"font-size: 18px; margin: 0 0 10px 0; color: #ffffff; border-bottom: 2px solid #58a6ff; padding-bottom: 5px;\">XKCD</h2>`;\r\n\r\n        xkcdItems.forEach(comic => {\r\n            html += `\r\n                            <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"margin-bottom: 15px;\">\r\n                                <tr>\r\n                                    <td align=\"center\">\r\n                                        <a href=\"${comic.url}\" style=\"color: #58a6ff; text-decoration: none;\">\r\n                                            <img src=\"${comic.image}\" alt=\"${comic.title}\" width=\"100%\" style=\"max-width: 600px; height: auto; border: 0; display: block;\">\r\n                                        </a>\r\n                                    </td>\r\n                                </tr>\r\n                            </table>`;\r\n        });\r\n\r\n        html += `\r\n                        </td>\r\n                    </tr>`;\r\n    }\r\n\r\n    // Feed items grouped by source\r\n    Object.keys(groupedFeeds).forEach(source => {\r\n        if (groupedFeeds[source].length > 0) {\r\n            const sourceTitle = source.charAt(0).toUpperCase() + source.slice(1);\r\n\r\n            html += `\r\n                    <!-- ${sourceTitle} Card -->\r\n                    <tr>\r\n                        <td style=\"padding: 15px; border-bottom: 1px solid #333333;\">\r\n                            <h2 style=\"font-size: 18px; margin: 0 0 10px 0; color: #ffffff; border-bottom: 2px solid #58a6ff; padding-bottom: 5px;\">${sourceTitle}</h2>\r\n                            <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">`;\r\n\r\n            groupedFeeds[source].forEach(item => {\r\n                html += `\r\n                                <tr>\r\n                                    <td style=\"padding: 8px 0; border-bottom: 1px solid #333333;\">\r\n                                        <a href=\"${item.url}\" style=\"color: #58a6ff; text-decoration: none; font-size: 14px;\">${item.title}</a>\r\n                                    </td>\r\n                                </tr>`;\r\n            });\r\n\r\n            html += `\r\n                            </table>\r\n                        </td>\r\n                    </tr>`;\r\n        }\r\n    });\r\n\r\n    // Reddit items\r\n    if (Object.keys(redditItems).length > 0) {\r\n        html += `\r\n                    <!-- Reddit Card -->\r\n                    <tr>\r\n                        <td style=\"padding: 15px; border-bottom: 1px solid #333333;\">\r\n                            <h2 style=\"font-size: 18px; margin: 0 0 10px 0; color: #ffffff; border-bottom: 2px solid #58a6ff; padding-bottom: 5px;\">Reddit</h2>`;\r\n\r\n        Object.keys(redditItems).forEach(subreddit => {\r\n            html += `\r\n                            <h3 style=\"font-size: 16px; margin: 15px 0 5px 0; color: #58a6ff; text-align: right;\">r/${subreddit}</h3>\r\n                            <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">`;\r\n\r\n            redditItems[subreddit].forEach(item => {\r\n                html += `\r\n                                <tr>\r\n                                    <td style=\"padding: 8px 0; border-bottom: 1px solid #333333;\">\r\n                                        <a href=\"${item.url}\" style=\"color: #58a6ff; text-decoration: none; font-size: 14px;\">${item.title}</a>\r\n                                    </td>\r\n                                </tr>`;\r\n            });\r\n\r\n            html += `\r\n                            </table>`;\r\n        });\r\n\r\n        html += `\r\n                        </td>\r\n                    </tr>`;\r\n    }\r\n\r\n    // Movie trailers section\r\n    if (trailerItems && trailerItems.length > 0) {\r\n        html += `\r\n                    <!-- Trailers Card -->\r\n                    <tr>\r\n                        <td style=\"padding: 15px;\">\r\n                            <h2 style=\"font-size: 18px; margin: 0 0 10px 0; color: #ffffff; border-bottom: 2px solid #58a6ff; padding-bottom: 5px;\">Movie Trailers</h2>\r\n                            <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">`;\r\n\r\n        trailerItems.forEach(trailer => {\r\n            html += `\r\n                                <tr>\r\n                                    <td style=\"padding: 8px 0; border-bottom: 1px solid #333333;\">\r\n                                        <a href=\"${trailer.url}\" style=\"color: #58a6ff; text-decoration: none; font-size: 14px;\">${trailer.title}</a>\r\n                                    </td>\r\n                                </tr>`;\r\n        });\r\n\r\n        html += `\r\n                            </table>\r\n                        </td>\r\n                    </tr>`;\r\n    }\r\n\r\n    // Footer\r\n    html += `\r\n                    <!-- Footer -->\r\n                    <tr>\r\n                        <td style=\"padding: 15px; background-color: #252525; text-align: center; font-size: 12px; color: #b0b0b0;\">\r\n                            Sent via Huginn • ${dateTime}\r\n                        </td>\r\n                    </tr>\r\n                </table>\r\n            </td>\r\n        </tr>\r\n    </table>\r\n  </body>\r\n  </html>`;\r\n\r\n    this.createEvent({\r\n        digest_html: html,\r\n        digest_date: dateTime\r\n    });\r\n};",
+        "expected_receive_period_in_days": "1",
+        "expected_update_period_in_days": "1"
+      },
+      "schedule": "never",
+      "keep_events_for": 2592000,
+      "propagate_immediately": true
+    },
+    {
+      "type": "Agents::JavaScriptAgent",
+      "name": "MorningDigestPageBuilder",
+      "disabled": false,
+      "guid": "5b098b7ff1b09047f65ad0901e39065e",
+      "options": {
+        "language": "JavaScript",
+        "code": "Agent.base64Encode = function (str) {\r\n  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';\r\n  let output = '';\r\n\r\n  for (let i = 0; i < str.length; i += 3) {\r\n    const a = str.charCodeAt(i);\r\n    const b = str.charCodeAt(i + 1);\r\n    const c = str.charCodeAt(i + 2);\r\n\r\n    const enc1 = a >> 2;\r\n    const enc2 = ((a & 3) << 4) | (b >> 4);\r\n    let enc3 = ((b & 15) << 2) | (c >> 6);\r\n    let enc4 = c & 63;\r\n\r\n    if (isNaN(b)) {\r\n      enc3 = enc4 = 64;\r\n    } else if (isNaN(c)) {\r\n      enc4 = 64;\r\n    }\r\n\r\n    output += chars.charAt(enc1) + chars.charAt(enc2) + chars.charAt(enc3) + chars.charAt(enc4);\r\n  }\r\n\r\n  return output;\r\n}\r\n\r\nAgent.generateUUID = function () {\r\n  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {\r\n    const r = Math.random() * 16 | 0;\r\n    const v = c === 'x' ? r : (r & 0x3 | 0x8);\r\n    return v.toString(16);\r\n  });\r\n};\r\n\r\nAgent.receive = function () {\r\n  const events = this.incomingEvents();\r\n  if (!events.length) return;\r\n\r\n  const uuid = this.generateUUID();\r\n  const dateTime = new Date().toLocaleString('en-US', {\r\n    timeZone: 'Europe/Athens',\r\n    weekday: 'long',\r\n    month: 'long',\r\n    day: 'numeric',\r\n    year: 'numeric',\r\n    // hour: '2-digit',\r\n    // minute: '2-digit',\r\n    // second: '2-digit',\r\n    // hour12: false\r\n  });\r\n\r\n  const items = events.reduce((acc, event) => {\r\n    if (event.payload && event.payload.events) {\r\n      return acc.concat(event.payload.events);\r\n    }\r\n    return acc;\r\n  }, []);\r\n\r\n  let weatherItem = items.find(item => item.source === 'weather');\r\n  let xkcdItems = items.filter(item => item.source === 'xkcd');\r\n  let trailerItems = items.filter(item => item.source === 'trailers');\r\n\r\n  // group by\r\n  const feedItems = items.filter(item =>\r\n    item.source !== 'weather' &&\r\n    item.source !== 'xkcd' &&\r\n    item.source !== 'trailers'\r\n  );\r\n\r\n  feedItems.sort((a, b) => new Date(b.date_published) - new Date(a.date_published));\r\n\r\n  const groupedFeeds = {};\r\n  const redditItems = {}; // Separate reddit items\r\n\r\n  feedItems.forEach(item => {\r\n    // Handle Reddit separately\r\n    if (item.source === 'reddit' && item.subreddit) {\r\n      if (!redditItems[item.subreddit]) {\r\n        redditItems[item.subreddit] = [];\r\n      }\r\n      redditItems[item.subreddit].push(item);\r\n      return;\r\n    }\r\n\r\n    // Handle other sources\r\n    if (!groupedFeeds[item.source]) {\r\n      groupedFeeds[item.source] = [];\r\n    }\r\n    groupedFeeds[item.source].push(item);\r\n  });\r\n\r\n  // Build HTML\r\n  let html = `\r\n  <!DOCTYPE html>\r\n  <html lang=\"en\">\r\n  <head>\r\n    <meta charset=\"UTF-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\r\n    <style>\r\n      :root {\r\n        --bg-color: #121212;\r\n        --container-bg: #1e1e1e;\r\n        --text-color: #e0e0e0;\r\n        --heading-color: #ffffff;\r\n        --subheading-color: #58a6ff;\r\n        --link-color: #58a6ff;\r\n        --border-color: #333333;\r\n        --item-hover: #2a2a2a;\r\n        --shadow: 0 4px 12px rgba(0,0,0,0.2);\r\n        --accent-color: #58a6ff;\r\n        --tooltip-bg: #2a2a2a;\r\n        --tooltip-text: #e0e0e0;\r\n        --table-header-bg: #2a2a2a;\r\n        --table-header-text: #ffffff;\r\n        --table-row-odd: #1e1e1e;\r\n        --table-row-even: #252525;\r\n      }\r\n      \r\n      body {\r\n        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;\r\n        line-height: 1.5;\r\n        color: var(--text-color);\r\n        background-color: var(--bg-color);\r\n        margin: 0;\r\n        padding: 0;\r\n      }\r\n      \r\n      .container {\r\n        max-width: 800px;\r\n        margin: 0 auto;\r\n        padding: 15px;\r\n      }\r\n      \r\n      .card {\r\n        background-color: var(--container-bg);\r\n        border-radius: 8px;\r\n        box-shadow: var(--shadow);\r\n        padding: 16px;\r\n        margin-bottom: 16px;\r\n        transition: all 0.2s ease;\r\n      }\r\n      \r\n      .card:hover {\r\n        box-shadow: 0 6px 12px rgba(0,0,0,0.15);\r\n      }\r\n\r\n      .header-p {\r\n        margin: 0.2em 0;\r\n        font-weight: 500;\r\n        letter-spacing: -0.02em;\r\n        font-size: 14px;\r\n      }\r\n\r\n      .subreddit {\r\n        text-align: right;\r\n      }\r\n      \r\n      h2 {\r\n        font-size: 18px;\r\n        font-weight: 600;\r\n        color: var(--heading-color);\r\n        margin-top: 0;\r\n        margin-bottom: 12px;\r\n        padding-bottom: 6px;\r\n        border-bottom: 2px solid var(--accent-color);\r\n      }\r\n      \r\n      h3 {\r\n        font-size: 16px;\r\n        font-weight: 500;\r\n        color: var(--subheading-color);\r\n        margin-bottom: 8px;\r\n      }\r\n      \r\n      a {\r\n        color: var(--link-color);\r\n        text-decoration: none;\r\n        transition: color 0.2s ease;\r\n      }\r\n      \r\n      a:hover {\r\n        color: var(--accent-color);\r\n        text-decoration: underline;\r\n      }\r\n      \r\n      /* Weather Table Styles */\r\n      .weather-table {\r\n        width: 100%;\r\n        border-collapse: collapse;\r\n        margin-top: 10px;\r\n        border-radius: 6px;\r\n        overflow: hidden;\r\n      }\r\n      \r\n      .weather-table th {\r\n        background-color: var(--table-header-bg);\r\n        color: var(--table-header-text);\r\n        font-weight: 500;\r\n        text-align: left;\r\n        padding: 8px 12px;\r\n        font-size: 14px;\r\n      }\r\n      \r\n      .weather-table td {\r\n        padding: 8px 12px;\r\n        border-bottom: 1px solid var(--border-color);\r\n        font-size: 14px;\r\n      }\r\n      \r\n      .weather-table tr:nth-child(odd) {\r\n        background-color: var(--table-row-odd);\r\n      }\r\n      \r\n      .weather-table tr:nth-child(even) {\r\n        background-color: var(--table-row-even);\r\n      }\r\n      \r\n      .weather-table tr:last-child td {\r\n        border-bottom: none;\r\n      }\r\n      \r\n      .comic {\r\n        display: flex;\r\n        flex-direction: column;\r\n        align-items: center;\r\n        margin: 12px 0;\r\n      }\r\n      \r\n      .comic-title {\r\n        font-weight: 600;\r\n        margin-bottom: 8px;\r\n        text-align: center;\r\n        font-size: 15px;\r\n      }\r\n      \r\n      .comic img {\r\n        max-width: 600px;\r\n        max-height: auto;\r\n        object-fit: contain;\r\n        border-radius: 6px;\r\n        margin-bottom: 6px;\r\n        cursor: pointer;\r\n      }\r\n      \r\n      .comic-number {\r\n        font-size: 12px;\r\n        color: var(--text-color);\r\n        opacity: 0.7;\r\n        margin-top: 3px;\r\n      }\r\n      \r\n      .item-list {\r\n        list-style: none;\r\n        padding: 0;\r\n        margin: 0;\r\n      }\r\n      \r\n      .item-list li {\r\n        padding: 8px 10px;\r\n        border-bottom: 1px solid var(--border-color);\r\n        position: relative;\r\n        font-size: 14px;\r\n      }\r\n      \r\n      .item-list li:last-child {\r\n        border-bottom: none;\r\n      }\r\n      \r\n      .item-list li:hover {\r\n        background-color: var(--item-hover);\r\n        border-radius: 4px;\r\n      }\r\n      \r\n      .item-content {\r\n        display: none;\r\n        position: absolute;\r\n        z-index: 10;\r\n        background-color: var(--tooltip-bg);\r\n        color: var(--tooltip-text);\r\n        border-radius: 6px;\r\n        padding: 15px;\r\n        width: 90%;\r\n        max-width: 100%;\r\n        box-shadow: 0 4px 16px rgba(0,0,0,0.3);\r\n        left: 50%;\r\n        transform: translateX(-50%);\r\n        bottom: 100%;\r\n        font-size: 13px;\r\n        line-height: 1.4;\r\n        overflow: auto;\r\n        max-height: 250px;\r\n        border: 4px solid var(--border-color);\r\n      }\r\n\r\n      .item-content::-webkit-scrollbar {\r\n        display: none;\r\n      }\r\n\r\n      .item-list li:hover .item-content {\r\n        display: block;\r\n      }\r\n      \r\n      .item-list li::before {\r\n        content: \"•\";\r\n        color: var(--accent-color);\r\n        font-weight: bold;\r\n        display: inline-block;\r\n        width: 1em;\r\n        margin-left: -0.5em;\r\n      }\r\n      \r\n      @media (max-width: 600px) {\r\n        .container {\r\n          padding: 10px;\r\n        }\r\n        \r\n        .card {\r\n          padding: 12px;\r\n          margin-bottom: 12px;\r\n        }\r\n        \r\n        .item-content {\r\n          width: 95%;\r\n          left: 2.5%;\r\n          transform: none;\r\n        }\r\n      }\r\n    </style>\r\n  </head>\r\n  <body>\r\n    <div class=\"container\">\r\n  `;\r\n\r\n  html += `\r\n      <div class=\"card\">\r\n        <h2>Huginn Daily</h2>\r\n        <p class=\"header-p\">${dateTime}</p>\r\n        <p class=\"header-p\">${uuid}</p>\r\n      </div>\r\n  `;\r\n\r\n  // Weather section with detailed table\r\n  if (weatherItem) {\r\n    // Format sunrise and sunset times\r\n    const sunriseDate = new Date(parseInt(weatherItem.sunriseTime) * 1000);\r\n    const sunsetDate = new Date(parseInt(weatherItem.sunsetTime) * 1000);\r\n    const sunriseTime = sunriseDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });\r\n    const sunsetTime = sunsetDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });\r\n\r\n    // Get moon phase description\r\n    const moonPhase = parseFloat(weatherItem.moonPhase);\r\n    let moonPhaseDesc = \"Unknown\";\r\n    if (moonPhase === 0) moonPhaseDesc = \"New Moon\";\r\n    else if (moonPhase < 0.25) moonPhaseDesc = \"Waxing Crescent\";\r\n    else if (moonPhase === 0.25) moonPhaseDesc = \"First Quarter\";\r\n    else if (moonPhase < 0.5) moonPhaseDesc = \"Waxing Gibbous\";\r\n    else if (moonPhase === 0.5) moonPhaseDesc = \"Full Moon\";\r\n    else if (moonPhase < 0.75) moonPhaseDesc = \"Waning Gibbous\";\r\n    else if (moonPhase === 0.75) moonPhaseDesc = \"Last Quarter\";\r\n    else if (moonPhase < 1) moonPhaseDesc = \"Waning Crescent\";\r\n\r\n    html += `\r\n      <div class=\"card\">\r\n        <h2>Weather</h2>\r\n        <table class=\"weather-table\">\r\n          <tr>\r\n            <th>Summary</th>\r\n            <td>${weatherItem.icon || '⛅️'} ${weatherItem.conditions}</td>\r\n          </tr>\r\n          <tr>\r\n            <th>Temperature Range</th>\r\n            <td>${weatherItem.low.celsius}°C to ${weatherItem.high.celsius}°C (${weatherItem.low.fahrenheit}°F to ${weatherItem.high.fahrenheit}°F)</td>\r\n          </tr>\r\n          <tr>\r\n            <th>Feels Like</th>\r\n            <td>Low: ${weatherItem.low.fahrenheit_apparent}°F | High: ${weatherItem.high.fahrenheit_apparent}°F</td>\r\n          </tr>\r\n          <tr>\r\n            <th>Humidity</th>\r\n            <td>${weatherItem.avehumidity}%</td>\r\n          </tr>\r\n          <tr>\r\n            <th>Wind</th>\r\n            <td>${weatherItem.avewind.kph} km/h (${weatherItem.avewind.mph} mph), Direction: ${weatherItem.avewind.degrees}°</td>\r\n          </tr>\r\n          <tr>\r\n            <th>Precipitation</th>\r\n            <td>Probability: ${weatherItem.precip.probability * 100}%, Type: ${weatherItem.precip.type !== \"none\" ? weatherItem.precip.type : \"No precipitation expected\"}</td>\r\n          </tr>\r\n          <tr>\r\n            <th>Sunrise / Sunset</th>\r\n            <td>🌅 ${sunriseTime} / 🌇 ${sunsetTime}</td>\r\n          </tr>\r\n          <tr>\r\n            <th>Moon Phase</th>\r\n            <td>${moonPhaseDesc} (${(moonPhase * 100).toFixed(0)}%)</td>\r\n          </tr>\r\n          <tr>\r\n            <th>Cloud Cover</th>\r\n            <td>${(parseFloat(weatherItem.cloudCover) * 100).toFixed(0)}%</td>\r\n          </tr>\r\n          <tr>\r\n            <th>Pressure</th>\r\n            <td>${weatherItem.pressure} hPa</td>\r\n          </tr>\r\n          <tr>\r\n            <th>Dew Point</th>\r\n            <td>${weatherItem.dewPoint}°F</td>\r\n          </tr>\r\n          <tr>\r\n            <th>Visibility</th>\r\n            <td>${weatherItem.visibility} miles</td>\r\n          </tr>\r\n        </table>\r\n      </div>\r\n  `;\r\n  }\r\n\r\n  // XKCD section\r\n  if (xkcdItems && xkcdItems.length > 0) {\r\n    html += `\r\n      <div class=\"card\">\r\n        <h2>XKCD</h2>\r\n  `;\r\n    xkcdItems.forEach(comic => {\r\n      html += `\r\n        <div class=\"comic\">\r\n          <a href=\"${comic.url}\" target=\"_blank\">\r\n            <img src=\"${comic.url}\" alt=\"${comic.title}\">\r\n          </a>\r\n        </div>\r\n  `;\r\n    });\r\n\r\n    html += `\r\n      </div>\r\n  `;\r\n  }\r\n\r\n  // Feed items grouped by source (except Reddit)\r\n  Object.keys(groupedFeeds).forEach(source => {\r\n    if (groupedFeeds[source].length > 0) {\r\n      const sourceTitle = source.charAt(0).toUpperCase() + source.slice(1);\r\n      html += `\r\n      <div class=\"card\">\r\n        <h2>${sourceTitle}</h2>\r\n        <ul class=\"item-list\">\r\n  `;\r\n\r\n      groupedFeeds[source].forEach(item => {\r\n        html += `\r\n          <li>\r\n            <a href=\"${item.url}\" target=\"_blank\">${item.title}</a>\r\n            ${item.content ? `<div class=\"item-content\">${item.content}</div>` : ''}\r\n          </li>\r\n  `;\r\n      });\r\n\r\n      html += `\r\n        </ul>\r\n      </div>\r\n  `;\r\n    }\r\n  });\r\n\r\n  // Reddit items (after other feeds)\r\n  if (Object.keys(redditItems).length > 0) {\r\n    html += `\r\n      <div class=\"card\">\r\n        <h2>Reddit</h2>\r\n  `;\r\n\r\n    Object.keys(redditItems).forEach(subreddit => {\r\n      html += `\r\n        <h3 class=\"subreddit\">r/${subreddit}</h3>\r\n        <ul class=\"item-list\">\r\n  `;\r\n\r\n      redditItems[subreddit].forEach(item => {\r\n        html += `\r\n          <li>\r\n            <a href=\"${item.url}\" target=\"_blank\">${item.title}</a>\r\n            ${item.content ? `<div class=\"item-content\">${item.content}</div>` : ''}\r\n          </li>\r\n  `;\r\n      });\r\n\r\n      html += `\r\n        </ul>\r\n  `;\r\n    });\r\n\r\n    html += `\r\n      </div>\r\n  `;\r\n  }\r\n\r\n  // Movie trailers section\r\n  if (trailerItems && trailerItems.length > 0) {\r\n    html += `\r\n      <div class=\"card\">\r\n        <h2>Movie Trailers</h2>\r\n        <ul class=\"item-list\">\r\n  `;\r\n\r\n    trailerItems.forEach(trailer => {\r\n      html += `\r\n          <li>\r\n            <a href=\"${trailer.url}\" target=\"_blank\">${trailer.title}</a>\r\n            ${trailer.content ? `<div class=\"item-content\">${trailer.content}</div>` : ''}\r\n          </li>\r\n  `;\r\n    });\r\n\r\n    html += `\r\n        </ul>\r\n      </div>\r\n  `;\r\n  }\r\n\r\n  // Close HTML tags\r\n  html += `\r\n    </div>\r\n  </body>\r\n  </html>`;\r\n\r\n  this.createEvent({\r\n    digest_html: html,\r\n    digest_html_b64: this.base64Encode(encodeURIComponent(html)),\r\n    digest_date: dateTime\r\n  });\r\n};",
+        "expected_receive_period_in_days": "1",
+        "expected_update_period_in_days": "1"
+      },
+      "schedule": "never",
+      "keep_events_for": 2592000,
+      "propagate_immediately": true
+    },
+    {
+      "type": "Agents::EventFormattingAgent",
+      "name": "WeatherFormatter",
+      "disabled": false,
+      "guid": "968cd2beed3b6fa51fa6fda4b33b1bab",
+      "options": {
+        "instructions": {
+          "source": "weather",
+          "summary": "{{location}}: {{temp}}°F, {{conditions}}",
+          "details": "{{forecast}}",
+          "icon": "{% if conditions contains 'Rain' %}☔️{% else %}⛅️{% endif %}"
+        },
+        "mode": "merge"
+      },
+      "keep_events_for": 2592000,
+      "propagate_immediately": true
+    },
+    {
+      "type": "Agents::EventFormattingAgent",
+      "name": "RssFormatter",
+      "disabled": false,
+      "guid": "986e3548db517692abf7be5c087e62ad",
+      "options": {
+        "instructions": {
+          "content": "{{content | replace: '<img[^>]*>', '' | regex_replace: '(?:<img[^>]*>)', '' }}",
+          "title": "{{title}}",
+          "url": "{{url}}",
+          "source": "{% if url contains 'xkcd.com' %}xkcd{% elsif url contains 'go.dev' %}golang{% elsif url contains 'github.blog' %}github{% elsif url contains 'reddit.com' %}reddit{% else %}other{% endif %}",
+          "subreddit": "{% if url contains 'reddit.com' %}{{url | split: '/' | slice: 4, 1 | first}}{% endif %}",
+          "image": "{{image}}"
+        },
+        "mode": "merge"
+      },
+      "keep_events_for": 2592000,
+      "propagate_immediately": true
+    },
+    {
+      "type": "Agents::PostAgent",
+      "name": "MorningDigestPageRetrieveSHA",
+      "disabled": false,
+      "guid": "b9225fc55d071629c92b5929e2c67b04",
+      "options": {
+        "post_url": "https://api.github.com/repos/hasansino/huginn-digest/contents/index.html",
+        "expected_receive_period_in_days": "1",
+        "content_type": "application/json",
+        "method": "get",
+        "headers": {
+          "Authorization": "Bearer {% credential GH_TOKEN %}"
+        },
+        "payload": {},
+        "emit_events": "true",
+        "no_merge": "true",
+        "output_mode": "merge",
+        "parse_body": true
+      },
+      "schedule": "never",
+      "keep_events_for": 2592000,
+      "propagate_immediately": true
+    },
+    {
+      "type": "Agents::WeatherAgent",
+      "name": "Weather",
+      "disabled": false,
+      "guid": "bdae6dfdf9d01a123ddd513e695fd466",
+      "options": {
+        "location": "34.707130,33.022617",
+        "api_key": "{% credential WEATHER_API_KEY %}",
+        "which_day": 1
+      },
+      "schedule": "6am",
+      "keep_events_for": 2592000
+    },
+    {
+      "type": "Agents::EmailAgent",
+      "name": "MorningDigestMailer",
+      "disabled": false,
+      "guid": "c8372812343d4aba462a2b82f7fe533a",
+      "options": {
+        "expected_receive_period_in_days": 1,
+        "subject": "Daily Digest - {{digest_date}}",
+        "body": "{{digest_html}}",
+        "content_type": "text/html"
+      },
+      "schedule": "never",
+      "propagate_immediately": true
+    },
+    {
+      "type": "Agents::LiquidOutputAgent",
+      "name": "MorningDigestPagePreview",
+      "disabled": false,
+      "guid": "ddb025f54985663d66a283d30e37a6f4",
+      "options": {
+        "secret": "blob",
+        "expected_receive_period_in_days": "1",
+        "content": "{{ digest_html }}\r\n",
+        "line_break_is_lf_radio": "manual",
+        "line_break_is_lf": "",
+        "mime_type": "text/html",
+        "mode": "Last event in",
+        "event_limit": ""
+      },
+      "propagate_immediately": true
+    },
+    {
+      "type": "Agents::RssAgent",
+      "name": "RssCollector",
+      "disabled": false,
+      "guid": "e39bd3ee3568b4641f74d98ca30633eb",
+      "options": {
+        "remembered_id_count": 5000,
+        "max_events_per_run": 100,
+        "expected_update_period_in_days": "1",
+        "clean": "false",
+        "url": [
+          "https://go.dev/blog/feed.atom",
+          "https://www.reddit.com/r/golang.rss",
+          "https://www.reddit.com/r/rust.rss",
+          "https://www.reddit.com/r/rust_gamedev.rss",
+          "https://www.reddit.com/r/gamedev.rss",
+          "https://github.blog/changelog/feed/"
+        ],
+        "events_order": [
+          [
+            "{{date}}",
+            "time"
+          ]
+        ]
+      },
+      "schedule": "6am",
+      "keep_events_for": 2592000
+    },
+    {
+      "type": "Agents::WebsiteAgent",
+      "name": "FilmJabberTrailers",
+      "disabled": false,
+      "guid": "e88caf57d7f1c565d8d4bf5fc04572ec",
+      "options": {
+        "url": "https://www.filmjabber.com/rss/rss-trailers.php",
+        "mode": "on_change",
+        "type": "xml",
+        "expected_update_period_in_days": 5,
+        "extract": {
+          "title": {
+            "xpath": "/rss/channel/item/title",
+            "value": "string(.)"
+          },
+          "url": {
+            "xpath": "/rss/channel/item/link",
+            "value": "string(.)"
+          },
+          "image": {
+            "xpath": "/rss/channel/item/image/link",
+            "value": "string(.)"
+          }
+        },
+        "template": {
+          "source": "trailers"
+        }
+      },
+      "schedule": "6am",
+      "keep_events_for": 2592000,
+      "propagate_immediately": true
+    },
+    {
+      "type": "Agents::EventFormattingAgent",
+      "name": "XKCDFormatter",
+      "disabled": false,
+      "guid": "e9dc129a23e57759681c8000caa8fd68",
+      "options": {
+        "instructions": {
+          "title": "{{title}}",
+          "url": "{{url}}",
+          "image": "{{image}}",
+          "source": "xkcd",
+          "comic_id": "{{url | split: '/' | last | remove: '/'}}"
+        },
+        "mode": "clean"
+      },
+      "keep_events_for": 2592000,
+      "propagate_immediately": true
+    },
+    {
+      "type": "Agents::DigestAgent",
+      "name": "MorningDigest",
+      "disabled": false,
+      "guid": "ff70fef6388c0d7628d1037df659c781",
+      "options": {
+        "message": "{{ events | jsonify }}",
+        "expected_receive_period_in_days": "1",
+        "retained_events": "0"
+      },
+      "schedule": "never",
+      "keep_events_for": 2592000,
+      "propagate_immediately": true
+    }
+  ],
+  "links": [
+    {
+      "source": 3,
+      "receiver": 14
+    },
+    {
+      "source": 4,
+      "receiver": 10
+    },
+    {
+      "source": 5,
+      "receiver": 11
+    },
+    {
+      "source": 5,
+      "receiver": 8
+    },
+    {
+      "source": 6,
+      "receiver": 15
+    },
+    {
+      "source": 7,
+      "receiver": 15
+    },
+    {
+      "source": 8,
+      "receiver": 1
+    },
+    {
+      "source": 9,
+      "receiver": 6
+    },
+    {
+      "source": 12,
+      "receiver": 7
+    },
+    {
+      "source": 13,
+      "receiver": 15
+    },
+    {
+      "source": 14,
+      "receiver": 15
+    },
+    {
+      "source": 15,
+      "receiver": 4
+    },
+    {
+      "source": 15,
+      "receiver": 5
+    }
+  ],
+  "control_links": [
+    {
+      "controller": 0,
+      "control_target": 4
+    },
+    {
+      "controller": 0,
+      "control_target": 5
+    },
+    {
+      "controller": 2,
+      "control_target": 15
+    }
+  ]
+}
