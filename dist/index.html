@@ -240,8 +240,8 @@
   
       <div class="card">
         <h2>Huginn Daily</h2>
-        <p class="header-p">Tuesday, June 3, 2025</p>
-        <p class="header-p">5478c25e-06b6-4577-9fc9-21c0ca26a0be</p>
+        <p class="header-p">Wednesday, June 4, 2025</p>
+        <p class="header-p">d4366cee-dddd-4561-87e8-ff272074d10b</p>
       </div>
   
       <div class="card">
@@ -249,23 +249,23 @@
         <table class="weather-table">
           <tr>
             <th>Summary</th>
-            <td>⛅️ Mostly clear.</td>
+            <td>⛅️ Clear.</td>
           </tr>
           <tr>
             <th>Temperature Range</th>
-            <td>17°C to 27°C (63°F to 80°F)</td>
+            <td>20°C to 31°C (67°F to 87°F)</td>
           </tr>
           <tr>
             <th>Feels Like</th>
-            <td>Low: 59°F | High: 75°F</td>
+            <td>Low: 62°F | High: 79°F</td>
           </tr>
           <tr>
             <th>Humidity</th>
-            <td>49%</td>
+            <td>31%</td>
           </tr>
           <tr>
             <th>Wind</th>
-            <td>12 km/h (7 mph), Direction: 169.09°</td>
+            <td>12 km/h (8 mph), Direction: 226.59°</td>
           </tr>
           <tr>
             <th>Precipitation</th>
@@ -273,23 +273,23 @@
           </tr>
           <tr>
             <th>Sunrise / Sunset</th>
-            <td>🌅 05:35 AM / 🌇 07:56 PM</td>
+            <td>🌅 05:35 AM / 🌇 07:57 PM</td>
           </tr>
           <tr>
             <th>Moon Phase</th>
-            <td>Waxing Gibbous (26%)</td>
+            <td>Waxing Gibbous (29%)</td>
           </tr>
           <tr>
             <th>Cloud Cover</th>
-            <td>16%</td>
+            <td>0%</td>
           </tr>
           <tr>
             <th>Pressure</th>
-            <td>1014.53 hPa</td>
+            <td>1013.24 hPa</td>
           </tr>
           <tr>
             <th>Dew Point</th>
-            <td>51.22°F</td>
+            <td>42.78°F</td>
           </tr>
           <tr>
             <th>Visibility</th>
@@ -299,220 +299,1232 @@
       </div>
   
       <div class="card">
-        <h2>XKCD</h2>
+        <h2>Golang</h2>
+        <ul class="item-list">
   
-        <div class="comic">
-          <a href="//imgs.xkcd.com/comics/bridge_types.png" target="_blank">
-            <img src="//imgs.xkcd.com/comics/bridge_types.png" alt="Bridge Types">
-          </a>
-        </div>
+          <li>
+            <a href="https://go.dev/blog/error-syntax" target="_blank">[ On | No ] syntactic support for error handling</a>
+            <div class="item-content">
+<div id="blog"><div id="content">
+  <div id="content">
+
+    <div class="Article" data-slug="/blog/error-syntax">
+    
+    <h1 class="small"><a href="/blog/">The Go Blog</a></h1>
+    
+
+    <h1>[ On | No ] syntactic support for error handling</h1>
+      
+      <p class="author">
+      Robert Griesemer<br>
+      3 June 2025
+      </p>
+      
+      <p>One of the oldest and most persistent complaints about Go concerns the verbosity of error handling.
+We are all intimately (some may say painfully) familiar with this code pattern:</p>
+<pre><code class="language-Go">x, err := call()
+if err != nil {
+        // handle err
+}
+</code></pre>
+<p>The test <code>if err != nil</code> can be so pervasive that it drowns out the rest of the code.
+This typically happens in programs that do a lot of API calls, and where handling errors
+is rudimentary and they are simply returned.
+Some programs end up with code that looks like this:</p>
+<pre><code class="language-Go">func printSum(a, b string) error {
+    x, err := strconv.Atoi(a)
+    if err != nil {
+        return err
+    }
+    y, err := strconv.Atoi(b)
+    if err != nil {
+        return err
+    }
+    fmt.Println(&quot;result:&quot;, x + y)
+    return nil
+}
+</code></pre>
+<p>Of the ten lines of code in this function body, only four (the calls and the last two lines) appear to do real work.
+The remaining six lines come across as noise.
+The verbosity is real, and so it&rsquo;s no wonder that complaints about error handling have topped
+our annual user surveys for years.
+(For a while, the lack of generics surpassed complaints about error handling, but now that
+Go supports generics, error handling is back on top.)</p>
+<p>The Go team takes community feedback seriously, and so for many years now we have tried to
+come up with a solution for this problem, together with input from the Go community.</p>
+<p>The first explicit attempt by the Go team dates back to 2018, when Russ Cox
+<a href="https://go.googlesource.com/proposal/+/master/design/go2draft-error-handling-overview.md" rel="noreferrer" target="_blank">formally described the problem</a>
+as part of what we called the Go 2 effort at that time.
+He outlined a possible solution based on a
+<a href="https://go.googlesource.com/proposal/+/master/design/go2draft-error-handling.md" rel="noreferrer" target="_blank">draft design</a>
+by Marcel van Lohuizen.
+The design was based on a <code>check</code> and <code>handle</code> mechanism and was fairly comprehensive.
+The draft includes a detailed analysis of alternative solutions, including comparisons with
+approaches taken by other languages.
+If you&rsquo;re wondering if your particular error handling idea was previously considered,
+read this document!</p>
+<pre><code class="language-Go">// printSum implementation using the proposed check/handle mechanism.
+func printSum(a, b string) error {
+    handle err { return err }
+    x := check strconv.Atoi(a)
+    y := check strconv.Atoi(b)
+    fmt.Println(&quot;result:&quot;, x + y)
+    return nil
+}
+</code></pre>
+<p>The <code>check</code> and <code>handle</code> approach was deemed too complicated and almost a year later, in 2019,
+we followed up with the much simplified and by now
+<a href="/issue/32437#issuecomment-2278932700">infamous</a>
+<a href="https://go.googlesource.com/proposal/+/master/design/32437-try-builtin.md" rel="noreferrer" target="_blank"><code>try</code> proposal</a>.
+It was based on the ideas of <code>check</code> and <code>handle</code>, but the <code>check</code> pseudo-keyword became
+the <code>try</code> built-in function and the <code>handle</code> part was omitted.
+To explore the impact of the <code>try</code> built-in, we wrote a simple tool
+(<a href="https://github.com/griesemer/tryhard" rel="noreferrer" target="_blank">tryhard</a>)
+that rewrites existing error handling code using <code>try</code>.
+The proposal was argued over intensively, approaching 900 comments on the <a href="/issue/32437">GitHub issue</a>.</p>
+<pre><code class="language-Go">// printSum implementation using the proposed try mechanism.
+func printSum(a, b string) error {
+    // use a defer statement to augment errors before returning
+    x := try(strconv.Atoi(a))
+    y := try(strconv.Atoi(b))
+    fmt.Println(&quot;result:&quot;, x + y)
+    return nil
+}
+</code></pre>
+<p>However, <code>try</code> affected control flow by returning from the enclosing function in case of an error,
+and did so from potentially deeply nested expressions, thus hiding this control flow from view.
+This made the proposal unpalatable to many, and despite significant investment
+into this proposal we decided to abandon this effort too.
+In retrospect it might have been better to introduce a new keyword,
+something that we could do now since we have fine-grained control over the language version
+via <code>go.mod</code> files and file-specific directives.
+Restricting the use of <code>try</code> to assignments and statements might have alleviated some
+of the other concerns. A <a href="/issue/73376">recent proposal</a> by Jimmy Frasche, which essentially
+goes back to the original <code>check</code> and <code>handle</code> design and addresses some of that design&rsquo;s
+shortcomings, pursues that direction.</p>
+<p>The repercussions of the <code>try</code> proposal led to much soul searching including a series of blog
+posts by Russ Cox: <a href="https://research.swtch.com/proposals-intro" rel="noreferrer" target="_blank">&ldquo;Thinking about the Go Proposal Process&rdquo;</a>.
+One conclusion was that we likely diminished our chances for a better outcome by presenting an almost
+fully baked proposal with little space for community feedback and a &ldquo;threatening&rdquo; implementation
+timeline. Per <a href="https://research.swtch.com/proposals-large" rel="noreferrer" target="_blank">&ldquo;Go Proposal Process: Large Changes&rdquo;</a>:
+&ldquo;in retrospect, <code>try</code> was a large enough change that the new design we published [&hellip;] should have
+been a second draft design, not a proposal with an implementation timeline&rdquo;.
+But irrespective of a possible process and communication failure in this case, the user sentiment towards
+the proposal was very strongly not in favor.</p>
+<p>We didn&rsquo;t have a better solution at that time and didn&rsquo;t pursue syntax changes for error handling for several years.
+Plenty of people in the community were inspired, though, and we received a steady trickle
+of error handling proposals, many very similar to each other, some interesting, some incomprehensible,
+and some infeasible.
+To keep track of the expanding landscape, another year later, Ian Lance Taylor created an
+<a href="/issue/40432">umbrella issue</a>
+which summarizes the current state of proposed changes for improved error handling.
+A <a href="/wiki/Go2ErrorHandlingFeedback">Go Wiki</a> was created to collect related feedback, discussions, and articles.
+Independently, other people have started tracking all the many error handling proposals
+over the years.
+It&rsquo;s amazing to see the sheer volume of them all, for instance in Sean K. H. Liao&rsquo;s blog post on
+<a href="https://seankhliao.com/blog/12020-11-23-go-error-handling-proposals/" rel="noreferrer" target="_blank">&ldquo;go error handling proposals&rdquo;</a>.</p>
+<p>The complaints about the verbosity of error handling persisted
+(see <a href="/blog/survey2024-h1-results">Go Developer Survey 2024 H1 Results</a>),
+and so, after a series of increasingly refined Go team internal proposals, Ian Lance Taylor published
+<a href="/issue/71203">&ldquo;reduce error handling boilerplate using <code>?</code>&rdquo;</a> in 2024.
+This time the idea was to borrow from a construct implemented in
+<a href="https://www.rust-lang.org/" rel="noreferrer" target="_blank">Rust</a>, specifically the
+<a href="https://doc.rust-lang.org/std/result/index.html#the-question-mark-operator-" rel="noreferrer" target="_blank"><code>?</code> operator</a>.
+The hope was that by leaning on an existing mechanism using an established notation, and taking into
+account what we had learned over the years, we should be able to finally make some progress.
+In small informal user studies where programmers were shown Go code using <code>?</code>, the vast majority
+of participants correctly guessed the meaning of the code, which further convinced us to give it another
+shot.
+To be able to see the impact of the change, Ian wrote a tool that converts ordinary Go code
+into code that uses the proposed new syntax, and we also prototyped the feature in the
+compiler.</p>
+<pre><code class="language-Go">// printSum implementation using the proposed &quot;?&quot; statements.
+func printSum(a, b string) error {
+    x := strconv.Atoi(a) ?
+    y := strconv.Atoi(b) ?
+    fmt.Println(&quot;result:&quot;, x + y)
+    return nil
+}
+</code></pre>
+<p>Unfortunately, as with the other error handling ideas, this new proposal was also quickly overrun
+with comments and many suggestions for minor tweaks, often based on individual preferences.
+Ian closed the proposal and moved the content into a <a href="/issue/71460">discussion</a>
+to facilitate the conversation and to collect further feedback.
+A slightly modified version was received
+<a href="https://github.com/golang/go/discussions/71460#discussioncomment-12060294" rel="noreferrer" target="_blank">a bit more positively</a>
+but broad support remained elusive.</p>
+<p>After so many years of trying, with three full-fledged proposals by the Go team and
+literally <a href="/issues?q=+is%3Aissue+label%3Aerror-handling">hundreds</a> (!)
+of community proposals, most of them variations on a theme,
+all of which failed to attract sufficient (let alone overwhelming) support,
+the question we now face is: how to proceed? Should we proceed at all?</p>
+<p><em>We think not.</em></p>
+<p>To be more precise, we should stop trying to solve the <em>syntactic problem</em>, at least for the foreseeable
+future.
+The <a href="https://github.com/golang/proposal?tab=readme-ov-file#consensus-and-disagreement" rel="noreferrer" target="_blank">proposal process</a>
+provides justification for this decision:</p>
+<blockquote>
+<p>The goal of the proposal process is to reach general consensus about the outcome in a timely manner.
+If proposal review cannot identify a general consensus in the discussion of the issue on the issue tracker,
+the usual result is that the proposal is declined.</p>
+</blockquote>
+<p>Furthermore:</p>
+<blockquote>
+<p>It can happen that proposal review may not identify a general consensus and yet it is clear that the
+proposal should not be outright declined.
+[&hellip;]
+If the proposal review group cannot identify a consensus nor a next step for the proposal,
+the decision about the path forward passes to the Go architects [&hellip;], who review the discussion and
+aim to reach a consensus among themselves.</p>
+</blockquote>
+<p>None of the error handling proposals reached anything close to a consensus,
+so they were all declined.
+Even the most senior members of the Go team at Google do not unanimously agree
+on the best path forward <em>at this time</em> (perhaps that will change at some point).
+But without a strong consensus we cannot reasonably move forward.</p>
+<p>There are valid arguments in favor of the status quo:</p>
+<ul>
+<li>
+<p>If Go had introduced specific syntactic sugar for error handling early on, few would argue over it today.
+But we are 15 years down the road, the opportunity has passed, and Go has
+a perfectly fine way to handle errors, even if it may seem verbose at times.</p>
+</li>
+<li>
+<p>Looking from a different angle, let&rsquo;s assume we came across the perfect solution today.
+Incorporating it into the language would simply lead from one unhappy group of users
+(the one that roots for the change) to another (the one that prefers the status quo).
+We were in a similar situation when we decided to add generics to the language, albeit with an
+important difference:
+today nobody is forced to use generics, and good generic libraries are written such that users
+can mostly ignore the fact that they are generic, thanks to type inference.
+On the contrary, if a new syntactic construct for error handling gets added to the language,
+virtually everybody will need to start using it, lest their code become unidiomatic.</p>
+</li>
+<li>
+<p>Not adding extra syntax is in line with one of Go&rsquo;s design rules:
+do not provide multiple ways of doing the same thing.
+There are exceptions to this rule in areas with high &ldquo;foot traffic&rdquo;: assignments come to mind.
+Ironically, the ability to <em>redeclare</em> a variable in
+<a href="/ref/spec#Short_variable_declarations">short variable declarations</a> (<code>:=</code>) was introduced to address a problem
+that arose because of error handling:
+without redeclarations, sequences of error checks require a differently named <code>err</code> variable for
+each check (or additional separate variable declarations).
+At that time, a better solution might have been to provide more syntactic support for error handling.
+Then, the redeclaration rule may not have been needed, and with it gone, so would be various
+associated <a href="/issue/377">complications</a>.</p>
+</li>
+<li>
+<p>Going back to actual error handling code, verbosity fades into the background if errors are
+actually <em>handled</em>.
+Good error handling often requires additional information added to an error.
+For instance, a recurring comment in user surveys is about the lack of stack traces associated
+with an error.
+This could be addressed with support functions that produce and return an augmented
+error.
+In this (admittedly contrived) example, the relative amount of boilerplate is much smaller:</p>
+<pre><code class="language-Go">func printSum(a, b string) error {
+    x, err := strconv.Atoi(a)
+    if err != nil {
+        return fmt.Errorf(&quot;invalid integer: %q&quot;, a)
+    }
+    y, err := strconv.Atoi(b)
+    if err != nil {
+        return fmt.Errorf(&quot;invalid integer: %q&quot;, b)
+    }
+    fmt.Println(&quot;result:&quot;, x + y)
+    return nil
+}
+</code></pre>
+</li>
+<li>
+<p>New standard library functionality can help reduce error handling boilerplate as well,
+very much in the vein of Rob Pike&rsquo;s 2015 blog post
+<a href="/blog/errors-are-values">&ldquo;Errors are values&rdquo;</a>.
+For instance, in some cases <a href="/pkg/cmp#Or"><code>cmp.Or</code></a> may be used to deal with a
+series of errors all at once:</p>
+<pre><code class="language-Go">func printSum(a, b string) error {
+    x, err1 := strconv.Atoi(a)
+    y, err2 := strconv.Atoi(b)
+    if err := cmp.Or(err1, err2); err != nil {
+        return err
+    }
+    fmt.Println(&quot;result:&quot;, x+y)
+    return nil
+}
+</code></pre>
+</li>
+<li>
+<p>Writing, reading, and debugging code are all quite different activities.
+Writing repeated error checks can be tedious, but today&rsquo;s IDEs provide powerful, even LLM-assisted
+code completion.
+Writing basic error checks is straightforward for these tools.
+The verbosity is most obvious when reading code, but tools might help here as well;
+for instance an IDE with a Go language setting could provide a toggle switch to hide error handling
+code.
+Such switches already exist for other code sections such as function bodies.</p>
+</li>
+<li>
+<p>When debugging error handling code, being able to quickly add a <code>println</code> or
+have a dedicated line or source location for setting a breakpoint in a debugger is helpful.
+This is easy when there is already a dedicated <code>if</code> statement.
+But if all the error handling logic is hidden behind a <code>check</code>, <code>try</code>, or <code>?</code>, the code may have to
+be changed into an ordinary <code>if</code> statement first, which complicates debugging
+and may even introduce subtle bugs.</p>
+</li>
+<li>
+<p>There are also practical considerations:
+Coming up with a new syntax idea for error handling is cheap;
+hence the proliferation of a multitude of proposals from the community.
+Coming up with a good solution that holds up to scrutiny: not so much.
+It takes a concerted effort to properly design a language change and to actually implement it.
+The real cost still comes afterwards:
+all the code that needs to be changed, the documentation that needs to be updated,
+the tools that need to be adjusted.
+Taken all into account, language changes are very expensive, the Go team is relatively small,
+and there are a lot of other priorities to address.
+(These latter points may change: priorities can shift, team sizes can go up or down.)</p>
+</li>
+<li>
+<p>On a final note, some of us recently had the opportunity to attend
+<a href="https://cloud.withgoogle.com/next/25" rel="noreferrer" target="_blank">Google Cloud Next 2025</a>,
+where the Go team had a booth and where we also hosted a small Go Meetup.
+Every single Go user we had a chance to ask was adamant that we should not change the
+language for better error handling.
+Many mentioned that the lack of specific error handling support in Go is most apparent
+when coming freshly from another language that has that support.
+As one becomes more fluent and writes more idiomatic Go code, the issue becomes much less important.
+This is of course not a sufficiently large set of people to be representative,
+but it may be a different set of people than we see on GitHub, and their feedback serves as yet another data point.</p>
+</li>
+</ul>
+<p>Of course, there are also valid arguments in favor of change:</p>
+<ul>
+<li>
+<p>Lack of better error handling support remains the top complaint in our user surveys.
+If the Go team really does take user feedback seriously, we ought to do something about this eventually.
+(Although there does not seem to be
+<a href="https://github.com/golang/go/discussions/71460#discussioncomment-11977299" rel="noreferrer" target="_blank">overwhelming support</a>
+for a language change either.)</p>
+</li>
+<li>
+<p>Perhaps the singular focus on reducing the character count is misguided.
+A better approach might be to make default error handling highly visible with a keyword
+while still removing boilerplate (<code>err != nil</code>).
+Such an approach might make it easier for a reader (a code reviewer!) to see that an error
+is handled, without &ldquo;looking twice&rdquo;, resulting in improved code quality and safety.
+This would bring us back to the beginnings of <code>check</code> and <code>handle</code>.</p>
+</li>
+<li>
+<p>We don&rsquo;t really know how much the issue is the straightforward syntactic verbosity of
+error checking, versus the verbosity of good error handling:
+constructing errors that are a useful part of an API and meaningful to developers and
+end-users alike.
+This is something we&rsquo;d like to study in greater depth.</p>
+</li>
+</ul>
+<p>Still, no attempt to address error handling so far has gained sufficient traction.
+If we are honestly taking stock of where we are, we can only admit that we
+neither have a shared understanding of the problem,
+nor do we all agree that there is a problem in the first place.
+With this in mind, we are making the following pragmatic decision:</p>
+<p><em>For the foreseeable future, the Go team will stop pursuing syntactic language changes
+for error handling.
+We will also close all open and incoming proposals that concern themselves primarily
+with the syntax of error handling, without further investigation.</em></p>
+<p>The community has put tremendous effort into exploring, discussing, and debating these issues.
+While this may not have resulted in any changes to error handling syntax, these efforts have
+resulted in many other improvements to the Go language and our processes.
+Maybe, at some point in the future, a clearer picture will emerge on error handling.
+Until then, we look forward to focusing this incredible passion on new opportunities
+to make Go better for everyone.</p>
+<p>Thank you!</p>
+
+    </div>
+
+    
+    <div class="Article prevnext">
+    
+    
+      
+        <p>
+        
+        
+          
+            <b>Previous article: </b><a href="/blog/tob-crypto-audit">Go Cryptography Security Audit</a><br>
+          
+        
+        <b><a href="/blog/all">Blog Index</a></b>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    </div>
+    
+
+  </div>
+</div>
+
+<script src="/js/play.js"></script>
+
+</div>
+          </li>
   
+        </ul>
       </div>
   
       <div class="card">
         <h2>Reddit</h2>
   
-        <h3 class="subreddit">r/golang</h3>
-        <ul class="item-list">
-  
-          <li>
-            <a href="https://www.reddit.com/r/golang/comments/1l1zq7e/nextjsgofiber_template/" target="_blank">NextJsGoFiber Template</a>
-            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/golang/comments/1l1zq7e/nextjsgofiber_template/">  </a> </td><td> <!-- SC_OFF --><div class="md"><p>Hey, If anyone is interested in deploying on <strong>Vercel</strong> with <strong>GoFiber</strong> on the backend and a <strong>NextJs</strong> frontend I created a simple template with you in mind. I have benefited greatly from templates and the open source community. This is a small way of me paying it forward 😊!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Personal_Account6886"> /u/Personal_Account6886 </a> <br/> <span><a href="https://github.com/inagib21/nextjs-fiber-template">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1l1zq7e/nextjsgofiber_template/">[comments]</a></span> </td></tr></table></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/golang/comments/1l1yn65/abstract_data_type/" target="_blank">Abstract Data type</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>What I wouldn&#39;t give for Go to have an Abstract Data Type.</p> <p>For those not familiar, an ADT is just an interface with the ability to define what types can be associated with it.</p> <p>eg. ``` // Our current interfaces. type Foo interface { Bar (input) output Baz (input) output, error }</p> <p>// ADTs type Foo ADT { Stuff []int Bar (input) output Baz (input) output, error } ```</p> <p><a href="https://www.geeksforgeeks.org/abstract-data-types/">Geeks For Geeks</a> lists the following pros/cons for ADT use</p> <blockquote> <p>Advantages and Disadvantages of ADT Abstract data types (ADTs) have several advantages and disadvantages that should be considered when deciding to use them in software development. Here are some of the main advantages and disadvantages of using ADTs:</p> <p>Advantage:</p> <p>The advantages are listed below:</p> <p>Encapsulation: ADTs provide a way to encapsulate data and operations into a single unit, making it easier to manage and modify the data structure. Abstraction: ADTs allow users to work with data structures without having to know the implementation details, which can simplify programming and reduce errors. Data Structure Independence: ADTs can be implemented using different data structures, which can make it easier to adapt to changing needs and requirements. Information Hiding: ADTs can protect the integrity of data by controlling access and preventing unauthorized modifications. Modularity: ADTs can be combined with other ADTs to form more complex data structures, which can increase flexibility and modularity in programming. Disadvantages:</p> <p>The disadvantages are listed below:</p> <p>Overhead: Implementing ADTs can add overhead in terms of memory and processing, which can affect performance. Complexity: ADTs can be complex to implement, especially for large and complex data structures. Learning Curve: Using ADTs requires knowledge of their implementation and usage, which can take time and effort to learn. Limited Flexibility: Some ADTs may be limited in their functionality or may not be suitable for all types of data structures. Cost: Implementing ADTs may require additional resources and investment, which can increase the cost of development.</p> </blockquote> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/gnu_morning_wood"> /u/gnu_morning_wood </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1l1yn65/abstract_data_type/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1l1yn65/abstract_data_type/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/golang/comments/1l1xce9/architectural_help_third_party_k8s_api_resource/" target="_blank">Architectural help, third party K8s API resource definitions as Go dependencies</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;m an OOP application dev (.NET, Java) who recently made a switch to a more platform/Kubernetes-heavy role. I&#39;m in the process of learning the ins and outs of developing Go applications in a Kubernetes environment.</p> <p>I&#39;ve got a Go application that needs to render a variety of K8s resources as YAML. Those resource definitions are not owned or defined by me. (Think ArgoCD CRDs for <code>ApplicationSet</code> and that sort of thing.) They need to be written as YAML so they can be committed to a GitOps repository.</p> <p>I would prefer NOT to render those resources manually via string manipulation, or even via <code>yaml.Marshal(map[string]interface{})</code>, because I would prefer to have a high level of confidence that the generated YAML conforms to the expected resource spec.</p> <p>In the .NET and Java worlds, I normally would look for a published package that ONLY contains the API resource definitions so I could use those for easy serialization. In the Go world I&#39;m having difficulty.</p> <p>One example: I can <em>technically</em> pull the relevant ArgoCD structs by importing their module <code>github.com/argoproj/argo-cd/v3</code>, because it <em>does</em> contain <a href="https://github.com/argoproj/argo-cd/blob/master/pkg/apis/application/v1alpha1/applicationset_types.go">the struct definitions</a> I need. But it really feels ugly to import an entire application, along with all of <em>its</em> dependencies, just to get a few types out of it. And once I add another resource from another operator, I&#39;ve now got to manage transitive dependency conflicts between all these operators I&#39;ve imported.</p> <p>Is this just a normal problem I need to learn to live with in Go, or is there a better way I haven&#39;t considered?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/gmaxter"> /u/gmaxter </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1l1xce9/architectural_help_third_party_k8s_api_resource/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1l1xce9/architectural_help_third_party_k8s_api_resource/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/golang/comments/1l1n39s/subtleconstanttimecompare_vs_timing_attacks/" target="_blank">subtle.ConstantTimeCompare() VS Timing Attacks?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>From what I gather, <code>subtle.ConstantTimeCompare()</code> does not fully protect against timing attacks since if one hash is a different length, it will return early and therefore being exposed to timing attacks.</p> <p>Is this still the case with modern versions of Go or is there a better method to use to prevent all kinds of timing attacks, or is there a way to enhance this code to make it protected against timing attacks including if one of the hashes are a different length?</p> <p>``` func main() { myHash := sha512.New()</p> <pre><code>myHash.Write([]byte(password)) hashBytes := myHash.Sum(nil) hashInput := hex.EncodeToString(hashBytes) if subtle.ConstantTimeCompare([]byte(hashDB), []byte(hashInput)) == 1 { fmt.Println(&quot;Valid&quot;) } else { fmt.Println(&quot;Invalid&quot;) } </code></pre> <p>} ```</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/trymeouteh"> /u/trymeouteh </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1l1n39s/subtleconstanttimecompare_vs_timing_attacks/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1l1n39s/subtleconstanttimecompare_vs_timing_attacks/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/golang/comments/1l1mpj3/introducing_gauntlet_language_the_answer_to_gos/" target="_blank">Introducing Gauntlet Language: The Answer to Go’s Most Frustrating Design Choices</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><h1>What is Gauntlet?</h1> <p>Gauntlet is a programming language designed to tackle Golang&#39;s frustrating design choices. It transpiles exclusively to Go, fully supports all of its features, and integrates seamlessly with its entire ecosystem — without the need for bindings.</p> <h1>What Go issues does Gauntlet fix?</h1> <ul> <li>Annoying &quot;unused variable&quot; error</li> <li>Verbose error handling (if err ≠ nil everywhere in your code)</li> <li>Annoying way to import and export (e.g. capitalizing letters to export)</li> <li>Lack of ternary operator</li> <li>Lack of expressional switch-case construct</li> <li>Complicated for-loops</li> <li>Weird assignment operator (whose idea was it to use :=)</li> <li>No way to fluently pipe functions</li> </ul> <h1>Language features</h1> <ul> <li>Transpiles to maintainable, easy-to-read Golang</li> <li>Shares exact conventions/idioms with Go. Virtually no learning curve.</li> <li>Consistent and familiar syntax</li> <li>Near-instant conversion to Go</li> <li>Easy install with a singular self-contained executable</li> <li>Beautiful syntax highlighting on Visual Studio Code</li> </ul> <h1>Sample</h1> <pre><code>package main // Seamless interop with the entire golang ecosystem import &quot;fmt&quot; as fmt import &quot;os&quot; as os import &quot;strings&quot; as strings import &quot;strconv&quot; as strconv // Explicit export keyword export fun ([]String, Error) getTrimmedFileLines(String fileName) { // try-with syntax replaces verbose `err != nil` error handling let fileContent, err = try os.readFile(fileName) with (null, err) // Type conversion let fileContentStrVersion = (String)(fileContent) let trimmedLines = // Pipes feed output of last function into next one fileContentStrVersion =&gt; strings.trimSpace(_) =&gt; strings.split(_, &quot;\n&quot;) // `nil` is equal to `null` in Gauntlet return (trimmedLines, null) } fun Unit main() { // No &#39;unused variable&#39; errors let a = 1 // force-with syntax will panic if err != nil let lines, err = force getTrimmedFileLines(&quot;example.txt&quot;) with err // Ternary operator let properWord = @String len(lines) &gt; 1 ? &quot;lines&quot; : &quot;line&quot; let stringLength = lines =&gt; len(_) =&gt; strconv.itoa(_) fmt.println(&quot;There are &quot; + stringLength + &quot; &quot; + properWord + &quot;.&quot;) fmt.println(&quot;Here they are:&quot;) // Simplified for-loops for let i, line in lines { fmt.println(&quot;Line &quot; + strconv.itoa(i + 1) + &quot; is:&quot;) fmt.println(line) } } </code></pre> <h1>Links</h1> <p><strong>Documentation:</strong> <a href="https://gauntletlang.gitbook.io/docs">here</a></p> <p><strong>Discord Server:</strong> <a href="https://discord.gg/eK3zJYrN58">here</a></p> <p><strong>GitHub:</strong> <a href="https://github.com/gauntlet-lang/gauntlet">here</a></p> <p><strong>VSCode extension:</strong> <a href="https://marketplace.visualstudio.com/items?itemName=GauntletProgrammingLanguage.gauntlet-language">here</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/TricolorHen061"> /u/TricolorHen061 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1l1mpj3/introducing_gauntlet_language_the_answer_to_gos/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1l1mpj3/introducing_gauntlet_language_the_answer_to_gos/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/golang/comments/1l1mbd5/a_program_for_finding_duplicate_images/" target="_blank">A Program for Finding Duplicate Images</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi all. I&#39;m in between work at the moment and wanted to practice some skills so I wrote this. It&#39;s a cli and module called <strong>dedupe</strong> for detecting duplicate images using perceptual hashes and a search tree in pure Go. If you&#39;re interested please check it out. I&#39;d love any feedback.</p> <p><a href="https://github.com/alexgQQ/dedupe">https://github.com/alexgQQ/dedupe</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/PocketBananna"> /u/PocketBananna </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1l1mbd5/a_program_for_finding_duplicate_images/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1l1mbd5/a_program_for_finding_duplicate_images/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/golang/comments/1l1krcs/after_first_call_to_windows_api_and_sometimes/" target="_blank">After first call to windows api (and sometimes sporadically) slice not updated</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Here is a stripped down example showing the issue: <a href="https://go.dev/play/p/1pEZdtUaWbE">https://go.dev/play/p/1pEZdtUaWbE</a></p> <p>I&#39;m working on a project that scans for the users open windows every second. For some reason I noticed that the first time my goroutine called EnumWindows, my slice would be of length 0. Digging further, I checked and inside the callback sent to Windows, it is indeed growing the slice in length, but printing out the length of the slice after the call showed 0. But generally after that first call it would return the expected result every time (still would occasionally see the 0 now and again, usually when starting some processes in my app).</p> <p>One thing I looked at was printing out the pointer addresses to compare just to make sure it was behaving sanely and to my surprise, printing out the pointer before calling EnumWindows made it work. What??? I also noticed that commenting out the call to getProcessName where I grab the name of the process also made it work, without the &quot;need&quot; to print out the pointer. Later I found out that I didn&#39;t even need to specifically print out the pointer, just &quot;using&quot; it made it work. You can see in the example that I&#39;m just throwing it to `fmt.Sprint`. This also only seems to happen when I&#39;m calling the api from a goroutine. I tried moving the for loop outside of the goroutine and it behaves as expected.</p> <p>Does anyone have ANY idea what is going on? I&#39;m pretty new to Go but been a professional dev for 10 years and this seems so weird. Why would printing out a value cause something else to work? My initial thought was some sort of race condition or something but as far as I know the api call is synchronous. I also tried running the code with -race but being a newbie, I honestly didn&#39;t know how to interpret the results. But it did spit out a `fatal error: checkptr: pointer arithmetic result points to invalid allocation` on the line that casts the lparam back to a slice.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/adamk33n3r"> /u/adamk33n3r </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1l1krcs/after_first_call_to_windows_api_and_sometimes/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1l1krcs/after_first_call_to_windows_api_and_sometimes/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/golang/comments/1l1kouc/my_second_go_project/" target="_blank">My second Go project</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Gochette🪶 — lightweight cache and proxy server for your data </p> <p><a href="https://github.com/buraev/gochette">https://github.com/buraev/gochette</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Booosiy"> /u/Booosiy </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1l1kouc/my_second_go_project/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1l1kouc/my_second_go_project/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/golang/comments/1l1jivb/built_a_cli_tool_for_conventional_commits/" target="_blank">Built a CLI tool for Conventional Commits</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I’ve been working on a small CLI tool called <strong>GCM (Git Conventional Commit Manager).</strong><br/> It&#39;s aimed at making conventional commits easier and quicker to work with.</p> <p>Here’s the repo if you want to check it out:<br/> <a href="https://github.com/susilnem/gcm">https://github.com/susilnem/gcm</a></p> <p>If anyone has any ideas for further feature and improvements or wants to contribute, I’d love to collaborate.<br/> Thanks in advance</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/thesusilnem"> /u/thesusilnem </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1l1jivb/built_a_cli_tool_for_conventional_commits/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1l1jivb/built_a_cli_tool_for_conventional_commits/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/golang/comments/1l1hs5k/func_as_map_key/" target="_blank">func() as map key</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Is there a way to use a func() as a map key? I tried reflect.ValueOf.Pointer, but I need some way to include the receiver value for method calls. It&#39;s hidden behind `methodValueCall` internally, and looks like it can be an index into the method set for a given value. Otherwise I&#39;m guessing it&#39;s a 2-tuple of (pointer to code, pointer to closure data), but I can&#39;t see a reliable way to pull it out.</p> <p>I&#39;m deduplicating state updates on sync.Mutex.Unlock. Some of the updates are quite expensive. This seems like an easy approach if it works: <a href="https://github.com/anacrolix/torrent/blob/ae5970dceb822744efe7876bd346ea3a0e572ff0/deferrwl.go#L56">https://github.com/anacrolix/torrent/blob/ae5970dceb822744efe7876bd346ea3a0e572ff0/deferrwl.go#L56</a>.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/anacrolix"> /u/anacrolix </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1l1hs5k/func_as_map_key/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1l1hs5k/func_as_map_key/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/golang/comments/1l1hp1u/is_there_any_better_tool_for_go_web_app/" target="_blank">Is there any better tool for Go web app?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Compared to Fiber and Gin in which scenario we need to use these framework. Please help me with this question.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Fit_Honeydew4256"> /u/Fit_Honeydew4256 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1l1hp1u/is_there_any_better_tool_for_go_web_app/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1l1hp1u/is_there_any_better_tool_for_go_web_app/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/golang/comments/1l1h0wf/whisperd_linux_voicetotext_using_openai_whisper1/" target="_blank">WhisperD: linux voice-to-text using OpenAI whisper-1 transcription</a>
-            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/golang/comments/1l1h0wf/whisperd_linux_voicetotext_using_openai_whisper1/">  </a> </td><td> &#32; submitted by &#32; <a href="https://www.reddit.com/user/br1ghtsid3"> /u/br1ghtsid3 </a> <br/> <span><a href="https://github.com/icholy/whisperd">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1l1h0wf/whisperd_linux_voicetotext_using_openai_whisper1/">[comments]</a></span> </td></tr></table></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/golang/comments/1l1gq3n/multiple_http_servers/" target="_blank">Multiple HTTP servers</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Playing with net/http and concurrency: <a href="https://go-monk.beehiiv.com/p/multiple-http-servers">https://go-monk.beehiiv.com/p/multiple-http-servers</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/reisinge"> /u/reisinge </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1l1gq3n/multiple_http_servers/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1l1gq3n/multiple_http_servers/">[comments]</a></span></div>
-          </li>
-  
-        </ul>
-  
         <h3 class="subreddit">r/rust</h3>
         <ul class="item-list">
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1l1y9ua/rfc6962_certificate_transparency_log_with_lsmtree/" target="_blank">RFC6962 certificate transparency log with LSM-tree based storage</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/SomeoneIsSomeWhere"> /u/SomeoneIsSomeWhere </a> <br/> <span><a href="https://github.com/Barre/compact_log">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1l1y9ua/rfc6962_certificate_transparency_log_with_lsmtree/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1l2t9se/audio_interview_about_the_wild_linker_on_compose/" target="_blank">[Audio] Interview about the Wild linker on Compose podcast</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>The other day, I had the pleasure to chat with Tim McNamara for his podcast, Compose. We talked about the linker I&#39;ve been working on, Wild. We went into various details about how linking works, Rust code style, panics, maintaining open source projects and probably various other things.</p> <p><a href="https://timclicks.dev/podcast/david-lattimore-faster-linker-faster-builds">https://timclicks.dev/podcast/david-lattimore-faster-linker-faster-builds</a></p> <p>If this is the first you&#39;ve heard of Wild and want more background, you can find my previous posts on my <a href="https://davidlattimore.github.io/">blog</a>.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/dlattimore"> /u/dlattimore </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1l2t9se/audio_interview_about_the_wild_linker_on_compose/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1l2t9se/audio_interview_about_the_wild_linker_on_compose/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1l1y6ku/how_to_deal_with_rust_dependencies/" target="_blank">How to deal with Rust dependencies</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/EelRemoval"> /u/EelRemoval </a> <br/> <span><a href="https://notgull.net/rust-dependencies/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1l1y6ku/how_to_deal_with_rust_dependencies/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1l2t3r1/sdrpodcast_proxying_is_just_dumb_routing/" target="_blank">sdr-podcast - Proxying is just dumb routing</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I noted Self-Directed Research Podcast season2 has just started since last week.</p> <p>This is a series of podcast hosted by James and Amos.</p> <blockquote> <p>Every week, a new presentation on what Amos or James has been up to. Usually: Rust, embedded, web servers, but anything is fair game.</p> </blockquote> <p>In this episode, they were talking about routing, reverse proxies, and yeeting packets onto the internet.</p> <p>And James was sharing how his <a href="https://poststation.rs/">poststation</a> uses proxies to connect embedded devices with applications running on a PC, laptop, or embedded linux system.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Frequent-Data-867"> /u/Frequent-Data-867 </a> <br/> <span><a href="https://sdr-podcast.com/episodes/proxying-is-just-dumb-routing/#proxying-is-just-dumb-routing">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1l2t3r1/sdrpodcast_proxying_is_just_dumb_routing/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1l1xy5y/whisperrs_is_slower_in_release_build_please_help/" target="_blank">Whisper-rs is slower in release build??? Please help.</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;m working on a verbal interface to a locally run LLM in Rust. I&#39;m using whisper-rs for speech to text, and I have the most unexpected bug ever. When testing my transcribe_wav function in a debug release, it executed almost immediately. However, when I build with --release it takes around 5-10 seconds. It also doesn&#39;t print out the transcription live like it does for the debug version (in debug release it automatically prints out the words as they are being transcribed). Any ideas on what could be causing this? Let me know if you need any more information.</p> <p>Also I&#39;m extremely new to Rust so if you see anything stupid in my code, have mercy lol.</p> <pre><code>use hound::WavReader; use whisper_rs::{FullParams, SamplingStrategy, WhisperContext, WhisperContextParameters}; pub struct SttEngine { context: WhisperContext, } impl SttEngine { pub fn new(model_path: &amp;str) -&gt; Self { let context = WhisperContext::new_with_params(model_path, WhisperContextParameters::default()) .expect(&quot;Failed to load model&quot;); SttEngine { context } } pub fn transcribe_wav(&amp;self, file_path: &amp;str) -&gt; String { let reader = WavReader::open(file_path); let original_samples: Vec&lt;i16&gt; = reader .expect(&quot;Failed to initialize wav reader&quot;) .into_samples::&lt;i16&gt;() .map(|x| x.expect(&quot;sample&quot;)) .collect::&lt;Vec&lt;_&gt;&gt;(); let mut samples = vec![0.0f32; original_samples.len()]; whisper_rs::convert_integer_to_float_audio(&amp;original_samples, &amp;mut samples) .expect(&quot;Failed to convert samples to audio&quot;); let mut state = self .context .create_state() .expect(&quot;Failed to create whisper state&quot;); let mut params = FullParams::new(SamplingStrategy::default()); params.set_initial_prompt(&quot;experience&quot;); params.set_n_threads(8); state.full(params, &amp;samples) .expect(&quot;failed to convert samples&quot;); let mut transcribed = String::new(); let n_segments = state .full_n_segments() .expect(&quot;Failed to get number of whisper segments&quot;); for i in 0..n_segments { let text = state.full_get_segment_text(i).unwrap_or_default(); transcribed.push_str(&amp;text); } transcribed } } </code></pre> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/NonYa_exe"> /u/NonYa_exe </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1l1xy5y/whisperrs_is_slower_in_release_build_please_help/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1l1xy5y/whisperrs_is_slower_in_release_build_please_help/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1l2sw1w/wbcache_010_inmemory_write_behind_cache_for/" target="_blank">wb-cache 0.1.0 - in-memory write behind cache for key/record backend storages</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I believe this project of mine could serve a good job to those developing single-process (I mean – undistributed) projects where data backend latency plays a tangible role. For me, the kick-start point was the moment when I realized that my Rocket+minijinja+HTMX project was not working smoothly enough due to many UI elements being dependent on the performance of the backend PostgreSQL tables. Perhaps utilizing an in-memory caching like Redis would help, but there were a couple of reasons to avoid it. Besides, it&#39;d have to be installed on a different server, meaning some extra latency anyway.</p> <p>The published version demonstrates ~100x speedup when used with PostgreSQL on a local QNAP NAS; and ~10x over SQLite. Both are backed by NVMe storages. The results are coming from a simulation (included in the crate) that tries to be as close to real-life usage patterns as possible. Comparison is done by playing the same pre-generated scenario by two threads running in parallel. So, hopefully, there is no cheating here.</p> <p>BTW, the default simulation parameters generate 2-2.5mil steps of the scenario. The peak memory usage I observe on my Mac Studio is ~500-512MB, of which the caching thread is using ~400MB.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/vrurg"> /u/vrurg </a> <br/> <span><a href="https://github.com/vrurg/wb-cache">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1l2sw1w/wbcache_010_inmemory_write_behind_cache_for/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1l1x2b2/example_of_jwt_actixweb_basic_auth/" target="_blank">Example of JWT Actix-Web Basic Auth</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi, I am creating a simple application with a REST API using actix-web and rusqlite. Users are able to register login and perform actions. Of course, some of these API endpoints require authentication. I want to do this with JWT, very basic authentication. But I can&#39;t find any good examples - are there any simple examples I can follow? Most articles I find online try to do a lot more, I am just looking for a simple example that showcases creating and validating the JWT and using it to query a protected endpoint. Thanks. </p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/4bjmc881"> /u/4bjmc881 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1l1x2b2/example_of_jwt_actixweb_basic_auth/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1l1x2b2/example_of_jwt_actixweb_basic_auth/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1l2qhb6/a_new_mocking_library_to_mock_functions_without/" target="_blank">A new mocking library to mock functions without using trait</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Our team decided to open source this as we think it could benefit the whole rust community. Also we are seeking feedback from the community to make it better: <a href="https://github.com/microsoft/injectorppforrust">https://github.com/microsoft/injectorppforrust</a></p> <p>In short, injectorpp allows you to mock functions without using trait.</p> <p>For example, to write tests for below code:</p> <p>```rust fn try_repair() -&gt; Result&lt;(), String&gt; { if let Err(e) = fs::create_dir_all(&quot;/tmp/target_files&quot;) { // Failure business logic here</p> <pre><code> return Err(format!(&quot;Could not create directory: {}&quot;, e)); } // Success business logic here Ok(()) </code></pre> <p>} ```</p> <p>You don&#39;t need trait. Below code just works</p> <p>```rust let mut injector = InjectorPP::new(); injector .when_called(injectorpp::func!(fs::create_dir_all::&lt;&amp;str&gt;)) .will_execute(injectorpp::fake!( func_type: fn(path: &amp;str) -&gt; std::io::Result&lt;()&gt;, when: path == &quot;/tmp/target_files&quot;, returns: Ok(()), times: 1 ));</p> <p>assert!(try_repair().is_ok()); ```</p> <p>Share your thoughts. Happy to discuss</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Top_Square_5236"> /u/Top_Square_5236 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1l2qhb6/a_new_mocking_library_to_mock_functions_without/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1l2qhb6/a_new_mocking_library_to_mock_functions_without/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1l1vq4g/didnt_google_say_they_will_officially_support/" target="_blank">Didn't Google say they will officially support Protobuf and gRPC Rust in 2025?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p><a href="https://youtu.be/ux1xoUR9Xm8?si=1lViczkY5Ig_0u_i">https://youtu.be/ux1xoUR9Xm8?si=1lViczkY5Ig_0u_i</a></p> <p><a href="https://groups.google.com/g/grpc-io/c/ExbWWLaGHjI">https://groups.google.com/g/grpc-io/c/ExbWWLaGHjI</a></p> <p>I wonder... what is happening if anyone knows? </p> <p>I even asked our Google Cloud partner, and they didn&#39;t know...</p> <p>Oh yeah, there is this: <a href="https://github.com/googleapis/google-cloud-rust">https://github.com/googleapis/google-cloud-rust</a> which seems to use prost/tonic. </p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/que-dog"> /u/que-dog </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1l1vq4g/didnt_google_say_they_will_officially_support/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1l1vq4g/didnt_google_say_they_will_officially_support/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1l2nqfz/language_design_question_about_const/" target="_blank">Language design question about const</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Right now, const blocks and const functions are famously limited, so I wondered what exactly the reason for this is.</p> <p>I know that const items can&#39;t be of types that need allocation, but why can&#39;t we use allocation even during their calculation? Why can the language not just allow anything to happen when consts are calculated during compilation and only require the end type to be &quot;const-compatible&quot; (like integers or arrays)? Any allocations like <code>Vec</code>s could just be discarded after the calculation is done.</p> <p>Is it to prevent I/O during compilation? Something about order of initilization?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/BeretEnjoyer"> /u/BeretEnjoyer </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1l2nqfz/language_design_question_about_const/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1l2nqfz/language_design_question_about_const/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1l1urjc/news_opensource_tpde_can_compile_code_1020x/" target="_blank">News: Open-Source TPDE Can Compile Code 10-20x Faster Than LLVM</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/HellFury09"> /u/HellFury09 </a> <br/> <span><a href="https://www.phoronix.com/news/TPDE-Faster-Compile-Than-LLVM">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1l1urjc/news_opensource_tpde_can_compile_code_1020x/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1l2n4ga/how_we_wrap_external_c_and_c_libraries_in_rust/" target="_blank">How we wrap external C and C++ libraries in Rust</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/Hot_Physics7258"> /u/Hot_Physics7258 </a> <br/> <span><a href="https://www.evolvebenchmark.com/blog-posts/how-we-wrap-external-c-and-cpp-libraries-in-rust">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1l2n4ga/how_we_wrap_external_c_and_c_libraries_in_rust/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1l1ue85/chromeos_virtual_machine_monitor_is_written_in/" target="_blank">ChromeOS Virtual Machine Monitor is written in Rust with over 300k LoC</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>People sometimes ask for examples of &quot;good&quot; Rust code. <a href="https://github.com/google/crosvm/tree/main">This repository</a> contains many well-documented crates that appear from a glance to follow what I consider &quot;idiomatic&quot; Rust. There is <a href="https://crosvm.dev/book/">a book</a> using mdBook and thorough <a href="https://crosvm.dev/doc/crosvm/">rustdoc documentation</a> for all crates. Just thought I&#39;d share if someone wants code to read!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Famous_Anything_5327"> /u/Famous_Anything_5327 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1l1ue85/chromeos_virtual_machine_monitor_is_written_in/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1l1ue85/chromeos_virtual_machine_monitor_is_written_in/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1l2mkmq/huawei_oceanstor_v500r007c70_file_system_rust/" target="_blank">Huawei OceanStor V500R007C70 File System Rust Client</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I present a small Rust client for managing file systems on Huawei OceanStor V500R007C70 Kunpeng.</p> <p><a href="https://github.com/0xb-s/oceanstor-fs-client/">https://github.com/0xb-s/oceanstor-fs-client/</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Ok_Inevitable_3392"> /u/Ok_Inevitable_3392 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1l2mkmq/huawei_oceanstor_v500r007c70_file_system_rust/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1l2mkmq/huawei_oceanstor_v500r007c70_file_system_rust/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1l1rmsh/rust_backend_stack_template/" target="_blank">Rust backend stack template</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi guys, if you are always struggling to create your own Rust backend setup from scratch, here is our template for a Rust-based GraphQL backend using async-graphql, tokio-postgres, websocket, dragonfly as redis, and firebase auth. Feel free to use it.</p> <p><a href="https://github.com/rust-dd/rust-axum-async-graphql-postgres-redis-starter">https://github.com/rust-dd/rust-axum-async-graphql-postgres-redis-starter</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/danielboros90"> /u/danielboros90 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1l1rmsh/rust_backend_stack_template/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1l1rmsh/rust_backend_stack_template/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1l2lomg/recording_audio_in_a_specific_format/" target="_blank">Recording audio in a specific format</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;m trying to record audio to a wav file to be transcribed by Whisper. Whisper requires wav format, 16 bit signed integer, and 16kHz sample rate. Is there a simple way to always record in this format or to convert to it? I&#39;m aware that ffmpeg has functionally for this but I don&#39;t want it as an dependency. Currently I&#39;m using cpal and hound and would refer to keep doing so. Thanks!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/NonYa_exe"> /u/NonYa_exe </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1l2lomg/recording_audio_in_a_specific_format/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1l2lomg/recording_audio_in_a_specific_format/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1l1qgrk/clog_api_for_secure_encrypted_journal_content/" target="_blank">clog — API for Secure, Encrypted Journal & Content Storage in a Single File</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hey everyone! I&#39;ve built a Rust crate called <a href="https://github.com/Levi477/clog"><code>clog</code></a> — a cryptographically secure way to store daily notes or journal entries. It keeps everything inside a <strong>single encrypted <code>.clog</code> file</strong>, organized by virtual date-based folders.</p> <h3>Key features:</h3> <ul> <li>AES password-based encryption (no access without password)</li> <li>All notes &amp; metadata stored in one encrypted file</li> <li>Multi-user support</li> <li>Only today’s entries are editable</li> <li>Exportable JSON metadata</li> </ul> <p>You can also try the terminal UI version here <a href="https://github.com/Levi477/clog-tui/releases/tag/v1.3.0">clog-tui v1.3.0</a></p> <p>Great for journaling, private thoughts, or tamper-proof logs.</p> <p>Would love your feedback or suggestions!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Thin-Physics-2224"> /u/Thin-Physics-2224 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1l1qgrk/clog_api_for_secure_encrypted_journal_content/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1l1qgrk/clog_api_for_secure_encrypted_journal_content/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1l2lb3j/rethinking_data_streaming_with_rust_and_infinyon/" target="_blank">Rethinking Data Streaming With Rust And InfinyOn</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/anonymous_pro_"> /u/anonymous_pro_ </a> <br/> <span><a href="https://filtra.io/rust/interviews/infinyon-jun-25">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1l2lb3j/rethinking_data_streaming_with_rust_and_infinyon/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1l1pshf/tdpe_fast_compiler_backend_supporting_llvm_ir/" target="_blank">TDPE: fast compiler backend supporting LLVM IR</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/Shnatsel"> /u/Shnatsel </a> <br/> <span><a href="https://arxiv.org/abs/2505.22610">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1l1pshf/tdpe_fast_compiler_backend_supporting_llvm_ir/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1l2kf7i/what_next_rust_features_are_you_excitedly_looking/" target="_blank">What next Rust features are you excitedly looking forward to?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I haven&#39;t been psyched about a language as much as rust. Things just work as expected and there&#39;s no gotchas unlike other languages. I like that you know exactly to a big extent what happens under the hood and that coupled with ergonomic functional features is a miracle combination. What are some planned or in development features you&#39;re looking forward to in Rust?( As a new Rust developer I&#39;d be interested to contribute)</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Glum-Psychology-6701"> /u/Glum-Psychology-6701 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1l2kf7i/what_next_rust_features_are_you_excitedly_looking/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1l2kf7i/what_next_rust_features_are_you_excitedly_looking/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1l1p4d6/how_to_deal_with_rust_dependencies/" target="_blank">How to deal with Rust dependencies</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/Wolfspaw"> /u/Wolfspaw </a> <br/> <span><a href="https://notgull.net/rust-dependencies/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1l1p4d6/how_to_deal_with_rust_dependencies/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1l2k9fs/best_way_to_get_comfortable/" target="_blank">Best way to get comfortable</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I’m going to start a making a game engine in rust, however I am not super comfortable with the language yet. I’ve made a small and medium sized project in rust, but I felt like it was me learning how to use certain libraries and stuff. I still feel way more comfortable with C, because of me doing my school assignments in that language. What is something that is kind of like a school assignment so I can practice just writing rust code without worrying and learning how frameworks work. </p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/kabyking"> /u/kabyking </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1l2k9fs/best_way_to_get_comfortable/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1l2k9fs/best_way_to_get_comfortable/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1l1o7x1/over_40_of_the_magisks_code_has_been_rewritten_in/" target="_blank">Over 40% of the Magisk's code has been rewritten in Rust</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/Syntrait"> /u/Syntrait </a> <br/> <span><a href="https://github.com/topjohnwu/Magisk/releases/tag/v29.0">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1l1o7x1/over_40_of_the_magisks_code_has_been_rewritten_in/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1l2k0jf/showcase_basic_window_management_utility_for/" target="_blank">Showcase: Basic window management utility for Windows</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hello! I am still learning Rust and, sadly, have to use Windows sometimes, so I created a utility for a handful of window management tasks (selecting/moving with hotkeys, tiling without enforcing it, easier resizing, etc.) to make things a little less painful.</p> <p>You can find the source code and a bunch of demo GIFs here: <a href="https://github.com/kimgoetzke/randolf">https://github.com/kimgoetzke/randolf</a>. </p> <p>If you happen to experience the same pain points, feel free to give it a try - and, either way, any feedback is highly appreciated too! 🙏</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/captainhindsight--"> /u/captainhindsight-- </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1l2k0jf/showcase_basic_window_management_utility_for/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1l2k0jf/showcase_basic_window_management_utility_for/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1l1nlog/just_make_it_scale_an_aurora_dsql_story/" target="_blank">Just make it scale: An Aurora DSQL story</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p><a href="https://www.allthingsdistributed.com/2025/05/just-make-it-scale-an-aurora-dsql-story.html">https://www.allthingsdistributed.com/2025/05/just-make-it-scale-an-aurora-dsql-story.html</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/hebz0rl"> /u/hebz0rl </a> <br/> <span><a href="https://www.allthingsdistributed.com/2025/05/just-make-it-scale-an-aurora-dsql-story.html">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1l1nlog/just_make_it_scale_an_aurora_dsql_story/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1l2elwe/snapviewer_an_alternative_pytorch_memory_snapshot/" target="_blank">SnapViewer – An alternative PyTorch Memory Snapshot Viewer</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hey everyone!</p> <p>I&#39;m excited to share a project I&#39;ve been working on: <a href="https://github.com/Da1sypetals/SnapViewer">SnapViewer</a>, an alternative to PyTorch&#39;s built-in memory visualizer. It&#39;s designed to handle large memory snapshots smoothly, providing an efficient way to analyze memory usage in PyTorch models.</p> <p><strong>Features:</strong></p> <ul> <li><strong>Faster:</strong> Smoothly display large memory snapshots without the performance issues found in official snapshot viewer <a href="https://docs.pytorch.org/memory_viz">https://docs.pytorch.org/memory_viz</a>.</li> <li><strong>UI:</strong> Use WASD keys and mouse scroll to navigate through the memory timeline. Left-click on any allocation to view its size, call stack, and more; Right-click</li> <li><strong>Preprocessing:</strong> Convert your PyTorch memory snapshots to a zipped json format using the provided <code>parse_dump.py</code> script.</li> </ul> <p><strong>Getting Started:</strong></p> <ol> <li><strong>Record a Memory Snapshot:</strong> Follow PyTorch&#39;s <a href="https://pytorch.org/docs/stable/memory_viz.html">documentation</a> to record a memory snapshot of your model.</li> <li><p><strong>Preprocess the Snapshot:</strong> Use the <code>parse_dump.py</code> script to convert the snapshot to a zip format:</p> <p><code>bash python parse_dump.py -p snapshots/large/transformer.pickle -o ./dumpjson -d 0 -z </code></p></li> <li><p><strong>Run SnapViewer:</strong> Use Cargo to run the application. </p> <p><code>bash cargo run -r -- -z your_dump_zipped.zip --res 2400 1080 </code> Note: The CLI options <code>-z</code> and <code>-j</code> are mutually exclusive.</p></li> </ol> <p><strong>Why SnapViewer?</strong></p> <p>PyTorch&#39;s official web memory visualizer struggles with large snapshots, with a framerate of 2~3 frames per minute (yes, minute). SnapViewer aims to be faster, at least fast enough to do analyses. Currently on my RTX3050 it runs responsive (&gt;30fps) on hundred-MB sized snapshots.</p> <p>I&#39;d love to hear your feedback, suggestions, or any issues you encounter. Contributions are also welcome!</p> <p>Check it out here: <a href="https://github.com/Da1sypetals/SnapViewer">https://github.com/Da1sypetals/SnapViewer</a></p> <p>Happy debugging! 🐛</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/daisy_petals_"> /u/daisy_petals_ </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1l2elwe/snapviewer_an_alternative_pytorch_memory_snapshot/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1l2elwe/snapviewer_an_alternative_pytorch_memory_snapshot/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1l1le6x/my_first_bigger_project_nectarhive/" target="_blank">My first bigger project, nectarhive.</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Im building a project that works around githubs api to be able to create and complete bounties for free or for a fee. Its my first bigger rust project so im open to suggestions, what features should i add.<br/> My tech stack is axum for serverside, and tauri + yew for client side. </p> <p><a href="https://www.youtube.com/watch?v=c3eoTFImvpc">https://www.youtube.com/watch?v=c3eoTFImvpc</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/am0wy"> /u/am0wy </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1l1le6x/my_first_bigger_project_nectarhive/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1l1le6x/my_first_bigger_project_nectarhive/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1l2dwrn/how_to_properly_deal_with_invariants/" target="_blank">How to properly deal with invariants</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hey everyone, I&#39;m, in the process of implementing a Chip8 emulator, not striclty important for the question, but it gives me a way to make a question over a real world issue that I&#39;m facing.</p> <p>Assume you have this struct</p> <p><code>rust struct Emulator{ ... } impl Emulator{ pub fn new(){} pub fn load_rom&lt;P:AsRef&lt;Path&gt;&gt;(&amp;mut self, rom:P){...} pub fn run(){...} } </code></p> <p>Now creating an instance of an emulator should be independent of a given rom, not necessarily true in this case, but remember the question just so happen that came to my mind in this context so bare with me even thought it may not be correct.</p> <p>Now ideally I would like the API to work like this.</p> <p>This should be fine:</p> <p><code>rust let emu = Emulator::new(); emulator.load(rom_path); emulator.run() </code></p> <p>On the other hand this should not make sense, because we cannot run an instance of an emulator without a rom file (again, not necessarily true, but let&#39;s pretend it is). So this should panic, or return an error, with a message that explains that this behaviour is not intended. <code>rust let emu = Emulator::new(); emulator.run() </code> This approach has two problems, first you have to check if the rom is loaded, either by adding a field to the struct, or by checking the meory contet, but then you still need avariable to heck the right memory region. Also even if we solve this problem, we put an unnecessary burden on the user of the API, because we are inherently assuming that the user knows this procedure and we are not enforcing properly, so we&#39;re opening ourselfs to errors. Ideally what I would want is a systematic way to enforce it at compile time. Asking chatgpt (sorry but as a noob there is no much else to do, I tried contacting mentors but no one responded) it says that I&#39;m dealing with invariants and I should use a builder pattern, but I&#39;m not sure how to go with it. I like the idea of a builder pattern, but I don&#39;t like the proposed exeution:</p> <p>```rust pub struct EmulatorBuilder { rom: Option&lt;Vec&lt;u8&gt;&gt;, // ... other optional config fields }</p> <p>impl EmulatorBuilder { pub fn new() -&gt; Self { Self { rom: None } }</p> <pre><code>pub fn with_rom&lt;P: AsRef&lt;Path&gt;&gt;(mut self, path: P) -&gt; std::io::Result&lt;Self&gt; { self.rom = Some(std::fs::read(path)?); Ok(self) } pub fn build(self) -&gt; Result&lt;Emulator, String&gt; { let rom = self.rom.ok_or(&quot;ROM not provided&quot;)?; Ok(Emulator::from_rom(rom)) } </code></pre> <p>} ```</p> <p>Again this assumes that the user does this: <code>rust let emulator = EmulatorBuilder::new().with_rom(rom_path)?.build()? </code> and not this:</p> <p><code>rust let emulator = EmulatorBuilder::new().build()? </code></p> <p>A solution that came to my mind is this :</p> <p>```rust pub struct EmulatorBuilder { v: [u8; 16], i: u16, memory: [u8; 4096], program_counter: u16, stack: [u16; 16], stack_pointer: usize, delay_timer: u8, sound_timer: u8, display: Display, rng: ThreadRng, rom: Option&lt;Vec&lt;u8&gt;&gt;, } impl EmulatorBuilder { pub fn new() -&gt; Self { let mut memory = [0; 4096]; memory[0x50..=0x9F].copy_from_slice(&amp;Font::FONTS[..]); Self { v: [0; 16], i: 0, program_counter: 0x200, memory, stack_pointer: 0, stack: [0; 16], delay_timer: 0, sound_timer: 0, display: Display::new(), rng: rand::rng(), rom: None, } } pub fn with_rom&lt;P: AsRef&lt;Path&gt;&gt;(&amp;self, rom: P) -&gt; Result&lt;Emulator, std::io::Error&gt; {</p> <pre><code>} </code></pre> <p>```</p> <p>but I don&#39;t like that muche mainly because I repeated the whole internal structure of the emulator. On the other hand avoids the build without possibly no rom. Can you help me improve my way of thinking and suggest some other ways to think about this kind of problems ? </p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Puddino"> /u/Puddino </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1l2dwrn/how_to_properly_deal_with_invariants/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1l2dwrn/how_to_properly_deal_with_invariants/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1l1lbmb/how_to_test_file_systems_related_functions/" target="_blank">How to test file systems related functions</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I have some functions that perform some stuff onto files and read and write to files.</p> <p>How can I test them in rust?</p> <p>I foubd 2 crates(rust-vfs and tempfile) but cant decide which one is right.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/LofiCoochie"> /u/LofiCoochie </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1l1lbmb/how_to_test_file_systems_related_functions/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1l1lbmb/how_to_test_file_systems_related_functions/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1l2alih/improve_macro_compatibility_with_rustanalyzer/" target="_blank">Improve macro compatibility with rust-analyzer</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi! I&#39;m just looking for a bit of advice on if this macro can be made compatible with RA. The macro works fine, but RA doesn&#39;t realize that <code>$body</code> is just a function definition (and, as such, doesn&#39;t provide any sort of completions in this region). Or maybe it&#39;s nesting that turns it off? I&#39;m wondering if anyone knows of any tricks to make the macro more compatible.</p> <pre><code>#[macro_export] macro_rules! SensorTypes { ($($sensor:ident, ($pin:ident) =&gt; $body:block),* $(,)?) =&gt; { #[derive(Copy, Clone, Debug, PartialEq)] pub enum Sensor { $($sensor(u8),)* } impl Sensor { pub fn read(&amp;self) -&gt; eyre::Result&lt;i32&gt; { match self { $(Sensor::$sensor(pin) =&gt; paste::paste!([&lt;read_ $sensor&gt;](*pin)),)* } } } $( paste::paste! { #[inline] fn [&lt;read_ $sensor&gt;]($pin: u8) -&gt; eyre::Result&lt;i32&gt; { $body } } )* }; } </code></pre> <p>Thank you!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/sebnanchaster"> /u/sebnanchaster </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1l2alih/improve_macro_compatibility_with_rustanalyzer/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1l2alih/improve_macro_compatibility_with_rustanalyzer/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1l1k7vq/ratatuis_rat_in_the_wild_challenge/" target="_blank">Ratatui's "Rat in the Wild" Challenge</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/orhunp"> /u/orhunp </a> <br/> <span><a href="https://github.com/ratatui/ratatui/discussions/1886">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1l1k7vq/ratatuis_rat_in_the_wild_challenge/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1l29rhi/learning_rust_and_neovim/" target="_blank">Learning Rust and NeoVim</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p><a href="https://preview.redd.it/4rrxicti9p4f1.png?width=3600&amp;format=png&amp;auto=webp&amp;s=302b70ed84270a80c7fc944ca33cff9565b55c71">https://preview.redd.it/4rrxicti9p4f1.png?width=3600&amp;format=png&amp;auto=webp&amp;s=302b70ed84270a80c7fc944ca33cff9565b55c71</a></p> <p>I started learning programming a few years back (PHP, JS, HTML, CSS, C, C++), but I wasn’t really involved or focused while I was in school. So I dropped IT development, but still got my diploma, and then moved to IT Support for a few years. It was a great experience, but I got bored.</p> <p>Then I found some YouTube videos about customizing your terminal, using Neovim, etc… and I really got into it. So I wanted to give it another shot and tried learning Python while using Neovim, doing some Pygame… but again, I got bored.</p> <p>Then one day, I was watching a YouTube video from The Primeagen talking about Rust, and I said to myself:</p> <p>“I haven’t tried a low-level language since school, when I was coding some C programs.”</p> <p>I thought I was too dumb to learn it, but in the end, it’s not that hard — and most importantly for me, it’s really fun to learn and practice!</p> <p>I have a few projects in mind that I can build with Rust. I’m not going to rush the process, but I’m going to trust it.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Benihime_Aratame"> /u/Benihime_Aratame </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1l29rhi/learning_rust_and_neovim/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1l29rhi/learning_rust_and_neovim/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1l1i5xw/what_ive_learned_about_selfreferential_structs_in/" target="_blank">What I've learned about self-referential structs in Rust</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>While learning more advanced topics, I got curious about self-referential structs, why they’re hard, how <code>Pin</code> comes into play, and what options we have.</p> <p>I wrote an article to clarify my understanding:<br/> <a href="https://ksnll.github.io/rust-self-referential-structs/">https://ksnll.github.io/rust-self-referential-structs/</a></p> <p>Hope this helps also somebody else, and I would really appreciate some feedback!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/ksnll"> /u/ksnll </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1l1i5xw/what_ive_learned_about_selfreferential_structs_in/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1l1i5xw/what_ive_learned_about_selfreferential_structs_in/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1l228r6/zerocost_tagless_final_in_rust_with_gadtstyle/" target="_blank">Zero-Cost 'Tagless Final' in Rust with GADT-style Enums</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/Accembler"> /u/Accembler </a> <br/> <span><a href="https://www.inferara.com/en/blog/rust-tagless-final-gadt/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1l228r6/zerocost_tagless_final_in_rust_with_gadtstyle/">[comments]</a></span></div>
+          </li>
+  
+        </ul>
+  
+        <h3 class="subreddit">r/golang</h3>
+        <ul class="item-list">
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1l2sxbx/any_reason_why_there_isnt_an_official_mcp_golang/" target="_blank">Any reason why there isn't an official MCP golang SDK?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>No golang SDK here? <a href="https://modelcontextprotocol.io/introduction">https://modelcontextprotocol.io/introduction</a> </p> <p>Considering things like Ollama, langchaingo, Eino, Google Go GenKit, Lingoose, etc..</p> <p>I would have expected a Golang SDK before C#.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/palindsay"> /u/palindsay </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1l2sxbx/any_reason_why_there_isnt_an_official_mcp_golang/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1l2sxbx/any_reason_why_there_isnt_an_official_mcp_golang/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1l1gz9c/media_sneak_peek_wgpu_integration_in_upcoming/" target="_blank">[Media] Sneak Peek: WGPU Integration in Upcoming Slint 1.12 GUI Toolkit Release</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>👀 Another sneak peek at what&#39;s coming in Slint 1.12: integration with the <a href="https://chat.slint.dev/public/channels/docs-internal#">#wgpu</a> rust crate.<br/> This opens the door to combining <a href="https://chat.slint.dev/public/channels/docs-internal#">#Slint</a> UIs with 3D scenes from engines like Bevy 🎮🖼️<br/> Check out the example: 🔗 <a href="https://github.com/slint-ui/slint/tree/master/examples/bevy">https://github.com/slint-ui/slint/tree/master/examples/bevy</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/slint-ui"> /u/slint-ui </a> <br/> <span><a href="https://i.redd.it/s6p7u0uc7i4f1.png">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1l1gz9c/media_sneak_peek_wgpu_integration_in_upcoming/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1l2kjz0/what_tiny_nit_in_code_review_wrecked_your/" target="_blank">What "tiny nit" in code review wrecked your worldview?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I still remember getting the hang of Go. I got everything working, tests passing, good coverage. I was so proud and I felt like I really nailed it. Then came the code review...</p> <p>The most senior Go engineer on the team picked it apart one tiny nit at a time. Variable names, unnecessary else blocks, don’t use getters, in-line the error assignment, flatten your code, etc. </p> <p><strong>Death by a thousand tiny nits.</strong></p> <p>A few years later… I <em>am</em> that nitpicking Go engineer. Anyone else had a similar awakening? What were the “nits” that made you question it all?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/errNotNil"> /u/errNotNil </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1l2kjz0/what_tiny_nit_in_code_review_wrecked_your/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1l2kjz0/what_tiny_nit_in_code_review_wrecked_your/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1l1gnoj/reducing_cargo_target_directory_size_with/" target="_blank">Reducing Cargo target directory size with -Zno-embed-metadata</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/Kobzol"> /u/Kobzol </a> <br/> <span><a href="https://kobzol.github.io/rust/rustc/2025/06/02/reduce-cargo-target-dir-size-with-z-no-embed-metadata.html">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1l1gnoj/reducing_cargo_target_directory_size_with/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1l2jwht/built_a_react_wails_template_for_go_devs_lets/" target="_blank">🚀 Built a React + Wails Template for Go Devs – Let’s Bring Desktop Apps Back!</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hey Gophers! 👋</p> <p>I recently put together a <a href="https://github.com/AlexSKuznetsov/wails-template-react">Wails + React template</a> and wanted to share it with the community.</p> <p>I’m honestly surprised Wails isn’t more popular — it’s a <em>great</em> tool for building lightweight, native-feeling desktop apps using Go for the backend and modern frontend frameworks (React, Vue, Svelte, etc.).</p> <p>We often get caught up in the hype around cloud platforms, serverless backends, and massive orchestration tools… but in reality, <strong>most small businesses don’t need all that</strong>.</p> <p>As I shared in a recent post:</p> <blockquote> </blockquote> <p>So if you’re a full-stack Go developer (or just love Go + modern JS frameworks), check out the <a href="https://github.com/AlexSKuznetsov/wails-template-react">template</a>. It’s a solid starting point for local tools, internal business apps, or just hacking on side projects.</p> <p>Would love feedback, PRs, or even just a 👍 if you find it useful!</p> <p>Let’s show some love to Go-powered desktop apps! 💻💙</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/AlexSKuznetosv"> /u/AlexSKuznetosv </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1l2jwht/built_a_react_wails_template_for_go_devs_lets/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1l2jwht/built_a_react_wails_template_for_go_devs_lets/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1l1g60n/the_virtue_of_unsynn/" target="_blank">The virtue of unsynn</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/DeepShift_"> /u/DeepShift_ </a> <br/> <span><a href="https://www.youtube.com/watch?v=YtbUzIQw-so">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1l1g60n/the_virtue_of_unsynn/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1l2j7i9/why_im_excited_about_go_for_agents/" target="_blank">Why I'm excited about Go for agents</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/hatchet-dev"> /u/hatchet-dev </a> <br/> <span><a href="https://docs.hatchet.run/blog/go-agents">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1l2j7i9/why_im_excited_about_go_for_agents/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1l1ftxi/the_new_version_of_gitcliff_is_out_a_highly/" target="_blank">The new version of git-cliff is out! (a highly customizable changelog generator)</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/orhunp"> /u/orhunp </a> <br/> <span><a href="https://git-cliff.org/blog/2.9.0/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1l1ftxi/the_new_version_of_gitcliff_is_out_a_highly/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1l2i3y0/help_high_memory_usage_in_golang_gtfs_validator/" target="_blank">[Help] High Memory Usage in Golang GTFS Validator – Need Advice on Optimization</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hey everyone,</p> <p>I’m working on a GTFS (General Transit Feed Specification) validator in Go that performs cross-file and cross-row validations. The core of the program loads large GTFS zip files (essentially big CSVs) entirely into memory for fast access.</p> <p>Here’s the repo:</p> <ul> <li>Main branch: <a href="https://github.com/tmlmobilidade/validator/">https://github.com/tmlmobilidade/validator/</a></li> <li>Performance test branch: <a href="https://github.com/tmlmobilidade/validator/tree/performance-improvement-test1">https://github.com/tmlmobilidade/validator/tree/performance-improvement-test1</a></li> <li>Test GTFS file: <a href="https://carrismetropolitana.pt/api/gtfs">https://carrismetropolitana.pt/api/gtfs</a></li> </ul> <p>After running some tests with pprof, I noticed that the function ReadGTFSZip (line 40 in gtfs_parser.go) is consuming ~9GB of memory. This alone seems to be the biggest issue in terms of RAM usage.</p> <p>While the current setup runs “okay-ish” with one process, spawning a second one causes my machine to freeze completely and sometimes even restarts due to an out-of-memory condition.</p> <p>I do need to perform cross-file and cross-row analysis (e.g., a trip ID in trips.txt matching to a service ID in calendar.txt, etc.), so I need fairly quick random access to many parts of the dataset. But I also need this to work on machines with less RAM or allow running in parallel without crashing everything.</p> <p>Any guidance, suggestions, or war stories would be super appreciated. Thanks!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Former-Manufacturer1"> /u/Former-Manufacturer1 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1l2i3y0/help_high_memory_usage_in_golang_gtfs_validator/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1l2i3y0/help_high_memory_usage_in_golang_gtfs_validator/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1l1fqnx/using_embassy_to_make_flashromflashprog/" target="_blank">Using embassy to make flashrom/flashprog compatible SPI flash progammer firmware</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi</p> <p>Serprog is a serial protocol that allows a host with <a href="https://www.flashrom.org/">flashrom</a> or <a href="https://flashprog.org/wiki/Flashprog">flashprog</a> to talk to microcontroller which in turn is then able to program a SPI flash. </p> <p>Using embassy to make flashrom/flashprog compatible SPI flash progammer firmwareThis <a href="https://blog.aheymans.xyz/post/serprog_in_rust/">blog post </a>details how:</p> <ul> <li><a href="https://embassy.dev/">embassy</a> was used to create a multifunctional device out of a raspberry pi pico using async.</li> <li><a href="https://github.com/rust-embedded/embedded-hal">embedded-hal</a> is used to create a portable library making a port to other microcontrolers easy</li> <li><a href="https://docs.embassy.dev/embassy-sync/git/default/zerocopy_channel/index.html">embassy_sync::zerocopy_channel</a> is used to do USB and SPI operation asynchronously as fast as possible</li> </ul> <p>Rust makes working on microcontrollers really enjoyable</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/avph"> /u/avph </a> <br/> <span><a href="https://blog.aheymans.xyz/post/serprog_in_rust/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1l1fqnx/using_embassy_to_make_flashromflashprog/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1l2gqw2/xml_unmarshall_marshall/" target="_blank">XML Unmarshall / Marshall</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I am unmarshalling a large xml file into structs but only retrieving the necessary data I want to work with. Is there any way to re Marshall this xml file back to its full original state while preserving the changes I made to my unmarshalled structs?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Agreeable-Bluebird67"> /u/Agreeable-Bluebird67 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1l2gqw2/xml_unmarshall_marshall/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1l2gqw2/xml_unmarshall_marshall/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1l1bh4d/rustanalyzer_changelog_288/" target="_blank">rust-analyzer changelog #288</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/WellMakeItSomehow"> /u/WellMakeItSomehow </a> <br/> <span><a href="https://rust-analyzer.github.io/thisweek/2025/06/02/changelog-288.html">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1l1bh4d/rustanalyzer_changelog_288/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1l2gkko/what_is_gos_smallest_type_a_video_about_zero/" target="_blank">What is Go's SMALLEST Type? A video about zero sized values.</a>
+            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/golang/comments/1l2gkko/what_is_gos_smallest_type_a_video_about_zero/">  </a> </td><td> &#32; submitted by &#32; <a href="https://www.reddit.com/user/lesiwlabs"> /u/lesiwlabs </a> <br/> <span><a href="https://youtu.be/i0iEQBnfoCI">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1l2gkko/what_is_gos_smallest_type_a_video_about_zero/">[comments]</a></span> </td></tr></table></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1l1bayg/whats_everyone_working_on_this_week_232025/" target="_blank">What's everyone working on this week (23/2025)?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>New week, new Rust! What are you folks up to? Answer here or over at <a href="https://users.rust-lang.org/t/whats-everyone-working-on-this-week-23-2025/130243?u=llogiq">rust-users</a>!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/llogiq"> /u/llogiq </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1l1bayg/whats_everyone_working_on_this_week_232025/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1l1bayg/whats_everyone_working_on_this_week_232025/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1l2giiw/on_no_syntactic_support_for_error_handling/" target="_blank">[ On | No ] syntactic support for error handling</a>
+            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/golang/comments/1l2giiw/on_no_syntactic_support_for_error_handling/">  </a> </td><td> &#32; submitted by &#32; <a href="https://www.reddit.com/user/pekim"> /u/pekim </a> <br/> <span><a href="https://go.dev/blog/error-syntax">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1l2giiw/on_no_syntactic_support_for_error_handling/">[comments]</a></span> </td></tr></table></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1l1ba0y/hey_rustaceans_got_a_question_ask_here_232025/" target="_blank">Hey Rustaceans! Got a question? Ask here (23/2025)!</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Mystified about strings? Borrow checker have you in a headlock? Seek help here! There are no stupid questions, only docs that haven&#39;t been written yet. Please note that if you include code examples to e.g. show a compiler error or surprising result, linking a <a href="https://play.rust-lang.org/">playground</a> with the code will improve your chances of getting help quickly.</p> <p>If you have a <a href="http://stackoverflow.com/">StackOverflow</a> account, consider asking it there instead! StackOverflow shows up much higher in search results, so having your question there also helps future Rust users (be sure to give it <a href="http://stackoverflow.com/questions/tagged/rust">the &quot;Rust&quot; tag</a> for maximum visibility). Note that this site is very interested in question quality. I&#39;ve been asked to read a RFC I authored once. If you want your code reviewed or review other&#39;s code, there&#39;s a <a href="https://codereview.stackexchange.com/questions/tagged/rust">codereview stackexchange</a>, too. If you need to test your code, maybe <a href="https://play.rust-lang.org">the Rust playground</a> is for you.</p> <p>Here are some other venues where help may be found:</p> <p><a href="https://www.reddit.com/r/learnrust">/r/learnrust</a> is a subreddit to share your questions and epiphanies learning Rust programming.</p> <p>The official Rust user forums: <a href="https://users.rust-lang.org/">https://users.rust-lang.org/</a>.</p> <p>The official Rust Programming Language Discord: <a href="https://discord.gg/rust-lang">https://discord.gg/rust-lang</a></p> <p>The unofficial Rust community Discord: <a href="https://bit.ly/rust-community">https://bit.ly/rust-community</a></p> <p>Also check out <a href="https://reddit.com/r/rust/comments/1kvmq4t/hey_rustaceans_got_an_easy_question_ask_here/">last week&#39;s thread</a> with many good questions and answers. And if you believe your question to be either very complex or worthy of larger dissemination, feel free to create a text post.</p> <p>Also if you want to be mentored by experienced Rustaceans, tell us the area of expertise that you seek. Finally, if you are looking for Rust jobs, the most recent thread is <a href="https://www.reddit.com/r/rust/comments/1knkfb6/official_rrust_whos_hiring_thread_for_jobseekers/">here</a>.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/llogiq"> /u/llogiq </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1l1ba0y/hey_rustaceans_got_a_question_ask_here_232025/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1l1ba0y/hey_rustaceans_got_a_question_ask_here_232025/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1l2fsiw/diago_gophone_new_releases/" target="_blank">Diago, gophone, new releases</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p><a href="https://github.com/emiago/diago/releases/tag/v0.17.0">https://github.com/emiago/diago/releases/tag/v0.17.0</a></p> <p>Hi gophers. New diago release brings lot of interesting things. With recording support this makes library usable for more features. Of course we will extend it with different way of recording later.</p> <p>Recording support is also now added into gophone, so you can use this feature from gophone as well.</p> <p><a href="https://github.com/emiago/gophone/releases/tag/v1.9.0">https://github.com/emiago/gophone/releases/tag/v1.9.0</a></p> <p>I welcome anyone interested in Voip start using this libs/tools. Feel free to reach out</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/emiago"> /u/emiago </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1l2fsiw/diago_gophone_new_releases/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1l2fsiw/diago_gophone_new_releases/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1l195oe/icu4x_20_released/" target="_blank">ICU4X 2.0 released!</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>ICU4X 2.0 has been released! Lot&#39;s of new features, performance improvements and closing the gap toward 100% of ECMA-402 (JavaScript I18n API) surface.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/zbraniecki"> /u/zbraniecki </a> <br/> <span><a href="http://blog.unicode.org/2025/05/icu4x-20-released.html">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1l195oe/icu4x_20_released/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1l2dz0d/open_source_illustrations_of_gophers/" target="_blank">Open source illustrations of Gophers</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi, people been asking me what Gophers do I use for my <a href="https://www.youtube.com/packagemain">package main</a> channel on YT or if I draw them myself.</p> <p>So I decided to share what I use, but also ask if people here know some other free good resources.</p> <p>These repos are gold, endless thanks to their creators!</p> <ul> <li><a href="https://github.com/ashleymcnamara/gophers">https://github.com/ashleymcnamara/gophers</a></li> <li><a href="https://github.com/MariaLetta/free-gophers-pack">https://github.com/MariaLetta/free-gophers-pack</a></li> <li><a href="https://github.com/egonelbre/gophers">https://github.com/egonelbre/gophers</a></li> </ul> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/der_gopher"> /u/der_gopher </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1l2dz0d/open_source_illustrations_of_gophers/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1l2dz0d/open_source_illustrations_of_gophers/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1l2d305/whos_hiring_june_2025/" target="_blank">Who's Hiring - June 2025</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>This post will be stickied at the top of until the last week of June (more or less).</p> <p><strong>Note</strong>: It seems like Reddit is getting more and more cranky about marking external links as spam. A good job post obviously has external links in it. If your job post does not seem to show up please send modmail. Or wait a bit and we&#39;ll probably catch it out of the removed message list.</p> <p>Please adhere to the following rules when posting:</p> <p><strong>Rules for individuals:</strong></p> <ul> <li>Don&#39;t create top-level comments; those are for employers.</li> <li>Feel free to reply to top-level comments with on-topic questions.</li> <li>Meta-discussion should be reserved for the distinguished mod comment.</li> </ul> <p><strong>Rules for employers:</strong></p> <ul> <li>To make a top-level comment you must be hiring directly, or a focused third party recruiter with <strong>specific jobs with named companies</strong> in hand. No recruiter fishing for contacts please.</li> <li>The job must be currently open. It is permitted to post in multiple months if the position is still open, especially if you posted towards the end of the previous month.</li> <li>The job must involve working with Go on a regular basis, even if not 100% of the time.</li> <li>One top-level comment per employer. If you have multiple job openings, please consolidate their descriptions or mention them in replies to your own top-level comment.</li> <li>Please base your comment on the following template:</li> </ul> <p><strong>COMPANY:</strong> <em>[Company name; ideally link to your company&#39;s website or careers page.]</em></p> <p><strong>TYPE:</strong> <em>[Full time, part time, internship, contract, etc.]</em></p> <p><strong>DESCRIPTION:</strong> <em>[What does your team/company do, and what are you using Go for? How much experience are you seeking and what seniority levels are you hiring for? The more details the better.]</em></p> <p><strong>LOCATION:</strong> <em>[Where are your office or offices located? If your workplace language isn&#39;t English-speaking, please specify it.]</em></p> <p><strong>ESTIMATED COMPENSATION:</strong> <em>[Please attempt to provide at least a rough expectation of wages/salary.If you can&#39;t state a number for compensation, omit this field. Do not just say &quot;competitive&quot;. Everyone says their compensation is &quot;competitive&quot;.If you are listing several positions in the &quot;Description&quot; field above, then feel free to include this information inline above, and put &quot;See above&quot; in this field.If compensation is expected to be offset by other benefits, then please include that information here as well.]</em></p> <p><strong>REMOTE:</strong> <em>[Do you offer the option of working remotely? If so, do you require employees to live in certain areas or time zones?]</em></p> <p><strong>VISA:</strong> <em>[Does your company sponsor visas?]</em></p> <p><strong>CONTACT:</strong> <em>[How can someone get in touch with you?]</em></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/jerf"> /u/jerf </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1l2d305/whos_hiring_june_2025/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1l2d305/whos_hiring_june_2025/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1l2cv18/looking_for_a_go_quirks_talk_on_yt/" target="_blank">Looking for a Go quirks talk on YT</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hey, I saw an awesome Go talk months ago in the form of quiz on Go language quirks. Basically the presentation was in the &quot;what this code will do&quot; style and it was done by a young lady. Cannot remember neither her name nor the venue. Some of them were super interesting, I wanted to re-watch it but I just cannot dig this in my YT history I was not signed in. Nothing in my browser history either.</p> <p>Will you help me finding it? If you shoot any Go quirks talk you cannot go wrong, I will happily watch it too. Thanks!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/lzap"> /u/lzap </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1l2cv18/looking_for_a_go_quirks_talk_on_yt/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1l2cv18/looking_for_a_go_quirks_talk_on_yt/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1l2c9sv/thought_others_might_find_this_useful_iterkit/" target="_blank">Thought others might find this useful: iterkit package for working with iterators, especially with external resources</a>
+            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/golang/comments/1l2c9sv/thought_others_might_find_this_useful_iterkit/">  </a> </td><td> <!-- SC_OFF --><div class="md"><p>As I&#39;ve been working extensively with external resources such as HTTP body-based streams and DB query results in my Go projects, I&#39;ve found myself enjoying expressing them as iterators to avoid leaking implementation details between architecture layers.</p> <p>To make my life easier, I created the <code>iterkit</code> package, a simple library for working with Seq/Seq2 iterator sequences.</p> <p>It provides some helpful utilities for processing, transforming, and managing data from these external resources. </p> <p>My team has been using it daily, and I thought maybe someone else could benefit from it as well. No big claims, just an attempt to share something that&#39;s made my coding life a bit easier.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/adamluzsi"> /u/adamluzsi </a> <br/> <span><a href="https://github.com/adamluzsi/frameless/tree/main/pkg/iterkit">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1l2c9sv/thought_others_might_find_this_useful_iterkit/">[comments]</a></span> </td></tr></table></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1l2a4fj/an_obs_cli_supporting_websocket_v5/" target="_blank">An OBS CLI supporting websocket v5</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi! Although there are a few great CLIs supporting websocket v5 already available I wanted one written in Go. It uses the <a href="https://github.com/andreykaipov/goobs">goobs </a>library for websocket communication and <a href="https://github.com/alecthomas/kong">Kong </a>for the CLI.</p> <p>Check the <a href="https://github.com/onyx-and-iris/gobs-cli?tab=readme-ov-file#gobs-cli">README </a>for all supported commands.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/onyx_and_iris"> /u/onyx_and_iris </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1l2a4fj/an_obs_cli_supporting_websocket_v5/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1l2a4fj/an_obs_cli_supporting_websocket_v5/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1l290jj/a_simple_gmailtui_basic_tasks_for_now/" target="_blank">A Simple Gmail-TUI (basic tasks for now)</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>So maybe a year back I had tried to write my own tui/cli in C using ncurses</p> <p>That was just a small project of basically just selecting your iso and your disk and just run the burning tasks in the background</p> <p>but ncurses had me messe dup enough not to go in the area ever again.</p> <p>But this time I got a lil ambitious. I had a bit of spare time and decided to risk it once more </p> <p>and here it is a gmail-cli/tui written purely in golang.</p> <p>Please take a look leave your reviews.</p> <p>Fix any issues if you would like</p> <p>Basically I just wanted to tell someone I did it so there I did</p> <p><a href="https://github.com/rdx40/gmail-tui.git">The Link to the repo</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/omarlittle360"> /u/omarlittle360 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1l290jj/a_simple_gmailtui_basic_tasks_for_now/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1l290jj/a_simple_gmailtui_basic_tasks_for_now/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1l28xd1/you_are_misusing_interfaces_in_go_architecture/" target="_blank">You Are Misusing Interfaces in Go - Architecture Smells: Wrong Abstractions</a>
+            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/golang/comments/1l28xd1/you_are_misusing_interfaces_in_go_architecture/">  </a> </td><td> <!-- SC_OFF --><div class="md"><p>I have published an article where I make a critique about a way of interface usages in Go applications that I came across and explain a way for a correct abstractions. I wish you a pleasant reading 🚀</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/egoloper"> /u/egoloper </a> <br/> <span><a href="https://medium.com/goturkiye/you-are-misusing-interfaces-in-go-architecture-smells-wrong-abstractions-da0270192808">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1l28xd1/you_are_misusing_interfaces_in_go_architecture/">[comments]</a></span> </td></tr></table></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1l28si6/building_a_minesweeper_game_with_go_and_raylib/" target="_blank">Building a Minesweeper game with Go and Raylib</a>
+            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/golang/comments/1l28si6/building_a_minesweeper_game_with_go_and_raylib/">  </a> </td><td> &#32; submitted by &#32; <a href="https://www.reddit.com/user/der_gopher"> /u/der_gopher </a> <br/> <span><a href="https://www.youtube.com/watch?v=6E3Y5A80inM&amp;share=1">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1l28si6/building_a_minesweeper_game_with_go_and_raylib/">[comments]</a></span> </td></tr></table></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1l28ap7/proof_of_concept_linux_distro_with_go/" target="_blank">Proof of concept - Linux distro with Go</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi everyone!</p> <p>A new proof of concept I’ve been working on lately — a minimal Linux-based operating system with a pure Go userland. Yup just Go running above Linux kernel.</p> <p>It’s called RLXOS Scratch — a complete rewrite of my earlier RLXOS project, built entirely from the ground up. What makes it interesting? Every user-space component is written in Go, with CGO_ENABLED=0. That means no C runtime, no external dependencies — just Go binaries running directly on the Linux kernel.</p> <p>Right now, RLXOS Scratch is just a proof of concept — not ready for daily use — but it already includes: 1. Init system 2. Simple service manager with parallisations support 3. A Lisp-inspired shell 4. Simple GUI library. 5. A DRM/KMS-based display unit (basic window manager)</p> <p>You can check it out on GitHub: <a href="https://github.com/itsmanjeet/rlxos">https://github.com/itsmanjeet/rlxos</a></p> <p>Its a fun project for me to learn more about Linux internals and to see how far I am go with it. It have a lot of flaws and inefficient codes but it work which is the priority for now 😅</p> <p>Would love to hear your thoughts — feedback, questions, and contributions are always welcome!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/itsmanjeet"> /u/itsmanjeet </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1l28ap7/proof_of_concept_linux_distro_with_go/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1l28ap7/proof_of_concept_linux_distro_with_go/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1l2744m/is_conversion_between_string_types_zero_cost/" target="_blank">Is conversion between string types zero cost?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Very simply, is there a runtime cost to</p> <pre><code>type Foo string func X(f string) string { return f } func XFoo(f Foo) Foo { return f } </code></pre> <p>Is calling <code>string(XFoo(&quot;hello&quot;))</code> more costly than <code>X(&quot;hello&quot;)</code>?</p> <p>Is there any actual conversion going on under the hood? I&#39;m imagining that the compiler shouldn&#39;t theoretically need to maintain any type information against the value but I&#39;m not totally certain.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Some_Confidence5962"> /u/Some_Confidence5962 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1l2744m/is_conversion_between_string_types_zero_cost/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1l2744m/is_conversion_between_string_types_zero_cost/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1l25c1s/enthistory_generate_historyaudit_tables/" target="_blank">Enthistory: Generate History/Audit Tables Automatically with Ent</a>
+            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/golang/comments/1l25c1s/enthistory_generate_historyaudit_tables/">  </a> </td><td> <!-- SC_OFF --><div class="md"><p>It&#39;s been almost two years since I last shared Enthistory here, but it&#39;s been stable for a while now! If you use the Ent ORM and need history/audit tables, Enthistory is a solid option. We built it at Flume Health for our own needs, but designed it for generic use and open-sourced it for the community.</p> <p>Enthistory runs when you regenerate against Ent, keeping your history tables consistently up-to-date. It&#39;s especially useful in compliance-heavy environments like HIPAA, HITRUST, FERPA, or PCI, or simply if you want to track data changes over time and who made them. It&#39;s highly customizable and can track creates, updates, and deletes.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/reedredrd"> /u/reedredrd </a> <br/> <span><a href="https://github.com/flume/enthistory">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1l25c1s/enthistory_generate_historyaudit_tables/">[comments]</a></span> </td></tr></table></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1l24tih/a_japanese_visual_novel_game_made_with_go_ebiten/" target="_blank">A Japanese Visual Novel Game Made with Go + Ebiten</a>
+            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/golang/comments/1l24tih/a_japanese_visual_novel_game_made_with_go_ebiten/">  </a> </td><td> <!-- SC_OFF --><div class="md"><p>A Japanese-language visual novel / horror game built with Go and <a href="https://github.com/hajimehoshi/ebiten">Ebiten</a> just launched on Steam. Ebiten is a 2D game library for Go.</p> <p>One of the characters has strong <em>waifu</em> energy, so I had to share 🥺✨</p> <p>The <a href="https://safehavn.dev/">dev blog</a> (in Japanese) covers some cool behind-the-scenes stuff, like:</p> <ul> <li><a href="https://safehavn.dev/blog/2024-01-23/">UI unit tests for multiple languages</a></li> <li><a href="https://safehavn.dev/blog/2024-05-07/">An animation viewer built with Ebiten</a> for collaborating with the artist</li> </ul> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/yami_odymel"> /u/yami_odymel </a> <br/> <span><a href="https://store.steampowered.com/app/2492120/SAEKO_Giantess_Dating_Sim/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1l24tih/a_japanese_visual_novel_game_made_with_go_ebiten/">[comments]</a></span> </td></tr></table></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1l23rrm/a_javascript_developers_guide_to_go/" target="_blank">A JavaScript Developer's Guide to Go</a>
+            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/golang/comments/1l23rrm/a_javascript_developers_guide_to_go/">  </a> </td><td> &#32; submitted by &#32; <a href="https://www.reddit.com/user/psuranas"> /u/psuranas </a> <br/> <span><a href="https://prateeksurana.me/blog/guide-to-go-for-javascript-developers/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1l23rrm/a_javascript_developers_guide_to_go/">[comments]</a></span> </td></tr></table></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1l23jdh/changing_pcnname_and_domain_controller_on_windows/" target="_blank">Changing PCnname and domain controller on Windows local machine based on MAC</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I am looking for library to speed up restore Windows OS image and configuration after restore. After restore OS I have to manually change computer name and domain controller settings in This Computer section. I want automaticate it with Golang based on MAC adress of machine. This way when I run my app I want check MAC adress, then based on that set PC name and add domain controller from Active Directory on Windows 10 machine.</p> <p>Could you suggest the best tools for the job?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/pepiks"> /u/pepiks </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1l23jdh/changing_pcnname_and_domain_controller_on_windows/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1l23jdh/changing_pcnname_and_domain_controller_on_windows/">[comments]</a></span></div>
+          </li>
+  
+        </ul>
+  
+        <h3 class="subreddit">r/rust_gamedev</h3>
+        <ul class="item-list">
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust_gamedev/comments/1l29fnb/wip_gem_cad_software_with_bevyegui/" target="_blank">WIP gem CAD software with Bevy+egui</a>
+            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/rust_gamedev/comments/1l29fnb/wip_gem_cad_software_with_bevyegui/">  </a> </td><td> <!-- SC_OFF --><div class="md"><p>Featuring real-time GPU ray traced preview render, importing designs from the industry standard software, undo/redo and full editing capabilities. Now need to add save/load and figure out how to export cutting diagrams as pdf 😰</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/humandictionary"> /u/humandictionary </a> <br/> <span><a href="https://v.redd.it/v2nr71mg6p4f1">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust_gamedev/comments/1l29fnb/wip_gem_cad_software_with_bevyegui/">[comments]</a></span> </td></tr></table></div>
           </li>
   
         </ul>
