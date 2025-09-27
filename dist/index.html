@@ -240,8 +240,8 @@
   
       <div class="card">
         <h2>Huginn Daily</h2>
-        <p class="header-p">Friday, September 26, 2025</p>
-        <p class="header-p">d1d1f985-5d6b-4dba-a37f-bf120be0b95c</p>
+        <p class="header-p">Saturday, September 27, 2025</p>
+        <p class="header-p">3d77dc24-4159-40c2-9c33-3d5788ae9864</p>
       </div>
   
       <div class="card">
@@ -249,23 +249,23 @@
         <table class="weather-table">
           <tr>
             <th>Summary</th>
-            <td>⛅️ Clear until evening.</td>
+            <td>⛅️ Clear throughout the day.</td>
           </tr>
           <tr>
             <th>Temperature Range</th>
-            <td>20°C to 31°C (69°F to 87°F)</td>
+            <td>20°C to 30°C (67°F to 86°F)</td>
           </tr>
           <tr>
             <th>Feels Like</th>
-            <td>Low: 64°F | High: 81°F</td>
+            <td>Low: 66°F | High: 80°F</td>
           </tr>
           <tr>
             <th>Humidity</th>
-            <td>34%</td>
+            <td>46%</td>
           </tr>
           <tr>
             <th>Wind</th>
-            <td>10 km/h (6 mph), Direction: 166°</td>
+            <td>10 km/h (6 mph), Direction: 182°</td>
           </tr>
           <tr>
             <th>Precipitation</th>
@@ -273,23 +273,23 @@
           </tr>
           <tr>
             <th>Sunrise / Sunset</th>
-            <td>🌅 06:39 AM / 🌇 06:38 PM</td>
+            <td>🌅 06:39 AM / 🌇 06:37 PM</td>
           </tr>
           <tr>
             <th>Moon Phase</th>
-            <td>Waxing Crescent (15%)</td>
+            <td>Waxing Crescent (18%)</td>
           </tr>
           <tr>
             <th>Cloud Cover</th>
-            <td>13%</td>
+            <td>2%</td>
           </tr>
           <tr>
             <th>Pressure</th>
-            <td>1010.43 hPa</td>
+            <td>1012.36 hPa</td>
           </tr>
           <tr>
             <th>Dew Point</th>
-            <td>46.12°F</td>
+            <td>52.5°F</td>
           </tr>
           <tr>
             <th>Visibility</th>
@@ -299,14 +299,987 @@
       </div>
   
       <div class="card">
-        <h2>Other</h2>
+        <h2>XKCD</h2>
+  
+        <div class="comic">
+          <a href="//imgs.xkcd.com/comics/hiking.png" target="_blank">
+            <img src="//imgs.xkcd.com/comics/hiking.png" alt="Hiking">
+          </a>
+        </div>
+  
+      </div>
+  
+      <div class="card">
+        <h2>Golang</h2>
         <ul class="item-list">
   
           <li>
-            <a href="https://selfh.st/weekly/2025-07-04/" target="_blank"> Self-Host Weekly (4 July 2025) </a>
+            <a href="https://go.dev/blog/flight-recorder" target="_blank">Flight Recorder in Go 1.25</a>
             <div class="item-content">
-			  Become a <a href="https://selfh.st/membership">paid subscriber</a> to access the newsletter’s full-text RSS feed or <a href="https://selfh.st">continue reading on selfh.st</a>.
-		  </div>
+<div id="blog"><div id="content">
+  <div id="content">
+
+    <div class="Article" data-slug="/blog/flight-recorder">
+    
+    <h1 class="small"><a href="/blog/">The Go Blog</a></h1>
+    
+
+    <h1>Flight Recorder in Go 1.25</h1>
+      
+      <p class="author">
+      Carlos Amedee and Michael Knyszek<br>
+      26 September 2025
+      </p>
+      
+      <div class='markdown'>
+<p>In 2024 we introduced the world to
+<a href="/blog/execution-traces-2024">more powerful Go execution traces</a>. In that blog post
+we gave a sneak peek into some of the new functionality we could unlock with our new execution
+tracer, including <em>flight recording</em>. We&rsquo;re happy to announce that flight recording is now
+available in Go 1.25, and it&rsquo;s a powerful new tool in the Go diagnostics toolbox.</p>
+<h2 id="execution-traces">Execution traces</h2>
+<p>First, a quick recap on Go execution traces.</p>
+<p>The Go runtime can be made to write a log recording many of the events that happen during
+the execution of a Go application. That log is called a runtime execution trace.
+Go execution traces contain a plethora of information about how goroutines interact with each
+other and the underlying system. This makes them very handy for debugging latency issues, since
+they tell you both when your goroutines are executing, and crucially, when they are not.</p>
+<p>The <a href="/pkg/runtime/trace">runtime/trace</a> package provides an API for collecting
+an execution trace over a given time window by calling <code>runtime/trace.Start</code> and <code>runtime/trace.Stop</code>.
+This works well if the code you&rsquo;re tracing is just a test, microbenchmark, or command line
+tool. You can collect a trace of the complete end-to-end execution, or just the parts you care about.</p>
+<p>However, in long-running web services, the kinds of applications Go is known for, that&rsquo;s not
+good enough. Web servers might be up for days or even weeks, and collecting a trace of the
+entire execution would produce far too much data to sift through. Often just one part
+of the program&rsquo;s execution goes wrong, like a request timing out or a failed health
+check. By the time it happens it&rsquo;s already too late to call <code>Start</code>!</p>
+<p>One way to approach this problem is to randomly sample execution traces from across the fleet.
+While this approach is powerful, and can help find issues before they become outages, it
+requires a lot of infrastructure to get going. Large quantities of execution trace data
+would need to be stored, triaged, and processed, much of which won&rsquo;t contain anything
+interesting at all. And when you&rsquo;re trying to get to the bottom of a specific issue,
+it&rsquo;s a non-starter.</p>
+<h2 id="flight-recording">Flight recording</h2>
+<p>This brings us to the flight recorder.</p>
+<p>A program often knows when something has gone wrong, but the root cause may have happened
+long ago. The flight recorder lets you collect a trace of the last few seconds of
+execution leading up to the moment a program detects there&rsquo;s been a problem.</p>
+<p>The flight recorder collects the execution trace as normal, but instead of writing it out to
+a socket or a file, it buffers the last few seconds of the trace in memory. At any point,
+the program can request the contents of the buffer and snapshot exactly the problematic
+window of time. The flight recorder is like a scalpel cutting directly to the problem area.</p>
+<h2 id="example">Example</h2>
+<p>Let&rsquo;s learn how to use the flight recorder with an example. Specifically, let&rsquo;s use it to
+diagnose a performance problem with an HTTP server that implements a &ldquo;guess the number&rdquo; game.
+It exposes a <code>/guess-number</code> endpoint that accepts an integer and responds to the caller
+informing them if they guessed the right number. There is also a goroutine that, once per
+minute, sends a report of all the guessed numbers to another service via an HTTP request.</p>
+<pre><code>// bucket is a simple mutex-protected counter.
+type bucket struct {
+    mu      sync.Mutex
+    guesses int
+}
+
+func main() {
+    // Make one bucket for each valid number a client could guess.
+    // The HTTP handler will look up the guessed number in buckets by
+    // using the number as an index into the slice.
+    buckets := make([]bucket, 100)
+
+    // Every minute, we send a report of how many times each number was guessed.
+    go func() {
+        for range time.Tick(1 * time.Minute) {
+            sendReport(buckets)
+        }
+    }()
+
+    // Choose the number to be guessed.
+    answer := rand.Intn(len(buckets))
+
+    http.HandleFunc(&quot;/guess-number&quot;, func(w http.ResponseWriter, r *http.Request) {
+        start := time.Now()
+
+        // Fetch the number from the URL query variable &quot;guess&quot; and convert it
+        // to an integer. Then, validate it.
+        guess, err := strconv.Atoi(r.URL.Query().Get(&quot;guess&quot;))
+        if err != nil || !(0 &lt;= guess &amp;&amp; guess &lt; len(buckets)) {
+            http.Error(w, &quot;invalid 'guess' value&quot;, http.StatusBadRequest)
+            return
+        }
+
+        // Select the appropriate bucket and safely increment its value.
+        b := &amp;buckets[guess]
+        b.mu.Lock()
+        b.guesses++
+        b.mu.Unlock()
+
+        // Respond to the client with the guess and whether it was correct.
+        fmt.Fprintf(w, &quot;guess: %d, correct: %t&quot;, guess, guess == answer)
+
+        log.Printf(&quot;HTTP request: endpoint=/guess-number guess=%d duration=%s&quot;, guess, time.Since(start))
+    })
+    log.Fatal(http.ListenAndServe(&quot;:8090&quot;, nil))
+}
+
+// sendReport posts the current state of buckets to a remote service.
+func sendReport(buckets []bucket) {
+    counts := make([]int, len(buckets))
+
+    for index := range buckets {
+        b := &amp;buckets[index]
+        b.mu.Lock()
+        defer b.mu.Unlock()
+
+        counts[index] = b.guesses
+    }
+
+    // Marshal the report data into a JSON payload.
+    b, err := json.Marshal(counts)
+    if err != nil {
+        log.Printf(&quot;failed to marshal report data: error=%s&quot;, err)
+        return
+    }
+    url := &quot;http://localhost:8091/guess-number-report&quot;
+    if _, err := http.Post(url, &quot;application/json&quot;, bytes.NewReader(b)); err != nil {
+        log.Printf(&quot;failed to send report: %s&quot;, err)
+    }
+}
+</code></pre>
+<p>Here is the full code for the server:
+<a href="/play/p/rX1eyKtVglF">https://go.dev/play/p/rX1eyKtVglF</a>, and for a simple client:
+<a href="/play/p/2PjQ-1ORPiw">https://go.dev/play/p/2PjQ-1ORPiw</a>. To avoid a third
+process, the &ldquo;client&rdquo; also implements the report server, though in a real system this would
+be separate.</p>
+<p>Let&rsquo;s suppose that after deploying the application in production, we received complaints from
+users that some <code>/guess-number</code> calls were taking longer than expected. When we look at our
+logs, we see that sometimes response times exceed 100 milliseconds, while the majority of calls
+are on the order of microseconds.</p>
+<pre><code>2025/09/19 16:52:02 HTTP request: endpoint=/guess-number guess=69 duration=625ns
+2025/09/19 16:52:02 HTTP request: endpoint=/guess-number guess=62 duration=458ns
+2025/09/19 16:52:02 HTTP request: endpoint=/guess-number guess=42 duration=1.417µs
+2025/09/19 16:52:02 HTTP request: endpoint=/guess-number guess=86 duration=115.186167ms
+2025/09/19 16:52:02 HTTP request: endpoint=/guess-number guess=0 duration=127.993375ms
+</code></pre>
+<p>Before we continue, take a minute and see if you can spot what&rsquo;s wrong!</p>
+<p>Regardless of whether you found the problem or not, let&rsquo;s dive deeper and see how we can
+find the problem from first principles. In particular, it would be great if we could see
+what the application was doing in the time leading up to the slow response. This is exactly
+what the flight recorder was built for! We&rsquo;ll use it to capture an execution trace once
+we see the first response exceeding 100 milliseconds.</p>
+<p>First, in <code>main</code>, we&rsquo;ll configure and start the flight recorder:</p>
+<pre><code>// Set up the flight recorder
+fr := trace.NewFlightRecorder(trace.FlightRecorderConfig{
+    MinAge:   200 * time.Millisecond,
+    MaxBytes: 1 &lt;&lt; 20, // 1 MiB
+})
+fr.Start()
+</code></pre>
+<p><code>MinAge</code> configures the duration for which trace data is reliably retained, and we
+suggest setting it to around 2x the time window of the event. For example, if you
+are debugging a 5-second timeout, set it to 10 seconds. <code>MaxBytes</code> configures the
+size of the buffered trace so you don&rsquo;t blow up your memory usage.  On average,
+you can expect a few MB of trace data to be produced per second of execution,
+or 10 MB/s for a busy service.</p>
+<p>Next, we&rsquo;ll add a helper function to capture the snapshot and write it to a file:</p>
+<pre><code>var once sync.Once
+
+// captureSnapshot captures a flight recorder snapshot.
+func captureSnapshot(fr *trace.FlightRecorder) {
+    // once.Do ensures that the provided function is executed only once.
+    once.Do(func() {
+        f, err := os.Create(&quot;snapshot.trace&quot;)
+        if err != nil {
+            log.Printf(&quot;opening snapshot file %s failed: %s&quot;, f.Name(), err)
+            return
+        }
+        defer f.Close() // ignore error
+
+        // WriteTo writes the flight recorder data to the provided io.Writer.
+        _, err = fr.WriteTo(f)
+        if err != nil {
+            log.Printf(&quot;writing snapshot to file %s failed: %s&quot;, f.Name(), err)
+            return
+        }
+
+        // Stop the flight recorder after the snapshot has been taken.
+        fr.Stop()
+        log.Printf(&quot;captured a flight recorder snapshot to %s&quot;, f.Name())
+    })
+}
+</code></pre>
+<p>And finally, just before logging a completed request, we&rsquo;ll trigger the snapshot if the request
+took more than 100 milliseconds:</p>
+<pre><code class="language-go">// Capture a snapshot if the response takes more than 100ms.
+// Only the first call has any effect.
+if fr.Enabled() &amp;&amp; time.Since(start) &gt; 100*time.Millisecond {
+    go captureSnapshot(fr)
+}
+</code></pre>
+<p>Here&rsquo;s the full code for the server, now instrumented with the flight recorder:
+<a href="/play/p/3V33gfIpmjG">https://go.dev/play/p/3V33gfIpmjG</a></p>
+<p>Now, we run the server again and send requests until we get a slow request that triggers a
+snapshot.</p>
+<p>Once we&rsquo;ve gotten a trace, we&rsquo;ll need a tool that will help us examine it. The Go toolchain
+provides a built-in execution trace analysis tool via the
+<a href="https://pkg.go.dev/cmd/trace" rel="noreferrer" target="_blank"><code>go tool trace</code> command</a>. Run <code>go tool trace snapshot.trace</code> to
+launch the tool, which starts a local web server, then open the displayed URL in your browser
+(if the tool doesn&rsquo;t open your browser automatically).</p>
+<p>This tool gives us a few ways to look at the trace, but let&rsquo;s focus on visualizing the trace
+to get a sense of what&rsquo;s going on. Click &ldquo;View trace by proc&rdquo; to do so.</p>
+<p>In this view, the trace is presented as a timeline of events. At the top of the page, in
+the &ldquo;STATS&rdquo; section, we can see a summary of the application&rsquo;s state, including the
+number of threads, the heap size, and the goroutine count.</p>
+<p>Below that, in the &ldquo;PROCS&rdquo; section, we can see how the execution of goroutines is mapped
+onto <code>GOMAXPROCS</code> (the number of operating system threads created by the Go application). We
+can see when and how each goroutine starts, runs, and finally stops executing.</p>
+<p>For now, let&rsquo;s turn our attention to this massive gap in execution on the right side of the
+viewer. For a period of time, around 100ms, nothing is happening!</p>
+<p><a href="flight-recorder/flight_recorder_1.png"></a></p>
+<p>By selecting the <code>zoom</code> tool (or pressing <code>3</code>), we can inspect the section of the trace right
+after the gap with more detail.</p>
+<p><a href="flight-recorder/flight_recorder_2.png"></a></p>
+<p>In addition to the activity of each individual goroutine, we can see how goroutines interact
+via &ldquo;flow events.&rdquo; An incoming flow event indicates what happened to make a goroutine start
+running. An outgoing flow edge indicates what effect one goroutine had on another. Enabling the
+visualization of all flow events often provides clues that hint at the source of a problem.</p>
+<p><a href="flight-recorder/flight_recorder_3.png"></a></p>
+<p>In this case, we can see that many of the goroutines have a direct connection to a single
+goroutine right after the pause in activity.</p>
+<p>Clicking on the the single goroutine shows an event table filled with outgoing flow events, which
+matches what we saw when the flow view was enabled.</p>
+<p>What happened when this goroutine ran? Part of the information stored in the trace is a view
+of the stack trace at different points in time. When we look at the goroutine we can see that
+the start stack trace shows that it was waiting for the HTTP request to complete when the
+goroutine was scheduled to run. And the end stack trace shows that the <code>sendReport</code> function
+had already returned and it was waiting for the ticker for the next scheduled time to send
+the report.</p>
+<p><a href="flight-recorder/flight_recorder_4.png"></a></p>
+<p>Between the start and the end of this goroutine running, we see a huge number of
+&ldquo;outgoing flows,&rdquo; where it interacts with other goroutines. Clicking on one of the
+<code>Outgoing flow</code> entries takes us to a view of the interaction.</p>
+<p><a href="flight-recorder/flight_recorder_5.png"></a></p>
+<p>This flow implicates the <code>Unlock</code> in <code>sendReport</code>:</p>
+<pre><code class="language-go">for index, b := range buckets {
+    b.mu.Lock()
+    defer b.mu.Unlock()
+
+    counts[index] = b.value
+}
+</code></pre>
+<p>In <code>sendReport</code>, we intended to acquire a lock on each bucket and release the lock after
+copying the value.</p>
+<p>But here&rsquo;s the problem: we don&rsquo;t actually release the lock immediately after copying the
+value contained in <code>bucket.guesses</code>. Because we used a <code>defer</code> statement to release the
+lock, that release doesn&rsquo;t happen until the function returns. We hold the lock not just
+past the end of the loop, but until after the HTTP request completes. That&rsquo;s a subtle
+error that may be difficult to track down in a large production system.</p>
+<p>Fortunately, execution tracing helped us pinpoint the problem. However, if we tried
+to use the execution tracer in a long-running server without the new flight-recording
+mode, it would likely amass a huge amount of execution trace data, which an operator
+would have to store, transmit, and sift through. The flight recorder gives us the power
+of hindsight. It lets us capture just what went wrong, after it&rsquo;s already happened,
+and quickly zero in on the cause.</p>
+<p>The flight recorder is just the latest addition to the Go developer&rsquo;s toolbox for
+diagnosing the inner workings of running applications. We&rsquo;ve steadily been improving
+tracing over the past couple of releases. Go 1.21 greatly reduced the run-time overhead
+of tracing. The trace format became more robust and also splittable in the Go 1.22
+release, leading to features like the flight recorder. Open-source tools like
+<a href="https://gotraceui.dev/" rel="noreferrer" target="_blank">gotraceui</a>, and the <a href="/issue/62627">forthcoming ability to programmatically
+parse execution traces</a> are more ways to leverage the power of
+execution traces. The <a href="/doc/diagnostics">Diagnostics page</a> lists many additional
+tools at your disposal. We hope you make use of them as you write and refine
+your Go applications.</p>
+<h2 id="thanks">Thanks</h2>
+<p>We&rsquo;d like to take a moment to thank those community members who have been active in the
+diagnostics meetings, contributed to the designs, and provided feedback over the years:
+Felix Geisendörfer (<a href="https://bsky.app/profile/felixge.de" rel="noreferrer" target="_blank">@felixge.de</a>),
+Nick Ripley (<a href="https://github.com/nsrip-dd" rel="noreferrer" target="_blank">@nsrip-dd</a>),
+Rhys Hiltner (<a href="https://github.com/rhysh" rel="noreferrer" target="_blank">@rhysh</a>),
+Dominik Honnef (<a href="https://github.com/dominikh" rel="noreferrer" target="_blank">@dominikh</a>),
+Bryan Boreham (<a href="https://github.com/bboreham" rel="noreferrer" target="_blank">@bboreham</a>),
+and PJ Malloy (<a href="https://github.com/thepudds" rel="noreferrer" target="_blank">@thepudds</a>).</p>
+<p>The discussions, feedback, and work you&rsquo;ve all put in have been instrumental in pushing
+us to a better diagnostics future. Thank you!</p>
+</div>
+
+    </div>
+
+    
+    <div class="Article prevnext">
+    
+    
+      
+        <p>
+        
+        
+          
+            <b>Previous article: </b><a href="/blog/survey2025-announce">It&#39;s survey time! How has Go has been working out for you?</a><br>
+          
+        
+        <b><a href="/blog/all">Blog Index</a></b>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    </div>
+    
+
+  </div>
+</div>
+
+<script src="/js/play.js"></script>
+
+</div>
           </li>
   
         </ul>
@@ -315,82 +1288,47 @@
       <div class="card">
         <h2>Reddit</h2>
   
-        <h3 class="subreddit">r/golang</h3>
+        <h3 class="subreddit">r/gamedev</h3>
         <ul class="item-list">
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1nqq9e3/go_monorepo_dependency_management/" target="_blank">Go Monorepo Dependency Management?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi at work were been storing each of our microservices in a separate repo each with it&#39;s own go mod file. </p> <p>We&#39;re doing some rewrite and plan to move them all into a single Monorepo. </p> <p>I&#39;m curious what is the Go idiomatic way to dependency management in a mono repo, that&#39;s has shared go library, AWS services and rdk deployment? What cicd is like? </p> <p>Single top level go mod file or each service having each own mod file?</p> <p>Or if anyone know of any good open source go monorepo out there that I can look for inspiration? </p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/andyface123"> /u/andyface123 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1nqq9e3/go_monorepo_dependency_management/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1nqq9e3/go_monorepo_dependency_management/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/gamedev/comments/1nrjt43/full_steam_release_or_crowdfunding_who_here_has/" target="_blank">Full steam release or crowdfunding - Who here has went through this, what did you decide, and why?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Was going to give up on my project until I told myself I would get the demo to a finished, full length state, complete the trailers, and just put it out there for potential crowdfunding, but now that I have the demo and trailers I feel motivated enough to keep going, but both option seem reasonable. Would love to know if others have been in similar situations and what you decided to do.</p> <p>Here&#39;s the current trailer of my game. It&#39;s a dark fantasy, action tower defense game.</p> <p><a href="https://www.youtube.com/watch?v=XebBxt0Zc8U">https://www.youtube.com/watch?v=XebBxt0Zc8U</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/roger0120"> /u/roger0120 </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1nrjt43/full_steam_release_or_crowdfunding_who_here_has/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1nrjt43/full_steam_release_or_crowdfunding_who_here_has/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1nqom4m/golang_source_code_essentials_part_0_compiler/" target="_blank">🛠️Golang Source Code Essentials, Part 0: Compiler Directives & Build Tags⚡</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi all — I’m starting a series called Golang Source Code Essentials. In Part 0, I dig into:</p> <p>- how //go directives (like nosplit, noescape, linkname) influence compilation and runtime</p> <p>- how build tags (//go:build / legacy // +build) work, and when/why you’d use them</p> <p>- gotchas and real-world implications when you peek into Go’s runtime source</p> <p>If you’re someone who’s poked around Go’s internals, used build tags across platforms, or is curious about how the compiler treats your code behind the scenes, I’d love your feedback. What directive has tripped you up before? What would you want me to cover deeper in upcoming parts?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Informal-Persimmon74"> /u/Informal-Persimmon74 </a> <br/> <span><a href="https://dev.to/arshiargh/golang-source-code-essentials-part-0-compiler-directives-build-tags-4j74">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1nqom4m/golang_source_code_essentials_part_0_compiler/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/gamedev/comments/1nriciv/how_do_games_interpret_playerdrawn_sigils/" target="_blank">How do games interpret player-drawn sigils?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hey! I&#39;ve been looking to try and figure out how games like <a href="https://store.steampowered.com/app/587620/Okami_HD/">Okami</a>, <a href="https://www.ign.com/games/doodle-hex">Doodle Hex</a>, and <a href="https://play.google.com/store/apps/details?id=com.ketchapp.divineko">Divineko</a> operate their core mechanics. I thought there&#39;d be a wealth of resources on how systems like these work because of how unique the input interpretation requirements are compared to games outside that genre, but I think I&#39;m missing a key word or phrase that would help that search bear fruit.</p> <p>Are there any resources to explain this, or any libraries/open source projects that replicate the behavior for me to analyze?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Furyful_Fawful"> /u/Furyful_Fawful </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1nriciv/how_do_games_interpret_playerdrawn_sigils/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1nriciv/how_do_games_interpret_playerdrawn_sigils/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1nqn1in/kafka_again/" target="_blank">Kafka Again</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I’m working on a side project now which is basically a distributed log system, a clone of Apache Kafka. </p> <p>First things first, I only knew Kafka’s name at the beginning. And I also was a Go newbie. I went into both of them by kicking off this project and searching along the way. So my goal was to learn what Kafka is, how it works, and apply my Go knowledge.</p> <p>What I currently built is a log component that writes to a memory index and persists on disk, a partition that abstracts out the log, a topic that can have multiple partitions, and a broker that interfaces them out for usage by producer and consumer components. That’s all built (currently) to run on one machine. </p> <p>My question is what to go for next? And when to stop and say enough (I need to have it as a good project in my resume, showing out my skills in a powerful way)?</p> <p>My choices for next steps: - log retention policy - Make it distributed (multiple brokers), which opens up the need for a cluster coordinator component or a consensus protocol. - Node Replication (if I’m actually done getting it distributed) - Admin component (manages topics)</p> <p>Thoughts?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Square-Employee2608"> /u/Square-Employee2608 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1nqn1in/kafka_again/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1nqn1in/kafka_again/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/gamedev/comments/1nre1qh/how_not_to_be_successfull_with_your_indie_game/" target="_blank">How (NOT) to be successfull with your indie game. HUGE mistakes I made in my journey so you won't!</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi! I&#39;m a wannabe game developer with a few games already made; however, the one I cared about most is <strong>Defendron</strong>. It is a tower defense game with some roguelike features that I&#39;ve been developing for 2.5 years. I want to share my development journey and most importantly, the MISTAKES I made so you won&#39;t. <strong>If you don&#39;t like long reads, scroll down for a bullet list, but I encourage you to read everything. :)</strong></p> <p>It all started in December 2022 as a fun little project to teach my friends the basics of Unity and spark some interest in gamedev. After few weeks their fascination quickly fizzled, but mine didn&#39;t. I really, and I mean REALLY, loved the process of making this game, so I spent more and more time on it. After ~5 months I published the game on Google Play and itch.io.</p> <p>I did not promote or market the game anywhere, and this is the <strong>FIRST HUUGE MISTAKE</strong>. Even with no budget I could have posted some TikToks or short clips to let people know about the game while it was still in development. Early promotion also shows whether people find the game interesting and whether it&#39;s worth continuing. The game has organically earned about $100 to date (it&#39;s currently not available on Google Play but will be again in the near future).</p> <p>After the initial launch I spent more time polishing the game and set up the Steam page, and here is the <strong>SECOND MISTAKE</strong>: the Steam page should be created early if you know you want to pursue the game. There is nothing more important than Steam wishlists. We&#39;ll get back to that later.</p> <p>On September 14, 2023 my game officially launched on Steam, and as a dumb noobie I didn&#39;t know what I was missing. The game did terribly at launch and there&#39;s no way to go back and fix that. On launch day I sold 25 copies, and 27 in total during the first month. Why? <strong>BECAUSE NO ONE KNEW ABOUT IT.</strong> I launched the game without any audience. You <strong>NEED</strong> to let people know about your game!</p> <p>From my experience and research online, a common rule of thumb is 7,000–10,000 wishlists. Why? Because Steam will help promote your game, and with that kind of foundation you can even be shown on the Steam store pages. To date my game has made $296 on Steam.</p> <p>Arund the same time I also launched the game on the App Store. I spent $100 to get developer access to publish on the App Store, and the game sold a whopping 10 COPIES, earning a total of $27 in a year.</p> <p>Up until now my game has earned a total 423$ in 2.5 years.</p> <p>The next point doesn’t tie to a specific moment in the journey, but looking back I can definitely say this: <strong>MAKE SMALL GAMES</strong>. Make something simple, test if it catches people’s attention, see if it’s interesting, and finish it quickly. I spent a loooot of time on my game (I don’t regret it because it brought me immense joy), but it would have been far less painful to fail with a project that only took 4–5 months and then be ready to jump into another one.</p> <p><strong>Mistakes</strong>:</p> <ol> <li><strong>Not promoting my game</strong>. People had no idea it existed, which led to a poor launch.</li> <li><strong>Setting up the Steam page too late and rushing the launch without any wishlists</strong>. I didn’t gain enough traction to get picked up by the Steam algorithm, which made growing an audience even harder.</li> <li><strong>Taking too long to finish</strong>. Tackling a huge project that might fail is much more costly than failing fast with a small game.</li> </ol> <p>I&#39;m still making updates, and regardless of the outcome I love making Defendron and will continue to work on it as long as I have time. Learn from my mistakes and don&#39;t end up like me. :)</p> <p>EDIT: For anyone wondering here&#39;s the game on Steam <a href="https://store.steampowered.com/app/2508740/Defendron_TD/">https://store.steampowered.com/app/2508740/Defendron_TD/</a></p> <p><strong>Cheers, and thanks for reading all that!</strong></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/reallpepe"> /u/reallpepe </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1nre1qh/how_not_to_be_successfull_with_your_indie_game/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1nre1qh/how_not_to_be_successfull_with_your_indie_game/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1nqlvzc/someone_finally_implemented_their_own_database/" target="_blank">Someone finally implemented their own database backend with our Go SQL engine</a>
-            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/golang/comments/1nqlvzc/someone_finally_implemented_their_own_database/">  </a> </td><td> <!-- SC_OFF --><div class="md"><p>This is a brief overview of go-mysql-server, a Go project that lets you run SQL queries on arbitrary data sources by implementing a handful of Go interfaces. We&#39;ve been waiting years for somebody to implement their own data backend, and someone finally did.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/zachm"> /u/zachm </a> <br/> <span><a href="https://www.dolthub.com/blog/2025-09-25-grafana-with-go-mysql-server/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1nqlvzc/someone_finally_implemented_their_own_database/">[comments]</a></span> </td></tr></table></div>
+            <a href="https://www.reddit.com/r/gamedev/comments/1nrchaq/videogame_maker_ea_in_advanced_talks_to_go/" target="_blank">Videogame maker EA in advanced talks to go private at roughly $50 billion valuation</a>
+            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/gamedev/comments/1nrchaq/videogame_maker_ea_in_advanced_talks_to_go/">  </a> </td><td> &#32; submitted by &#32; <a href="https://www.reddit.com/user/HowlSpice"> /u/HowlSpice </a> <br/> <span><a href="https://www.reuters.com/business/electronic-arts-nears-roughly-50-billion-deal-go-private-wsj-reports-2025-09-26/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1nrchaq/videogame_maker_ea_in_advanced_talks_to_go/">[comments]</a></span> </td></tr></table></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1nqidru/which_librarytool_for/" target="_blank">Which library/tool for integration/acceptance/end-to-end testing for HTTP/HTML applications?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>My default would be to use selenium in other programming languages, but I see that the libraries which provide selenium bindings for Golang didn&#39;t get an update in several years. (Most recent release for Python selenium is August this year.)</p> <p>I also heard about chromep and it looks better (some updates less than a year ago).</p> <p>In the end, my question is, what options do I have to do integration/acceptance/end-to-end testing in Golang for applications with HTTP/HTML as UI? My main concern is longevity of the solution, something, that is still supported in a decade and is supported/used by bigger companies?</p> <p>Edit: Backend Golang App which just creates mostly static HTML with some JavaScript, and I am mostly asking for end-to-end tests / acceptance tests. Of course using Python/Selenium to implement the end-to-end tests is an option, so my question is mostly: Is there an idiomatic/pure Go solution?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/CopyOnWriteCom"> /u/CopyOnWriteCom </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1nqidru/which_librarytool_for/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1nqidru/which_librarytool_for/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/gamedev/comments/1nr2jlj/gallery_of_hundreds_of_steam_games_with_zero/" target="_blank">Gallery of Hundreds of Steam games with zero Reviews</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/cutcss"> /u/cutcss </a> <br/> <span><a href="https://www.gameswithnoreviews.com/?r">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1nr2jlj/gallery_of_hundreds_of_steam_games_with_zero/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1nqi56u/clean_architecture_why_it_saves_projects_where_a/" target="_blank">Clean Architecture: Why It Saves Projects Where a “Simple Change” Stops Being Simple</a>
-            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/golang/comments/1nqi56u/clean_architecture_why_it_saves_projects_where_a/">  </a> </td><td> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Real_Blank"> /u/Real_Blank </a> <br/> <span><a href="https://medium.com/@Realblank/clean-architecture-why-it-saves-projects-where-a-simple-change-stops-being-simple-dfb11f0ae86d">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1nqi56u/clean_architecture_why_it_saves_projects_where_a/">[comments]</a></span> </td></tr></table></div>
+            <a href="https://www.reddit.com/r/gamedev/comments/1nr2ads/how_many_of_you_dont_do_your_own_graphic_design/" target="_blank">How many of you DONT do your own graphic design?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I’ve been a software dev for about 6 years and recently picked unity up as a hobby. It’s been going well, outside of my clear lack of animation/ graphic design skills. After watching a handful of dev logs I’ve noticed that is 75% of the content. Is that just because devs … don’t make YouTube content ? Or is everyone in game design just genuinely good at this part? </p> <p>Wondering if it’s worth taking a break from mechanics to learn the art side of things instead of just using asset bundles I find online. </p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/TheBigJablonska"> /u/TheBigJablonska </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1nr2ads/how_many_of_you_dont_do_your_own_graphic_design/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1nr2ads/how_many_of_you_dont_do_your_own_graphic_design/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1nqfe74/solving_slow_postgresql_tests_in_large_go/" target="_blank">Solving Slow PostgreSQL Tests in Large Go Codebases: A Template Database Approach</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Dear <a href="/r/golang">r/golang</a> community,</p> <p>I&#39;d like to discuss my solution to a common challenge many teams encounter. These teams work on PostgreSQL in Go projects. Their tests take too long because they run database migrations many times.</p> <p>If we have many tests each needing a new PostgreSQL database with a complex schema, these ways to run tests tend to be slow:</p> <ul> <li>Running migrations before each test (the more complex the schema, the longer it takes)</li> <li>using transaction rollbacks (this does not work with some things in PostgreSQL)</li> <li>one database shared among all the tests (interference among tests)</li> </ul> <p>In one production system I worked on, we had to wait for 15-20 minutes for CI to run the test unit tests that need the isolated databases.</p> <p><strong>Using A Template Database from PostgreSQL</strong></p> <p>PostgreSQL has a powerful feature for addressing this problem: template databases. Instead of running migrations for each test database, we do the following: Create a template database with all the migrations once. Create a clone of this template database very fast (29ms on average, no matter how complex the schema). Give each test an isolated database.</p> <p><strong>My library pgdbtemplate</strong></p> <p>I used the idea above to create <a href="https://github.com/andrei-polukhin/pgdbtemplate">pgdbtemplate</a>. This library demonstrates how to apply some key engineering concepts.</p> <p><strong>Dependency Injection &amp; Open/Closed Principle</strong></p> <pre><code>// Core library depends on interfaces, not implementations. type ConnectionProvider interface { Connect(ctx context.Context, databaseName string) (DatabaseConnection, error) GetNoRowsSentinel() error } type MigrationRunner interface { RunMigrations(ctx context.Context, conn DatabaseConnection) error } </code></pre> <p>That lets the connection provider implementations <code>pgdbtemplate-pgx</code> and <code>pgdbtemplate-pq</code> be separate from the core library code. It allows the library to work with many different setups for the database.</p> <p>Tested like this:</p> <pre><code>func TestUserRepository(t *testing.T) { // Template setup is done one time in TestMain! testDB, testDBName, err := templateManager.CreateTestDatabase(ctx) defer testDB.Close() defer templateManager.DropTestDatabase(ctx, testDBName) // Each test gets a clone of the isolated database. repo := NewUserRepository(testDB) // Do a test with features of the actual database... } </code></pre> <p>How fast were these tests? Were they faster?</p> <p>In the table below, the new way was more than twice as fast with complex schemas, which had the largest speed savings:</p> <p>(Note that in practice, larger schemas took somewhat less time, making the difference even more favourable):</p> <table><thead> <tr> <th align="left">Scenario</th> <th align="left">Was Traditional</th> <th align="left">Was Using a Template</th> <th align="left">How much faster?</th> </tr> </thead><tbody> <tr> <td align="left">Simple schema (1 table)</td> <td align="left">~29ms</td> <td align="left">~28ms</td> <td align="left">Very little</td> </tr> <tr> <td align="left">Complex schema (5+ tables)</td> <td align="left">~43ms</td> <td align="left">~29ms</td> <td align="left">50% more speed!</td> </tr> <tr> <td align="left">200 test databases</td> <td align="left">~9.2 sec</td> <td align="left">~5.8 sec</td> <td align="left">37% speed increase</td> </tr> <tr> <td align="left">Memory used</td> <td align="left">Baseline</td> <td align="left">17% less</td> <td align="left">less resources needed</td> </tr> </tbody></table> <p><strong>Technical</strong></p> <ol> <li>The core library is designed so that it does not care about the driver used. Additionally, it is compatible with various PostgreSQL drivers: <code>pgx</code> and <code>pq</code></li> <li>Running multiple tests simultaneously is acceptable. (Thanks to Go developers for <code>sync.Map</code> and <code>sync.Mutex</code>!)</li> <li>The library has a very small number of dependencies.</li> </ol> <p><strong>Has this idea worked in the real world?</strong></p> <p>This has been used with very large setups in the real world. Complex systems were billing and contracting. It has been tested with 100% test coverage. The library has been compared to similar open source projects.</p> <p><strong>Github</strong>: <a href="https://github.com/andrei-polukhin/pgdbtemplate">github.com/andrei-polukhin/pgdbtemplate</a></p> <p>Thanks for reading, and I look forward to your feedback!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Individual_Tutor_647"> /u/Individual_Tutor_647 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1nqfe74/solving_slow_postgresql_tests_in_large_go/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1nqfe74/solving_slow_postgresql_tests_in_large_go/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/gamedev/comments/1nr09d4/lessons_learned_while_building_my_underground/" target="_blank">Lessons learned while building my Underground Voxel World</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>This is how I create levels for my game <em>Goblin Company</em>. Nothing super fancy or innovative, but I thought it could be interesting to share the process as a journey.</p> <p>The level is built from simple primitives (spheres, boxes, cylinders, etc.) combined together. The world is split into chunks, and each chunk into voxels. Each voxel samples the SDF of the primitives (<a href="https://iquilezles.org/articles/distfunctions/">see the bible</a>) and then gets passed to <a href="https://en.wikipedia.org/wiki/Marching_cubes">marching cubes</a> to generate the final mesh.</p> <p>[<a href="https://streamable.com/chrxk6">Here’s a quick visual of the editing in editor</a>]</p> <p>For each primitive I can decide whether it affects only shape, only material, or both. When multiple primitives overlap, the order matters because they all compete to write into the same voxels. Since the game is fully underground, the inside of a primitive usually means “void” and the outside is &quot;full&quot; (solid <em>diggable</em> terrain).</p> <p>I quickly added a <a href="https://i.imgur.com/1io9fHk.png">visualizer to draw chunks</a> for debugging and to fix issues in my implementation.</p> <p>Editing the world was the next problem. At first, every change triggered a full regeneration, which was fine for toy maps but way too slow for big levels. To fix that, I tracked which primitives touch which chunks, so that when I edit something, only the affected chunks get regenerated. That worked much better, but large primitives could still cause big slowdowns.</p> <p>To deal with that, I added a simplified <em>streaming system</em>: only the chunks <strong>around the player</strong> are generated. This worked, but created a funny issue: without terrain loaded, objects and enemies would just fall into the void! The fix was to place <em>spawners</em> instead of objects directly. When a chunk loads, the spawner creates the actor.</p> <p>For actors that should be &quot;inside&quot; the terrain I created a special spawner that trigger when the player digs nearby (so the actor can get out from the terrain).</p> <p>For multiplayer (I was crazy enough to make a <strong>co-op</strong> game), replication is done by sending commands like “<em>dig with radius=R at position X,Y,Z</em>” to clients. It might not be the most robust solution, but it works fine so far. For late joiners, the game pauses, sends them all the modified chunks since the begin, and then resumes.</p> <p>It’s been a long journey, but it’s far from over:</p> <ul> <li>Replication through commands might cause <em>desynchronization</em> between clients (floating-point drift, etc.). I’m considering sending modified chunks periodically to keep them in sync.</li> <li>I still need to add a check to postpone BeginPlay until the player’s underlying terrain is generated. It hasn’t happened yet, but by <em>Murphy’s Law</em>, it will.</li> <li>For the final game, primarily for replayability, I want to add <em>procedural generation</em>. The plan is to build a library of caves and mix them randomly. On top of that, I’d like to randomly populate them with props, foliage, enemies, and other elements.</li> <li>Optimizations on marching cubes algorithm (<a href="https://alphanew.net/index.php?section=articles&amp;site=marchoptim&amp;lang=eng">amazing article about it</a>).</li> </ul> <p>TL;DR: <a href="https://streamable.com/sxcgy6">This is what it looks like in action</a></p> <p>Would you have done something differently?”</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Hurricane86i"> /u/Hurricane86i </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1nr09d4/lessons_learned_while_building_my_underground/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1nr09d4/lessons_learned_while_building_my_underground/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1nqeylp/libro_de_go_en_español/" target="_blank">Libro de Go en español</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Buenas!<br/> Alguien conoce algún libro para aprender Go en español?</p> <p>Gracias.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Mr_Jango"> /u/Mr_Jango </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1nqeylp/libro_de_go_en_español/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1nqeylp/libro_de_go_en_español/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/golang/comments/1nqcnsr/how_to_detect_a_slow_memory_leak_in_golang_binary/" target="_blank">How to detect a slow memory leak in golang binary??</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>The memory consumption increases like 50 Mb per 24 hours. How to start a diagnosis?? I have some array size manipulation in the code, dynamic size changes which could lead to the leak, but cant pinpoint by code. I am a newbee to pprof, so can garbage collector help?? </p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/AR1788"> /u/AR1788 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1nqcnsr/how_to_detect_a_slow_memory_leak_in_golang_binary/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1nqcnsr/how_to_detect_a_slow_memory_leak_in_golang_binary/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/golang/comments/1nqagnj/go_quizzes_101_made_me_give_up/" target="_blank">go quizzes 101 made me give up</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Have anyone tried quizzes on go101 website?<br/> I tried first 3 quiz on slices and it made me loose my mind,, even AI is giving wrong answers..<br/> worst part is even if I run the code and know output still can&#39;t figure out how is that the output T_T</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/AssignmentTough4554"> /u/AssignmentTough4554 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1nqagnj/go_quizzes_101_made_me_give_up/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1nqagnj/go_quizzes_101_made_me_give_up/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/golang/comments/1nqaftr/sync_postgresql_data_to_elasticsearch_in_go/" target="_blank">Sync Postgresql data to ElasticSearch in Go</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hello, are there any tools written in go for syncing data from postgresql to elasticsearch?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/chechyotka"> /u/chechyotka </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1nqaftr/sync_postgresql_data_to_elasticsearch_in_go/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1nqaftr/sync_postgresql_data_to_elasticsearch_in_go/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/golang/comments/1nq89p7/i_rebuilt_govisual_and_added_deep_pprofbased/" target="_blank">I rebuilt GoVisual and added deep pprof-based profiling (CPU/Memory Flame Graphs, SQL/HTTP tracking)</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hey,</p> <p>I&#39;ve just pushed a major update to <strong>GoVisual</strong>, my visual profiler for Go, and I wanted to share it with you all.</p> <p>The biggest news is the addition of a comprehensive performance profiling suite. It&#39;s built on top of pprof and gives you deep insights to diagnose bottlenecks quickly:</p> <p><strong>CPU &amp; Memory Profiling</strong>: Generate and explore flame graphs directly in the UI to pinpoint expensive functions and memory allocation hotspots.</p> <p><strong>SQL &amp; HTTP Call Tracking</strong>: Automatically monitor outgoing database queries and external API calls to find slow operations.</p> <p><strong>Bottleneck Detection</strong>: The system automatically flags performance issues with actionable insights.</p> <p>On top of that, I completely rewrote the dashboard as a modern React/Preact Single Page Application with TypeScript. All static assets are now embedded in the Go binary, so govisual remains a dependency-free, drop-in middleware.</p> <p>I&#39;m hoping this makes it a much more powerful tool for the Go community. You can check out the new profiling and tracing examples in the repo to see it in action.</p> <p>Would love for you to try it out and give me some feedback!</p> <p><a href="https://github.com/doganarif/GoVisual">https://github.com/doganarif/GoVisual</a></p> <p>Cheers!!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/doganarif"> /u/doganarif </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1nq89p7/i_rebuilt_govisual_and_added_deep_pprofbased/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1nq89p7/i_rebuilt_govisual_and_added_deep_pprofbased/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/golang/comments/1nq7utd/announcing_do_v20_dependency_injection_for_go/" target="_blank">Announcing "do" v2.0 - Dependency injection for Go</a>
-            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/golang/comments/1nq7utd/announcing_do_v20_dependency_injection_for_go/">  </a> </td><td> <!-- SC_OFF --><div class="md"><p>After 2y in beta, I’ve just released v2 of “<strong>do</strong>”, the <strong>dependency injection</strong> toolkit for Golang.</p> <p>This major version introduces a new <strong>scope-based architecture</strong>, transient services, <strong>interface binding</strong>, improved dependency tracking, and <strong>circular dependency detection</strong>.</p> <p>Error handling and service naming are more consistent, and based on your feedback, a <strong>troubleshooting UI</strong> has been added.</p> <p>A new LLM-ready documentation is available, featuring numerous demos you can run in 1 click: <a href="https://do.samber.dev/">https://do.samber.dev/</a></p> <p>Read the full changelog here: <a href="https://github.com/samber/do/releases/tag/v2.0.0">https://github.com/samber/do/releases/tag/v2.0.0</a></p> <p>Migration from v1: <a href="https://do.samber.dev/docs/upgrading/from-v1-x-to-v2">https://do.samber.dev/docs/upgrading/from-v1-x-to-v2</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/samuelberthe"> /u/samuelberthe </a> <br/> <span><a href="https://github.com/samber/do/releases/tag/v2.0.0">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1nq7utd/announcing_do_v20_dependency_injection_for_go/">[comments]</a></span> </td></tr></table></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/golang/comments/1nq177s/vscode_follow_imports_correctly/" target="_blank">VSCode: Follow imports correctly?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>The thing that grinds my gears with golang currently, or rather with my setup which may be faulty. I&#39;m using vscode and I&#39;m working on a large project which imports modules from my organization (e.g. &quot;github.com/org/pkg&quot;) as well as my own module which is named &quot;github.com/org/local-pkg&quot;. I would like to be able to follow the hyperlinks of the imports to the correct path, however vscode always defaults to pkg.go.dev/module (e.g pkg.go.dev/github.com/org/pkg) which don&#39;t exist. My frustration is in two parts: </p> <ol> <li><p>Whenever I&#39;m importing a package from my local setup, I would like it to just refer me to the local code (select the first file of the package or whatever) so I can navigate within my code in vscode more efficiently </p></li> <li><p>I would like to be able to open the godev site when its relevant, however when the import already has a link which isn&#39;t public go package I&#39;d like it to point me to that actual url.</p></li> </ol> <p>Any help greatly appreciated, thanks guys :)</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Upset-Vehicle-1019"> /u/Upset-Vehicle-1019 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1nq177s/vscode_follow_imports_correctly/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1nq177s/vscode_follow_imports_correctly/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/golang/comments/1nq09l1/add_version_info_to_panic_would_that_violate/" target="_blank">Add version info to panic: Would that violate compatibility promise?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>When there is a panic, I see line numbers. But I don&#39;t know which version of the code is running:</p> <p><code> goroutine 385 [running]: sigs.k8s.io/controller-runtime/pkg/internal/controller.(*Controller).Reconcile.func1() sigs.k8s.io/controller-runtime@v0.18.7/pkg/internal/controller/controller.go:111 +0x19c panic({0x16a3180?, 0x2bbdda0?}) runtime/panic.go:791 +0x124 github.com/syself/cluster-api-provider-hetzner/pkg/services/hcloud/loadbalancer.createOptsFromSpec(0x400061d508) github.com/syself/cluster-api-provider-hetzner/pkg/services/hcloud/loadbalancer/loadbalancer.go:326 +0x1b8 github.com/syself/cluster-api-provider-hetzner/pkg/services/hcloud/loadbalancer.(*Service).createLoadBalancer(0x4000aa5828, {0x1c60e28, 0x40008152f0}) github.com/syself/cluster-api-provider-hetzner/pkg/services/hcloud/loadbalancer/loadbalancer.go:290 +0x3c </code></p> <p>I would love to see the version info (<a href="https://pkg.go.dev/runtime/debug@master#BuildInfo.Main">BuildInfo.Main</a>) in the above output.</p> <p>But I guess it is not possible that Go adds version info to that output, because it would violate compatibility promise?</p> <p>Is that correct?</p> <p>(I know that I could handle the panic in my code via recover)</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/guettli"> /u/guettli </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1nq09l1/add_version_info_to_panic_would_that_violate/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1nq09l1/add_version_info_to_panic_would_that_violate/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/gamedev/comments/1nqryo5/if_you_post_in_this_subreddit_asking_questions/" target="_blank">If you post in this subreddit asking questions like “how to get started in game dev?”, you aren’t ready to make a game of any size</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Sucks to hear but it’s the truth</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/ammoburger"> /u/ammoburger </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1nqryo5/if_you_post_in_this_subreddit_asking_questions/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1nqryo5/if_you_post_in_this_subreddit_asking_questions/">[comments]</a></span></div>
           </li>
   
         </ul>
@@ -399,122 +1337,179 @@
         <ul class="item-list">
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1nqmk02/rust_bi_platforms/" target="_blank">Rust BI Platforms</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Are there any good bi projects written in rust?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Much_Perspective_693"> /u/Much_Perspective_693 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1nqmk02/rust_bi_platforms/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nqmk02/rust_bi_platforms/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1nriuk2/a_fullstack_voice_to_voice_chat_demo/" target="_blank">A fullstack Voice to Voice chat demo.</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p><a href="https://github.com/danielclough/voice-chat-whisper-ollama-espeak-wasm">https://github.com/danielclough/voice-chat-whisper-ollama-espeak-wasm</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/danielclough"> /u/danielclough </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1nriuk2/a_fullstack_voice_to_voice_chat_demo/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nriuk2/a_fullstack_voice_to_voice_chat_demo/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1nqkkzv/debugger_support_for_rustwasm_in_chromevscode/" target="_blank">Debugger support for rust/wasm in Chrome/VSCode</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Ignored by Microsoft for months but still kicking, it seems. If you&#39;re interested in this, make sure you at least give it a reaction</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/juangcampa"> /u/juangcampa </a> <br/> <span><a href="https://github.com/microsoft/vscode-dwarf-debugging/pull/8">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nqkkzv/debugger_support_for_rustwasm_in_chromevscode/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1nr9dpf/im_thinking_of_dropping_rust_due_to_the_lack_of/" target="_blank">I'm thinking of dropping rust due to the lack of partial borrowing.</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>To start off I do wanna say I love a lot of things about rust, enums, options, traits, macros, the whole suite of tools (bacon, clippy, etc.) and so on. In fact I would likely still use rust for some types of coding.</p> <p>However my specific issue comes with specifically object oriented patterns and more specifically with <code>self.method(&amp;self)</code> borrowing the WHOLE self, rather than just parts of it.</p> <p>The way I&#39;ve been taught to think about the rust borrow checker is that:<br/> - 1 object can be read from mulitple places<br/> - 1 object can only be written from 1 place and during that time it cannot be read</p> <p>All of this is completely reasonable, makes sense and works. The problem comes that self.methods limit a lot more than just the thing you are actually reading - the borrow checker restricts the whole self. In that sense rust simply punishes you for using self.methods in a OOP style compared to using general methods (<code>method(&amp;self)</code>).</p> <p>I haven&#39;t found a way to cope with this, it is something that always ends up making me write code that is either more cluttered or more expensive (using clone() to get around ref issues).</p> <p>I did spend a good amount of time coding in rust and working on a project, but at this point I think I better quit early, since from what I&#39;ve seen it won&#39;t get better. As cool as the language is, it ends up creating a lot more issues for me than it is solving.</p> <p>Edit: I got a very nice advice for my issue - using std::mem::take to temporarily take out the memory I want to mutate out of the struct, mutate it that way and then return it.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/CabalCrow"> /u/CabalCrow </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1nr9dpf/im_thinking_of_dropping_rust_due_to_the_lack_of/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nr9dpf/im_thinking_of_dropping_rust_due_to_the_lack_of/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1nqhreu/media_clippy_wants_inceptionlevel_borrowing/" target="_blank">[Media] Clippy wants Inception-Level Borrowing</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/This_Reporter_974"> /u/This_Reporter_974 </a> <br/> <span><a href="https://i.redd.it/5bprm71eedrf1.png">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nqhreu/media_clippy_wants_inceptionlevel_borrowing/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1nr96qr/cloudflare_just_got_faster_and_more_secure/" target="_blank">Cloudflare just got faster and more secure, powered by Rust</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/orium_"> /u/orium_ </a> <br/> <span><a href="https://blog.cloudflare.com/20-percent-internet-upgrade/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nr96qr/cloudflare_just_got_faster_and_more_secure/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1nqh4ga/a_pure_rustwasm_texttospeech_demo_with_parlertts/" target="_blank">A Pure Rust/Wasm Text-To-Speech Demo with Parler-TTS</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>For testing. Nowhere near production ready.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/danielclough"> /u/danielclough </a> <br/> <span><a href="https://github.com/danielclough/parler-tts-wasm">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nqh4ga/a_pure_rustwasm_texttospeech_demo_with_parlertts/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1nr5kfg/crossfire_v21_probably_the_fastest_mpmc_channel/" target="_blank">crossfire v2.1: probably the fastest mpmc channel in bounded scenario</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Crossfire is a lockless channel based on crossbeam, which supports both async and threaded context.</p> <p>I have recently completed version v2.1, removed the dependency on crossbeam-channel, and implemented with a <a href="https://github.com/frostyplanet/crossfire-rs/wiki/crossbeam-related">modified version of crossbeam-queue</a>. And due to having a lighter notification mechanism, some cases in blocking context are even faster than the original crossbeam-channel,</p> <p>doc: <a href="https://docs.rs/crossfire">https://docs.rs/crossfire</a></p> <p>github: <a href="https://github.com/frostyplanet/crossfire-rs">https://github.com/frostyplanet/crossfire-rs</a></p> <p>benchmark: <a href="https://github.com/frostyplanet/crossfire-rs/wiki/benchmark-v2.1.0-vs-v2.0.26-2025%E2%80%9009%E2%80%9021">https://github.com/frostyplanet/crossfire-rs/wiki/benchmark-v2.1.0-vs-v2.0.26-2025%E2%80%9009%E2%80%9021</a></p> <p>For the concept, please read <a href="https://github.com/frostyplanet/crossfire-rs/wiki#v21-compared-to-other-channels">https://github.com/frostyplanet/crossfire-rs/wiki#v21-compared-to-other-channels</a> . In brief, compared to Kanal, Crossfire is cancellation-safe, and it comes with send_timeout/recv_timeout functions to support various async runtimes.</p> <p>If you are interested in the internal state transfer: <a href="https://github.com/frostyplanet/crossfire-rs/wiki/state-transfer">https://github.com/frostyplanet/crossfire-rs/wiki/state-transfer</a></p> <p>Current test status is maintained in the README section <a href="https://github.com/frostyplanet/crossfire-rs?tab=readme-ov-file#test-status">https://github.com/frostyplanet/crossfire-rs?tab=readme-ov-file#test-status</a></p> <p>I began to test in August, and have been debugging on Arm workflows, and found some stability issues on Tokio, probably due to Arm server being less used in production. I have a PR <a href="https://github.com/tokio-rs/tokio/pull/7622">https://github.com/tokio-rs/tokio/pull/7622</a> merged and not released yet, which fixed a frequent issue in <code>wake_by_ref</code>. But currently, there&#39;s still a rare issue with current-thread schedule that has not been pinpointed <a href="https://github.com/tokio-rs/tokio/issues/7632">https://github.com/tokio-rs/tokio/issues/7632</a>. If you use Arm platform, you could keep an eye on future tokio updates, and avoid using current-thread scheduler until it&#39;s fixed (the multi-thread scheduler might have more considerations for inter-thread notification)</p> <p>There is no known problem on x86, though. I recently split the workflows for threaded, async-std, smol, so far so good.</p> <p><a href="https://preview.redd.it/irkz5mjhbjrf1.png?width=857&amp;format=png&amp;auto=webp&amp;s=a2636366e5fd348801aea23d834790bec26be10d">https://preview.redd.it/irkz5mjhbjrf1.png?width=857&amp;format=png&amp;auto=webp&amp;s=a2636366e5fd348801aea23d834790bec26be10d</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/frostyplanet"> /u/frostyplanet </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1nr5kfg/crossfire_v21_probably_the_fastest_mpmc_channel/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nr5kfg/crossfire_v21_probably_the_fastest_mpmc_channel/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1nqfgj5/fast_udp_io_for_firefox_in_rust/" target="_blank">Fast UDP I/O for Firefox in Rust</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/dochtman"> /u/dochtman </a> <br/> <span><a href="https://max-inden.de/post/fast-udp-io-in-firefox/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nqfgj5/fast_udp_io_for_firefox_in_rust/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1nr4cpd/the_tokioconf_2026_call_for_talk_proposals_is_now/" target="_blank">The TokioConf 2026 Call For Talk Proposals is now open</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/carllerche"> /u/carllerche </a> <br/> <span><a href="https://tokio.rs/blog/2025-09-26-announcing-tokio-conf-cfp">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nr4cpd/the_tokioconf_2026_call_for_talk_proposals_is_now/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1nqedp9/media_i_made_a_tui_dualshock_4_controller_tester/" target="_blank">[Media] I made a TUI DualShock 4 controller tester</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I used rusb to listen for the byte array sent by the controller and mapped the different buttons on the controller. Ratatui was used to make the terminal interface which shows which buttons have been pressed. With this you can test if your controller buttons are functional. I got inspired by keyboard testers.</p> <p><a href="https://github.com/WilliamTuominiemi/dualshock4-tester">https://github.com/WilliamTuominiemi/dualshock4-tester</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/William_420"> /u/William_420 </a> <br/> <span><a href="https://i.redd.it/2quoovm5scrf1.jpeg">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nqedp9/media_i_made_a_tui_dualshock_4_controller_tester/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1nr3c2f/the_embedded_rustacean_issue_55/" target="_blank">The Embedded Rustacean Issue #55</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/TheEmbeddedRustacean"> /u/TheEmbeddedRustacean </a> <br/> <span><a href="https://www.theembeddedrustacean.com/p/the-embedded-rustacean-issue-55">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nr3c2f/the_embedded_rustacean_issue_55/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1nqe81o/ergonomic_blanket_implementations_with_many/" target="_blank">Ergonomic Blanket Implementations with Many Constraints</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p><code>trait VectorElement:</code><br/> <code>Sized</code><br/> <code>+ Copy</code><br/> <code>+ PartialEq</code><br/> <code>+ Add&lt;Self, Output = Self&gt;</code><br/> <code>+ Sub&lt;Self, Output = Self&gt;</code><br/> <code>+ Div&lt;Self, Output = Self&gt;</code><br/> <code>+ Mul&lt;Self, Output = Self&gt;</code><br/> <code>+ AddAssign&lt;Self&gt;</code><br/> <code>+ SubAssign&lt;Self&gt;</code><br/> <code>+ DivAssign&lt;Self&gt;</code><br/> <code>+ MulAssign&lt;Self&gt;</code><br/> <code>{}</code> </p> <p><code>impl&lt;T&gt; VectorElement for T where</code><br/> <code>T: Sized</code><br/> <code>+ Copy</code><br/> <code>+ PartialEq</code><br/> <code>+ Add&lt;Self, Output = Self&gt;</code><br/> <code>+ Sub&lt;Self, Output = Self&gt;</code><br/> <code>+ Div&lt;Self, Output = Self&gt;</code><br/> <code>+ Mul&lt;Self, Output = Self&gt;</code><br/> <code>+ AddAssign&lt;Self&gt;</code><br/> <code>+ SubAssign&lt;Self&gt;</code><br/> <code>+ DivAssign&lt;Self&gt;</code><br/> <code>+ MulAssign&lt;Self&gt;</code><br/> <code>{}</code> </p> <p>My IDE warns about the duplicate code here and it is indeed cumbersome to keep these two sets of constraints in sync. Is there a more ergonomic way to to do this? The only reason I want the `VectorElement` trait is that I can use it as a concise constraint. </p> <p>Example:<br/> <code>pub(crate) trait Vector&lt;T&gt;:</code><br/> <code>Sized</code><br/> <code>+ Copy</code><br/> <code>+ PartialEq</code><br/> <code>+ Add&lt;T&gt;</code><br/> <code>+ AddAssign&lt;T&gt;</code><br/> <code>+ Sub&lt;T&gt;</code><br/> <code>+ SubAssign&lt;T&gt;</code><br/> <code>+ Div&lt;T&gt;</code><br/> <code>+ DivAssign&lt;T&gt;</code><br/> <code>+ Mul&lt;T&gt;</code><br/> <code>+ MulAssign&lt;T&gt;</code><br/> <code>+ Add&lt;Self&gt;</code><br/> <code>+ AddAssign&lt;Self&gt;</code><br/> <code>+ Sub&lt;Self&gt;</code><br/> <code>+ SubAssign&lt;Self&gt;</code><br/> <code>+ Div&lt;Self&gt;</code><br/> <code>+ DivAssign&lt;Self&gt;</code><br/> <code>+ Mul&lt;Self&gt;</code><br/> <code>+ MulAssign&lt;Self&gt;</code><br/> <code>where</code><br/> <code>T: VectorElement,</code><br/> <code>{</code><br/> <code>fn dot(&amp;self, rhs: &amp;Self) -&gt; T;</code><br/> <code>fn length(&amp;self) -&gt; T;</code><br/> <code>}</code> </p> <p>It should be pretty obvious what I&#39;m trying to do here. There is a derive macro involved to implement the `Vector` trait. I won&#39;t protest if someone sees this post and recommends a library that does all of this but I do want the experience writing procedural macros. </p> <p>Edit: formatting</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/that-is-not-your-dog"> /u/that-is-not-your-dog </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1nqe81o/ergonomic_blanket_implementations_with_many/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nqe81o/ergonomic_blanket_implementations_with_many/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1nr2zpx/call_for_testing_failfast_within_test_targets/" target="_blank">Call for testing: `--fail-fast` within test targets</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>On Rust nightly-2025-09-19 and later, you can pass <code>-Zunstable-options --fail-fast</code> as an argument <em>to the test binary</em> and the target will terminate when one test fails. </p> <p>In situations where you only want to know if there are any failures this can be dramatically faster. My motivation is that <a href="https://mutants.rs">cargo mutants</a> just wants to establish whether an injected bug causes any tests to fail.</p> <p>Please try it out and report success or problems in this thread or in <a href="https://github.com/rust-lang/rust/issues/142859">https://github.com/rust-lang/rust/issues/142859</a>. I&#39;d love to hear if it&#39;s useful or if there&#39;s anything else that needs to be fixed before it&#39;s stabilized.</p> <p>For example:</p> <pre><code>cargo +nightly test -- --fail-fast -Zunstable-options </code></pre> <p>This new unstable option is complementary to the existing <code>--fail-fast</code> understood by the <code>cargo test</code> runner:</p> <ul> <li><code>cargo test --fail-fast</code>, which is on by default, causes cargo to stop running targets after the first one fails. </li> <li><code>cargo test -- --fail-fast -Zunstable-options</code> causes <em>the individual target</em> to stop as soon as one test fails.</li> </ul> <p>This works as you would expect with doctests, e.g. <code>cargo test --doc -- -Zunstable-options --fail-fast</code> will stop after the first doctest failure.</p> <p>Since libtest by default runs tests on multiple threads it&#39;s possible that another test will keep running for some time after the first failure: they&#39;re not proactively cancelled. Also, with multiple threads the ordering and therefore the first failure is nondeterministic.</p> <p>This option is not needed with Nextest, whose process-per-test structure lets it already stop after the first failure.</p> <p>The feature is documented in <a href="https://doc.rust-lang.org/nightly/rustc/tests/index.html#--fail-fast">https://doc.rust-lang.org/nightly/rustc/tests/index.html#--fail-fast</a>.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/sourcefrog"> /u/sourcefrog </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1nr2zpx/call_for_testing_failfast_within_test_targets/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nr2zpx/call_for_testing_failfast_within_test_targets/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1nqdpi9/finally_dipping_my_toes_in_rust_and_its_awesome/" target="_blank">Finally dipping my toes in rust - and it's awesome! Checkout my first project: A vim-style approach to shell aliases 🐚</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><h2>Rust is awesome!</h2> <p>So I finally took the time earlier this year to take a closer look at what all the hype regarding rust is all about. And I have zero regrets.</p> <p>Coming from the world of C++, there are a lot of things I appreciate a lot when working with rust. Obviously there&#39;s things like the memory guarantees the borrow checker gives you. But what really sold me is the surround infrastructure. The tooling, the build system, the dependency management, the awesomeness of all the stuff on crates.io - I love it.</p> <h2>Leadr: A first (useful) toy project</h2> <p>Anyway, checkout this little cli tool I built, maybe you&#39;ll find it interesting as well. It&#39;s called leadr and you&#39;ll find it on <a href="https://github.com/ll-nick/leadr">GitHub</a> and <a href="https://crates.io/crates/leadr">crates.io</a>. The core idea is to bring (neo)vims <a href="https://neovim.io/doc/user/map.html#mapleader">leader key concept</a> right to your terminal.</p> <h2>How it works</h2> <p>You press a single &quot;leadr&quot; keybinding (default <code>&lt;Ctrl-g&gt;</code>) followed by a key sequence to instantly:</p> <ul> <li>Execute common commands (e.g. <code>gs</code> for <code>git status</code>)</li> <li>Insert templates like <code>git commit -m &quot;&quot;</code> with your cursor already in between the quotes</li> <li>Prepend commands (e.g. add <code>sudo</code> to what you’ve already typed)</li> <li>Append output pipes like <code>| pbcopy</code></li> <li>Surround commands in quotes or <code>$(...)</code></li> <li>Insert dynamic values like the current date</li> </ul> <p>Checkout the repo for a demo video as well as a detailed description of what leadr is all about - including the <a href="https://github.com/folke/which-key.nvim">which-key</a> inspired pop-up panel in case you forgot your key mappings.</p> <p>I&#39;m open for feedback especially regarding rust best practices or common pitfalls I may have missed.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/dotstk"> /u/dotstk </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1nqdpi9/finally_dipping_my_toes_in_rust_and_its_awesome/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nqdpi9/finally_dipping_my_toes_in_rust_and_its_awesome/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1nr2ty0/im_a_beginner_in_rust_and_i_need_advice/" target="_blank">Im a beginner in rust and I need advice</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Im just getting into Rust and was wondering if anyone has tips on how to actually think in Rust when writing code. The compiler feels super strict, so I’m trying to adjust my mindset. Also, if you know any fun beginner project ideas to practice with, Id really appreciate it. Thanks!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/VortexDrags"> /u/VortexDrags </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1nr2ty0/im_a_beginner_in_rust_and_i_need_advice/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nr2ty0/im_a_beginner_in_rust_and_i_need_advice/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1nqbu9r/i_made_a_joplin_alternative_with_egui/" target="_blank">I Made a Joplin Alternative with EGui</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I knew I wanted something cross platform, lightweight, with a rich text editor that supported syntax highlighting.</p> <p>I considered Slint, Tauri, EGui, or going away from Rust and using C#, Dart/Flutter, or something with Go. (I knew I really wanted to stick to Rust if possible). The goal was something simpler but similar in spirit to Joplin, but not in Electron/Typescript.</p> <p>I was pleasantly surprised by how easy and full featured Egui has been to use. I found Slint promising - but it didn&#39;t have a good option for rich text editing. I didn&#39;t want to wrap Scintilla. (I also wanted to avoid wrapping c/c++, hence avoiding gtk or qt). I didn&#39;t really consider Iced, it&#39;s cross platform story didn&#39;t seem as good as Egui&#39;s at first glance. Tauri was surprisingly wonky to get working the way I wanted and had higher resource usage.</p> <p>End result, a simple todo app supporting multiple markdown lists, that behaves the way I want it to (I used to hit &quot;ctrl+s&quot; via muscle memory all the time in Joplin), that uses a fraction of the resources of Joplin, and launches instantly.</p> <p><a href="https://github.com/danpozmanter/NoteSquirrel/tree/main">Github: Code</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/DanManPanther"> /u/DanManPanther </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1nqbu9r/i_made_a_joplin_alternative_with_egui/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nqbu9r/i_made_a_joplin_alternative_with_egui/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1nr2lg2/opengl_in_rust_3d_renderer/" target="_blank">Opengl in RUST (3d renderer)</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/PuzzleheadedTower523"> /u/PuzzleheadedTower523 </a> <br/> <span><a href="/r/GraphicsProgramming/comments/1nqvzny/opengl_in_rust_3d_renderer/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nr2lg2/opengl_in_rust_3d_renderer/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1nqbe9s/built_genv_a_tiny_tool_to_manage_env_vars_across/" target="_blank">Built genv, a tiny tool to manage env vars across shells</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I often ran into the problem that there was no fast and portable way to manage environment variables across Bash, Zsh, and Fish. Putting them in my Fish config wasn’t an option either, since I keep that config git-tracked and sometimes push it to GitHub.</p> <p>So I created <strong>genv,</strong> a small utility that stores variables in <code>~/.config/genv/env</code> and lets you load them into any shell with a single <code>eval &quot;$(genv export)&quot;</code> or <code>genv export | source</code>.</p> <p>It’s minimal, requires no daemon, and is also available on the AUR as <a href="https://aur.archlinux.org/packages/genv-git"><code>genv-git</code></a>. Sharing it here in case anyone else had the same problem and could use a lightweight solution.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/_objz"> /u/_objz </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1nqbe9s/built_genv_a_tiny_tool_to_manage_env_vars_across/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nqbe9s/built_genv_a_tiny_tool_to_manage_env_vars_across/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1nr1fui/official_beta_release_of_the_cosmic_desktop/" target="_blank">Official beta release of the Cosmic desktop environment from System76 (a graphical shell written in Rust for PopOS, Fedora, Arch, Redox, and more)</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/kibwen"> /u/kibwen </a> <br/> <span><a href="https://system76.com/cosmic">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nr1fui/official_beta_release_of_the_cosmic_desktop/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1nq9012/introducing_newsletter_support_in_blogr_a/" target="_blank">Introducing Newsletter Support in Blogr - A Rust-powered Static Site Generator</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;m excited to share that <strong>Blogr</strong>, a open-source static site generator built in Rust, now includes comprehensive newsletter functionality.</p> <p>Blogr is a fast, lightweight static site generator designed specifically for blogs. It offers Markdown-based content creation, a built-in terminal editor with live preview, and one-command deployment to GitHub Pages. You can see it in action at <a href="https://blog.gokuls.in/">https://blog.gokuls.in/</a> which is built entirely with Blogr.</p> <h2>Newsletter Features</h2> <p><strong>Subscriber Management</strong> - Email subscription collection via IMAP integration - Interactive approval interface for managing subscriber requests - Import/export from popular services (Mailchimp, ConvertKit, Substack, etc.,) - REST API for external integrations</p> <p><strong>Newsletter Creation</strong> - Automatically generate newsletters from your latest blog posts - Preview before sending</p> <p><strong>Reliable Delivery</strong> - SMTP integration with rate limiting - Test email functionality - Batch sending with progress tracking</p> <h2>Key Commands</h2> <p>```bash</p> <h1>Fetch new subscribers from your email inbox</h1> <p>blogr newsletter fetch-subscribers</p> <h1>Launch approval UI to manage requests</h1> <p>blogr newsletter approve</p> <h1>Send newsletter with your latest post</h1> <p>blogr newsletter send-latest</p> <h1>Import existing subscribers</h1> <p>blogr newsletter import --source mailchimp subscribers.csv</p> <h1>Start REST API server for integrations</h1> <p>blogr newsletter api-server --port 3001 --api-key secret ```</p> <h2>Setup</h2> <p>Newsletter functionality integrates seamlessly with your existing Blogr blog. Simply enable it in your <code>blogr.toml</code> configuration with your IMAP/SMTP settings, and you&#39;re ready to start collecting subscribers.</p> <p>The system works by monitoring a dedicated email address for subscription requests, providing an approval interface, and then sending newsletters using your SMTP configuration.</p> <p>Check out the project at <a href="https://github.com/bahdotsh/blogr">https://github.com/bahdotsh/blogr</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/New-Blacksmith8524"> /u/New-Blacksmith8524 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1nq9012/introducing_newsletter_support_in_blogr_a/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nq9012/introducing_newsletter_support_in_blogr_a/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1nr06s6/genedex_a_small_and_fast_fmindex_for_rust/" target="_blank">genedex: A Small and Fast FM-Index for Rust</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hello everyone,</p> <p>I want to share with you the FM-Index implementation I (a human) have been working on. Here is the GitHub link: <a href="https://github.com/feldroop/genedex">genedex</a>.</p> <p>The FM-Index is a full-text index data structure that allows efficiently counting and retrieving the positions of all occurrenes of (typically short) sequences in very large texts. It is widely used in sequence analysis and bioinformatics.</p> <p>I also created a thorough evaluation of all existing Rust implementations of this data structure, including benchmarks and plots. You can find it <a href="https://github.com/feldroop/rust-fmindex-benchmark">here</a>. </p> <p>I would love to hear your opinions and feedback about this project.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/frolix_bloop"> /u/frolix_bloop </a> <br/> <span><a href="https://github.com/feldroop/genedex">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nr06s6/genedex_a_small_and_fast_fmindex_for_rust/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1nq720f/i_made_for_fun_an_audio_player_with_iced/" target="_blank">I made for fun an Audio Player with Iced</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I made a small cross‑platform desktop audio player built with Iced (wgpu) for the UI and Rodio + Symphonia for audio playback/decoding.</p> <ul> <li>UI: Iced 0.13 (wgpu backend, async via Tokio)</li> <li>Audio: Rodio 0.21 with Symphonia decoders</li> </ul> <p>Has all the necessary features that should be expected by an Audio Player.</p> <p>Thanks everyone for checking it out!</p> <p><a href="https://github.com/milen-denev/audio-player">https://github.com/milen-denev/audio-player</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Milen_Dnv"> /u/Milen_Dnv </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1nq720f/i_made_for_fun_an_audio_player_with_iced/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nq720f/i_made_for_fun_an_audio_player_with_iced/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1nr0160/github_decodetalkerslibappindicatorzbus/" target="_blank">GitHub - Decodetalkers/libappindicator-zbus</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I have used zbus to rewrite the libappindicator. This repo, which is the crate for tray implement., is the pure rust implement. Now the tray-icon crate relays on the c binding lib of libappindicator, which makes it relays on gtk. I think it maybe not good. and libappindicator has not been updated for many years, so I think it is time to rewrite it.</p> <p>It was a hard time, because there is too few document about the protocal. What I can do is to read other implements, like that one in qt, and gtk. And finally I made it.</p> <p>I take a lot of reference for iced, the code of iced is very good, so I use the same way to design it. Thanks to that way, there is not somthing like `Arc&lt;dyn Fn&gt;`. I feel good about it.</p> <p>There is no document or README now, so you can read the examples now.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Massive-Collection80"> /u/Massive-Collection80 </a> <br/> <span><a href="https://github.com/Decodetalkers/libappindicator-zbus">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nr0160/github_decodetalkerslibappindicatorzbus/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1nq6ic5/typeerasing_dyn_traits_in_rust/" target="_blank">Type-erasing dyn traits in Rust</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>In Rust, <code>Box&lt;dyn Any&gt;</code> lets you store any type and recover it later, but what if you don’t want the concrete type? What if you want to go back to a <code>Box&lt;dyn SomeTrait&gt;</code> instead?</p> <p>It is possible to just store <code>Box&lt;dyn SomeTrait&gt;</code> in <code>Box&lt;dyn Any&gt;</code>. But can we do this without double boxing?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/kimamor"> /u/kimamor </a> <br/> <span><a href="https://blog.romamik.com/blog/2026-09-25-type-erased-dyn-trait/#type-erased-trait-objects-implementation">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nq6ic5/typeerasing_dyn_traits_in_rust/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1nqyz39/burst_an_opinionated_crossplatform_backup_cli/" target="_blank">Burst - An opinionated, cross‑platform backup CLI written in Rust.</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hello Rustaceans,</p> <p><a href="https://github.com/fred1268/burst">Burst</a> is the new project I have been working on lately. I hope this can be interesting to some of you guys.</p> <p>Have a nice weekend!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/fred1268"> /u/fred1268 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1nqyz39/burst_an_opinionated_crossplatform_backup_cli/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nqyz39/burst_an_opinionated_crossplatform_backup_cli/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1nq53ev/metarule_support_in_pest3_early_alpha_prototype/" target="_blank">Meta-rule support in pest3 early alpha prototype</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/tomtau"> /u/tomtau </a> <br/> <span><a href="https://github.com/pest-parser/pest/discussions/1122">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nq53ev/metarule_support_in_pest3_early_alpha_prototype/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1nqynrb/media_we_built_a_p2p_vpn_that_runs_over_a/" target="_blank">[Media] We built a P2P VPN that runs over a Reticulum mesh network and made it open-source</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>rns-vpn-rs makes it possible to run a P2P VPN over a Reticulum mesh network.</p> <p>In practice, that means:</p> <p>- You can assign private IPs to Reticulum nodes.</p> <p>- Any app that speaks plain old IP (UDP/TCP) can now run on top of Reticulum.</p> <p>- Developers can connect services (chat, servers, APIs, telemetry feeds, etc.) across a Reticulum mesh without writing Reticulum-specific code.</p> <p>It behaves like a normal VPN client. Peers show up as reachable IPs, and traffic is transparently routed over the mesh.</p> <p>With this, projects can start routing any IP traffic over reticulum-rs, opening the door for all kinds of real-world use cases: off-grid comms, decentralized infrastructure, resilient field networking, and more.</p> <p>Repo: <a href="https://github.com/BeechatNetworkSystemsLtd/rns-vpn-rs">https://github.com/BeechatNetworkSystemsLtd/rns-vpn-rs</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/beechatadmin"> /u/beechatadmin </a> <br/> <span><a href="https://i.redd.it/yswapqpnthrf1.png">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nqynrb/media_we_built_a_p2p_vpn_that_runs_over_a/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1nq4wa0/odbc_in_sqlx/" target="_blank">odbc in sqlx</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi!<br/> I’m the author of <a href="https://sql-page.com">SQLPage</a> and maintainer of <a href="https://github.com/sqlpage/sqlx-oldapi">sqlx-oldapi</a>, a fork of the <a href="https://github.com/launchbadge/sqlx">sqlx</a> database library from before Microsoft SQL Server support was dropped.</p> <p>I’m currently working on adding <strong>ODBC support</strong> to <code>sqlx</code>. ODBC is a standard API with drivers for many databases: DuckDB, Snowflake, BigQuery, and many others. It decouples your app from the database, and lets users install new database drivers at runtime.</p> <p>The first beta is now live on crates.io: <a href="https://crates.io/crates/sqlx-oldapi/0.6.49-beta">https://crates.io/crates/sqlx-oldapi/0.6.49-beta</a></p> <p>I’d love feedback, bug reports, or testing help!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/lovasoa"> /u/lovasoa </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1nq4wa0/odbc_in_sqlx/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nq4wa0/odbc_in_sqlx/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1nqxeab/the_borrowser_a_browser_in_rust_roastfeedback/" target="_blank">The Borrowser: a browser in Rust (roast/feedback)</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi all,</p> <p>I&#39;m building <a href="https://github.com/joris97jansen/borrowser">the next big thing</a>!</p> <p>To be fair: I’m a total newbie when it comes to Rust, GUI programming, and browser internals. My background is mostly TypeScript, Python, and Go (backend + some frontend frameworks). But I wanted to dive into Rust properly, and figured: what better way than to tackle something I’ve never built before?</p> <p>And, well, hearing about a browser acquisition of $600M+ made me think: “why not ship another one?”</p> <p>All jokes aside, I&#39;m here to gather some feedback from you (instead of my good old &quot;you are absolutely right&quot; friend on the other side of the www).</p> <ul> <li>Does the architecture make sense so far?</li> <li>Are there Rust patterns/crates I should lean on instead?</li> <li>Anything obviously off in how I handle events / callbacks?</li> <li>...</li> </ul> <p>Repo here (roast kindly 🙃): 👉 <a href="https://github.com/joris97jansen/borrowser">https://github.com/joris97jansen/borrowser</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/tpotjj"> /u/tpotjj </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1nqxeab/the_borrowser_a_browser_in_rust_roastfeedback/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nqxeab/the_borrowser_a_browser_in_rust_roastfeedback/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1nq3vk9/proton_mail_rewrote_their_mobile_tech_stack_with/" target="_blank">Proton Mail rewrote their mobile tech stack with Rust</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/Ventgarden"> /u/Ventgarden </a> <br/> <span><a href="https://proton.me/blog/new-mail-apps">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nq3vk9/proton_mail_rewrote_their_mobile_tech_stack_with/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1nqwreo/i_build_a_git_worktree_cli_helper_app_for_dealing/" target="_blank">I build a Git Worktree CLI helper app for dealing with Git Worktrees</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>As AI agents become a part of our lives, git worktrees are now more important than ever.</p> <p>To make working with git worktrees easier, I built rsworktree, a CLI app.</p> <p>It can create, list and delete worktrees in the dedicated .rsworktrees folder in the git repository root folder.</p> <p>Feel free to give it a try: <a href="https://github.com/ozankasikci/rust-git-worktree">https://github.com/ozankasikci/rust-git-worktree</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/kasikciozan"> /u/kasikciozan </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1nqwreo/i_build_a_git_worktree_cli_helper_app_for_dealing/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nqwreo/i_build_a_git_worktree_cli_helper_app_for_dealing/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1nq0tt3/socks5_proxy_server_library/" target="_blank">SOCKS5 proxy server library</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi everyone,</p> <p>I am working on a SOCKS5 proxy server library respecting the RFC, as I would like to write my own in order to use it for my Bachelor&#39;s Thesis. I found out there is already a SOCKS5 lib (fast_socks5), but my intention is to make something simpler, mainly revolving around using a browser as the client, so I am skipping the client implementation completely.</p> <p>Would anyone be interested in such a thing? I would also like to mention I am not that experienced with Rust and guidance/help from you guys is much appreciated.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Limp-Sherbet"> /u/Limp-Sherbet </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1nq0tt3/socks5_proxy_server_library/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nq0tt3/socks5_proxy_server_library/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1nqvqk2/material_3_design_comes_to_slint_gui_toolkit/" target="_blank">Material 3 Design Comes To Slint GUI Toolkit</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>🚀 Speed up UI development with pre-built components,<br/> 🚀 Deliver a polished, touch-friendly, familiar user interface for your products,<br/> 🚀 Build a user interface that seamlessly works across desktop, mobile, web, and embedded devices.</p> <p>Explore: <a href="https://material.slint.dev/">https://material.slint.dev</a><br/> Get started: <a href="https://material.slint.dev/getting-started">https://material.slint.dev/getting-started</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/slint-ui"> /u/slint-ui </a> <br/> <span><a href="https://slint.dev/blog/material-comp-1.0">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nqvqk2/material_3_design_comes_to_slint_gui_toolkit/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1nq0brk/how_to_think_in_rust/" target="_blank">How to think in Rust ?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>It’s been over a year and a half working with Rust, but I still find it hard to <strong>think in Rust</strong>. When I write code, not everything comes to mind naturally — I often struggle to decide which construct to use and when. I also find it challenging to remember Rust’s more complex syntax. How can I improve my thinking process in Rust so that choosing the right constructs becomes more intuitive like I do in other langs C#, Javascript, Java?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Distinct_Weather_615"> /u/Distinct_Weather_615 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1nq0brk/how_to_think_in_rust/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nq0brk/how_to_think_in_rust/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1npzw2g/do_you_check_memory_usage_in_your_web_apps/" target="_blank">Do you check memory usage in your web apps?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>In k8s (and probably most platforms) you have to adhere to a memory limit, or you get oomkilled.</p> <p>Despite this I&#39;ve never heard of apps checking cgroup memory to, e.g., stop serving requests temporarily.</p> <p>Why isn&#39;t this standard?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Total_Celebration_63"> /u/Total_Celebration_63 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1npzw2g/do_you_check_memory_usage_in_your_web_apps/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1npzw2g/do_you_check_memory_usage_in_your_web_apps/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1npwe4i/this_week_in_rust_618/" target="_blank">This Week in Rust #618</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/seino_chan"> /u/seino_chan </a> <br/> <span><a href="https://this-week-in-rust.org/blog/2025/09/24/this-week-in-rust-618/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1npwe4i/this_week_in_rust_618/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1nqu92l/opinions_on_a_plugin_system_for_an_lsp/" target="_blank">Opinions on a plugin system for an LSP?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;ve chugging along, working on an <a href="https://github.com/vincent-uden/obsidian-lsp">LSP implementation</a> for editing markdown files in an Obsidian vault. Yes, I know there are others out there, but I wanted to give it a shot on my own.</p> <p>Something from Obsidian I&#39;d like to replicate is a plugin structure, but I&#39;m looking for opinions on how this could be implemented. Each &quot;plugin&quot; could be its own entirely separate language server independent of each other. But that would of course result in duplication of parsing and state tracking.</p> <p>As the language server is written in Rust which kinda narrows down the options of what I could do. If I had been using an interpreted language there would be many options of dynamic code loading patterns.</p> <p>Anyways, I&#39;m just looking for ideas on how you would like a plugin system for a language server to work if you were developing for it.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/xorvralin2"> /u/xorvralin2 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1nqu92l/opinions_on_a_plugin_system_for_an_lsp/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nqu92l/opinions_on_a_plugin_system_for_an_lsp/">[comments]</a></span></div>
           </li>
   
         </ul>
   
-        <h3 class="subreddit">r/rust_gamedev</h3>
+        <h3 class="subreddit">r/golang</h3>
         <ul class="item-list">
   
           <li>
-            <a href="https://www.reddit.com/r/rust_gamedev/comments/1nqhoio/just_rolled_out_v032_terminal_colony_deep_core/" target="_blank">Just rolled out v0.3.2 Terminal Colony: Deep Core give it a spin!</a>
-            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/rust_gamedev/comments/1nqhoio/just_rolled_out_v032_terminal_colony_deep_core/">  </a> </td><td> <!-- SC_OFF --><div class="md"><p><a href="https://meapps.itch.io/terminal-colony-deep-core">https://meapps.itch.io/terminal-colony-deep-core</a></p> <p>Build in Rust, featuring Bevy and egui.<br/> <a href="https://bevy.org/">https://bevy.org/</a><br/> <a href="https://www.egui.rs/">https://www.egui.rs/</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Big_Membership9737"> /u/Big_Membership9737 </a> <br/> <span><a href="https://i.redd.it/lk8ixrzhedrf1.png">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust_gamedev/comments/1nqhoio/just_rolled_out_v032_terminal_colony_deep_core/">[comments]</a></span> </td></tr></table></div>
+            <a href="https://www.reddit.com/r/golang/comments/1nrbr9y/go_maps_deep_dive_no_swiss_part_1_the_secrets/" target="_blank">🗺️ Go Maps Deep Dive (no_swiss) — Part 1: The Secrets Behind O(1) Performance, Overflows, and Growth</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hey folks, I just came across this excellent article on DEV:</p> <p>“Go Maps Deep Dive — Part 1: The Secrets Behind O(1) Performance, Overflows, and Growth” It explores how Go achieves average O(1) for map operations, deals with hash collisions (overflow buckets), and how maps grow incrementally to avoid long pauses. </p> <p>A few highlights I appreciated:</p> <ul> <li><p>The explanation of how Go uses hashing + buckets to achieve constant-time lookups</p></li> <li><p>How overflow buckets handle collisions</p></li> <li><p>The strategy Go uses to gradually migrate entries when resizing the map</p></li> <li><p>The random seeding per map instance to reduce predictable hash collisions and mitigate attacks like hash-flooding</p></li> </ul> <p>If you’re curious about Go internals or want to understand why maps behave the way they do under the hood, this is a really solid read.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Informal-Persimmon74"> /u/Informal-Persimmon74 </a> <br/> <span><a href="https://dev.to/arshiargh/go-maps-deep-dive-part-1-the-secrets-behind-o1-performance-overflows-and-growth-227">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1nrbr9y/go_maps_deep_dive_no_swiss_part_1_the_secrets/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust_gamedev/comments/1nqe9bs/i_made_a_tui_dualshock_4_ps4_controller_tester/" target="_blank">I made a TUI DualShock 4 (PS4 Controller) tester</a>
-            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/rust_gamedev/comments/1nqe9bs/i_made_a_tui_dualshock_4_ps4_controller_tester/">  </a> </td><td> <!-- SC_OFF --><div class="md"><p>I used rusb to listen for the byte array sent by the controller and mapped the different buttons on the controller. Ratatui was used to make the terminal interface which shows which buttons have been pressed. With this you can test if your controller buttons are functional. I got inspired by keyboard testers.</p> <p><a href="https://github.com/WilliamTuominiemi/dualshock4-tester">https://github.com/WilliamTuominiemi/dualshock4-tester</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/William_420"> /u/William_420 </a> <br/> <span><a href="https://v.redd.it/qk6cy91brcrf1">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust_gamedev/comments/1nqe9bs/i_made_a_tui_dualshock_4_ps4_controller_tester/">[comments]</a></span> </td></tr></table></div>
+            <a href="https://www.reddit.com/r/golang/comments/1nraw3y/which_golang_web_socket_library_should_one_use_in/" target="_blank">Which Golang web socket library should one use in 2025?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>In the 2025 is Gorilla the best option or is there something better?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/SinkThink5779"> /u/SinkThink5779 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1nraw3y/which_golang_web_socket_library_should_one_use_in/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1nraw3y/which_golang_web_socket_library_should_one_use_in/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1nr88zk/my_work_colleagues_use_generics_everywhere_for/" target="_blank">my work colleagues use generics everywhere for everything</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>god i hate this. every config, every helper must be generic. &quot;what if we&#39;ll use it for–&quot; no mate: 1. you won&#39;t 2. you&#39;ve made a simple type implement a redundant interface so that you can call a helper function inside another helper function and 3. this function you&#39;ve written doesn&#39;t even need to use the interface as a constraint, it could just take an interface directly.</p> <p>i keep having to review shit code where they write a 6 line helper to avoid an <code>if err != nil</code> (now the call site&#39;s 4 lines, good riddance god help). it&#39;s three against one and i&#39;m losing control and i&#39;m pulling my hair out trying to understand wtf they want to do and the only way to convince them we can do without is if i rewrite what they did from scratch and let them see for themselves it&#39;s just better without the shit load of abstraction and generic abuse.</p> <p>don&#39;t even get me started on the accompanying AI slop that comes with that.</p> <p>how can i convince my colleagues to design minimal composable abstractions which actually fit in the current codebase and not dump their overly engineered yet barely thought out ideas into each file as if it was an append only log? i&#39;m tired of rewriting whatever they do in 30-50% less lines of code and achieving the same thing with more clarity and extensibility. i wish numbers were hyperbolic. in fact, they&#39;re underestimating.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/pixusnixus"> /u/pixusnixus </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1nr88zk/my_work_colleagues_use_generics_everywhere_for/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1nr88zk/my_work_colleagues_use_generics_everywhere_for/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1nr72ca/why_does_my_go_cli_tool_say_permission_denied/" target="_blank">Why does my Go CLI tool say “permission denied” even though it creates and writes the file?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hello everyone! I&#39;m building a CLI migration tool for Go codebases, and I&#39;m testing a few things by getting all the <code>.go</code> files in the active working directory, walking through them, reading each line, and creating a <code>.temp</code> file with the same name, then copying each line to that file.</p> <p>Well, at least it <em>should&#39;ve</em> done that, but I just realized it doesn&#39;t. It apparently only copies the first line. Somehow it goes to the next file, and when it reaches <code>root.go</code>, it gives me a &quot;permission denied&quot; error.</p> <p>Here&#39;s the code that&#39;s causing me pain:</p> <pre><code>func SearchGoFiles(old_import_path, new_import_path string) { go_file_path := []string{} mydir, err := os.Getwd() if err != nil { log.Fatal(err) } libRegEx, err := regexp.Compile(`^.+\.go$`) if err != nil { log.Fatal(err) } err = filepath.Walk(mydir, func(path string, info os.FileInfo, err error) error { if err != nil { return err } if !info.IsDir() &amp;&amp; libRegEx.MatchString(info.Name()) { fmt.Println(path) go_file_path = append(go_file_path, path) if err := readGoFiles(go_file_path); err != nil { log.Fatal(err) } } return nil }) if err != nil { log.Fatal(err) } fmt.Println(old_import_path) fmt.Println(new_import_path) } // Function will read the files func readGoFiles(go_file_path []string) error { for i := range go_file_path { file, err := os.OpenFile(go_file_path[i], os.O_RDONLY, 0644) if err != nil { return err } defer file.Close() scanner := bufio.NewScanner(file) for scanner.Scan() { if err := createTempFile(go_file_path[i], scanner.Text()); err != nil { return err } } } return nil } func createTempFile(filename, line string) error { filename = filename + &quot;.temp&quot; file, err := os.OpenFile(filename, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644) // Fixed typo: was 06400 if err != nil { fmt.Println(&quot;Couldn&#39;t create file&quot;) return err } defer file.Close() file.Write([]byte(line)) return nil } </code></pre> <p>Here&#39;s the error I&#39;m getting:</p> <pre><code> img git:(main) ./img cli old new /var/home/lunaryx/Bureau/img/cmd/root.go Couldn&#39;t create file 2025/09/13 18:37:49 open /var/home/lunaryx/Bureau/img/cmd/root.go.temp: permission denied </code></pre> <p><strong>The weird part:</strong> It actually DOES create the file and writes to it! So why is Linux complaining about permission denied?</p> <p>I tried using <code>sudo ./img cli old new</code> and it wrote copies of the original files to the <code>.temp</code> ones. To &quot;upgrade&quot; it, I tried:</p> <pre><code>for scanner.Scan() { line := scanner.Text() + &quot;\n&quot; if err := createTempFile(go_file_path[i], line); err != nil { return err } } </code></pre> <p>Now it prints all the files into one <code>.temp</code> file with very undefined behavior - some files have up to 400 lines while others are a mess of <code>package &lt;package_name&gt;</code> repeating everywhere.</p> <p><strong>What I&#39;ve tried so far:</strong></p> <ul> <li>Checked my user permissions on folders and files (everything checks out)</li> <li>Changed file permission from <code>06400</code> (typo) back to <code>0644</code> (didn&#39;t change anything)</li> <li>Verified I&#39;m the one running the process (it&#39;s me...)</li> <li>Using <code>sudo</code> doesn&#39;t magically fix it with duct tape as I hoped it would</li> </ul> <p>I&#39;m running short on ideas here. The behavior seems inconsistent - it creates files but complains about permissions, only copies first lines, then somehow merges everything into one file when I add newlines.</p> <p>Anyone have ideas what&#39;s going wrong? I feel like I&#39;m missing something obvious, but I can&#39;t see the forest for the trees at this point.</p> <p><strong>TL;DR:</strong> Go file walker creates temp files but throws permission errors, only copies first lines, and generally behaves like it&#39;s having an identity crisis. </p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/brocamoLOL"> /u/brocamoLOL </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1nr72ca/why_does_my_go_cli_tool_say_permission_denied/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1nr72ca/why_does_my_go_cli_tool_say_permission_denied/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1nr5w8t/need_some_type_assertion_help/" target="_blank">Need some type assertion help</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I am facing a fiddly bit I can&#39;t figure out when it comes to type asserting.</p> <p>I have this function: ```</p> <pre><code>func Printf(format string, values ...any) { for i := range values { if redactor, ok := values[i].(Redactor); ok { values[i] = redcator.RedactData() continue } if redactor, ok := values[i].(*Redactor); ok { values[i] = (*redactor).RedactData() continue } // How to catch when the thing passed in at values[i] is // not a pointer, but has RedactData() defined using a // pointer receiver instead of a value receiver... } fmt.Printf(format, values...) } </code></pre> <p>This works when value implements redactor using a value receiver and is passed in as a pointer or value, and it works when value implements redactor using a pointer receiver and is passed in as a pointer, but I cannot figure out how to detect when the value implements Redactor using a pointer receiver but is passed in as a value.</p> <p>For example: ```</p> <pre><code>func (f *foo) RedactData() any { return &quot;redacted&quot; } f := foo{} Printf(&quot;%v&quot;, foo) // Does not print a redacted foo, prints regular foo </code></pre> <p>How can I detect this case so that I can use it like a Redactor and call its RedactData() method?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/SnugglyCoderGuy"> /u/SnugglyCoderGuy </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1nr5w8t/need_some_type_assertion_help/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1nr5w8t/need_some_type_assertion_help/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1nr3hak/how_do_you_make_a_many_to_many_relationship_in/" target="_blank">How do you make a many to many relationship in your golang application?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>How do I model many-to-many relationships at the application level?</p> <p>My example case: I have sectors that can have N reasons. So I have a sectors_downtime_reasons table, which is basically the association.</p> <p>At the application/architecture level, where should I place each item? Create a new package to make this association? Should it be within the sector? My folder structure currently looks like this:</p> <p>package sector:</p> <p>- repository.go</p> <p>- service.go</p> <p>- handler.go</p> <p>package downtimereason:</p> <p>- repository.go</p> <p>- service.go</p> <p>- handler.go</p> <p>Where would I make this association? Currently, I communicate between different modules by declaring interfaces on the consumer side and injecting a service that basically satisfies the interface. I thought about creating a DowntimeReasonProvider interface in the sector that would allow me to make this association.</p> <p>Any tips? How do you handle this type of relationship in a modular application?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Low_Expert_5650"> /u/Low_Expert_5650 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1nr3hak/how_do_you_make_a_many_to_many_relationship_in/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1nr3hak/how_do_you_make_a_many_to_many_relationship_in/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1nqz1di/good_ol_makefiles_magefiles_or_taskfiles_in/" target="_blank">Good ol' Makefiles, Magefiles or Taskfiles in complex projects?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I have worked with Makefiles for forever, and I have also used them to write up some scripts for complex Go builds. Then I moved to Magefiles, but I found them inaccessible for other team members, so I moved to Taskfiles and it seems like a good compromise. What do you think? Is there other similar tech to consider?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/ataltosutcaja"> /u/ataltosutcaja </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1nqz1di/good_ol_makefiles_magefiles_or_taskfiles_in/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1nqz1di/good_ol_makefiles_magefiles_or_taskfiles_in/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1nqvh2r/creating_and_loading_tilemaps_using_ebitengine/" target="_blank">Creating and Loading Tilemaps Using Ebitengine (Tutorial)</a>
+            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/golang/comments/1nqvh2r/creating_and_loading_tilemaps_using_ebitengine/">  </a> </td><td> &#32; submitted by &#32; <a href="https://www.reddit.com/user/tslocum"> /u/tslocum </a> <br/> <span><a href="https://www.youtube.com/watch?v=LJ4K-02be1o">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1nqvh2r/creating_and_loading_tilemaps_using_ebitengine/">[comments]</a></span> </td></tr></table></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1nqtjtc/build_a_water_simulation_in_go_with_raylibgo/" target="_blank">Build a Water Simulation in Go with Raylib-go</a>
+            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/golang/comments/1nqtjtc/build_a_water_simulation_in_go_with_raylibgo/">  </a> </td><td> &#32; submitted by &#32; <a href="https://www.reddit.com/user/tlittle88"> /u/tlittle88 </a> <br/> <span><a href="https://medium.com/timlittle/build-a-water-simulation-in-go-with-raylib-go-91c895891263">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1nqtjtc/build_a_water_simulation_in_go_with_raylibgo/">[comments]</a></span> </td></tr></table></div>
           </li>
   
         </ul>
   
+      </div>
+  
+      <div class="card">
+        <h2>Movie Trailers</h2>
+        <ul class="item-list">
+  
+          <li>
+            <a href="http://www.filmjabber.com/movie-trailers/good-fortune.html" target="_blank">Good Fortune Movie Trailer</a>
+            
+          </li>
+  
+          <li>
+            <a href="http://www.filmjabber.com/movie-trailers/after-the-hunt.html" target="_blank">After the Hunt Movie Trailer</a>
+            
+          </li>
+  
+          <li>
+            <a href="http://www.filmjabber.com/movie-trailers/wicked-for-good.html" target="_blank">Wicked: For Good Movie Trailer</a>
+            
+          </li>
+  
+          <li>
+            <a href="http://www.filmjabber.com/movie-trailers/avatar-3.html" target="_blank">Avatar: Fire and Ash Movie Trailer</a>
+            
+          </li>
+  
+          <li>
+            <a href="http://www.filmjabber.com/movie-trailers/greenland-2-migration.html" target="_blank">Greenland 2: Migration Movie Trailer</a>
+            
+          </li>
+  
+        </ul>
       </div>
   
     </div>
