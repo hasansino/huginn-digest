@@ -240,8 +240,8 @@
   
       <div class="card">
         <h2>Huginn Daily</h2>
-        <p class="header-p">Saturday, September 27, 2025</p>
-        <p class="header-p">3d77dc24-4159-40c2-9c33-3d5788ae9864</p>
+        <p class="header-p">Sunday, September 28, 2025</p>
+        <p class="header-p">a72002cf-ccbe-43e5-80bf-658cfb7021a0</p>
       </div>
   
       <div class="card">
@@ -253,19 +253,19 @@
           </tr>
           <tr>
             <th>Temperature Range</th>
-            <td>20°C to 30°C (67°F to 86°F)</td>
+            <td>18°C to 28°C (65°F to 83°F)</td>
           </tr>
           <tr>
             <th>Feels Like</th>
-            <td>Low: 66°F | High: 80°F</td>
+            <td>Low: 62°F | High: 77°F</td>
           </tr>
           <tr>
             <th>Humidity</th>
-            <td>46%</td>
+            <td>43%</td>
           </tr>
           <tr>
             <th>Wind</th>
-            <td>10 km/h (6 mph), Direction: 182°</td>
+            <td>9 km/h (6 mph), Direction: 219°</td>
           </tr>
           <tr>
             <th>Precipitation</th>
@@ -273,23 +273,23 @@
           </tr>
           <tr>
             <th>Sunrise / Sunset</th>
-            <td>🌅 06:39 AM / 🌇 06:37 PM</td>
+            <td>🌅 06:40 AM / 🌇 06:35 PM</td>
           </tr>
           <tr>
             <th>Moon Phase</th>
-            <td>Waxing Crescent (18%)</td>
+            <td>Waxing Crescent (20%)</td>
           </tr>
           <tr>
             <th>Cloud Cover</th>
-            <td>2%</td>
+            <td>0%</td>
           </tr>
           <tr>
             <th>Pressure</th>
-            <td>1012.36 hPa</td>
+            <td>1013.58 hPa</td>
           </tr>
           <tr>
             <th>Dew Point</th>
-            <td>52.5°F</td>
+            <td>48.59°F</td>
           </tr>
           <tr>
             <th>Visibility</th>
@@ -299,307 +299,484 @@
       </div>
   
       <div class="card">
-        <h2>XKCD</h2>
-  
-        <div class="comic">
-          <a href="//imgs.xkcd.com/comics/hiking.png" target="_blank">
-            <img src="//imgs.xkcd.com/comics/hiking.png" alt="Hiking">
-          </a>
-        </div>
-  
-      </div>
-  
-      <div class="card">
         <h2>Golang</h2>
         <ul class="item-list">
   
           <li>
-            <a href="https://go.dev/blog/flight-recorder" target="_blank">Flight Recorder in Go 1.25</a>
+            <a href="https://go.dev/blog/generic-interfaces" target="_blank">Generic interfaces</a>
             <div class="item-content">
 <div id="blog"><div id="content">
   <div id="content">
 
-    <div class="Article" data-slug="/blog/flight-recorder">
+    <div class="Article" data-slug="/blog/generic-interfaces">
     
     <h1 class="small"><a href="/blog/">The Go Blog</a></h1>
     
 
-    <h1>Flight Recorder in Go 1.25</h1>
+    <h1>Generic interfaces</h1>
       
       <p class="author">
-      Carlos Amedee and Michael Knyszek<br>
-      26 September 2025
+      Axel Wagner<br>
+      7 July 2025
       </p>
       
       <div class='markdown'>
-<p>In 2024 we introduced the world to
-<a href="/blog/execution-traces-2024">more powerful Go execution traces</a>. In that blog post
-we gave a sneak peek into some of the new functionality we could unlock with our new execution
-tracer, including <em>flight recording</em>. We&rsquo;re happy to announce that flight recording is now
-available in Go 1.25, and it&rsquo;s a powerful new tool in the Go diagnostics toolbox.</p>
-<h2 id="execution-traces">Execution traces</h2>
-<p>First, a quick recap on Go execution traces.</p>
-<p>The Go runtime can be made to write a log recording many of the events that happen during
-the execution of a Go application. That log is called a runtime execution trace.
-Go execution traces contain a plethora of information about how goroutines interact with each
-other and the underlying system. This makes them very handy for debugging latency issues, since
-they tell you both when your goroutines are executing, and crucially, when they are not.</p>
-<p>The <a href="/pkg/runtime/trace">runtime/trace</a> package provides an API for collecting
-an execution trace over a given time window by calling <code>runtime/trace.Start</code> and <code>runtime/trace.Stop</code>.
-This works well if the code you&rsquo;re tracing is just a test, microbenchmark, or command line
-tool. You can collect a trace of the complete end-to-end execution, or just the parts you care about.</p>
-<p>However, in long-running web services, the kinds of applications Go is known for, that&rsquo;s not
-good enough. Web servers might be up for days or even weeks, and collecting a trace of the
-entire execution would produce far too much data to sift through. Often just one part
-of the program&rsquo;s execution goes wrong, like a request timing out or a failed health
-check. By the time it happens it&rsquo;s already too late to call <code>Start</code>!</p>
-<p>One way to approach this problem is to randomly sample execution traces from across the fleet.
-While this approach is powerful, and can help find issues before they become outages, it
-requires a lot of infrastructure to get going. Large quantities of execution trace data
-would need to be stored, triaged, and processed, much of which won&rsquo;t contain anything
-interesting at all. And when you&rsquo;re trying to get to the bottom of a specific issue,
-it&rsquo;s a non-starter.</p>
-<h2 id="flight-recording">Flight recording</h2>
-<p>This brings us to the flight recorder.</p>
-<p>A program often knows when something has gone wrong, but the root cause may have happened
-long ago. The flight recorder lets you collect a trace of the last few seconds of
-execution leading up to the moment a program detects there&rsquo;s been a problem.</p>
-<p>The flight recorder collects the execution trace as normal, but instead of writing it out to
-a socket or a file, it buffers the last few seconds of the trace in memory. At any point,
-the program can request the contents of the buffer and snapshot exactly the problematic
-window of time. The flight recorder is like a scalpel cutting directly to the problem area.</p>
-<h2 id="example">Example</h2>
-<p>Let&rsquo;s learn how to use the flight recorder with an example. Specifically, let&rsquo;s use it to
-diagnose a performance problem with an HTTP server that implements a &ldquo;guess the number&rdquo; game.
-It exposes a <code>/guess-number</code> endpoint that accepts an integer and responds to the caller
-informing them if they guessed the right number. There is also a goroutine that, once per
-minute, sends a report of all the guessed numbers to another service via an HTTP request.</p>
-<pre><code>// bucket is a simple mutex-protected counter.
-type bucket struct {
-    mu      sync.Mutex
-    guesses int
+<p>There is an idea that is not obvious until you hear about it for the first time: as interfaces are types themselves, they too can have type parameters.
+This idea proves to be surprisingly powerful when it comes to expressing constraints on generic functions and types.
+In this post, we&rsquo;ll demonstrate it, by discussing the use of interfaces with type parameters in a couple of common scenarios.</p>
+<h2 id="a-simple-tree-set">A simple tree set</h2>
+<p>As a motivating example, assume we need a generic version of a <a href="https://en.wikipedia.org/wiki/Binary_search_tree" rel="noreferrer" target="_blank">binary search tree</a>.
+The elements stored in such a tree need to be ordered, so our type parameter needs a constraint that determines the ordering to use.
+A simple option is to use the <a href="/pkg/cmp#Ordered">cmp.Ordered</a> constraint, introduced in Go 1.21.
+It restricts a type parameter to ordered types (strings and numbers) and allows methods of the type to use the built-in ordering operators.</p>
+<pre><code>// The zero value of a Tree is a ready-to-use empty tree.
+type Tree[E cmp.Ordered] struct {
+    root *node[E]
 }
 
-func main() {
-    // Make one bucket for each valid number a client could guess.
-    // The HTTP handler will look up the guessed number in buckets by
-    // using the number as an index into the slice.
-    buckets := make([]bucket, 100)
-
-    // Every minute, we send a report of how many times each number was guessed.
-    go func() {
-        for range time.Tick(1 * time.Minute) {
-            sendReport(buckets)
-        }
-    }()
-
-    // Choose the number to be guessed.
-    answer := rand.Intn(len(buckets))
-
-    http.HandleFunc(&quot;/guess-number&quot;, func(w http.ResponseWriter, r *http.Request) {
-        start := time.Now()
-
-        // Fetch the number from the URL query variable &quot;guess&quot; and convert it
-        // to an integer. Then, validate it.
-        guess, err := strconv.Atoi(r.URL.Query().Get(&quot;guess&quot;))
-        if err != nil || !(0 &lt;= guess &amp;&amp; guess &lt; len(buckets)) {
-            http.Error(w, &quot;invalid 'guess' value&quot;, http.StatusBadRequest)
-            return
-        }
-
-        // Select the appropriate bucket and safely increment its value.
-        b := &amp;buckets[guess]
-        b.mu.Lock()
-        b.guesses++
-        b.mu.Unlock()
-
-        // Respond to the client with the guess and whether it was correct.
-        fmt.Fprintf(w, &quot;guess: %d, correct: %t&quot;, guess, guess == answer)
-
-        log.Printf(&quot;HTTP request: endpoint=/guess-number guess=%d duration=%s&quot;, guess, time.Since(start))
-    })
-    log.Fatal(http.ListenAndServe(&quot;:8090&quot;, nil))
+func (t *Tree[E]) Insert(element E) {
+    t.root = t.root.insert(element)
 }
 
-// sendReport posts the current state of buckets to a remote service.
-func sendReport(buckets []bucket) {
-    counts := make([]int, len(buckets))
+type node[E cmp.Ordered] struct {
+    value E
+    left  *node[E]
+    right *node[E]
+}
 
-    for index := range buckets {
-        b := &amp;buckets[index]
-        b.mu.Lock()
-        defer b.mu.Unlock()
-
-        counts[index] = b.guesses
+func (n *node[E]) insert(element E) *node[E] {
+    if n == nil {
+        return &amp;node[E]{value: element}
     }
+    switch {
+    case element &lt; n.value:
+        n.left = n.left.insert(element)
+    case element &gt; n.value:
+        n.right = n.right.insert(element)
+    }
+    return n
+}
+</code></pre>
+<p>(<a href="/play/p/H7-n33X7P2h">playground</a>)</p>
+<p>However, this approach has the disadvantage that it only works on basic types for which <code>&lt;</code> is defined;
+you cannot insert struct types, like <a href="/pkg/time#Time">time.Time</a>.</p>
+<p>We can remedy that by requiring the user to provide a comparison function:</p>
+<pre><code>// A FuncTree must be created with NewTreeFunc.
+type FuncTree[E any] struct {
+    root *funcNode[E]
+    cmp  func(E, E) int
+}
 
-    // Marshal the report data into a JSON payload.
-    b, err := json.Marshal(counts)
-    if err != nil {
-        log.Printf(&quot;failed to marshal report data: error=%s&quot;, err)
+func NewFuncTree[E any](cmp func(E, E) int) *FuncTree[E] {
+    return &amp;FuncTree[E]{cmp: cmp}
+}
+
+func (t *FuncTree[E]) Insert(element E) {
+    t.root = t.root.insert(t.cmp, element)
+}
+
+type funcNode[E any] struct {
+    value E
+    left  *funcNode[E]
+    right *funcNode[E]
+}
+
+func (n *funcNode[E]) insert(cmp func(E, E) int, element E) *funcNode[E] {
+    if n == nil {
+        return &amp;funcNode[E]{value: element}
+    }
+    sign := cmp(element, n.value)
+    switch {
+    case sign &lt; 0:
+        n.left = n.left.insert(cmp, element)
+    case sign &gt; 0:
+        n.right = n.right.insert(cmp, element)
+    }
+    return n
+}
+</code></pre>
+<p>(<a href="/play/p/tiEjuxCHtFF">playground</a>)</p>
+<p>This works, but it also comes with downsides.
+We can no longer use the zero value of our container type, because it needs to have an explicitly initialized comparison function.
+And the use of a function field makes it harder for the compiler to inline the comparison calls, which can introduce a significant runtime overhead.</p>
+<p>Using a method on the element type can solve these issues, because methods are directly associated with a type.
+A method does not have to be explicitly passed and the compiler can see the target of the call and may be able to inline it.
+But how can we express the constraint to require that element types provide the necessary method?</p>
+<h2 id="using-the-receiver-in-constraints">Using the receiver in constraints</h2>
+<p>The first approach we might try is to define a plain old interface with a <code>Compare</code> method:</p>
+<pre><code>type Comparer interface {
+    Compare(Comparer) int
+}
+</code></pre>
+<p>However, we quickly realize that this does not work well.
+To implement this interface, the method&rsquo;s parameter must itself be <code>Comparer</code>.
+Not only does that mean that the implementation of this method must type-assert the parameter to its own type, it also requires that every type must explicitly refer to our package with the <code>Comparer</code> type by name (otherwise the method signatures would not be identical).
+That is not very orthogonal.</p>
+<p>A better approach is to make the <code>Comparer</code> interface itself generic:</p>
+<pre><code>type Comparer[T any] interface {
+    Compare(T) int
+}
+</code></pre>
+<p>This <code>Comparer</code> now describes a whole family of interfaces, one for each type that <code>Comparer</code> may be instantiated with.
+A type that implements <code>Comparer[T]</code> declares &ldquo;I can compare myself to a <code>T</code>&rdquo;.
+For instance, <code>time.Time</code> naturally implements <code>Comparer[time.Time]</code> because <a href="/pkg/time#Time.Compare">it has a matching <code>Compare</code> method</a>:</p>
+<pre><code>// Implements Comparer[Time]
+func (t Time) Compare(u Time) int
+</code></pre>
+<p>This is better, but not enough.
+What we really want is a constraint that says that a type parameter can be compared to <em>itself</em>: we want the constraint to be self-referential.
+The subtle insight is that the self-referential aspect does not have to be part of the interface definition itself; specifically, the constraint for <code>T</code> in the <code>Comparer</code> type is just <code>any</code>.
+Instead, it is a consequence of how we use <code>Comparer</code> as a constraint for the type parameter of <code>MethodTree</code>:</p>
+<pre><code>// The zero value of a MethodTree is a ready-to-use empty tree.
+type MethodTree[E Comparer[E]] struct {
+    root *methodNode[E]
+}
+
+func (t *MethodTree[E]) Insert(element E) {
+    t.root = t.root.insert(element)
+}
+
+type methodNode[E Comparer[E]] struct {
+    value E
+    left  *methodNode[E]
+    right *methodNode[E]
+}
+
+func (n *methodNode[E]) insert(element E) *methodNode[E] {
+    if n == nil {
+        return &amp;methodNode[E]{value: element}
+    }
+    sign := element.Compare(n.value)
+    switch {
+    case sign &lt; 0:
+        n.left = n.left.insert(element)
+    case sign &gt; 0:
+        n.right = n.right.insert(element)
+    }
+    return n
+}
+</code></pre>
+<p>(<a href="/play/p/LuhzYej_2SP">playground</a>)</p>
+<p>Because <code>time.Time</code> implements <code>Comparer[time.Time]</code> it is now a valid type argument for this container, and we can still use the zero value as an empty container:</p>
+<pre><code>var t MethodTree[time.Time]
+t.Insert(time.Now())
+</code></pre>
+<p>For full flexibility, a library can provide all three API versions.
+If we want to minimize repetition, all versions could use a shared implementation.
+We could use the function version for that, as it is the most general:</p>
+<pre><code>type node[E any] struct {
+    value E
+    left  *node[E]
+    right *node[E]
+}
+
+func (n *node[E]) insert(cmp func(E, E) int, element E) *node[E] {
+    if n == nil {
+        return &amp;node[E]{value: element}
+    }
+    sign := cmp(element, n.value)
+    switch {
+    case sign &lt; 0:
+        n.left = n.left.insert(cmp, element)
+    case sign &gt; 0:
+        n.right = n.right.insert(cmp, element)
+    }
+    return n
+}
+
+// Insert inserts element into the tree, if E implements cmp.Ordered.
+func (t *Tree[E]) Insert(element E) {
+    t.root = t.root.insert(cmp.Compare[E], element)
+}
+
+// Insert inserts element into the tree, using the provided comparison function.
+func (t *FuncTree[E]) Insert(element E) {
+    t.root = t.root.insert(t.cmp, element)
+}
+
+// Insert inserts element into the tree, if E implements Comparer[E].
+func (t *MethodTree[E]) Insert(element E) {
+    t.root = t.root.insert(E.Compare, element)
+}
+</code></pre>
+<p>(<a href="/play/p/jzmoaH5eaIv">playground</a>)</p>
+<p>An important observation here is that the shared implementation (the function-based variant) is not constrained in any way.
+It must remain maximally flexible to serve as a common core.
+We also do not store the comparison function in a struct field.
+Instead, we pass it as a parameter because function arguments are easier for the compiler to analyze than struct fields.</p>
+<p>There is still some amount of boilerplate involved, of course.
+All the exported implementations need to replicate the full API with slightly different call patterns.
+But this part is straightforward to write and to read.</p>
+<h2 id="combining-methods-and-type-sets">Combining methods and type sets</h2>
+<p>We can use our new tree data structure to implement an ordered set, providing element lookup in logarithmic time.
+Let&rsquo;s now imagine we need to make lookup run in constant time; we might try to do this by maintaining an ordinary Go map alongside the tree:</p>
+<pre><code>type OrderedSet[E Comparer[E]] struct {
+    tree     MethodTree[E] // for efficient iteration in order
+    elements map[E]bool    // for (near) constant time lookup
+}
+
+func (s *OrderedSet[E]) Has(e E) bool {
+    return s.elements[e]
+}
+
+func (s *OrderedSet[E]) Insert(e E) {
+    if s.elements == nil {
+        s.elements = make(map[E]bool)
+    }
+    if s.elements[e] {
         return
     }
-    url := &quot;http://localhost:8091/guess-number-report&quot;
-    if _, err := http.Post(url, &quot;application/json&quot;, bytes.NewReader(b)); err != nil {
-        log.Printf(&quot;failed to send report: %s&quot;, err)
+    s.elements[e] = true
+    s.tree.Insert(e)
+}
+
+func (s *OrderedSet[E]) All() iter.Seq[E] {
+    return func(yield func(E) bool) {
+        s.tree.root.all(yield)
+    }
+}
+
+func (n *node[E]) all(yield func(E) bool) bool {
+    return n == nil || (n.left.all(yield) &amp;&amp; yield(n.value) &amp;&amp; n.right.all(yield))
+}
+</code></pre>
+<p>(<a href="/play/p/TANUnnSnDqf">playground</a>)</p>
+<p>However, compiling this code will produce an error:</p>
+<blockquote>
+<p>invalid map key type E (missing comparable constraint)</p>
+</blockquote>
+<p>The error message tells us that we need to further constrain our type parameter to be able to use it as a map key.
+The <code>comparable</code> constraint is a special predeclared constraint that is satisfied by all types for which the equality operators <code>==</code> and <code>!=</code> are defined.
+In Go, that is also the set of types which can be used as keys for the built-in <code>map</code> type.</p>
+<p>We have three options to add this constraint to our type parameter, all with different tradeoffs:</p>
+<ol>
+<li>
+<p>We can <a href="/ref/spec#Embedded_interfaces">embed</a> <code>comparable</code> into our original <code>Comparer</code> definition (<a href="/play/p/g8NLjZCq97q">playground</a>):</p>
+<pre><code>type Comparer[E any] interface {
+    comparable
+    Compare(E) int
+}
+</code></pre>
+<p>This has the downside that it would also make our <code>Tree</code> types only usable with types that are <code>comparable</code>.
+In general, we do not want to unnecessarily restrict generic types.</p>
+</li>
+<li>
+<p>We can add a new constraint definition (<a href="/play/p/Z2eg4X8xK5Z">playground</a>).</p>
+<pre><code>type Comparer[E any] interface {
+    Compare(E) int
+}
+
+type ComparableComparer[E any] interface {
+    comparable
+    Comparer[E]
+}
+</code></pre>
+<p>This is tidy, but it introduces a new identifier (<code>ComparableComparer</code>) into our API, and naming is hard.</p>
+</li>
+<li>
+<p>We can add the constraint inline into our more constrained type (<a href="/play/p/ZfggVma_jNc">playground</a>):</p>
+<pre><code>type OrderedSet[E interface {
+    comparable
+    Comparer[E]
+}] struct {
+    tree     Tree[E]
+    elements map[E]struct{}
+}
+</code></pre>
+<p>This can become a bit hard to read, especially if it needs to happen often.
+It also makes it harder to reuse the constraint in other places.</p>
+</li>
+</ol>
+<p>Which of these to use is a style choice and ultimately up to personal preference.</p>
+<h2 id="not-constraining-generic-interfaces">(Not) constraining generic interfaces</h2>
+<p>At this point it is worth discussing constraints on generic interfaces.
+You might want to define an interface for a generic container type.
+For example, say you have an algorithm that requires a set data structure.
+There are many different kinds of set implementations with different tradeoffs.
+Defining an interface for the set operations you require can add flexibility to your package, leaving the decision of what tradeoffs are right for the specific application to the user:</p>
+<pre><code>type Set[E any] interface {
+    Insert(E)
+    Delete(E)
+    Has(E) bool
+    All() iter.Seq[E]
+}
+</code></pre>
+<p>A natural question here is what the constraint on this interface should be.
+If possible, type parameters on generic interfaces should use <code>any</code> as a constraint, allowing arbitrary types.</p>
+<p>From our discussions above, the reasons should be clear:
+Different concrete implementations might require different constraints.
+All the <code>Tree</code> types we have examined above, as well as the <code>OrderedSet</code> type, can implement <code>Set</code> for their element types, even though these types have different constraints.</p>
+<p>The point of defining an interface is to leave the implementation up to the user.
+Since one cannot predict what kinds of constraints a user may want to impose on their implementation, try to leave any constraints (stronger than <code>any</code>) to concrete implementations, not the interfaces.</p>
+<h2 id="pointer-receivers">Pointer receivers</h2>
+<p>Let us try to use the <code>Set</code> interface in an example.
+Consider a function that removes duplicate elements in a sequence:</p>
+<pre><code>// Unique removes duplicate elements from the input sequence, yielding only
+// the first instance of any element.
+func Unique[E comparable](input iter.Seq[E]) iter.Seq[E] {
+    return func(yield func(E) bool) {
+        seen := make(map[E]bool)
+        for v := range input {
+            if seen[v] {
+                continue
+            }
+            if !yield(v) {
+                return
+            }
+            seen[v] = true
+        }
     }
 }
 </code></pre>
-<p>Here is the full code for the server:
-<a href="/play/p/rX1eyKtVglF">https://go.dev/play/p/rX1eyKtVglF</a>, and for a simple client:
-<a href="/play/p/2PjQ-1ORPiw">https://go.dev/play/p/2PjQ-1ORPiw</a>. To avoid a third
-process, the &ldquo;client&rdquo; also implements the report server, though in a real system this would
-be separate.</p>
-<p>Let&rsquo;s suppose that after deploying the application in production, we received complaints from
-users that some <code>/guess-number</code> calls were taking longer than expected. When we look at our
-logs, we see that sometimes response times exceed 100 milliseconds, while the majority of calls
-are on the order of microseconds.</p>
-<pre><code>2025/09/19 16:52:02 HTTP request: endpoint=/guess-number guess=69 duration=625ns
-2025/09/19 16:52:02 HTTP request: endpoint=/guess-number guess=62 duration=458ns
-2025/09/19 16:52:02 HTTP request: endpoint=/guess-number guess=42 duration=1.417µs
-2025/09/19 16:52:02 HTTP request: endpoint=/guess-number guess=86 duration=115.186167ms
-2025/09/19 16:52:02 HTTP request: endpoint=/guess-number guess=0 duration=127.993375ms
-</code></pre>
-<p>Before we continue, take a minute and see if you can spot what&rsquo;s wrong!</p>
-<p>Regardless of whether you found the problem or not, let&rsquo;s dive deeper and see how we can
-find the problem from first principles. In particular, it would be great if we could see
-what the application was doing in the time leading up to the slow response. This is exactly
-what the flight recorder was built for! We&rsquo;ll use it to capture an execution trace once
-we see the first response exceeding 100 milliseconds.</p>
-<p>First, in <code>main</code>, we&rsquo;ll configure and start the flight recorder:</p>
-<pre><code>// Set up the flight recorder
-fr := trace.NewFlightRecorder(trace.FlightRecorderConfig{
-    MinAge:   200 * time.Millisecond,
-    MaxBytes: 1 &lt;&lt; 20, // 1 MiB
-})
-fr.Start()
-</code></pre>
-<p><code>MinAge</code> configures the duration for which trace data is reliably retained, and we
-suggest setting it to around 2x the time window of the event. For example, if you
-are debugging a 5-second timeout, set it to 10 seconds. <code>MaxBytes</code> configures the
-size of the buffered trace so you don&rsquo;t blow up your memory usage.  On average,
-you can expect a few MB of trace data to be produced per second of execution,
-or 10 MB/s for a busy service.</p>
-<p>Next, we&rsquo;ll add a helper function to capture the snapshot and write it to a file:</p>
-<pre><code>var once sync.Once
-
-// captureSnapshot captures a flight recorder snapshot.
-func captureSnapshot(fr *trace.FlightRecorder) {
-    // once.Do ensures that the provided function is executed only once.
-    once.Do(func() {
-        f, err := os.Create(&quot;snapshot.trace&quot;)
-        if err != nil {
-            log.Printf(&quot;opening snapshot file %s failed: %s&quot;, f.Name(), err)
-            return
+<p>(<a href="/play/p/hsYoFjkU9kA">playground</a>)</p>
+<p>This uses a <code>map[E]bool</code> as a simple set of <code>E</code> elements.
+Consequently, it works only for types that are <code>comparable</code> and which therefore define the built-in equality operators.
+If we want to generalize this to arbitrary types, we need to replace that with a generic set:</p>
+<pre><code>// Unique removes duplicate elements from the input sequence, yielding only
+// the first instance of any element.
+func Unique[E any](input iter.Seq[E]) iter.Seq[E] {
+    return func(yield func(E) bool) {
+        var seen Set[E]
+        for v := range input {
+            if seen.Has(v) {
+                continue
+            }
+            if !yield(v) {
+                return
+            }
+            seen.Insert(v)
         }
-        defer f.Close() // ignore error
-
-        // WriteTo writes the flight recorder data to the provided io.Writer.
-        _, err = fr.WriteTo(f)
-        if err != nil {
-            log.Printf(&quot;writing snapshot to file %s failed: %s&quot;, f.Name(), err)
-            return
+    }
+}
+</code></pre>
+<p>(<a href="/play/p/FZYPNf56nnY">playground</a>)</p>
+<p>However, this does not work.
+<code>Set[E]</code> is an interface type, and the <code>seen</code> variable will be initialized to <code>nil</code>.
+We need to use a concrete implementation of the <code>Set[E]</code> interface.
+But as we have seen in this post, there is no general implementation of a set that works for <code>any</code> element type.</p>
+<p>We have to ask the user to provide a concrete implementation we can use, as an extra type parameter:</p>
+<pre><code>// Unique removes duplicate elements from the input sequence, yielding only
+// the first instance of any element.
+func Unique[E any, S Set[E]](input iter.Seq[E]) iter.Seq[E] {
+    return func(yield func(E) bool) {
+        var seen S
+        for v := range input {
+            if seen.Has(v) {
+                continue
+            }
+            if !yield(v) {
+                return
+            }
+            seen.Insert(v)
         }
+    }
+}
+</code></pre>
+<p>(<a href="/play/p/kjkGy5cNz8T">playground</a>)</p>
+<p>However, if we instantiate this with our set implementation, we run into another problem:</p>
+<pre><code>// OrderedSet[E] does not satisfy Set[E] (method All has pointer receiver)
+Unique[E, OrderedSet[E]](slices.Values(s))
+// panic: invalid memory address or nil pointer dereference
+Unique[E, *OrderedSet[E]](slices.Values(s))
+</code></pre>
+<p>The first problem is clear from the error message: Our type constraint says that the type argument for <code>S</code> needs to implement the <code>Set[E]</code> interface.
+And as the methods on <code>OrderedSet</code> use a pointer receiver, the type argument also has to be the pointer type.</p>
+<p>When trying to do that, we run into the second problem.
+This stems from the fact that we declare a variable in the implementation:</p>
+<pre><code>var seen S
+</code></pre>
+<p>If <code>S</code> is <code>*OrderedSet[E]</code>, the variable is initialized with <code>nil</code>, as before.
+Calling <code>seen.Insert</code> panics.</p>
+<p>If we only have the pointer type, we cannot get a valid variable of the value type.
+And if we only have the value type, we cannot call pointer-methods on it.
+The consequence is that we need both the value <em>and</em> the pointer type.
+So we have to introduce an additional type parameter <code>PS</code> with a new constraint <code>PtrToSet</code>:</p>
+<pre><code>// PtrToSet is implemented by a pointer type implementing the Set[E] interface.
+type PtrToSet[S, E any] interface {
+    *S
+    Set[E]
+}
 
-        // Stop the flight recorder after the snapshot has been taken.
-        fr.Stop()
-        log.Printf(&quot;captured a flight recorder snapshot to %s&quot;, f.Name())
-    })
+// Unique removes duplicate elements from the input sequence, yielding only
+// the first instance of any element.
+func Unique[E, S any, PS PtrToSet[S, E]](input iter.Seq[E]) iter.Seq[E] {
+    return func(yield func(E) bool) {
+        // We convert to PS, as only that is constrained to have the methods.
+        // The conversion is allowed, because the type set of PS only contains *S.
+        seen := PS(new(S))
+        for v := range input {
+            if seen.Has(v) {
+                continue
+            }
+            if !yield(v) {
+                return
+            }
+            seen.Insert(v)
+        }
+    }
 }
 </code></pre>
-<p>And finally, just before logging a completed request, we&rsquo;ll trigger the snapshot if the request
-took more than 100 milliseconds:</p>
-<pre><code class="language-go">// Capture a snapshot if the response takes more than 100ms.
-// Only the first call has any effect.
-if fr.Enabled() &amp;&amp; time.Since(start) &gt; 100*time.Millisecond {
-    go captureSnapshot(fr)
+<p>(<a href="/play/p/Kp1jJRVjmYa">playground</a>)</p>
+<p>The trick here is the connection of the two type parameters in the function signature via the extra type parameter on the <code>PtrToSet</code> interface.
+<code>S</code> itself is unconstrained, but <code>PS</code> must have type <code>*S</code> and it must have the methods we need.
+So effectively, we are restricting <code>S</code> to have some methods, but those methods need to use a pointer receiver.</p>
+<p>While the definition of a function with this kind of constraint requires an additional type parameter, importantly this does not complicate code using it:
+as long as this extra type parameter is at the end of the type parameter list, it <a href="/blog/type-inference">can be inferred</a>:</p>
+<pre><code>// The third type argument is inferred to be *OrderedSet[int]
+Unique[int, OrderedSet[int]](slices.Values(s))
+</code></pre>
+<p>This is a general pattern, and worth remembering: for when you encounter it in someone else&rsquo;s work, or when you want to use it in your own.</p>
+<pre><code>func SomeFunction[T any, PT interface{ *T; SomeMethods }]()
+</code></pre>
+<p>If you have two type parameters, where one is constrained to be a pointer to the other, the constraint ensures that the relevant methods use a pointer receiver.</p>
+<h2 id="should-you-constrain-to-pointer-receivers">Should you constrain to pointer receivers?</h2>
+<p>At this point, you might feel pretty overwhelmed.
+This is rather complicated and it seems unreasonable to expect every Go programmer to understand what is going on in this function signature.
+We also had to introduce yet more names into our API.
+When people cautioned against adding generics to Go in the first place, this is one of the things they were worried about.</p>
+<p>So if you find yourself entangled in these problems, it is worth taking a step back.
+We can often avoid this complexity by thinking about our problem in a different way.
+In this example, we built a function that takes an <code>iter.Seq[E]</code> and returns an <code>iter.Seq[E]</code> with the unique elements.
+But to do the deduplication, we needed to collect the unique elements into a set.
+And as this requires us to allocate the space for the entire result, we do not really benefit from representing the result as a stream.</p>
+<p>If we rethink this problem, we can avoid the extra type parameter altogether by using <code>Set[E]</code> as a regular interface value:</p>
+<pre><code>// InsertAll adds all unique elements from seq into set.
+func InsertAll[E any](set Set[E], seq iter.Seq[E]) {
+    for v := range seq {
+        set.Insert(v)
+    }
 }
 </code></pre>
-<p>Here&rsquo;s the full code for the server, now instrumented with the flight recorder:
-<a href="/play/p/3V33gfIpmjG">https://go.dev/play/p/3V33gfIpmjG</a></p>
-<p>Now, we run the server again and send requests until we get a slow request that triggers a
-snapshot.</p>
-<p>Once we&rsquo;ve gotten a trace, we&rsquo;ll need a tool that will help us examine it. The Go toolchain
-provides a built-in execution trace analysis tool via the
-<a href="https://pkg.go.dev/cmd/trace" rel="noreferrer" target="_blank"><code>go tool trace</code> command</a>. Run <code>go tool trace snapshot.trace</code> to
-launch the tool, which starts a local web server, then open the displayed URL in your browser
-(if the tool doesn&rsquo;t open your browser automatically).</p>
-<p>This tool gives us a few ways to look at the trace, but let&rsquo;s focus on visualizing the trace
-to get a sense of what&rsquo;s going on. Click &ldquo;View trace by proc&rdquo; to do so.</p>
-<p>In this view, the trace is presented as a timeline of events. At the top of the page, in
-the &ldquo;STATS&rdquo; section, we can see a summary of the application&rsquo;s state, including the
-number of threads, the heap size, and the goroutine count.</p>
-<p>Below that, in the &ldquo;PROCS&rdquo; section, we can see how the execution of goroutines is mapped
-onto <code>GOMAXPROCS</code> (the number of operating system threads created by the Go application). We
-can see when and how each goroutine starts, runs, and finally stops executing.</p>
-<p>For now, let&rsquo;s turn our attention to this massive gap in execution on the right side of the
-viewer. For a period of time, around 100ms, nothing is happening!</p>
-<p><a href="flight-recorder/flight_recorder_1.png"></a></p>
-<p>By selecting the <code>zoom</code> tool (or pressing <code>3</code>), we can inspect the section of the trace right
-after the gap with more detail.</p>
-<p><a href="flight-recorder/flight_recorder_2.png"></a></p>
-<p>In addition to the activity of each individual goroutine, we can see how goroutines interact
-via &ldquo;flow events.&rdquo; An incoming flow event indicates what happened to make a goroutine start
-running. An outgoing flow edge indicates what effect one goroutine had on another. Enabling the
-visualization of all flow events often provides clues that hint at the source of a problem.</p>
-<p><a href="flight-recorder/flight_recorder_3.png"></a></p>
-<p>In this case, we can see that many of the goroutines have a direct connection to a single
-goroutine right after the pause in activity.</p>
-<p>Clicking on the the single goroutine shows an event table filled with outgoing flow events, which
-matches what we saw when the flow view was enabled.</p>
-<p>What happened when this goroutine ran? Part of the information stored in the trace is a view
-of the stack trace at different points in time. When we look at the goroutine we can see that
-the start stack trace shows that it was waiting for the HTTP request to complete when the
-goroutine was scheduled to run. And the end stack trace shows that the <code>sendReport</code> function
-had already returned and it was waiting for the ticker for the next scheduled time to send
-the report.</p>
-<p><a href="flight-recorder/flight_recorder_4.png"></a></p>
-<p>Between the start and the end of this goroutine running, we see a huge number of
-&ldquo;outgoing flows,&rdquo; where it interacts with other goroutines. Clicking on one of the
-<code>Outgoing flow</code> entries takes us to a view of the interaction.</p>
-<p><a href="flight-recorder/flight_recorder_5.png"></a></p>
-<p>This flow implicates the <code>Unlock</code> in <code>sendReport</code>:</p>
-<pre><code class="language-go">for index, b := range buckets {
-    b.mu.Lock()
-    defer b.mu.Unlock()
+<p>(<a href="/play/p/woZcHodAgaa">playground</a>)</p>
+<p>By using <code>Set</code> as a plain interface type, it is clear that the caller has to provide a valid value of their concrete implementation.
+This is a very common pattern.
+And if they need an <code>iter.Seq[E]</code>, they can simply call <code>All()</code> on the <code>set</code> to obtain one.</p>
+<p>This complicates things for callers slightly, but it has another advantage over the constraint to pointer receivers:
+remember that we started with a <code>map[E]bool</code> as a simple set type.
+It is easy to implement the <code>Set[E]</code> interface on that basis:</p>
+<pre><code>type HashSet[E comparable] map[E]bool
 
-    counts[index] = b.value
-}
+func (s HashSet[E]) Insert(v E)       { s[v] = true }
+func (s HashSet[E]) Delete(v E)       { delete(s, v) }
+func (s HashSet[E]) Has(v E) bool     { return s[v] }
+func (s HashSet[E]) All() iter.Seq[E] { return maps.Keys(s) }
 </code></pre>
-<p>In <code>sendReport</code>, we intended to acquire a lock on each bucket and release the lock after
-copying the value.</p>
-<p>But here&rsquo;s the problem: we don&rsquo;t actually release the lock immediately after copying the
-value contained in <code>bucket.guesses</code>. Because we used a <code>defer</code> statement to release the
-lock, that release doesn&rsquo;t happen until the function returns. We hold the lock not just
-past the end of the loop, but until after the HTTP request completes. That&rsquo;s a subtle
-error that may be difficult to track down in a large production system.</p>
-<p>Fortunately, execution tracing helped us pinpoint the problem. However, if we tried
-to use the execution tracer in a long-running server without the new flight-recording
-mode, it would likely amass a huge amount of execution trace data, which an operator
-would have to store, transmit, and sift through. The flight recorder gives us the power
-of hindsight. It lets us capture just what went wrong, after it&rsquo;s already happened,
-and quickly zero in on the cause.</p>
-<p>The flight recorder is just the latest addition to the Go developer&rsquo;s toolbox for
-diagnosing the inner workings of running applications. We&rsquo;ve steadily been improving
-tracing over the past couple of releases. Go 1.21 greatly reduced the run-time overhead
-of tracing. The trace format became more robust and also splittable in the Go 1.22
-release, leading to features like the flight recorder. Open-source tools like
-<a href="https://gotraceui.dev/" rel="noreferrer" target="_blank">gotraceui</a>, and the <a href="/issue/62627">forthcoming ability to programmatically
-parse execution traces</a> are more ways to leverage the power of
-execution traces. The <a href="/doc/diagnostics">Diagnostics page</a> lists many additional
-tools at your disposal. We hope you make use of them as you write and refine
-your Go applications.</p>
-<h2 id="thanks">Thanks</h2>
-<p>We&rsquo;d like to take a moment to thank those community members who have been active in the
-diagnostics meetings, contributed to the designs, and provided feedback over the years:
-Felix Geisendörfer (<a href="https://bsky.app/profile/felixge.de" rel="noreferrer" target="_blank">@felixge.de</a>),
-Nick Ripley (<a href="https://github.com/nsrip-dd" rel="noreferrer" target="_blank">@nsrip-dd</a>),
-Rhys Hiltner (<a href="https://github.com/rhysh" rel="noreferrer" target="_blank">@rhysh</a>),
-Dominik Honnef (<a href="https://github.com/dominikh" rel="noreferrer" target="_blank">@dominikh</a>),
-Bryan Boreham (<a href="https://github.com/bboreham" rel="noreferrer" target="_blank">@bboreham</a>),
-and PJ Malloy (<a href="https://github.com/thepudds" rel="noreferrer" target="_blank">@thepudds</a>).</p>
-<p>The discussions, feedback, and work you&rsquo;ve all put in have been instrumental in pushing
-us to a better diagnostics future. Thank you!</p>
+<p>(<a href="/play/p/KPPpWa7M93d">playground</a>)</p>
+<p>This implementation does not use pointer receivers.
+So while this is perfectly valid, it would not be usable with the complicated constraint to pointer receivers.
+But it works fine with our <code>InsertAll</code> version.
+As with many constraints, enforcing that methods use a pointer receiver might actually be overly restrictive for many practical use cases.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>I hope this illustrates some of the patterns and trade-offs that type parameters on interfaces enable.
+It is a powerful tool, but it also comes with a cost.
+The primary take-aways are:</p>
+<ol>
+<li>Use generic interfaces to express constraints on the receiver by using them self-referentially.</li>
+<li>Use them to create constrained relationships between different type parameters.</li>
+<li>Use them to abstract over different implementations with different kinds of constraints.</li>
+<li>When you find yourself in a situation where you need to constrain to pointer receivers, consider whether you can refactor your code to avoid the extra complexity. See <a href="#should-you-constrain-to-pointer-receivers">&ldquo;Should you constrain to pointer receivers?&rdquo;</a>.</li>
+</ol>
+<p>As always, do not over-engineer things: a less flexible but simpler and more readable solution may ultimately be the wiser choice.</p>
 </div>
 
     </div>
@@ -609,28 +786,32 @@ us to a better diagnostics future. Thank you!</p>
     
     
       
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
         <p>
+        
+          
+            <b>Next article: </b><a href="/blog/fips140">The FIPS 140-3 Go Cryptographic Module</a><br>
+          
         
         
           
-            <b>Previous article: </b><a href="/blog/survey2025-announce">It&#39;s survey time! How has Go has been working out for you?</a><br>
+            <b>Previous article: </b><a href="/blog/error-syntax">[ On | No ] syntactic support for error handling</a><br>
           
         
         <b><a href="/blog/all">Blog Index</a></b>
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
       
     
       
@@ -1292,43 +1473,38 @@ us to a better diagnostics future. Thank you!</p>
         <ul class="item-list">
   
           <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1nrjt43/full_steam_release_or_crowdfunding_who_here_has/" target="_blank">Full steam release or crowdfunding - Who here has went through this, what did you decide, and why?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Was going to give up on my project until I told myself I would get the demo to a finished, full length state, complete the trailers, and just put it out there for potential crowdfunding, but now that I have the demo and trailers I feel motivated enough to keep going, but both option seem reasonable. Would love to know if others have been in similar situations and what you decided to do.</p> <p>Here&#39;s the current trailer of my game. It&#39;s a dark fantasy, action tower defense game.</p> <p><a href="https://www.youtube.com/watch?v=XebBxt0Zc8U">https://www.youtube.com/watch?v=XebBxt0Zc8U</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/roger0120"> /u/roger0120 </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1nrjt43/full_steam_release_or_crowdfunding_who_here_has/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1nrjt43/full_steam_release_or_crowdfunding_who_here_has/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/gamedev/comments/1nsd7fv/how_do_i_get_people_to_play_my_free_game/" target="_blank">How do I get people to play my free game?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hey all, I published a game called <a href="https://kipachu.itch.io/ACEDIA">ACEDIA</a> on itch.io in June that is completely free and open source. Despite being received really well by people who played it, I&#39;m struggling to get more downloads for it. Currently it has around 1000 views and 90 downloads on itch.io (okay, that&#39;s still quite a lot of downloads, but I expected more &#39;-&#39;)</p> <p>The game is a walking simulator with a story about being trans. The whole game takes about 30 minutes or so to complete, and it&#39;s mostly about atmospheric environments. If I were to describe it, it&#39;s sort of similar to those artsy animations you see on youtube. I thought this is why my game is doing poorly, but I see that a lot of games on itchio front page is also just nothing but short atmospheric walking simulators.</p> <p>The main issue is that I really don&#39;t know what I should change about my game. Personally, I feel the game is very polished, and a recent content update I made finished the story in a way that I feel any addition to the game&#39;s content would break its story. Additionally everyone who played it told me that it was a very good experience.</p> <p>For promotion, I made a few posts for the launch and updates of ACEDIA on reddit, blue sky and other platforms. Each post (and update) generated a few hundred more views on itch.io, which I&#39;m pretty happy with, but the views quickly died down after a couple of days. Of course for a walking simulator there&#39;s also not much I can post gameplay-wise without spoiling the story, so maybe that&#39;s why the advertising isn&#39;t as successful?</p> <p>I try to make the game as accessible as possible, the payment is optional (I still want earnings from this, but not a priority), the game is fully open source, in the creative commons, and most assets are orginals made by myself. I even turned the reflection system I developed for the game into a standalone addon (<a href="https://github.com/KipJM/smart_planar_reflector">https://github.com/KipJM/smart_planar_reflector</a>) There are Windows and Linux builds, and full controller support and custom haptics for most controllers. There&#39;s also extensive graphics settings, and I added input sensitivity settings as per the feedback of a player. Is there something I&#39;m missing?</p> <p>This is my first experience with making a story-focus game outside of game jams, I really appreciate any help on how to get more people to play it more!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/DatCoolJeremy"> /u/DatCoolJeremy </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1nsd7fv/how_do_i_get_people_to_play_my_free_game/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1nsd7fv/how_do_i_get_people_to_play_my_free_game/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1nriciv/how_do_games_interpret_playerdrawn_sigils/" target="_blank">How do games interpret player-drawn sigils?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hey! I&#39;ve been looking to try and figure out how games like <a href="https://store.steampowered.com/app/587620/Okami_HD/">Okami</a>, <a href="https://www.ign.com/games/doodle-hex">Doodle Hex</a>, and <a href="https://play.google.com/store/apps/details?id=com.ketchapp.divineko">Divineko</a> operate their core mechanics. I thought there&#39;d be a wealth of resources on how systems like these work because of how unique the input interpretation requirements are compared to games outside that genre, but I think I&#39;m missing a key word or phrase that would help that search bear fruit.</p> <p>Are there any resources to explain this, or any libraries/open source projects that replicate the behavior for me to analyze?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Furyful_Fawful"> /u/Furyful_Fawful </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1nriciv/how_do_games_interpret_playerdrawn_sigils/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1nriciv/how_do_games_interpret_playerdrawn_sigils/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/gamedev/comments/1nsbx2j/hello_world/" target="_blank">Hello World!</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hello, I&#39;m starting this game development career, I&#39;m 16 years old but I already have several projects, not ready, but I intend to finish them, one at a time of course.</p> <p>But I would like help, like, feedback, experiences from other developers, like, I have a notion like that but, I wouldn&#39;t like to fail at what I&#39;m good at, so I would like to know what I should worry about.</p> <p>And what could I do when I&#39;m feeling like what I do isn&#39;t enough.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Redstozity"> /u/Redstozity </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1nsbx2j/hello_world/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1nsbx2j/hello_world/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1nre1qh/how_not_to_be_successfull_with_your_indie_game/" target="_blank">How (NOT) to be successfull with your indie game. HUGE mistakes I made in my journey so you won't!</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi! I&#39;m a wannabe game developer with a few games already made; however, the one I cared about most is <strong>Defendron</strong>. It is a tower defense game with some roguelike features that I&#39;ve been developing for 2.5 years. I want to share my development journey and most importantly, the MISTAKES I made so you won&#39;t. <strong>If you don&#39;t like long reads, scroll down for a bullet list, but I encourage you to read everything. :)</strong></p> <p>It all started in December 2022 as a fun little project to teach my friends the basics of Unity and spark some interest in gamedev. After few weeks their fascination quickly fizzled, but mine didn&#39;t. I really, and I mean REALLY, loved the process of making this game, so I spent more and more time on it. After ~5 months I published the game on Google Play and itch.io.</p> <p>I did not promote or market the game anywhere, and this is the <strong>FIRST HUUGE MISTAKE</strong>. Even with no budget I could have posted some TikToks or short clips to let people know about the game while it was still in development. Early promotion also shows whether people find the game interesting and whether it&#39;s worth continuing. The game has organically earned about $100 to date (it&#39;s currently not available on Google Play but will be again in the near future).</p> <p>After the initial launch I spent more time polishing the game and set up the Steam page, and here is the <strong>SECOND MISTAKE</strong>: the Steam page should be created early if you know you want to pursue the game. There is nothing more important than Steam wishlists. We&#39;ll get back to that later.</p> <p>On September 14, 2023 my game officially launched on Steam, and as a dumb noobie I didn&#39;t know what I was missing. The game did terribly at launch and there&#39;s no way to go back and fix that. On launch day I sold 25 copies, and 27 in total during the first month. Why? <strong>BECAUSE NO ONE KNEW ABOUT IT.</strong> I launched the game without any audience. You <strong>NEED</strong> to let people know about your game!</p> <p>From my experience and research online, a common rule of thumb is 7,000–10,000 wishlists. Why? Because Steam will help promote your game, and with that kind of foundation you can even be shown on the Steam store pages. To date my game has made $296 on Steam.</p> <p>Arund the same time I also launched the game on the App Store. I spent $100 to get developer access to publish on the App Store, and the game sold a whopping 10 COPIES, earning a total of $27 in a year.</p> <p>Up until now my game has earned a total 423$ in 2.5 years.</p> <p>The next point doesn’t tie to a specific moment in the journey, but looking back I can definitely say this: <strong>MAKE SMALL GAMES</strong>. Make something simple, test if it catches people’s attention, see if it’s interesting, and finish it quickly. I spent a loooot of time on my game (I don’t regret it because it brought me immense joy), but it would have been far less painful to fail with a project that only took 4–5 months and then be ready to jump into another one.</p> <p><strong>Mistakes</strong>:</p> <ol> <li><strong>Not promoting my game</strong>. People had no idea it existed, which led to a poor launch.</li> <li><strong>Setting up the Steam page too late and rushing the launch without any wishlists</strong>. I didn’t gain enough traction to get picked up by the Steam algorithm, which made growing an audience even harder.</li> <li><strong>Taking too long to finish</strong>. Tackling a huge project that might fail is much more costly than failing fast with a small game.</li> </ol> <p>I&#39;m still making updates, and regardless of the outcome I love making Defendron and will continue to work on it as long as I have time. Learn from my mistakes and don&#39;t end up like me. :)</p> <p>EDIT: For anyone wondering here&#39;s the game on Steam <a href="https://store.steampowered.com/app/2508740/Defendron_TD/">https://store.steampowered.com/app/2508740/Defendron_TD/</a></p> <p><strong>Cheers, and thanks for reading all that!</strong></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/reallpepe"> /u/reallpepe </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1nre1qh/how_not_to_be_successfull_with_your_indie_game/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1nre1qh/how_not_to_be_successfull_with_your_indie_game/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/gamedev/comments/1nsb74d/screen_tearing_issue/" target="_blank">Screen tearing issue</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>So I’ve been having this issue where my screen tears horizontally for the most part when I have a game open and I alt tab and use the browser for a example</p> <p>Why does this happen, I never experienced this until 4 years later I’ve had my pc </p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Personal_Image_5058"> /u/Personal_Image_5058 </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1nsb74d/screen_tearing_issue/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1nsb74d/screen_tearing_issue/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1nrchaq/videogame_maker_ea_in_advanced_talks_to_go/" target="_blank">Videogame maker EA in advanced talks to go private at roughly $50 billion valuation</a>
-            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/gamedev/comments/1nrchaq/videogame_maker_ea_in_advanced_talks_to_go/">  </a> </td><td> &#32; submitted by &#32; <a href="https://www.reddit.com/user/HowlSpice"> /u/HowlSpice </a> <br/> <span><a href="https://www.reuters.com/business/electronic-arts-nears-roughly-50-billion-deal-go-private-wsj-reports-2025-09-26/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1nrchaq/videogame_maker_ea_in_advanced_talks_to_go/">[comments]</a></span> </td></tr></table></div>
+            <a href="https://www.reddit.com/r/gamedev/comments/1ns8qlt/how_do_you_study_game_design/" target="_blank">How do you study game design?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>How do you study level design or game design? compare with the mechanics most similar to what they want to feel, they design in text what they want to achieve, there is a magical place in game devs that I don&#39;t know yet where these things are discussed.</p> <p>What do you recommend to start? I think I know several concepts of game development, on a technical level I just need more practice and I want to improve how it feels to play my games</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/TheVugx"> /u/TheVugx </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1ns8qlt/how_do_you_study_game_design/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1ns8qlt/how_do_you_study_game_design/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1nr2jlj/gallery_of_hundreds_of_steam_games_with_zero/" target="_blank">Gallery of Hundreds of Steam games with zero Reviews</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/cutcss"> /u/cutcss </a> <br/> <span><a href="https://www.gameswithnoreviews.com/?r">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1nr2jlj/gallery_of_hundreds_of_steam_games_with_zero/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/gamedev/comments/1ns75wl/how_to_fix_steam_store_beta_mode_screenshots_poor/" target="_blank">How to Fix Steam Store Beta Mode Screenshots Poor Quality?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi there, </p> <p>When I upload my screenshots to my Steam page and look at them in the store beta mode, they are slightly fuzzy/poor quality. If I click any of the screenshots or open them in a new tab they look crisp/normal quality.<br/> All of the screenshots are uploaded at 1920x1080px as recommended by steam docs so I&#39;m not sure why there would be an issue.</p> <p>Any chance the images are only blurry in the beta view but when the page goes live they&#39;d be crisp again?<br/> I tried searching through this/other reddits but can&#39;t seem to find any answers for this issue. </p> <p>Thank you for your help!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Hotdogmagic505"> /u/Hotdogmagic505 </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1ns75wl/how_to_fix_steam_store_beta_mode_screenshots_poor/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1ns75wl/how_to_fix_steam_store_beta_mode_screenshots_poor/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1nr2ads/how_many_of_you_dont_do_your_own_graphic_design/" target="_blank">How many of you DONT do your own graphic design?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I’ve been a software dev for about 6 years and recently picked unity up as a hobby. It’s been going well, outside of my clear lack of animation/ graphic design skills. After watching a handful of dev logs I’ve noticed that is 75% of the content. Is that just because devs … don’t make YouTube content ? Or is everyone in game design just genuinely good at this part? </p> <p>Wondering if it’s worth taking a break from mechanics to learn the art side of things instead of just using asset bundles I find online. </p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/TheBigJablonska"> /u/TheBigJablonska </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1nr2ads/how_many_of_you_dont_do_your_own_graphic_design/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1nr2ads/how_many_of_you_dont_do_your_own_graphic_design/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/gamedev/comments/1ns10ad/so_today_i_added_csv_loading_to_my_project_for/" target="_blank">so today I added csv loading to my project for translation options. it was more annoying than I thought</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>It was going well until suddenly lines were vanishing in game, one stood out as being english when everything else was japanese even though it was a simple repeat loop to replace the english strings with the japanese column of the csv...<br/> 3 lines were being skipped entirely.<br/> the range told me my csv was 3 cells taller than it actually was</p> <p>well, guess who found out csv&#39;s don&#39;t like commas and &quot;&#39;s</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/azurezero_hdev"> /u/azurezero_hdev </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1ns10ad/so_today_i_added_csv_loading_to_my_project_for/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1ns10ad/so_today_i_added_csv_loading_to_my_project_for/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1nr09d4/lessons_learned_while_building_my_underground/" target="_blank">Lessons learned while building my Underground Voxel World</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>This is how I create levels for my game <em>Goblin Company</em>. Nothing super fancy or innovative, but I thought it could be interesting to share the process as a journey.</p> <p>The level is built from simple primitives (spheres, boxes, cylinders, etc.) combined together. The world is split into chunks, and each chunk into voxels. Each voxel samples the SDF of the primitives (<a href="https://iquilezles.org/articles/distfunctions/">see the bible</a>) and then gets passed to <a href="https://en.wikipedia.org/wiki/Marching_cubes">marching cubes</a> to generate the final mesh.</p> <p>[<a href="https://streamable.com/chrxk6">Here’s a quick visual of the editing in editor</a>]</p> <p>For each primitive I can decide whether it affects only shape, only material, or both. When multiple primitives overlap, the order matters because they all compete to write into the same voxels. Since the game is fully underground, the inside of a primitive usually means “void” and the outside is &quot;full&quot; (solid <em>diggable</em> terrain).</p> <p>I quickly added a <a href="https://i.imgur.com/1io9fHk.png">visualizer to draw chunks</a> for debugging and to fix issues in my implementation.</p> <p>Editing the world was the next problem. At first, every change triggered a full regeneration, which was fine for toy maps but way too slow for big levels. To fix that, I tracked which primitives touch which chunks, so that when I edit something, only the affected chunks get regenerated. That worked much better, but large primitives could still cause big slowdowns.</p> <p>To deal with that, I added a simplified <em>streaming system</em>: only the chunks <strong>around the player</strong> are generated. This worked, but created a funny issue: without terrain loaded, objects and enemies would just fall into the void! The fix was to place <em>spawners</em> instead of objects directly. When a chunk loads, the spawner creates the actor.</p> <p>For actors that should be &quot;inside&quot; the terrain I created a special spawner that trigger when the player digs nearby (so the actor can get out from the terrain).</p> <p>For multiplayer (I was crazy enough to make a <strong>co-op</strong> game), replication is done by sending commands like “<em>dig with radius=R at position X,Y,Z</em>” to clients. It might not be the most robust solution, but it works fine so far. For late joiners, the game pauses, sends them all the modified chunks since the begin, and then resumes.</p> <p>It’s been a long journey, but it’s far from over:</p> <ul> <li>Replication through commands might cause <em>desynchronization</em> between clients (floating-point drift, etc.). I’m considering sending modified chunks periodically to keep them in sync.</li> <li>I still need to add a check to postpone BeginPlay until the player’s underlying terrain is generated. It hasn’t happened yet, but by <em>Murphy’s Law</em>, it will.</li> <li>For the final game, primarily for replayability, I want to add <em>procedural generation</em>. The plan is to build a library of caves and mix them randomly. On top of that, I’d like to randomly populate them with props, foliage, enemies, and other elements.</li> <li>Optimizations on marching cubes algorithm (<a href="https://alphanew.net/index.php?section=articles&amp;site=marchoptim&amp;lang=eng">amazing article about it</a>).</li> </ul> <p>TL;DR: <a href="https://streamable.com/sxcgy6">This is what it looks like in action</a></p> <p>Would you have done something differently?”</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Hurricane86i"> /u/Hurricane86i </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1nr09d4/lessons_learned_while_building_my_underground/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1nr09d4/lessons_learned_while_building_my_underground/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1nqryo5/if_you_post_in_this_subreddit_asking_questions/" target="_blank">If you post in this subreddit asking questions like “how to get started in game dev?”, you aren’t ready to make a game of any size</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Sucks to hear but it’s the truth</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/ammoburger"> /u/ammoburger </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1nqryo5/if_you_post_in_this_subreddit_asking_questions/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1nqryo5/if_you_post_in_this_subreddit_asking_questions/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/gamedev/comments/1nrye4b/heres_how_to_know_if_you_should_do_crowdfunding/" target="_blank">Here’s how to know if you should do crowdfunding or not.</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>When it’s a good idea:</p> <ul> <li><p>You already have an audience and have been building a community on social media (Twitter, Discord, Reddit, etc.). It doesn’t have to be huge, but big enough to get a decent amount of backers in the first 48 hours.</p></li> <li><p>You already have a playable demo, trailer, and promotional art.</p></li> <li><p>Your game is visually appealing, and you either are an artist yourself or have one on the team.</p></li> <li><p>Your game is planned for release in about 1–2 years.</p></li> </ul> <hr/> <p>When it’s a bad idea:</p> <ul> <li><p>You’re hoping that simply creating a crowdfunding page will attract random backers to support your project (spoiler: it won’t).</p></li> <li><p>You’re very early in development and have nothing concrete to show.</p></li> <li><p>Your game is 3+ years away from release.</p></li> <li><p>You don&#39;t have a demo.</p></li> <li><p>Your game might have fun gameplay and good potential, but it isn’t “crowdfundable”, meaning it lacks a strong hook or visual appeal.</p></li> </ul> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Internal-Constant216"> /u/Internal-Constant216 </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1nrye4b/heres_how_to_know_if_you_should_do_crowdfunding/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1nrye4b/heres_how_to_know_if_you_should_do_crowdfunding/">[comments]</a></span></div>
           </li>
   
         </ul>
@@ -1337,93 +1513,93 @@ us to a better diagnostics future. Thank you!</p>
         <ul class="item-list">
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1nriuk2/a_fullstack_voice_to_voice_chat_demo/" target="_blank">A fullstack Voice to Voice chat demo.</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p><a href="https://github.com/danielclough/voice-chat-whisper-ollama-espeak-wasm">https://github.com/danielclough/voice-chat-whisper-ollama-espeak-wasm</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/danielclough"> /u/danielclough </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1nriuk2/a_fullstack_voice_to_voice_chat_demo/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nriuk2/a_fullstack_voice_to_voice_chat_demo/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1nsc68v/the_lowest_level_pl/" target="_blank">The Lowest Level PL</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/emporas"> /u/emporas </a> <br/> <span><a href="https://pramatias.github.io/cubes/cubes_en.html">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nsc68v/the_lowest_level_pl/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1nr9dpf/im_thinking_of_dropping_rust_due_to_the_lack_of/" target="_blank">I'm thinking of dropping rust due to the lack of partial borrowing.</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>To start off I do wanna say I love a lot of things about rust, enums, options, traits, macros, the whole suite of tools (bacon, clippy, etc.) and so on. In fact I would likely still use rust for some types of coding.</p> <p>However my specific issue comes with specifically object oriented patterns and more specifically with <code>self.method(&amp;self)</code> borrowing the WHOLE self, rather than just parts of it.</p> <p>The way I&#39;ve been taught to think about the rust borrow checker is that:<br/> - 1 object can be read from mulitple places<br/> - 1 object can only be written from 1 place and during that time it cannot be read</p> <p>All of this is completely reasonable, makes sense and works. The problem comes that self.methods limit a lot more than just the thing you are actually reading - the borrow checker restricts the whole self. In that sense rust simply punishes you for using self.methods in a OOP style compared to using general methods (<code>method(&amp;self)</code>).</p> <p>I haven&#39;t found a way to cope with this, it is something that always ends up making me write code that is either more cluttered or more expensive (using clone() to get around ref issues).</p> <p>I did spend a good amount of time coding in rust and working on a project, but at this point I think I better quit early, since from what I&#39;ve seen it won&#39;t get better. As cool as the language is, it ends up creating a lot more issues for me than it is solving.</p> <p>Edit: I got a very nice advice for my issue - using std::mem::take to temporarily take out the memory I want to mutate out of the struct, mutate it that way and then return it.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/CabalCrow"> /u/CabalCrow </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1nr9dpf/im_thinking_of_dropping_rust_due_to_the_lack_of/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nr9dpf/im_thinking_of_dropping_rust_due_to_the_lack_of/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1nsbcqr/rust_as_the_best_language_for_ai_development/" target="_blank">Rust as the best language for AI development</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Workflow:<br/> - GPT-5 thinking to start</p> <p>- Continue with thinking mode for new files</p> <p>- Switch to GPT5 nonthink to chat, refactor, and fix errors</p> <p>- Create unit tests</p> <p>- When all tests pass, run clippy</p> <p>- Fix errors from clippy</p> <p>- Run cargo fmt whenever you like instead of manually indenting</p> <p>- Create a Criterion bench if desired</p> <p>- Spawn new chats for specific files if you wish to get a fresh context window.</p> <p>Same caveats apply to this process as normally with Rust. Best when used in projects that seek performance and low level optimizations which Rust makes extremely accessible to you.</p> <p>With this method above I can get thousands of lines of code written in one day which with my abilities would be impossible, and I honestly don&#39;t intend to ever learn Rust to a high level for two reasons: 1. I literally cant, and 2. Its not my day job</p> <p>edit: ok I accidentally triggered some people with talking about lines of code. Sad I have to clarify this for some dummies but the thousands of lines of code is for NEW projects as this post clearly is about, and its ENTIRELY REASONABLE to get 1.2k - 2k lines of code written for a NEW project on the first day after the research phase.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/WeddingDisastrous422"> /u/WeddingDisastrous422 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1nsbcqr/rust_as_the_best_language_for_ai_development/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nsbcqr/rust_as_the_best_language_for_ai_development/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1nr96qr/cloudflare_just_got_faster_and_more_secure/" target="_blank">Cloudflare just got faster and more secure, powered by Rust</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/orium_"> /u/orium_ </a> <br/> <span><a href="https://blog.cloudflare.com/20-percent-internet-upgrade/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nr96qr/cloudflare_just_got_faster_and_more_secure/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1nsb2rj/value_display_when_debugging_with_vscode/" target="_blank">Value display when debugging with vscode</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>When you debug with vscode simple variables are displayed correctly (simple structs, ...)</p> <p>But things like Option, Result&lt;Vector&lt;Something&gt;&gt;, Uuid, ... displayed not very helpful</p> <p><a href="https://preview.redd.it/al7wjjosysrf1.png?width=662&amp;format=png&amp;auto=webp&amp;s=62ce50570be4190b2eb77a0cdc4cae2d26a3c6e7">https://preview.redd.it/al7wjjosysrf1.png?width=662&amp;format=png&amp;auto=webp&amp;s=62ce50570be4190b2eb77a0cdc4cae2d26a3c6e7</a></p> <p>Is there any solution to display these in debug view?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/ryn_eghbal"> /u/ryn_eghbal </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1nsb2rj/value_display_when_debugging_with_vscode/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nsb2rj/value_display_when_debugging_with_vscode/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1nr5kfg/crossfire_v21_probably_the_fastest_mpmc_channel/" target="_blank">crossfire v2.1: probably the fastest mpmc channel in bounded scenario</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Crossfire is a lockless channel based on crossbeam, which supports both async and threaded context.</p> <p>I have recently completed version v2.1, removed the dependency on crossbeam-channel, and implemented with a <a href="https://github.com/frostyplanet/crossfire-rs/wiki/crossbeam-related">modified version of crossbeam-queue</a>. And due to having a lighter notification mechanism, some cases in blocking context are even faster than the original crossbeam-channel,</p> <p>doc: <a href="https://docs.rs/crossfire">https://docs.rs/crossfire</a></p> <p>github: <a href="https://github.com/frostyplanet/crossfire-rs">https://github.com/frostyplanet/crossfire-rs</a></p> <p>benchmark: <a href="https://github.com/frostyplanet/crossfire-rs/wiki/benchmark-v2.1.0-vs-v2.0.26-2025%E2%80%9009%E2%80%9021">https://github.com/frostyplanet/crossfire-rs/wiki/benchmark-v2.1.0-vs-v2.0.26-2025%E2%80%9009%E2%80%9021</a></p> <p>For the concept, please read <a href="https://github.com/frostyplanet/crossfire-rs/wiki#v21-compared-to-other-channels">https://github.com/frostyplanet/crossfire-rs/wiki#v21-compared-to-other-channels</a> . In brief, compared to Kanal, Crossfire is cancellation-safe, and it comes with send_timeout/recv_timeout functions to support various async runtimes.</p> <p>If you are interested in the internal state transfer: <a href="https://github.com/frostyplanet/crossfire-rs/wiki/state-transfer">https://github.com/frostyplanet/crossfire-rs/wiki/state-transfer</a></p> <p>Current test status is maintained in the README section <a href="https://github.com/frostyplanet/crossfire-rs?tab=readme-ov-file#test-status">https://github.com/frostyplanet/crossfire-rs?tab=readme-ov-file#test-status</a></p> <p>I began to test in August, and have been debugging on Arm workflows, and found some stability issues on Tokio, probably due to Arm server being less used in production. I have a PR <a href="https://github.com/tokio-rs/tokio/pull/7622">https://github.com/tokio-rs/tokio/pull/7622</a> merged and not released yet, which fixed a frequent issue in <code>wake_by_ref</code>. But currently, there&#39;s still a rare issue with current-thread schedule that has not been pinpointed <a href="https://github.com/tokio-rs/tokio/issues/7632">https://github.com/tokio-rs/tokio/issues/7632</a>. If you use Arm platform, you could keep an eye on future tokio updates, and avoid using current-thread scheduler until it&#39;s fixed (the multi-thread scheduler might have more considerations for inter-thread notification)</p> <p>There is no known problem on x86, though. I recently split the workflows for threaded, async-std, smol, so far so good.</p> <p><a href="https://preview.redd.it/irkz5mjhbjrf1.png?width=857&amp;format=png&amp;auto=webp&amp;s=a2636366e5fd348801aea23d834790bec26be10d">https://preview.redd.it/irkz5mjhbjrf1.png?width=857&amp;format=png&amp;auto=webp&amp;s=a2636366e5fd348801aea23d834790bec26be10d</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/frostyplanet"> /u/frostyplanet </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1nr5kfg/crossfire_v21_probably_the_fastest_mpmc_channel/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nr5kfg/crossfire_v21_probably_the_fastest_mpmc_channel/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1ns8mxg/all_48_rust_keywords_in_under_300_characters/" target="_blank">All 48 Rust keywords in under 300 characters</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p><code> mod x { pub(super) struct X; use Ok; impl X { pub(in crate) async fn x(self: Self, x: &amp;&#39;static &amp;&#39;_ dyn for&lt;&gt; Fn()) where { unsafe extern { safe fn x(); } macro_rules! x { () =&gt; {}; } if &#39;x: loop { return match while let true = break &#39;x false { continue } { ref x =&gt; { &amp;raw mut x; async { const { enum A {} } }.await as () }, }; } { type x = X; } else { move || { trait x { }; union B { x: () } }; } } } } </code></p> <p><a href="https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2024&amp;gist=c1c8e31332776002d7030e2e242ebcee">Playground</a></p> <p>I was on a train and wanted to try and express all Rust <a href="https://doc.rust-lang.org/reference/keywords.html">keywords</a> (strict + weak) in as few characters as possible.</p> <p>Result: 302 characters used (excluding whitespace). Can you do better than me? Note: Calling any macro is cheating :P (e.g. <code>stringify!(const move unsafe...)</code>) </p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/nik-rev"> /u/nik-rev </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1ns8mxg/all_48_rust_keywords_in_under_300_characters/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1ns8mxg/all_48_rust_keywords_in_under_300_characters/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1nr4cpd/the_tokioconf_2026_call_for_talk_proposals_is_now/" target="_blank">The TokioConf 2026 Call For Talk Proposals is now open</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/carllerche"> /u/carllerche </a> <br/> <span><a href="https://tokio.rs/blog/2025-09-26-announcing-tokio-conf-cfp">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nr4cpd/the_tokioconf_2026_call_for_talk_proposals_is_now/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1ns6y53/mdserve_markdown_preview_done_right_in_rust/" target="_blank">mdserve - markdown preview done right in Rust</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Been working on <code>mdserve</code> (now at v0.3.0) - a markdown preview server that ships as a single static binary. Wanted something that didn&#39;t need Node.js/Python runtimes when it could just be one executable, so built this in Rust with Axum.</p> <p>Key bits:</p> <ul> <li>Single static binary, no runtime deps</li> <li>WebSocket live reload that&#39;s actually instant</li> <li>Built-in theme selector (including Catppuccin variants)</li> <li>Full GFM + Mermaid diagram support</li> <li>Stupidly simple: <code>mdserve</code> <a href="http://file.md"><code>file.md</code></a> and you&#39;re done</li> </ul> <p>Startup and reload feel instant, and memory usage is extremely low even with large files.</p> <p>Available via <code>brew tap jfernandez/mdserve &amp;&amp; brew install mdserve</code>, Linux install script, or <code>cargo install mdserve</code>.</p> <p>Repo: <a href="https://github.com/jfernandez/mdserve">https://github.com/jfernandez/mdserve</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/thedirtyhand"> /u/thedirtyhand </a> <br/> <span><a href="https://github.com/jfernandez/mdserve">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1ns6y53/mdserve_markdown_preview_done_right_in_rust/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1nr3c2f/the_embedded_rustacean_issue_55/" target="_blank">The Embedded Rustacean Issue #55</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/TheEmbeddedRustacean"> /u/TheEmbeddedRustacean </a> <br/> <span><a href="https://www.theembeddedrustacean.com/p/the-embedded-rustacean-issue-55">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nr3c2f/the_embedded_rustacean_issue_55/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1ns61dc/rust_learning_resources/" target="_blank">Rust Learning Resources.</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hey Guys</p> <p>Can anyone recommend a good resource for really understanding how <code>Option</code> works and <code>Error handling</code> as well.</p> <p>I’ve already gone through The Rust Programming Language book, Rustlings, and Rust by Example, but I’m looking for something that explains these concepts in greater depth with more practical context.</p> <p>I often get confused about which functions return an Option and when I should be using it. I’m still pretty new to Rust and don’t have much experience with low-level languages. My background is mostly in Python and I have worked only on python.</p> <p>One more things, It might seem out of context but how much time does it take for someone like me to be good and comfortable in rust.</p> <p>Thanks.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/thefarmguy_"> /u/thefarmguy_ </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1ns61dc/rust_learning_resources/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1ns61dc/rust_learning_resources/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1nr2zpx/call_for_testing_failfast_within_test_targets/" target="_blank">Call for testing: `--fail-fast` within test targets</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>On Rust nightly-2025-09-19 and later, you can pass <code>-Zunstable-options --fail-fast</code> as an argument <em>to the test binary</em> and the target will terminate when one test fails. </p> <p>In situations where you only want to know if there are any failures this can be dramatically faster. My motivation is that <a href="https://mutants.rs">cargo mutants</a> just wants to establish whether an injected bug causes any tests to fail.</p> <p>Please try it out and report success or problems in this thread or in <a href="https://github.com/rust-lang/rust/issues/142859">https://github.com/rust-lang/rust/issues/142859</a>. I&#39;d love to hear if it&#39;s useful or if there&#39;s anything else that needs to be fixed before it&#39;s stabilized.</p> <p>For example:</p> <pre><code>cargo +nightly test -- --fail-fast -Zunstable-options </code></pre> <p>This new unstable option is complementary to the existing <code>--fail-fast</code> understood by the <code>cargo test</code> runner:</p> <ul> <li><code>cargo test --fail-fast</code>, which is on by default, causes cargo to stop running targets after the first one fails. </li> <li><code>cargo test -- --fail-fast -Zunstable-options</code> causes <em>the individual target</em> to stop as soon as one test fails.</li> </ul> <p>This works as you would expect with doctests, e.g. <code>cargo test --doc -- -Zunstable-options --fail-fast</code> will stop after the first doctest failure.</p> <p>Since libtest by default runs tests on multiple threads it&#39;s possible that another test will keep running for some time after the first failure: they&#39;re not proactively cancelled. Also, with multiple threads the ordering and therefore the first failure is nondeterministic.</p> <p>This option is not needed with Nextest, whose process-per-test structure lets it already stop after the first failure.</p> <p>The feature is documented in <a href="https://doc.rust-lang.org/nightly/rustc/tests/index.html#--fail-fast">https://doc.rust-lang.org/nightly/rustc/tests/index.html#--fail-fast</a>.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/sourcefrog"> /u/sourcefrog </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1nr2zpx/call_for_testing_failfast_within_test_targets/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nr2zpx/call_for_testing_failfast_within_test_targets/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1ns3jqp/built_a_cli_toollibrary_for_quick_data_quality/" target="_blank">Built a cli tool/library for quick data quality assesment and looking for Feedbacks</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/poinT92"> /u/poinT92 </a> <br/> <span><a href="/r/SideProject/comments/1ns2hvg/built_a_cli_toollibrary_for_quick_data_quality/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1ns3jqp/built_a_cli_toollibrary_for_quick_data_quality/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1nr2ty0/im_a_beginner_in_rust_and_i_need_advice/" target="_blank">Im a beginner in rust and I need advice</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Im just getting into Rust and was wondering if anyone has tips on how to actually think in Rust when writing code. The compiler feels super strict, so I’m trying to adjust my mindset. Also, if you know any fun beginner project ideas to practice with, Id really appreciate it. Thanks!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/VortexDrags"> /u/VortexDrags </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1nr2ty0/im_a_beginner_in_rust_and_i_need_advice/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nr2ty0/im_a_beginner_in_rust_and_i_need_advice/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1ns2xq3/introducing_weapon_a_bringyourowncrdt_sync_engine/" target="_blank">introducing `weapon`, a bring-your-own-CRDT sync engine</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi everyone. I&#39;d like to show off <a href="https://crates.io/crates/weapon">weapon</a>, a syncing engine I made for my language-learning app <a href="https://yap.town/">yap.town</a>. (The source code for weapon is in the <a href="https://github.com/anchpop/yap">yap.town github repo</a>)</p> <p>I&#39;m not sure how many people will find it useful because it&#39;s designed for a tech stack that I think is relatively uncommon. It&#39;s for when you want to make a website whose business logic is implemented in Rust but implements the UI with React. (That said, I think it should work with Dioxus and other libraries as well, but I&#39;m not really sure because I don&#39;t use them.)</p> <p>The basic idea is simple. If you&#39;ve used Redux before, you might find it familiar. Instead of modifying the state directly, your app produces &quot;events&quot;. Then you write a function for applying an event to the previous state. In combination with an initial state, this allows you to replay all the historical events to recover the current state. The benefit of this is that it makes it very natural to implement local-first syncing and multi-device sync. Because different devices will always apply the same events in the same order, all the different devices will reach the same state once they sync up their events.</p> <p>What&#39;s provided by `weapon` is an abstraction for storing the events. This abstraction makes it simple to sync them to a server and to write them to disk, as well as making it simple to hook everything up to React. It sounds easier than it is haha, but there are quite a few edge cases that weapon helps you handle.</p> <p>Unfortunately, it&#39;s kind of hard to create abstractions in Rust that can be used from JavaScript because wasm_bindgen doesn&#39;t work with parametric types. So it requires some manual work on your side to integrate it into your application. I&#39;d like to improve the situation at some point using macros or something like that, but that is an improvement for a future date.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/ChadNauseam_"> /u/ChadNauseam_ </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1ns2xq3/introducing_weapon_a_bringyourowncrdt_sync_engine/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1ns2xq3/introducing_weapon_a_bringyourowncrdt_sync_engine/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1nr2lg2/opengl_in_rust_3d_renderer/" target="_blank">Opengl in RUST (3d renderer)</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/PuzzleheadedTower523"> /u/PuzzleheadedTower523 </a> <br/> <span><a href="/r/GraphicsProgramming/comments/1nqvzny/opengl_in_rust_3d_renderer/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nr2lg2/opengl_in_rust_3d_renderer/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1ns1lgb/is_orderingrelaxed_really_the_relaxest_memory/" target="_blank">Is Ordering::Relaxed really the relaxest memory order?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>In Rust, atomic variable operations require an <code>Ordering</code> enum parameter as an argument</p> <pre><code>use std::sync::atomic::{AtomicI32, Ordering}; let x = AtomicI32::new(0); x.store(42, Ordering::Relaxed); let val = x.load(Ordering::Acquire); </code></pre> <p>The available orderings are:</p> <ul> <li><code>Relaxed</code></li> <li><code>Release</code></li> <li><code>Acquire</code></li> <li><code>AcqRel</code></li> <li><code>SeqCst</code></li> </ul> <p>However, I believe that even without <code>Relaxed</code> - which is considered the minimally tight ordering - there would be no problem guaranteeing the atomicity of atomic operations. Why isn&#39;t there an ordering that is even looser than <code>Relaxed</code> - one that only guarantees minimal atomicity without imposing any memory ordering constraints?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Savings_Pianist_2999"> /u/Savings_Pianist_2999 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1ns1lgb/is_orderingrelaxed_really_the_relaxest_memory/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1ns1lgb/is_orderingrelaxed_really_the_relaxest_memory/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1nr1fui/official_beta_release_of_the_cosmic_desktop/" target="_blank">Official beta release of the Cosmic desktop environment from System76 (a graphical shell written in Rust for PopOS, Fedora, Arch, Redox, and more)</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/kibwen"> /u/kibwen </a> <br/> <span><a href="https://system76.com/cosmic">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nr1fui/official_beta_release_of_the_cosmic_desktop/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1nrzafg/are_there_any_good_benchmarks_comparing_web/" target="_blank">Are there any good benchmarks comparing web server performance between Rust and Go?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I have a SaaS platform that let&#39;s people create their own websites in minutes. It&#39;s a mix between high-end ecommerce features of Shopify and the customization of Wordpress with custom programmable metafields, custom forms and an App Marketplace. However as the platform is growing I want to separate the Admin panel codebase and that of the user-facing websites. And also rewrite the user-facing side in a more performant language.</p> <p>My requirements are that there&#39;s atleast two databases a site needs to connect to - it&#39;s own mysql database that&#39;s created for every single site and our main database (though we are working on clustering multiple sites into a single database but regardless, a single server might need to handle thousands of DB connections).</p> <p>I have a custom programming language akin to Shopify&#39;s Liquid for themes and theme app extensions. I have an opportunity to make a low-level web server from scratch that is hyper-optimized specifically for serving our websites - managing database connections itself - deciding what to cache and what not to - pre-compiling the most in-demand pages of themes and many other optimizations.</p> <p>However I don&#39;t really know which language is better for doing this. I know Rust by itself is much faster than Go but I know that Go IS used in real web dev - Rust has web dev functionality but isn&#39;t nearly as widespread. It&#39;s just like while Python itself is a slower language, the AI and Data Science packages written in Python often tend to perform faster than their JavaScript alternatives because the Python packages have had a lot more work put behind them.</p> <p>In order to achieve this kind of optimization, I cannot, ofcourse, use a web framework. I need to use a low-level HTTP parser like hyper in rust.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/manshutthefckup"> /u/manshutthefckup </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1nrzafg/are_there_any_good_benchmarks_comparing_web/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nrzafg/are_there_any_good_benchmarks_comparing_web/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1nr06s6/genedex_a_small_and_fast_fmindex_for_rust/" target="_blank">genedex: A Small and Fast FM-Index for Rust</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hello everyone,</p> <p>I want to share with you the FM-Index implementation I (a human) have been working on. Here is the GitHub link: <a href="https://github.com/feldroop/genedex">genedex</a>.</p> <p>The FM-Index is a full-text index data structure that allows efficiently counting and retrieving the positions of all occurrenes of (typically short) sequences in very large texts. It is widely used in sequence analysis and bioinformatics.</p> <p>I also created a thorough evaluation of all existing Rust implementations of this data structure, including benchmarks and plots. You can find it <a href="https://github.com/feldroop/rust-fmindex-benchmark">here</a>. </p> <p>I would love to hear your opinions and feedback about this project.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/frolix_bloop"> /u/frolix_bloop </a> <br/> <span><a href="https://github.com/feldroop/genedex">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nr06s6/genedex_a_small_and_fast_fmindex_for_rust/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1nrz11s/a_rustpowered_open_source_gpu_mesh_for_faster_ai/" target="_blank">A Rust-Powered Open Source GPU Mesh for Faster AI Inference</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>We&#39;ve been building <strong>InferMesh</strong>, an open-source project that’s bringing Rust’s performance and safety to large-scale AI inference. It’s a GPU-aware inference mesh that sits above Kubernetes/Slurm, dynamically routing AI model requests using real-time signals like VRAM headroom and batch fullness. It’s designed for 500+ node clusters. We use crates like tokio for async, serde for serialization, and prometheus for metrics. It’s been fun to build, but we’re still early and want to make it better with the community.</p> <p>We’re a small team, and we’d love feedback on:</p> <ul> <li>Feature ideas for AI inference (what’s missing?).</li> <li>Perf optimizations—can we squeeze more out of our meshd agent?</li> </ul> <p><a href="https://github.com/redbco/infermesh">https://github.com/redbco/infermesh</a>. Are there any Rust tricks we should borrow to make InferMesh even faster? </p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Xavier_Suomi"> /u/Xavier_Suomi </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1nrz11s/a_rustpowered_open_source_gpu_mesh_for_faster_ai/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nrz11s/a_rustpowered_open_source_gpu_mesh_for_faster_ai/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1nr0160/github_decodetalkerslibappindicatorzbus/" target="_blank">GitHub - Decodetalkers/libappindicator-zbus</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I have used zbus to rewrite the libappindicator. This repo, which is the crate for tray implement., is the pure rust implement. Now the tray-icon crate relays on the c binding lib of libappindicator, which makes it relays on gtk. I think it maybe not good. and libappindicator has not been updated for many years, so I think it is time to rewrite it.</p> <p>It was a hard time, because there is too few document about the protocal. What I can do is to read other implements, like that one in qt, and gtk. And finally I made it.</p> <p>I take a lot of reference for iced, the code of iced is very good, so I use the same way to design it. Thanks to that way, there is not somthing like `Arc&lt;dyn Fn&gt;`. I feel good about it.</p> <p>There is no document or README now, so you can read the examples now.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Massive-Collection80"> /u/Massive-Collection80 </a> <br/> <span><a href="https://github.com/Decodetalkers/libappindicator-zbus">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nr0160/github_decodetalkerslibappindicatorzbus/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1nrt7ch/announcing_metapac_v060_simple_declarative/" target="_blank">Announcing metapac v0.6.0: simple declarative package management</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p><code>metapac</code> is a meta package manager that allows you to declaratively manage your system packages which is super useful if you use multiple computers, even if they are using different operating systems. Paired with version controlling your configs, you can get very close to NixOS without having to use NixOS.</p> <p>GitHub: <a href="https://github.com/ripytide/metapac">https://github.com/ripytide/metapac</a></p> <p>Release notes: <a href="https://github.com/ripytide/metapac/releases/tag/v0.6.0">https://github.com/ripytide/metapac/releases/tag/v0.6.0</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Ripytide"> /u/Ripytide </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1nrt7ch/announcing_metapac_v060_simple_declarative/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nrt7ch/announcing_metapac_v060_simple_declarative/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1nqyz39/burst_an_opinionated_crossplatform_backup_cli/" target="_blank">Burst - An opinionated, cross‑platform backup CLI written in Rust.</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hello Rustaceans,</p> <p><a href="https://github.com/fred1268/burst">Burst</a> is the new project I have been working on lately. I hope this can be interesting to some of you guys.</p> <p>Have a nice weekend!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/fred1268"> /u/fred1268 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1nqyz39/burst_an_opinionated_crossplatform_backup_cli/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nqyz39/burst_an_opinionated_crossplatform_backup_cli/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1nrsxs4/cordyceps_educational_ransomware/" target="_blank">cordyceps - educational ransomware</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>My first Rust project: PoC ransomware. As a Threat Detection Engineer, building these tools is key to testing our defenses. Learned a ton about crypto, networking, and Rust crates. Write-up <a href="https://lopes.id/2025-cordyceps-making-of-ransomware/">here</a>.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/forkd_"> /u/forkd_ </a> <br/> <span><a href="https://github.com/lopes/cordyceps">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nrsxs4/cordyceps_educational_ransomware/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1nqynrb/media_we_built_a_p2p_vpn_that_runs_over_a/" target="_blank">[Media] We built a P2P VPN that runs over a Reticulum mesh network and made it open-source</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>rns-vpn-rs makes it possible to run a P2P VPN over a Reticulum mesh network.</p> <p>In practice, that means:</p> <p>- You can assign private IPs to Reticulum nodes.</p> <p>- Any app that speaks plain old IP (UDP/TCP) can now run on top of Reticulum.</p> <p>- Developers can connect services (chat, servers, APIs, telemetry feeds, etc.) across a Reticulum mesh without writing Reticulum-specific code.</p> <p>It behaves like a normal VPN client. Peers show up as reachable IPs, and traffic is transparently routed over the mesh.</p> <p>With this, projects can start routing any IP traffic over reticulum-rs, opening the door for all kinds of real-world use cases: off-grid comms, decentralized infrastructure, resilient field networking, and more.</p> <p>Repo: <a href="https://github.com/BeechatNetworkSystemsLtd/rns-vpn-rs">https://github.com/BeechatNetworkSystemsLtd/rns-vpn-rs</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/beechatadmin"> /u/beechatadmin </a> <br/> <span><a href="https://i.redd.it/yswapqpnthrf1.png">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nqynrb/media_we_built_a_p2p_vpn_that_runs_over_a/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1nrrrs7/media_rust_in_paris_2025_full_talks_playlist/" target="_blank">[Media] Rust in Paris 2025 – Full Talks Playlist 🦀</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>The <a href="https://www.rustinparis.com/">Rust in Paris 2025 conference</a> took place on March 14th. The video recordings of the sessions have recently been uploaded to YouTube</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/ogoffart"> /u/ogoffart </a> <br/> <span><a href="https://www.youtube.com/playlist?list=PLiOc9_WF8i8vVy5Qn6I9TxkBjsofzLcaH">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nrrrs7/media_rust_in_paris_2025_full_talks_playlist/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1nqxeab/the_borrowser_a_browser_in_rust_roastfeedback/" target="_blank">The Borrowser: a browser in Rust (roast/feedback)</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi all,</p> <p>I&#39;m building <a href="https://github.com/joris97jansen/borrowser">the next big thing</a>!</p> <p>To be fair: I’m a total newbie when it comes to Rust, GUI programming, and browser internals. My background is mostly TypeScript, Python, and Go (backend + some frontend frameworks). But I wanted to dive into Rust properly, and figured: what better way than to tackle something I’ve never built before?</p> <p>And, well, hearing about a browser acquisition of $600M+ made me think: “why not ship another one?”</p> <p>All jokes aside, I&#39;m here to gather some feedback from you (instead of my good old &quot;you are absolutely right&quot; friend on the other side of the www).</p> <ul> <li>Does the architecture make sense so far?</li> <li>Are there Rust patterns/crates I should lean on instead?</li> <li>Anything obviously off in how I handle events / callbacks?</li> <li>...</li> </ul> <p>Repo here (roast kindly 🙃): 👉 <a href="https://github.com/joris97jansen/borrowser">https://github.com/joris97jansen/borrowser</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/tpotjj"> /u/tpotjj </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1nqxeab/the_borrowser_a_browser_in_rust_roastfeedback/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nqxeab/the_borrowser_a_browser_in_rust_roastfeedback/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1nrqluv/tinypw_really_simple_password_generator/" target="_blank">tinypw - really simple password generator</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I am learning Rust and I created this really simple tool called tinypw. I am testing signup flows a lot and hence need a lot of random passwords.</p> <p>Maybe this is useful for someone in <a href="/r/rust">r/rust</a> </p> <p>Usage is pretty simple: </p> <p>The following will use <code>l=lowercase</code> and <code>n=numbers</code>. There is also <code>u=upper</code> and <code>s=symbols</code> available.</p> <p>```</p> <blockquote> <p>tinypw -l 20 -m ln Password: hzdtx57jj2horb0x8dqh [█████████████████████░░░] 86.8% strong 😎 ```</p> </blockquote> <p>You can also add <code>-c</code> to copy to clipboard!</p> <p>Get started with: <code>bash cargo install tinypw </code></p> <p>The tool is free and MIT licensed.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/marco_nae"> /u/marco_nae </a> <br/> <span><a href="https://github.com/marconae/tinypw">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nrqluv/tinypw_really_simple_password_generator/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1nqwreo/i_build_a_git_worktree_cli_helper_app_for_dealing/" target="_blank">I build a Git Worktree CLI helper app for dealing with Git Worktrees</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>As AI agents become a part of our lives, git worktrees are now more important than ever.</p> <p>To make working with git worktrees easier, I built rsworktree, a CLI app.</p> <p>It can create, list and delete worktrees in the dedicated .rsworktrees folder in the git repository root folder.</p> <p>Feel free to give it a try: <a href="https://github.com/ozankasikci/rust-git-worktree">https://github.com/ozankasikci/rust-git-worktree</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/kasikciozan"> /u/kasikciozan </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1nqwreo/i_build_a_git_worktree_cli_helper_app_for_dealing/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nqwreo/i_build_a_git_worktree_cli_helper_app_for_dealing/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1nrpxyr/newbies_guide_to_creating_a_rest_api_in_rust/" target="_blank">Newbie's guide to creating a REST API in Rust using Axum and SQLx</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;ve been learning Rust myself and when getting started I didn&#39;t find many beginner friendly blogs that explained things in detail when it came to creating a REST API in Rust. So based on my learnings I wrote a blog to help others who might be in the same boat as me. Also it&#39;s the lengthiest technical blog I&#39;ve written haha</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/ARandomShephard"> /u/ARandomShephard </a> <br/> <span><a href="https://arshsharma.com/posts/rust-api/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nrpxyr/newbies_guide_to_creating_a_rest_api_in_rust/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1nqvqk2/material_3_design_comes_to_slint_gui_toolkit/" target="_blank">Material 3 Design Comes To Slint GUI Toolkit</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>🚀 Speed up UI development with pre-built components,<br/> 🚀 Deliver a polished, touch-friendly, familiar user interface for your products,<br/> 🚀 Build a user interface that seamlessly works across desktop, mobile, web, and embedded devices.</p> <p>Explore: <a href="https://material.slint.dev/">https://material.slint.dev</a><br/> Get started: <a href="https://material.slint.dev/getting-started">https://material.slint.dev/getting-started</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/slint-ui"> /u/slint-ui </a> <br/> <span><a href="https://slint.dev/blog/material-comp-1.0">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nqvqk2/material_3_design_comes_to_slint_gui_toolkit/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1nrn0so/inter_thread_messaging/" target="_blank">Inter thread messaging</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi there, I have created a low latency inter thread messaging library. Any questions and suggestions are welcome.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/WitriXn"> /u/WitriXn </a> <br/> <span><a href="https://github.com/ryntric/workers-core-rust">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nrn0so/inter_thread_messaging/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1nqu92l/opinions_on_a_plugin_system_for_an_lsp/" target="_blank">Opinions on a plugin system for an LSP?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;ve chugging along, working on an <a href="https://github.com/vincent-uden/obsidian-lsp">LSP implementation</a> for editing markdown files in an Obsidian vault. Yes, I know there are others out there, but I wanted to give it a shot on my own.</p> <p>Something from Obsidian I&#39;d like to replicate is a plugin structure, but I&#39;m looking for opinions on how this could be implemented. Each &quot;plugin&quot; could be its own entirely separate language server independent of each other. But that would of course result in duplication of parsing and state tracking.</p> <p>As the language server is written in Rust which kinda narrows down the options of what I could do. If I had been using an interpreted language there would be many options of dynamic code loading patterns.</p> <p>Anyways, I&#39;m just looking for ideas on how you would like a plugin system for a language server to work if you were developing for it.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/xorvralin2"> /u/xorvralin2 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1nqu92l/opinions_on_a_plugin_system_for_an_lsp/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nqu92l/opinions_on_a_plugin_system_for_an_lsp/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1nrl2de/axum_backend_series_implement_jwt_access_token/" target="_blank">Axum Backend Series: Implement JWT Access Token | 0xshadow's Blog</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/lazyhawk20"> /u/lazyhawk20 </a> <br/> <span><a href="https://blog.0xshadow.dev/posts/backend-engineering-with-axum/axum-jwt-access-token/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1nrl2de/axum_backend_series_implement_jwt_access_token/">[comments]</a></span></div>
           </li>
   
         </ul>
@@ -1432,84 +1608,62 @@ us to a better diagnostics future. Thank you!</p>
         <ul class="item-list">
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1nrbr9y/go_maps_deep_dive_no_swiss_part_1_the_secrets/" target="_blank">🗺️ Go Maps Deep Dive (no_swiss) — Part 1: The Secrets Behind O(1) Performance, Overflows, and Growth</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hey folks, I just came across this excellent article on DEV:</p> <p>“Go Maps Deep Dive — Part 1: The Secrets Behind O(1) Performance, Overflows, and Growth” It explores how Go achieves average O(1) for map operations, deals with hash collisions (overflow buckets), and how maps grow incrementally to avoid long pauses. </p> <p>A few highlights I appreciated:</p> <ul> <li><p>The explanation of how Go uses hashing + buckets to achieve constant-time lookups</p></li> <li><p>How overflow buckets handle collisions</p></li> <li><p>The strategy Go uses to gradually migrate entries when resizing the map</p></li> <li><p>The random seeding per map instance to reduce predictable hash collisions and mitigate attacks like hash-flooding</p></li> </ul> <p>If you’re curious about Go internals or want to understand why maps behave the way they do under the hood, this is a really solid read.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Informal-Persimmon74"> /u/Informal-Persimmon74 </a> <br/> <span><a href="https://dev.to/arshiargh/go-maps-deep-dive-part-1-the-secrets-behind-o1-performance-overflows-and-growth-227">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1nrbr9y/go_maps_deep_dive_no_swiss_part_1_the_secrets/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1nsamhx/gos_builtin_new_function_will_take_an_expression/" target="_blank">Go's builtin 'new()' function will take an expression in Go 1.26</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/ynotvim"> /u/ynotvim </a> <br/> <span><a href="https://utcc.utoronto.ca/~cks/space/blog/programming/GoNewWithExpression">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1nsamhx/gos_builtin_new_function_will_take_an_expression/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1nraw3y/which_golang_web_socket_library_should_one_use_in/" target="_blank">Which Golang web socket library should one use in 2025?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>In the 2025 is Gorilla the best option or is there something better?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/SinkThink5779"> /u/SinkThink5779 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1nraw3y/which_golang_web_socket_library_should_one_use_in/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1nraw3y/which_golang_web_socket_library_should_one_use_in/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1ns7cti/building_go_apis_with_di_and_gin_a_dependency/" target="_blank">Building Go APIs with DI and Gin: A Dependency Injection Guide</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hello Everyone I was learning about Dependency Injection in Go and tried to write my understanding with Gin framework. Dependency Injection is very useful for making Go APIs more clean, modular and testable. Sharing here in case it helps others also : <a href="https://medium.com/@dan.my1313/building-go-apis-with-di-and-gin-a-dependency-injection-guide-81919be50ba5">https://medium.com/@dan.my1313/building-go-apis-with-di-and-gin-a-dependency-injection-guide-81919be50ba5</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Wayne1331"> /u/Wayne1331 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1ns7cti/building_go_apis_with_di_and_gin_a_dependency/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1ns7cti/building_go_apis_with_di_and_gin_a_dependency/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1nr88zk/my_work_colleagues_use_generics_everywhere_for/" target="_blank">my work colleagues use generics everywhere for everything</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>god i hate this. every config, every helper must be generic. &quot;what if we&#39;ll use it for–&quot; no mate: 1. you won&#39;t 2. you&#39;ve made a simple type implement a redundant interface so that you can call a helper function inside another helper function and 3. this function you&#39;ve written doesn&#39;t even need to use the interface as a constraint, it could just take an interface directly.</p> <p>i keep having to review shit code where they write a 6 line helper to avoid an <code>if err != nil</code> (now the call site&#39;s 4 lines, good riddance god help). it&#39;s three against one and i&#39;m losing control and i&#39;m pulling my hair out trying to understand wtf they want to do and the only way to convince them we can do without is if i rewrite what they did from scratch and let them see for themselves it&#39;s just better without the shit load of abstraction and generic abuse.</p> <p>don&#39;t even get me started on the accompanying AI slop that comes with that.</p> <p>how can i convince my colleagues to design minimal composable abstractions which actually fit in the current codebase and not dump their overly engineered yet barely thought out ideas into each file as if it was an append only log? i&#39;m tired of rewriting whatever they do in 30-50% less lines of code and achieving the same thing with more clarity and extensibility. i wish numbers were hyperbolic. in fact, they&#39;re underestimating.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/pixusnixus"> /u/pixusnixus </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1nr88zk/my_work_colleagues_use_generics_everywhere_for/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1nr88zk/my_work_colleagues_use_generics_everywhere_for/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1ns3sks/i_built_a_postgresql_backup_tool_in_go_and_just/" target="_blank">I built a PostgreSQL backup tool in Go, and just added support for Postgres 18!</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hey gophers,</p> <p>I wanted to share an update on <strong>PG Back Web</strong>, my open-source project for managing PostgreSQL backups, built entirely in Go.</p> <p>I&#39;ve just released <strong>v0.5.0</strong>, which now supports the brand new <strong>PostgreSQL 18</strong>!</p> <p>It’s a self-hosted web UI that makes it easy to schedule backups, store them locally or on S3, and monitor everything from one place. The whole thing runs in a simple Docker container.</p> <p>If you want to learn more about the project, you can check it out here:</p> <ul> <li><strong>Project Info:</strong> <a href="https://github.com/eduardolat/pgbackweb"><code>https://github.com/eduardolat/pgbackweb</code></a></li> </ul> <p>For those already using it, here are the release notes and update instructions:</p> <ul> <li><strong>Update to v0.5.0:</strong> <a href="https://github.com/eduardolat/pgbackweb/releases/tag/v0.5.0"><code>https://github.com/eduardolat/pgbackweb/releases/tag/v0.5.0</code></a></li> </ul> <p>I&#39;m always open to feedback. Thanks for taking a look!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/EduardoDevop"> /u/EduardoDevop </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1ns3sks/i_built_a_postgresql_backup_tool_in_go_and_just/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1ns3sks/i_built_a_postgresql_backup_tool_in_go_and_just/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1nr72ca/why_does_my_go_cli_tool_say_permission_denied/" target="_blank">Why does my Go CLI tool say “permission denied” even though it creates and writes the file?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hello everyone! I&#39;m building a CLI migration tool for Go codebases, and I&#39;m testing a few things by getting all the <code>.go</code> files in the active working directory, walking through them, reading each line, and creating a <code>.temp</code> file with the same name, then copying each line to that file.</p> <p>Well, at least it <em>should&#39;ve</em> done that, but I just realized it doesn&#39;t. It apparently only copies the first line. Somehow it goes to the next file, and when it reaches <code>root.go</code>, it gives me a &quot;permission denied&quot; error.</p> <p>Here&#39;s the code that&#39;s causing me pain:</p> <pre><code>func SearchGoFiles(old_import_path, new_import_path string) { go_file_path := []string{} mydir, err := os.Getwd() if err != nil { log.Fatal(err) } libRegEx, err := regexp.Compile(`^.+\.go$`) if err != nil { log.Fatal(err) } err = filepath.Walk(mydir, func(path string, info os.FileInfo, err error) error { if err != nil { return err } if !info.IsDir() &amp;&amp; libRegEx.MatchString(info.Name()) { fmt.Println(path) go_file_path = append(go_file_path, path) if err := readGoFiles(go_file_path); err != nil { log.Fatal(err) } } return nil }) if err != nil { log.Fatal(err) } fmt.Println(old_import_path) fmt.Println(new_import_path) } // Function will read the files func readGoFiles(go_file_path []string) error { for i := range go_file_path { file, err := os.OpenFile(go_file_path[i], os.O_RDONLY, 0644) if err != nil { return err } defer file.Close() scanner := bufio.NewScanner(file) for scanner.Scan() { if err := createTempFile(go_file_path[i], scanner.Text()); err != nil { return err } } } return nil } func createTempFile(filename, line string) error { filename = filename + &quot;.temp&quot; file, err := os.OpenFile(filename, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644) // Fixed typo: was 06400 if err != nil { fmt.Println(&quot;Couldn&#39;t create file&quot;) return err } defer file.Close() file.Write([]byte(line)) return nil } </code></pre> <p>Here&#39;s the error I&#39;m getting:</p> <pre><code> img git:(main) ./img cli old new /var/home/lunaryx/Bureau/img/cmd/root.go Couldn&#39;t create file 2025/09/13 18:37:49 open /var/home/lunaryx/Bureau/img/cmd/root.go.temp: permission denied </code></pre> <p><strong>The weird part:</strong> It actually DOES create the file and writes to it! So why is Linux complaining about permission denied?</p> <p>I tried using <code>sudo ./img cli old new</code> and it wrote copies of the original files to the <code>.temp</code> ones. To &quot;upgrade&quot; it, I tried:</p> <pre><code>for scanner.Scan() { line := scanner.Text() + &quot;\n&quot; if err := createTempFile(go_file_path[i], line); err != nil { return err } } </code></pre> <p>Now it prints all the files into one <code>.temp</code> file with very undefined behavior - some files have up to 400 lines while others are a mess of <code>package &lt;package_name&gt;</code> repeating everywhere.</p> <p><strong>What I&#39;ve tried so far:</strong></p> <ul> <li>Checked my user permissions on folders and files (everything checks out)</li> <li>Changed file permission from <code>06400</code> (typo) back to <code>0644</code> (didn&#39;t change anything)</li> <li>Verified I&#39;m the one running the process (it&#39;s me...)</li> <li>Using <code>sudo</code> doesn&#39;t magically fix it with duct tape as I hoped it would</li> </ul> <p>I&#39;m running short on ideas here. The behavior seems inconsistent - it creates files but complains about permissions, only copies first lines, then somehow merges everything into one file when I add newlines.</p> <p>Anyone have ideas what&#39;s going wrong? I feel like I&#39;m missing something obvious, but I can&#39;t see the forest for the trees at this point.</p> <p><strong>TL;DR:</strong> Go file walker creates temp files but throws permission errors, only copies first lines, and generally behaves like it&#39;s having an identity crisis. </p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/brocamoLOL"> /u/brocamoLOL </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1nr72ca/why_does_my_go_cli_tool_say_permission_denied/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1nr72ca/why_does_my_go_cli_tool_say_permission_denied/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1ns2ghe/further_experiments_with_mcp_rebuilt_on_grpc/" target="_blank">Further experiments with MCP rebuilt on gRPC: enforceable schemas and trust boundaries</a>
+            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/golang/comments/1ns2ghe/further_experiments_with_mcp_rebuilt_on_grpc/">  </a> </td><td> <!-- SC_OFF --><div class="md"><p>I further explored what MCP on gRPC looks like.</p> <p>gRPC&#39;s strong typing and reflection/descriptor discovery make it a great alternative for the tool calling / MCP. In the first part I&#39;d tried out ListTools + a generic CallTool over gRPC.</p> <p>Now, I updated and am calling gRPC calls directly <strong>(tool →</strong> <code>grpc_service</code>**/<code>grpc_method</code>) with Protovalidate + CEL for client/server pre-validation**.</p> <p>It helps solve the following issues of MCP : tool poisoning, version updating drift/undocumented changes, weaker trust boundaries, and proxy-unfriendly auth. The recent Vercel mcp-to-ai-sdk and Cloudflare’s Code-Mode are indications that we really want to adopt this kind of strong typing and I think gRPC is a great fit.</p> <p>Part 1 : <a href="https://medium.com/@bharatgeleda/reimagining-mcp-via-grpc-a19bf8c2907e">https://medium.com/@bharatgeleda/reimagining-mcp-via-grpc-a19bf8c2907e</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/justanotherengg"> /u/justanotherengg </a> <br/> <span><a href="https://medium.com/@bharatgeleda/reimagining-mcp-via-grpc-part-2-65c4d138b7aa">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1ns2ghe/further_experiments_with_mcp_rebuilt_on_grpc/">[comments]</a></span> </td></tr></table></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1nr5w8t/need_some_type_assertion_help/" target="_blank">Need some type assertion help</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I am facing a fiddly bit I can&#39;t figure out when it comes to type asserting.</p> <p>I have this function: ```</p> <pre><code>func Printf(format string, values ...any) { for i := range values { if redactor, ok := values[i].(Redactor); ok { values[i] = redcator.RedactData() continue } if redactor, ok := values[i].(*Redactor); ok { values[i] = (*redactor).RedactData() continue } // How to catch when the thing passed in at values[i] is // not a pointer, but has RedactData() defined using a // pointer receiver instead of a value receiver... } fmt.Printf(format, values...) } </code></pre> <p>This works when value implements redactor using a value receiver and is passed in as a pointer or value, and it works when value implements redactor using a pointer receiver and is passed in as a pointer, but I cannot figure out how to detect when the value implements Redactor using a pointer receiver but is passed in as a value.</p> <p>For example: ```</p> <pre><code>func (f *foo) RedactData() any { return &quot;redacted&quot; } f := foo{} Printf(&quot;%v&quot;, foo) // Does not print a redacted foo, prints regular foo </code></pre> <p>How can I detect this case so that I can use it like a Redactor and call its RedactData() method?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/SnugglyCoderGuy"> /u/SnugglyCoderGuy </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1nr5w8t/need_some_type_assertion_help/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1nr5w8t/need_some_type_assertion_help/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1ns2cwz/authboss_is_a_modular_authentication_system_for/" target="_blank">Authboss is a modular authentication system for the web.</a>
+            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/golang/comments/1ns2cwz/authboss_is_a_modular_authentication_system_for/">  </a> </td><td> &#32; submitted by &#32; <a href="https://www.reddit.com/user/mooreds"> /u/mooreds </a> <br/> <span><a href="https://github.com/aarondl/authboss">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1ns2cwz/authboss_is_a_modular_authentication_system_for/">[comments]</a></span> </td></tr></table></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1nr3hak/how_do_you_make_a_many_to_many_relationship_in/" target="_blank">How do you make a many to many relationship in your golang application?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>How do I model many-to-many relationships at the application level?</p> <p>My example case: I have sectors that can have N reasons. So I have a sectors_downtime_reasons table, which is basically the association.</p> <p>At the application/architecture level, where should I place each item? Create a new package to make this association? Should it be within the sector? My folder structure currently looks like this:</p> <p>package sector:</p> <p>- repository.go</p> <p>- service.go</p> <p>- handler.go</p> <p>package downtimereason:</p> <p>- repository.go</p> <p>- service.go</p> <p>- handler.go</p> <p>Where would I make this association? Currently, I communicate between different modules by declaring interfaces on the consumer side and injecting a service that basically satisfies the interface. I thought about creating a DowntimeReasonProvider interface in the sector that would allow me to make this association.</p> <p>Any tips? How do you handle this type of relationship in a modular application?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Low_Expert_5650"> /u/Low_Expert_5650 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1nr3hak/how_do_you_make_a_many_to_many_relationship_in/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1nr3hak/how_do_you_make_a_many_to_many_relationship_in/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1nrw741/how_do_you_guys_structure_your_go_apis_in/" target="_blank">How do you guys structure your Go APIs in production?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>How do you structure a <em>production</em> Go API? Looking for real folder layouts + patterns that scale, not toy examples.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/omarharis"> /u/omarharis </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1nrw741/how_do_you_guys_structure_your_go_apis_in/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1nrw741/how_do_you_guys_structure_your_go_apis_in/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1nqz1di/good_ol_makefiles_magefiles_or_taskfiles_in/" target="_blank">Good ol' Makefiles, Magefiles or Taskfiles in complex projects?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I have worked with Makefiles for forever, and I have also used them to write up some scripts for complex Go builds. Then I moved to Magefiles, but I found them inaccessible for other team members, so I moved to Taskfiles and it seems like a good compromise. What do you think? Is there other similar tech to consider?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/ataltosutcaja"> /u/ataltosutcaja </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1nqz1di/good_ol_makefiles_magefiles_or_taskfiles_in/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1nqz1di/good_ol_makefiles_magefiles_or_taskfiles_in/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1nrw57a/how_prevalent_is_unsafe_in_the_go_ecosystem/" target="_blank">How prevalent is unsafe in the Go ecosystem?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi all,</p> <p>I&#39;m helping to plan out an implementation of Go for the JVM. I&#39;m immersing myself in specs and examples and trying to learn more about the state of the ecosystem.</p> <p>I&#39;m trying to understand what I can, cannot, and what will be a lot of effort to support. (int on the JVM might end up being an int32. Allowed by the spec, needed for JVM arrays, but investigating how much code really relies on it being int64, that sort of thing. Goroutines are dead simple to translate.)</p> <p>I have a few ideas on how to represent &quot;unsafe&quot; operations but none of them inspire joy. I&#39;m looking to understand how much Go code out there relies on these operations or if there are a critical few packages/libraries I&#39;ll need to pay special attention to.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/bowbahdoe"> /u/bowbahdoe </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1nrw57a/how_prevalent_is_unsafe_in_the_go_ecosystem/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1nrw57a/how_prevalent_is_unsafe_in_the_go_ecosystem/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1nqvh2r/creating_and_loading_tilemaps_using_ebitengine/" target="_blank">Creating and Loading Tilemaps Using Ebitengine (Tutorial)</a>
-            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/golang/comments/1nqvh2r/creating_and_loading_tilemaps_using_ebitengine/">  </a> </td><td> &#32; submitted by &#32; <a href="https://www.reddit.com/user/tslocum"> /u/tslocum </a> <br/> <span><a href="https://www.youtube.com/watch?v=LJ4K-02be1o">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1nqvh2r/creating_and_loading_tilemaps_using_ebitengine/">[comments]</a></span> </td></tr></table></div>
+            <a href="https://www.reddit.com/r/golang/comments/1nrw3oc/unable_to_use_gorillacsrf_in_my_go_api_in/" target="_blank">Unable to use gorilla/csrf in my GO API in conjunction with my frontend on Nuxt after signup using OAuth, err: Invalid origin.</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Firstly, the OAuth flow, itself, works. After sign / login I create a session using gorilla/sessions and set the session cookie.</p> <p>Now, since I use cookies as the auth mechanism, I thought it followed to implement CSRF protection. I did. I added the gorilla/csrf middleware when starting the server, as well as configured CORS since both apps are on different servers, as can be seen below;</p> <pre><code>r.Use(cors.Handler(cors.Options{ AllowedOrigins: cfg.AllowedOrigins, AllowedMethods: []string{&quot;GET&quot;, &quot;POST&quot;, &quot;PUT&quot;, &quot;DELETE&quot;, &quot;PATCH&quot;}, AllowedHeaders: []string{ &quot;Accept&quot;, &quot;Authorization&quot;, &quot;Content-Type&quot;, &quot;X-CSRF-Token&quot;, &quot;X-Requested-With&quot;, }, AllowCredentials: true, ExposedHeaders: []string{&quot;Link&quot;}, MaxAge: 300, })) secure := true samesite := csrf.SameSiteNoneMode if cfg.Env == &quot;development&quot; { secure = false samesite = csrf.SameSiteLaxMode } crsfMiddleware := csrf.Protect( []byte(cfg.CSRFKey), csrf.Path(&quot;/&quot;), csrf.Secure(secure), csrf.SameSite(samesite), ) r.Use(crsfMiddleware) </code></pre> <p>Now, the reason I&#39;m fiddling with the secure and samesite attributes is: my frontend and backend are on different domains ie. <a href="http://localhost:3000">http://localhost:3000</a>, <a href="http://www.xxx.com">www.xxx.com</a> (frontend) and <a href="http://localhost:8080">http://localhost:8080</a> and <a href="http://api.xxx.com">api.xxx.com</a> (backend) in prod and dev env.</p> <p>Therefore, to ensure the cookie is carried between domains this seems right.</p> <p>Now after login, I considered sending the token in a HttpOnly (false) cookie ie, accessible by JS, so the frontend can read it and attach it to my custom $fetch instance, but concluded that was not a smart move, due to XSS.</p> <p>As a means of deterrence against XSS I redirect them to:</p> <p><code>http.Redirect(w, r, h.config.FrontendURL+&quot;/auth/callback&quot;, http.StatusFound)</code></p> <p>Now, at this point, they are authenticated and have a valid session, in the onMount function in the callback page, I make a request to the server, to get a CSRF token:</p> <pre><code>//auth/callback.vue &lt;script setup lang=&quot;ts&quot;&gt; const router = useRouter(); const authRepo = authRepository(useNuxtApp().$api); onMounted(async () =&gt; { try { await authRepo.tokenExchange(); router.push(&quot;/dashboard&quot;); } catch (error) { console.error(&quot;Failed to get CSRF token:&quot;, error); router.push(&quot;/login?error=auth_failed&quot;); } }); &lt;/script&gt; &lt;template&gt; &lt;div class=&quot;flex items-center justify-center min-h-screen&quot;&gt; &lt;p&gt;Completing authentication...&lt;/p&gt; &lt;/div&gt; &lt;/template&gt; // server.go r.Get(&quot;auth/get-token&quot;, middleware.Auth(authHandler.GetCSRFToken)) </code></pre> <p>Now, in my authHandler file where I handle the route to give an authenticated user a csrf token, I simply write the token in the header to the response.</p> <pre><code>func (h *AuthHandler) GetCSRFToken(w http.ResponseWriter, r *http.Request, dbUser database.User) { w.Header().Set(&quot;X-CSRF-Token&quot;, csrf.Token(r)) appJson.RespondWithJSON(w, http.StatusOK, map[string]string{ &quot;message&quot;: &quot;Action successful!&quot;, }) } </code></pre> <p>However, for some reason, csrfHeader in the onResponse callback is always unpopulated, meaning after logging it never gets set.</p> <p>Here is my custom $fetch instance I use to make API requests:</p> <pre><code>export default defineNuxtPlugin((nuxtApp) =&gt; { const router = useRouter(); const toast = useAlertStore(); const userStore = useUserStore(); const headers = useRequestHeaders(); let csrfToken = &quot;&quot;; const api = $fetch.create({ baseURL: useRuntimeConfig().public.apiBase, credentials: &quot;include&quot;, headers: headers, onRequest({ options }) { if ( csrfToken &amp;&amp; options.method &amp;&amp; [&quot;post&quot;, &quot;put&quot;, &quot;delete&quot;, &quot;patch&quot;].includes( options.method.toLowerCase() ) ) { options.headers.append(&quot;X-CSRF-Token&quot;, csrfToken); } }, onResponse({ response }) { const csrfHeader = response.headers.get(&quot;X-CSRF-Token&quot;); if (csrfHeader) { csrfToken = csrfHeader; } }, onResponseError({ response }) { const message: Omit&lt;Alert, &quot;id&quot;&gt; = { subject: &quot;Whoops!&quot;, message: &quot;We could not log you in, try again.&quot;, type: &quot;error&quot;, }; switch (response.status) { case 401: if (router.currentRoute.value.path !== &quot;/login&quot;) { router.push(&quot;/login&quot;); } userStore.setUser(null); toast.add(message); break; case 429: const retryHeader = response.headers.get(&quot;Retry-After&quot;); toast.add({ ...message, message: `Too many requests, retry after ${ retryHeader ? retryHeader : &quot;some time.&quot; }`, }); break; default: break; } }, }); return { provide: { api, }, }; }); </code></pre> <p>Please let me know what I&#39;m missing. I&#39;m honestly not interested in jwt auth, cookies make the most sense in my use case. Any fruitful contributions will be greatly appreciated.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/uhhmmmmmmmok"> /u/uhhmmmmmmmok </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1nrw3oc/unable_to_use_gorillacsrf_in_my_go_api_in/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1nrw3oc/unable_to_use_gorillacsrf_in_my_go_api_in/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1nqtjtc/build_a_water_simulation_in_go_with_raylibgo/" target="_blank">Build a Water Simulation in Go with Raylib-go</a>
-            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/golang/comments/1nqtjtc/build_a_water_simulation_in_go_with_raylibgo/">  </a> </td><td> &#32; submitted by &#32; <a href="https://www.reddit.com/user/tlittle88"> /u/tlittle88 </a> <br/> <span><a href="https://medium.com/timlittle/build-a-water-simulation-in-go-with-raylib-go-91c895891263">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1nqtjtc/build_a_water_simulation_in_go_with_raylibgo/">[comments]</a></span> </td></tr></table></div>
+            <a href="https://www.reddit.com/r/golang/comments/1nro8a4/how_do_you_handle_evolving_structs_in_go/" target="_blank">How do you handle evolving structs in Go?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Let&#39;s say I start with a simple struct</p> <pre><code>type Person struct { name string age int } </code></pre> <p>Over time as new features are added the struct evolves</p> <pre><code>type Person struct { name string age int occupation string } </code></pre> <p>and then later again</p> <pre><code>type Person struct { name string age int occupation string email string } </code></pre> <p>I know that this just a very simplified example to demonstrate my problem and theres a limit before it becomes a &quot;god struct&quot;. As the struct evolves, every place that uses it needs to be updated and unit tests start breaking.</p> <p>Is there a better way to handle this? Any help or resources would be appreciated.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/ngipngop"> /u/ngipngop </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1nro8a4/how_do_you_handle_evolving_structs_in_go/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1nro8a4/how_do_you_handle_evolving_structs_in_go/">[comments]</a></span></div>
           </li>
   
         </ul>
   
-      </div>
-  
-      <div class="card">
-        <h2>Movie Trailers</h2>
+        <h3 class="subreddit">r/rust_gamedev</h3>
         <ul class="item-list">
   
           <li>
-            <a href="http://www.filmjabber.com/movie-trailers/good-fortune.html" target="_blank">Good Fortune Movie Trailer</a>
-            
-          </li>
-  
-          <li>
-            <a href="http://www.filmjabber.com/movie-trailers/after-the-hunt.html" target="_blank">After the Hunt Movie Trailer</a>
-            
-          </li>
-  
-          <li>
-            <a href="http://www.filmjabber.com/movie-trailers/wicked-for-good.html" target="_blank">Wicked: For Good Movie Trailer</a>
-            
-          </li>
-  
-          <li>
-            <a href="http://www.filmjabber.com/movie-trailers/avatar-3.html" target="_blank">Avatar: Fire and Ash Movie Trailer</a>
-            
-          </li>
-  
-          <li>
-            <a href="http://www.filmjabber.com/movie-trailers/greenland-2-migration.html" target="_blank">Greenland 2: Migration Movie Trailer</a>
-            
+            <a href="https://www.reddit.com/r/rust_gamedev/comments/1nryxvz/a_psxdos_style_3d_game_using_a_custom_software/" target="_blank">A PSX/DOS style 3D game using a custom software renderer</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I just found out about this nice sub, so sharing here what I have already shared in HackerNews and <a href="/r/GraphicsProgramming">/r/GraphicsProgramming</a> but with some sub-specific info. </p> <p><a href="https://totenarctanz.itch.io/a-scavenging-trip">Link for the game</a></p> <p><a href="https://news.ycombinator.com/item?id=45270981">HN writeup</a></p> <p><a href="https://old.reddit.com/r/GraphicsProgramming/comments/1nl6jqc/a_psxdos_style_3d_game_written_in_rust_with_a/">GraphicsProgramming writeup</a></p> <p>It started as an exercise to test the waters, but it turns out Rust is pretty capable for this. All I needed was <code>sdl2</code>, which handles the annoying cross-platform issues like input/windowing/audio. All the rest of the code is completely from scratch, no other dependencies.</p> <p>Actually, I started with <code>minifb</code>, which was more lightweight, but switched midway. That&#39;s because: 1) I still needed an audio lib 2) it doesn&#39;t (or didn&#39;t at the time) support locking the mouse, which limited the controls to keyboard only, and inspired the current gameplay which stayed after the switch 3) <code>SDL2</code> has more robust cross-platform support for all those things. Still an awesome lib though.</p> <p>The current Rust compiler supports only Windows &gt;= 10, but I was able to compile for Windows 7 with an older version and everything works well. I built and ran the game in a Win7 VM with disabled GPU and it worked with no issues.</p> <p>It also compiles and runs great on a 20-year old laptop running Lubuntu 18.04 32-bit (I haven&#39;t tested earlier releases).</p> <p>RaspberryPi 3B+ works as well. Although there are some audio driver issues that I haven&#39;t bothered with.</p> <p>The tooling is really amazing, I was able to build for all different targets by setting <code>.cargo/config</code> before each <code>cargo build --target ...</code> via a script, after installing the necessary toolchains and 32-bit libraries in a 64-bit Lubuntu 18.04 VM.</p> <p>If you are interested, I also just made a <a href="https://bsky.app/profile/mentalvertex.bsky.social">Bluesky account</a> where I plan to share about these kind of developments.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/ParticularBicycle"> /u/ParticularBicycle </a> <br/> <span><a href="https://www.reddit.com/r/rust_gamedev/comments/1nryxvz/a_psxdos_style_3d_game_using_a_custom_software/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust_gamedev/comments/1nryxvz/a_psxdos_style_3d_game_using_a_custom_software/">[comments]</a></span></div>
           </li>
   
         </ul>
+  
       </div>
   
     </div>
