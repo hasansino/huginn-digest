@@ -240,8 +240,8 @@
   
       <div class="card">
         <h2>Huginn Daily</h2>
-        <p class="header-p">Saturday, November 15, 2025</p>
-        <p class="header-p">58699ad8-bd0d-44d4-8ced-0e04d40b7760</p>
+        <p class="header-p">Sunday, November 16, 2025</p>
+        <p class="header-p">67dc954c-cbe6-42ae-9362-bbe85f80f716</p>
       </div>
   
       <div class="card">
@@ -249,23 +249,23 @@
         <table class="weather-table">
           <tr>
             <th>Summary</th>
-            <td>⛅️ Clear throughout the day.</td>
+            <td>⛅️ Clear until evening.</td>
           </tr>
           <tr>
             <th>Temperature Range</th>
-            <td>12°C to 19°C (54°F to 66°F)</td>
+            <td>12°C to 19°C (53°F to 67°F)</td>
           </tr>
           <tr>
             <th>Feels Like</th>
-            <td>Low: 49°F | High: 60°F</td>
+            <td>Low: 47°F | High: 60°F</td>
           </tr>
           <tr>
             <th>Humidity</th>
-            <td>49%</td>
+            <td>48%</td>
           </tr>
           <tr>
             <th>Wind</th>
-            <td>10 km/h (6 mph), Direction: 144°</td>
+            <td>8 km/h (5 mph), Direction: 174°</td>
           </tr>
           <tr>
             <th>Precipitation</th>
@@ -277,19 +277,19 @@
           </tr>
           <tr>
             <th>Moon Phase</th>
-            <td>Waning Crescent (86%)</td>
+            <td>Waning Crescent (89%)</td>
           </tr>
           <tr>
             <th>Cloud Cover</th>
-            <td>2%</td>
+            <td>12%</td>
           </tr>
           <tr>
             <th>Pressure</th>
-            <td>1013.11 hPa</td>
+            <td>1019.25 hPa</td>
           </tr>
           <tr>
             <th>Dew Point</th>
-            <td>39.54°F</td>
+            <td>38.92°F</td>
           </tr>
           <tr>
             <th>Visibility</th>
@@ -299,1028 +299,154 @@
       </div>
   
       <div class="card">
-        <h2>XKCD</h2>
-  
-        <div class="comic">
-          <a href="//imgs.xkcd.com/comics/beam_dump.png" target="_blank">
-            <img src="//imgs.xkcd.com/comics/beam_dump.png" alt="Beam Dump">
-          </a>
-        </div>
-  
-      </div>
-  
-      <div class="card">
-        <h2>Other</h2>
-        <ul class="item-list">
-  
-          <li>
-            <a href="https://selfh.st/weekly/2025-11-14/" target="_blank"> Self-Host Weekly #145: Agentic </a>
-            <div class="item-content">
-			  Become a <a href="https://selfh.st/membership">paid subscriber</a> to access the newsletter’s full-text RSS feed or <a href="https://selfh.st">continue reading on selfh.st</a>.
-		  </div>
-          </li>
-  
-        </ul>
-      </div>
-  
-      <div class="card">
-        <h2>Golang</h2>
-        <ul class="item-list">
-  
-          <li>
-            <a href="https://go.dev/blog/16years" target="_blank">Go’s Sweet 16</a>
-            <div class="item-content">
-<div id="blog"><div id="content">
-  <div id="content">
-
-    <div class="Article" data-slug="/blog/16years">
-    
-    <h1 class="small"><a href="/blog/">The Go Blog</a></h1>
-    
-
-    <h1>Go’s Sweet 16</h1>
-      
-      <p class="author">
-      Austin Clements, for the Go team<br>
-      14 November 2025
-      </p>
-      
-      <div class='markdown'>
-<p>This past Monday, November 10th, we celebrated the 16th anniversary of Go’s
-<a href="https://opensource.googleblog.com/2009/11/hey-ho-lets-go.html" rel="noreferrer" target="_blank">open source
-release</a>!</p>
-<p>We released <a href="/blog/go1.24">Go 1.24 in February</a> and <a href="/blog/go1.25">Go 1.25 in
-August</a>, following our now well-established and dependable release
-cadence. Continuing our mission to build the most productive language platform
-for building production systems, these releases included new APIs for building
-robust and reliable software, significant advances in Go’s track record for
-building secure software, and some serious under-the-hood improvements.
-Meanwhile, no one can ignore the seismic shifts in our industry brought by
-generative AI. The Go team is applying its thoughtful and uncompromising mindset
-to the problems and opportunities of this dynamic space, working to bring Go’s
-production-ready approach to building robust AI integrations, products, agents,
-and infrastructure.</p>
-<h1 id="core-language-and-library-improvements">Core language and library improvements</h1>
-<p>First released in Go 1.24 as an experiment and then graduated in Go 1.25, the
-new <a href="https://pkg.go.dev/testing/synctest" rel="noreferrer" target="_blank"><code>testing/synctest</code></a> package
-significantly simplifies writing tests for <a href="/blog/testing-time">concurrent, asynchronous
-code</a>. Such code is particularly common in network services,
-and is traditionally very hard to test well. The <code>synctest</code> package works by
-virtualizing time itself. It takes tests that used to be slow, flaky, or both,
-and makes them easy to rewrite into reliable and nearly instantaneous tests,
-often with just a couple extra lines of code. It’s also a great example of Go’s
-integrated approach to software development: behind an almost trivial API, the
-<code>synctest</code> package hides a deep integration with the Go runtime and other parts
-of the standard library.</p>
-<p>This isn’t the only boost the <code>testing</code> package got over the past year. The new
-<a href="https://pkg.go.dev/testing#B.Loop" rel="noreferrer" target="_blank"><code>testing.B.Loop</code></a> API is both easier to use
-than the original <code>testing.B.N</code> API and addresses many of the traditional—and
-often invisible!—<a href="/blog/testing-b-loop">pitfalls</a> of writing Go benchmarks. The
-<code>testing</code> package also has new APIs that <a href="https://pkg.go.dev/testing#T.Context" rel="noreferrer" target="_blank">make it easy to
-cleanup</a> in tests that use
-<a href="https://pkg.go.dev/context#Context" rel="noreferrer" target="_blank"><code>Context</code></a>, and that <a href="https://pkg.go.dev/testing#T.Output" rel="noreferrer" target="_blank">make it
-easy</a> to write to the test’s log.</p>
-<p>Go and containerization grew up together and work great with each other. Go 1.25
-launched <a href="/blog/container-aware-gomaxprocs">container-aware scheduling</a>, making
-this pairing even stronger. Without developers having to lift a finger, this
-transparently adjusts the parallelism of Go workloads running in containers,
-preventing CPU throttling that can impact tail latency and improving Go’s
-out-of-the-box production-readiness.</p>
-<p>Go 1.25’s new <a href="/blog/flight-recorder">flight recorder</a> builds on our already
-powerful execution tracer, enabling deep insights into the dynamic behavior of
-production systems. While the execution tracer generally collected <em>too much</em>
-information to be practical in long-running production services, the flight
-recorder is like a little time machine, allowing a service to snapshot recent
-events in great detail <em>after</em> something has gone wrong.</p>
-<h2 id="secure-software-development">Secure software development</h2>
-<p>Go continues to strengthen its commitment to secure software development, making
-significant strides in its native cryptography packages and evolving its
-standard library for enhanced safety.</p>
-<p>Go ships with a full suite of native cryptography packages in the standard
-library, which reached two major milestones over the past year. A security
-audit conducted by independent security firm <a href="https://www.trailofbits.com/" rel="noreferrer" target="_blank">Trail of
-Bits</a> yielded <a href="/blog/tob-crypto-audit">excellent
-results</a>, with only a single low-severity finding.
-Furthermore, through a collaborative effort between the Go Security Team and
-<a href="https://geomys.org/" rel="noreferrer" target="_blank">Geomys</a>, these packages achieved CAVP certification,
-paving the way for <a href="/blog/fips140">full FIPS 140-3 certification</a>. This is a
-vital development for Go users in certain regulated environments. FIPS 140
-compliance, previously a source of friction due to the need for unsupported
-solutions, will now be seamlessly integrated, addressing concerns related to
-safety, developer experience, functionality, release velocity, and compliance.</p>
-<p>The Go standard library has continued to evolve to be <em>safe by default</em> and
-<em>safe by design</em>. For example, the <a href="https://pkg.go.dev/os#Root" rel="noreferrer" target="_blank"><code>os.Root</code></a>
-API—added in Go 1.24—enables <a href="/blog/osroot">traversal-resistant file system
-access</a>, effectively combating a class of vulnerabilities where an
-attacker could manipulate programs into accessing files intended to be
-inaccessible. Such vulnerabilities are notoriously challenging to address
-without underlying platform and operating system support, and the new
-<a href="https://pkg.go.dev/os#Root" rel="noreferrer" target="_blank"><code>os.Root</code></a> API offers a straightforward,
-consistent, and portable solution.</p>
-<h2 id="under-the-hood-improvements">Under-the-hood improvements</h2>
-<p>In addition to user-visible changes, Go has made significant improvements under
-the hood over the past year.</p>
-<p>For Go 1.24, we completely <a href="/blog/swisstable">redesigned the <code>map</code>
-implementation</a>, building on the latest and greatest ideas in
-hash table design. This change is completely transparent, and brings significant
-improvements to <code>map</code> performance, lower tail latency of <code>map</code> operations, and
-in some cases even significant memory wins.</p>
-<p>Go 1.25 includes an experimental and significant advancement in Go’s garbage
-collector called <a href="/blog/greenteagc">Green Tea</a>. Green Tea reduces garbage
-collection overhead in many applications by at least 10% and sometimes as much
-as 40%. It uses a novel algorithm designed for the capabilities and constraints
-of today’s hardware and opens up a new design space that we’re eagerly
-exploring. For example, in the forthcoming Go 1.26 release, Green Tea will
-achieve an additional 10% reduction in garbage collector overhead on hardware
-that supports AVX-512 vector instructions—something that would have been nigh
-impossible to take advantage of in the old algorithm. Green Tea will be enabled
-by default in Go 1.26; users need only upgrade their Go version to benefit.</p>
-<h1 id="furthering-the-software-development-stack">Furthering the software development stack</h1>
-<p>Go is about far more than the language and standard library. It’s a software
-development platform, and over the past year, we’ve also made four regular
-releases of the <a href="/gopls">gopls language server</a>, and have formed partnerships to
-support emerging new frameworks for agentic applications.</p>
-<p>Gopls provides Go support to VS Code and other LSP-powered editors and IDEs.
-Every release sees a litany of features and improvements to the experience of
-reading and writing Go code (see the <a href="/gopls/release/v0.17.0">v0.17.0</a>,
-<a href="/gopls/release/v0.18.0">v0.18.0</a>, <a href="/gopls/release/v0.19.0">v0.19.0</a>, and
-<a href="/gopls/release/v0.20.0">v0.20.0</a> release notes for full details, or our new
-<a href="/gopls/features">gopls feature documentation</a>!). Some highlights include many
-new and enhanced analyzers to help developers write more idiomatic and robust Go
-code; refactoring support for variable extraction, variable inlining, and JSON
-struct tags; and an <a href="/gopls/features/mcp">experimental built-in server</a> for the
-Model Context Protocol (MCP) that exposes a subset of gopls’ functionality to AI
-assistants in the form of MCP tools.</p>
-<p>With gopls v0.18.0, we began exploring <em>automatic code modernizers</em>. As Go
-evolves, every release brings new capabilities and new idioms; new and better
-ways to do things that Go programmers have been finding other ways to do. Go
-stands by its <a href="/doc/go1compat">compatibility promise</a>—the old way will continue
-to work in perpetuity—but nevertheless this creates a bifurcation between old
-idioms and new idioms. Modernizers are static analysis tools that recognize old
-idioms and suggest faster, more readable, more secure, more <em>modern</em>
-replacements, and do so with push-button reliability. What <code>gofmt</code> did for
-<a href="/blog/gofmt">stylistic consistency</a>, we hope modernizers can do for idiomatic
-consistency. We’ve integrated modernizers as IDE suggestions, where they can
-help developers not only maintain more consistent coding standards, but where we
-believe they will help developers discover new features and keep up with the
-state of the art. We believe modernizers can also help AI coding assistants keep
-up with the state of the art and combat their proclivity to reinforce outdated
-knowledge of the Go language, APIs, and idioms. The upcoming Go 1.26 release
-will include a total overhaul of the long-dormant <code>go fix</code> command to make it
-apply the full suite of modernizers in bulk, a return to its <a href="/blog/introducing-gofix">pre-Go 1.0
-roots</a>.</p>
-<p>At the end of September, in collaboration with
-<a href="https://www.anthropic.com/" rel="noreferrer" target="_blank">Anthropic</a> and the Go community, we released
-<a href="https://github.com/modelcontextprotocol/go-sdk/releases/tag/v1.0.0" rel="noreferrer" target="_blank">v1.0.0</a> of
-the <a href="https://github.com/modelcontextprotocol/go-sdk" rel="noreferrer" target="_blank">official Go SDK</a> for the
-<a href="https://modelcontextprotocol.io/" rel="noreferrer" target="_blank">Model Context Protocol (MCP)</a>. This SDK
-supports both MCP clients and MCP servers, and underpins the new MCP
-functionality in gopls. Contributing this work in open source helps empower
-other areas of the growing open source agentic ecosystem built around Go, such
-as the recently released <a href="https://github.com/google/adk-go" rel="noreferrer" target="_blank">Agent Development Kit (ADK) for
-Go</a> from <a href="https://www.google.com/" rel="noreferrer" target="_blank">Google</a>.
-ADK Go builds on the Go MCP SDK to provide an idiomatic framework for building
-modular multi-agent applications and systems. The Go MCP SDK and ADK Go
-demonstrate how Go’s unique strengths in concurrency, performance, and
-reliability differentiate Go for production AI development and we are expecting
-more AI workloads to be written in Go in the coming years.</p>
-<h1 id="looking-ahead">Looking ahead</h1>
-<p>Go has an exciting year ahead of it.</p>
-<p>We’re working on advancing developer productivity through the brand new <code>go fix</code>
-command, deeper support for AI coding assistants, and ongoing improvements to
-gopls and VS Code Go. General availability of the Green Tea garbage collector,
-native support for Single Instruction Multiple Data (SIMD) hardware features,
-and runtime and standard library support for writing code that scales even
-better to massive multicore hardware will continue to align Go with modern
-hardware and improve production efficiency. We’re focusing on Go’s “production
-stack” libraries and diagnostics, including a massive (and long in the making)
-<a href="/issue/71497">upgrade to <code>encoding/json</code></a>, driven by Joe Tsai and people across
-the Go community; <a href="/design/74609-goroutine-leak-detection-gc">leaked goroutine
-profiling</a>, contributed by
-<a href="https://www.uber.com/us/en/about/" rel="noreferrer" target="_blank">Uber’s</a> Programming Systems team; and many
-other improvements to <code>net/http</code>, <code>unicode</code>, and other foundational packages.
-We’re working to provide well-lit paths for building with Go and AI, evolving
-the language platform with care for the evolving needs of today’s developers,
-and building tools and capabilities that help both human developers and AI
-assistants and systems alike.</p>
-<p>On this 16th anniversary of Go’s open source release, we’re also looking to the
-future of the Go open source project itself. From its <a href="https://www.youtube.com/watch?v=wwoWei-GAPo" rel="noreferrer" target="_blank">humble
-beginnings</a>, Go has formed a
-thriving contributor community. To continue to best meet the needs of our
-ever-expanding user base, especially in a time of upheaval in the software
-industry, we’re working on ways to better scale Go&rsquo;s development
-processes—without losing sight of Go’s fundamental principles—and more deeply
-involve our wonderful contributor community.</p>
-<p>Go would not be where it is today without our incredible user and contributor
-communities. We wish you all the best in the coming year!</p>
-</div>
-
-    </div>
-
-    
-    <div class="Article prevnext">
-    
-    
-      
-        <p>
-        
-        
-          
-            <b>Previous article: </b><a href="/blog/greenteagc">The Green Tea Garbage Collector</a><br>
-          
-        
-        <b><a href="/blog/all">Blog Index</a></b>
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-    </div>
-    
-
-  </div>
-</div>
-
-<script src="/js/play.js"></script>
-
-</div>
-          </li>
-  
-        </ul>
-      </div>
-  
-      <div class="card">
         <h2>Reddit</h2>
-  
-        <h3 class="subreddit">r/golang</h3>
-        <ul class="item-list">
-  
-          <li>
-            <a href="https://www.reddit.com/r/golang/comments/1oxhb75/building_an_mcp_server_in_go/" target="_blank">Building an MCP server in Go</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hey everyone,</p> <p>I’m about to start building an MCP server in Go, using the official Golang MCP SDK, and I’m planning to eventually donate the project to the open-source community. I’ve been building software for a long time, but this will be my first time working with MCP.</p> <p>Before I dive deep, I’d love to hear from people who’ve built MCP servers or tools (specifically in Go)</p> <ol> <li><p>What does your Go development setup look like? Hot-reload or fast iteration workflows, Local testing setups (using mock clients? using the MCP Inspector?), Any tooling that helps during development?</p></li> <li><p>Best practices when building an MCP server in Go? Error handling patterns that play well with MCP things like Logging, observability, and tracing tips and finally how challenging is managing streaming responses</p></li> <li><p>What common pitfalls should I watch out for? For those maintaining open-source servers any specific advice to make maintenance (and adoption) easier?</p></li> </ol> <p>I’m aiming to build this in a way that’s easy to use, easy to contribute to, and long-term maintainable so any advice, stories, or tips are super appreciated.</p> <p>Thanks in advance!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/not-ai-maybe-bot"> /u/not-ai-maybe-bot </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1oxhb75/building_an_mcp_server_in_go/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1oxhb75/building_an_mcp_server_in_go/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/golang/comments/1oxhaqe/how_to_properly_handle_highconcurrency_rtp/" target="_blank">How to properly handle high-concurrency RTP capture (Go + gopacket) without spawning thousands of workers?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi everyone,<br/> I’m currently building a real-time RTP packet capture system in Go using <strong>gopacket + pcap</strong> for a call-center platform, and I could really use some architectural advice.</p> <pre><code>packet → detect (get/create worker by 5-tuple) → UDP → decode RTP → convert RTP (G.711/G.729) → PCM → stream audio frames to WebSocket clients </code></pre> <p>I identify each RTP stream using the <strong>5-tuple</strong> (srcIP, dstIP, srcPort, dstPort, protocol). For each unique flow, I create a <strong>worker goroutine</strong> that handles all packets for that flow.</p> <h1>The problem</h1> <p>Under high concurrent calls (hundreds or thousands), I&#39;m running into a problem:</p> <ul> <li>UDP packets in the network don’t necessarily come from a stable set of flows.</li> <li>Even transient/random UDP traffic creates a new “flow,” so my system <strong>keeps creating workers</strong>.</li> <li>A worker is only cleaned up if it receives <strong>no packets for 2+ minutes</strong>, so worker count stays high.</li> <li>This leads to increased memory usage, scheduling overhead, and potential RTP delays/drops.</li> </ul> <p>I attempted to switch to a <strong>worker pool</strong>, but then I ran into <strong>packet ordering issues</strong> (UDP RTP frames arrived out of order when multiple workers handled the same stream). RTP must remain ordered for PCM decoding → audio quality.</p> <h1>My Question</h1> <p>Is my current approach (1 worker per RTP 5-tuple) fundamentally flawed?<br/> Should I continue with this direction, or is there a better, more reliable way to:</p> <ul> <li>Assign packets consistently to the correct stream</li> <li>Keep ordering intact</li> <li>Avoid exploding worker counts</li> <li>Avoid delays/drops under high CCU RTP traffic</li> </ul> <h1>Extra Context</h1> <ul> <li>Packets are captured using <strong>pcap</strong> and parsed with <strong>gopacket</strong>.</li> <li>System must support hundreds of concurrent calls.</li> <li>Audio is streamed live to a WebSocket AI service for transcription/analysis.</li> <li>Both performance and ordering are critical.</li> </ul> <p>If you’ve built real-time packet capture, SIP/RTP analyzers, or media relays (e.g., SIPREC capture, RTP relays, SBC-like systems), I would really appreciate your insights — especially around worker-per-flow vs centralized dispatcher models.</p> <p>Thanks!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Putrid_Bison7097"> /u/Putrid_Bison7097 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1oxhaqe/how_to_properly_handle_highconcurrency_rtp/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1oxhaqe/how_to_properly_handle_highconcurrency_rtp/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/golang/comments/1oxgchv/gos_sweet_16_the_go_programming_language/" target="_blank">Go’s Sweet 16 - The Go Programming Language</a>
-            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/golang/comments/1oxgchv/gos_sweet_16_the_go_programming_language/">  </a> </td><td> &#32; submitted by &#32; <a href="https://www.reddit.com/user/e-san55"> /u/e-san55 </a> <br/> <span><a href="https://go.dev/blog/16years">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1oxgchv/gos_sweet_16_the_go_programming_language/">[comments]</a></span> </td></tr></table></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/golang/comments/1oxfrrz/trouble_generating_a_usable_gocompiled_dynamic/" target="_blank">Trouble Generating a Usable Go-compiled Dynamic Library (.so) on Alpine Linux (musl libc)</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;m running into a challenging issue and would appreciate any insights from the community.</p> <p>I need to write a <strong>dynamically linked library (</strong><code>.so</code><strong>) in Go</strong> to be called by a third-party application (both C and Java programs are being used for testing) running on <strong>Alpine Linux (which uses musl libc)</strong>.</p> <p>However, when the third-party application attempts to load <code>.so</code> file, it <strong>fails to load properly</strong> or immediately results in an error, most commonly a <strong>&quot;Segmentation fault&quot;</strong>.</p> <ul> <li>It seems highly likely that <strong>Go cannot correctly compile a dynamically linked library (</strong><code>.so</code><strong>) that is compatible with musl libc</strong> and usable by external applications.</li> </ul> <p>I then tried a <strong>glibc compatibility approach</strong> as a workaround:</p> <ol> <li>I compiled the dynamic library on <strong>Ubuntu (using glibc)</strong>.</li> <li>I copied the resulting <code>.so</code> file to the Alpine environment.</li> <li>I installed the <code>gcompat</code> package (or the full <code>glibc</code> package) on Alpine.</li> </ol> <p>Unfortunately, even with this approach, the dynamic library <strong>still fails to load</strong> in the Alpine environment.</p> <p>Has anyone successfully created a usable Go-compiled dynamic library (<code>.so</code>) for external use on Alpine Linux (musl libc)? Is there a specific linker flag or compilation setting I might be missing?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Timely-Tank6342"> /u/Timely-Tank6342 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1oxfrrz/trouble_generating_a_usable_gocompiled_dynamic/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1oxfrrz/trouble_generating_a_usable_gocompiled_dynamic/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/golang/comments/1oxess3/built_a_vs_code_tool_that_generates_go_handlers/" target="_blank">Built a VS Code tool that generates Go handlers, services, repos & configs instantly</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hey Gophers </p> <p>Most Go projects start the same way:<br/> creating folders → wiring handlers → writing services → setting up repos → configs → boilerplate.</p> <p>I built <strong>SpeedZcode</strong>, a VS Code extension that generates Go backend scaffolding in <strong>seconds</strong>, including:</p> <ul> <li>Handlers</li> <li>Services</li> <li>Repositories</li> <li>Models</li> <li>Config setup</li> <li>Project structure following best practices</li> </ul> <p>Runs directly inside VS Code — no external CLI.</p> <p>If you want to try the early version:<br/> <a href="https://marketplace.visualstudio.com/items?itemName=speedzcode.speedzcode">https://marketplace.visualstudio.com/items?itemName=speedzcode.speedzcode</a></p> <p>Any suggestions on improving Go structure or adding templates?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Cultural-Chicken-473"> /u/Cultural-Chicken-473 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1oxess3/built_a_vs_code_tool_that_generates_go_handlers/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1oxess3/built_a_vs_code_tool_that_generates_go_handlers/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/golang/comments/1ox25xh/never_select_open_observe_over_other/" target="_blank">Never select open observe over other observability tools</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>A poor choice that translates to prod tax for analytics in Go atleast</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Fit-Sky1319"> /u/Fit-Sky1319 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1ox25xh/never_select_open_observe_over_other/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1ox25xh/never_select_open_observe_over_other/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/golang/comments/1owvoh6/should_i_invest_in_go_or_rust_as_a_fullstack_dev/" target="_blank">Should I invest in Go or Rust as a full-stack dev?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;m a full-stack web developer, mainly working with TypeScript. I&#39;m also familiar with Python and Dart, and I’ve worked a bit with Go and Rust.</p> <p>Recently I decided to invest serious time into a high-performance language — but I’m stuck between Go and Rust.</p> <p>On one hand, I already know some Go and really like its simplicity. I enjoy how I can just focus on implementing features without constantly thinking about the language itself.</p> <p>On the other hand, I’m also familiar with Rust’s borrowing/ownership concepts, but Rust still feels a bit too low-level for me. I don’t always enjoy thinking about lifetimes, borrowing rules, variable scopes, etc., instead of building stuff.</p> <p>But everywhere I look, people are talking about Rust — its safety, performance, lack of GC overhead, how many governments and organizations are recommending it, and how tons of tooling (especially in the TypeScript ecosystem) is being rewritten in Rust.</p> <p>So I’m torn:</p> <p>Go feels more productive and comfortable</p> <p>Rust feels safer, more performant, and more future-proof</p> <p>For someone with my background, which language would be a better long-term investment?</p> <p>Would love to hear your thoughts.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/EmperorofWeb"> /u/EmperorofWeb </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1owvoh6/should_i_invest_in_go_or_rust_as_a_fullstack_dev/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1owvoh6/should_i_invest_in_go_or_rust_as_a_fullstack_dev/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/golang/comments/1owq1i5/i_built_a_simple_tui_pomodoro_timer_with_progress/" target="_blank">I built a simple TUI pomodoro timer with progress bar and ASCII art using bubble tea and lipgloss</a>
-            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/golang/comments/1owq1i5/i_built_a_simple_tui_pomodoro_timer_with_progress/">  </a> </td><td> <!-- SC_OFF --><div class="md"><p>Hey everyone,</p> <p>I made a simple TUI Pomodoro timer called <a href="https://github.com/Bahaaio/pomo">pomo</a> and thought I&#39;d share it here.</p> <p>I&#39;ve always wanted to make my own TUI pomodoro timer, I use it to manage my work/break sessions.</p> <p><strong>features:</strong></p> <ul> <li>work/break cycles (fully customizable)</li> <li>progress bar and ASCII art timer displays</li> <li>pause/resume, time adjustments, and skip</li> <li>custom commands after completion</li> <li>cross-platform desktop notifications</li> </ul> <p>It&#39;s pretty lightweight, and configurable via a yaml file. You can set custom durations, notification messages, and run shell commands on session completion.</p> <p>example notification config:</p> <pre><code>work: notification: enabled: true title: work finished! message: time to take a break! </code></pre> <p><strong>GitHub</strong>: <a href="https://github.com/Bahaaio/pomo">https://github.com/Bahaaio/pomo</a></p> <p>would love to hear what you think!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Bahaa_Mohamed"> /u/Bahaa_Mohamed </a> <br/> <span><a href="https://github.com/Bahaaio/pomo">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1owq1i5/i_built_a_simple_tui_pomodoro_timer_with_progress/">[comments]</a></span> </td></tr></table></div>
-          </li>
-  
-        </ul>
   
         <h3 class="subreddit">r/rust</h3>
         <ul class="item-list">
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1oxaemw/a_generic_structural_regular_for_expression/" target="_blank">A generic structural regular for expression engine for Rust</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/sminez"> /u/sminez </a> <br/> <span><a href="https://www.sminez.dev/match-it-again-sam/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1oxaemw/a_generic_structural_regular_for_expression/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1oybsih/release_lowess_010_productiongrade_lowess/" target="_blank">[Release] lowess 0.1.0 - Production-grade LOWESS smoothing for scientific computing</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi <a href="/r/rust">r/rust</a>! I’m excited to announce the first release of <strong>lowess</strong>, a comprehensive and production-ready implementation of LOWESS (Locally Weighted Scatterplot Smoothing).</p> <p><strong>Why LOWESS matters</strong></p> <p>LOWESS is a classic and <em>iconic</em> smoothing method (Cleveland 1979), widely used in <strong>R</strong> (built into the base stats package) and in <strong>Python</strong> (via statsmodels).<br/> But despite its popularity in scientific computing, <strong>Rust has never had a correct, fully featured implementation</strong> — until now.</p> <p><code>lowess</code> aims to change that by providing:</p> <ul> <li>statistical rigor,</li> <li>production reliability,</li> <li>performance and determinism,</li> <li>and many features that are missing from the R and Python versions.</li> </ul> <p>All while benefiting from <strong>Rust’s speed, safety, and predictable performance</strong>.</p> <p><strong>Key Features</strong></p> <ul> <li>🎯 <strong>7 kernel functions</strong> (Tricube, Epanechnikov, Gaussian, etc.)</li> <li>📊 <strong>Confidence &amp; prediction intervals</strong></li> <li>📈 <strong>Comprehensive diagnostics</strong> (RMSE, AIC, R², effective degrees of freedom…)</li> <li>🔧 <strong>Automatic fraction selection via cross-validation</strong></li> <li>⚡ <strong>Delta-based fast-path for dense data</strong></li> <li>🚀 <strong>Optional parallel execution</strong> (parallel feature)</li> <li>💾 <strong>Streaming / online variants</strong> for massive datasets</li> <li>🔢 <strong>ndarray integration</strong></li> <li>🎛️ <strong>no_std compatible</strong></li> </ul> <p><strong>Example</strong></p> <p><code>use lowess::Lowess;</code> </p> <p><code>// Basic usage</code><br/> <code>let result = Lowess::new()</code><br/> <code>.fraction(0.5)</code><br/> <code>.iterations(3)</code><br/> <code>.fit(&amp;x, &amp;y)?;</code> </p> <p><code>// Advanced</code><br/> <code>let result = Lowess::new()</code><br/> <code>.cross_validate(&amp;[0.2, 0.3, 0.5, 0.7])</code><br/> <code>.with_confidence_intervals(0.95)</code><br/> <code>.with_all_diagnostics()</code><br/> <code>.fit(&amp;x, &amp;y)?;</code> </p> <p><code>println!(&quot;RMSE: {}&quot;, result.diagnostics.unwrap().rmse);</code></p> <p><strong>How it compares to R / Python</strong></p> <p>lowess is API-compatible with the classic R implementation:</p> <p><code>// Equivalent to R&#39;s: lowess(x, y, f=0.67, iter=3)</code><br/> <code>Lowess::new()</code><br/> <code>.fraction(0.67)</code><br/> <code>.iterations(3)</code><br/> <code>.fit(&amp;x, &amp;y)?;</code></p> <p>…but includes <strong>many capabilities</strong> that <a href="/r/Python">r/Python</a> do not provide:</p> <ul> <li>intervals,</li> <li>diagnostics,</li> <li>kernel options,</li> <li>cross-validation,</li> <li>streaming mode,</li> <li>deterministic execution,</li> <li>defensive numerical fallbacks,</li> <li>and production-grade error handling.</li> </ul> <p><strong>Real-world genomics example</strong></p> <p><code>let result = Lowess::new()</code><br/> <code>.fraction(0.1)</code><br/> <code>.iterations(3)</code><br/> <code>.with_confidence_intervals(0.95)</code><br/> <code>.with_all_diagnostics()</code><br/> <code>.fit(&amp;genomic_positions, &amp;methylation_levels)?;</code> </p> <p><code>if result.diagnostics.unwrap().effective_df &lt; 2.0 {</code><br/> <code>log::warn!(&quot;Data may be oversmoothed&quot;);</code><br/> <code>}</code></p> <p><strong>Links</strong></p> <ul> <li><a href="https://crates.io/crates/lowess">Crates.io</a></li> <li><a href="https://docs.rs/lowess/0.1.0/lowess/">Docs.rs</a></li> <li><a href="https://github.com/thisisamirv/lowess">GitHub</a></li> </ul> <p>I’m actively using this in my genomics pipelines and will continue developing it.<br/> Feedback, issues, and contributions are <strong>very</strong> welcome!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/amir_valizadeh"> /u/amir_valizadeh </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1oybsih/release_lowess_010_productiongrade_lowess/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1oybsih/release_lowess_010_productiongrade_lowess/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1ox72yd/logsentinel_rust_highperformance_rule_engine_for/" target="_blank">LogSentinel (Rust) – High-Performance Rule Engine for Real-Time Log Threat Detection</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi <a href="/r/rust">r/rust</a>,</p> <p>My company, ethosevo, is open-sourcing LogSentinel (MIT Licensed), a Rust-based log rule engine designed for real-time threat detection in distributed systems.</p> <p>We built it to solve latency issues common in traditional log processing pipelines.</p> <p>**Key Highlights:**</p> <p>- **Near Real-Time Speed:** Rust-based core engine, memory safe, zero-copy.</p> <p>- **Thread-Safe &amp; Concurrent:** Safe multi-threaded processing from multiple sources.</p> <p>- **Agentless Collection:** SSH2 connections for secure remote log acquisition.</p> <p>- **Current Support:** Nginx &amp; Syslog; Docker support coming soon.</p> <p>LogSentinel serves as the foundation for our planned SaaS, but we’re sharing early for technical feedback, especially on rule efficiency and concurrent processing.</p> <p>**GitHub:** [<a href="https://github.com/ethosevo/LogSentinel%5C%5D(https://github.com/ethosevo/LogSentinel)">https://github.com/ethosevo/LogSentinel\](https://github.com/ethosevo/LogSentinel)</a></p> <p>Would love feedback from the community on optimization or design!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Icy-Breath1266"> /u/Icy-Breath1266 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1ox72yd/logsentinel_rust_highperformance_rule_engine_for/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1ox72yd/logsentinel_rust_highperformance_rule_engine_for/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1oybrae/hifitime_vs_tai_time_precise_fast_performance/" target="_blank">Hifitime vs TAI Time precise fast performance, ignoring leap seconds</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Howdy all, I am looking at time crates, I want to do some calculations on a PC and I don&#39;t want timezones/leap years/seconds/days/minutes messing with me. I am looking to quickly do timestamps and calculations as well as possible. This is not like hard real time, but having a leap second screw up my calculations could be an annoying bug I&#39;d prefer to avoid. Likewise I&#39;d like the time library I am using to be as efficient as possible since it may be in a loop executing every couple milliseconds.</p> <p>Was thinking UTC would be the ticket, but now I see tai time is probably best.</p> <p>I see the HIFItime looks like it could be nice, but its epoch::now looks like it relies on std::time now which is in UTC, which means 2 different calls may deal with that whole leap second issue that I though we were avoiding by using atomic time.</p> <blockquote> <p>Initializes a new Epoch from now. WARNING: This assumes that the system time returns the time in UTC (which is the case on Linux) Uses std::time::SystemTime::now or javascript interop under the hood</p> </blockquote> <p>So time::now</p> <p>Lead second happens/Linux clock pauses</p> <p>time::now</p> <p>we get same time</p> <p>On the other hand tai_time has this to say</p> <blockquote> <p>This is currently only supported on Linux and relies on the clock_gettime system call with a CLOCK_TAI clock ID.</p> </blockquote> <p>So for live use it sounds like TIA_Time may be the better option since it can query system TIA time.</p> <p>Maybe the HIFItime is meant for non-live calcs and the get-current-time-in-utc is more of an afterthought?</p> <hr/> <p>If there is another way to get what I am after I am open.</p> <p>was thinking something like, when prog starts get time in some time, then after that somehow get nano timestamp as int and as long as I know epoch I can reconstruct wall clock time later</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/gonnaintegraaaaate"> /u/gonnaintegraaaaate </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1oybrae/hifitime_vs_tai_time_precise_fast_performance/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1oybrae/hifitime_vs_tai_time_precise_fast_performance/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1ox6f31/tauri_discord_alternative_online_division/" target="_blank">Tauri Discord Alternative - Online Division</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Me and a couple of other contributors are working on a FOSS Discord Alternative using Tauri for the client app and lots of rust on the backend stuff... It&#39;s still pretty bare bones but the new release for the client introduces some stuff that&#39;s kinda cool. Check it out! :)</p> <p>Client: <a href="https://github.com/onlinedi-vision/od-client">https://github.com/onlinedi-vision/od-client</a></p> <p>Organization: <a href="https://github.com/onlinedi-vision">https://github.com/onlinedi-vision</a></p> <p>Website: <a href="https://onlinedi.vision">https://onlinedi.vision</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/RSlashFunnyMan"> /u/RSlashFunnyMan </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1ox6f31/tauri_discord_alternative_online_division/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1ox6f31/tauri_discord_alternative_online_division/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1oy9czg/why_isnt_rust_getting_more_professional_adoption/" target="_blank">Why isn’t Rust getting more professional adoption despite being so loved?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I’m trying to understand a gap I keep noticing: Rust is widely praised for its syntax, safety guarantees, and overall developer experience… yet it’s still not showing up at the scale you’d expect in professional environments.</p> <p>Here are the points I’m wrestling with:</p> <ul> <li>Outside of developer surveys, I don’t have hard proof that Rust is “loved,” but the sentiment feels strong among people who use it. The syntax is satisfying, the safety is real, and it avoids the usual memory pitfalls that drive us nuts in other languages.</li> <li>I assumed that if a language is loved, companies would adopt it more quickly. Maybe that assumption is flawed?</li> <li>Migration costs look like a major blocker. Rust is relatively new in the enterprise world, and rewriting systems isn’t cheap.</li> <li>Sure, it might slow development at first, but it can kill an entire class of bugs. Even Microsoft claims ~70% of their security bugs come from memory issues. (According to <a href="https://www.zdnet.com/article/microsoft-70-percent-of-all-security-bugs-are-memory-safety-issues/">zdnet</a>)</li> <li>I know legacy ecosystems matter, but Rust can interoperate with C/C++ and even mix with other stacks through bindings. So why doesn’t that accelerate adoption?</li> </ul> <p>I’m not sure how talent availability or senior-level familiarity plays into this either.</p> <p>I’d like to hear from people who’ve worked with Rust professionally or tried pushing it inside big companies. What do you think is holding Rust back from wider industry adoption? Is it culture, economics, tooling, training, or just inertia?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/mstjrr"> /u/mstjrr </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1oy9czg/why_isnt_rust_getting_more_professional_adoption/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1oy9czg/why_isnt_rust_getting_more_professional_adoption/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1ox5we2/project_modular_iptvepg_platform_with_custom/" target="_blank">[Project] Modular IPTV/EPG platform with custom virtualization, Rust/WASM parser and Android native bridge</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/LarryParryOne"> /u/LarryParryOne </a> <br/> <span><a href="/r/u_LarryParryOne/comments/1owr49t/project_modular_iptvepg_platform_with_custom/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1ox5we2/project_modular_iptvepg_platform_with_custom/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1oy7jig/the_hate_why/" target="_blank">The hate! Why ?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi. I am creating an Retro RPG Creator in Rust at Eldiron.com. It recently got some traction by some videos from games from scratch etc. What I did not expect was the backlash re Rust. People put on derogatory remarks on the videos, send hate mail and actually file GitHub issues like &quot;rewrite in C&quot;.</p> <p>Why ? I love Rust and I am proud to code in it. But I did not expect this to be an issue for the engine I am creating :(</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/EldironMoody"> /u/EldironMoody </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1oy7jig/the_hate_why/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1oy7jig/the_hate_why/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1ox5fix/filtraio_rust_jobs_report_october_2025/" target="_blank">filtra.io | Rust Jobs Report - October 2025</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/anonymous_pro_"> /u/anonymous_pro_ </a> <br/> <span><a href="https://filtra.io/rust/jobs-report/oct-25">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1ox5fix/filtraio_rust_jobs_report_october_2025/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1oy5tfa/media_opensourced_our_trace_visualizer_with_istio/" target="_blank">[Media] open-sourced our trace visualizer with Istio WASM plugin</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>This is my first Rust project. Love it.</p> <p>A couple of months ago, I posted <a href="https://www.reddit.com/r/java/comments/1mclnyh/do_you_find_logging_isnt_enough/">this thread</a> asking whether logging alone was enough for complex debugging. At the time, we were dumping all our system messages into a database just to trace issues like a “free checked bag” disappearing during checkout.</p> <p>That approach helped, but digging through logs was still slow and painful. So I built a trace visualizer—something that could actually show the message flow across services, with payloads, in a clear timeline.</p> <p><strong>I’ve now open-sourced it:</strong><br/> 🔗 <a href="https://github.com/softprobe/softprobe">GitHub: softprobe/softprobe</a></p> <p>It’s built as a high-performance Istio WASM plugin written in Rust, and it’s focused specifically on <strong>business-level message flow visualization and troubleshooting</strong>. Less about infrastructure metrics—more about understanding what happened in the actual business logic during a user’s journey.</p> <p>Feedback and critiques welcome. This community’s input on the original post really pushed this forward.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/yumgummy"> /u/yumgummy </a> <br/> <span><a href="https://i.redd.it/jpxdps4b6i1g1.gif">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1oy5tfa/media_opensourced_our_trace_visualizer_with_istio/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1ox4ncp/whats_wrong_with_my_doc_include_str/" target="_blank">What's wrong with my doc include_str?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi guys! I&#39;m currently working on a project manager which can be separated into a lot of different crates.</p> <p>After a little search, I&#39;ve found the following code within <a href="https://docs.rs/clap/latest/clap/">clap</a> crate:</p> <p><code>rust //! ... //! Then define your CLI in `main.rs`: //!</code>rust //! # #[cfg(feature = &quot;derive&quot;)] {</p> <h1>![doc = include_str!(&quot;../examples/demo.rs&quot;)]</h1> <p>//! # } //! <code> //! ... </code></p> <p>Basically this adds the file content into your crate docstring. A lot cool (avoid doc repetition/unsync) but unfortunately doesn&#39;t work when trying to get lsp description of my lib crate.</p> <p>I&#39;m using neovim V0.12.0-dev with rustanceanvim plugin + rust-analyzer as well.</p> <p>I already read the <a href="https://linebender.org/blog/doc-include/">linebender</a> page but it&#39;s doesn&#39;t quote my problem. There&#39;s big projects using this kind of features (ie, <a href="https://github.com/linebender/android_trace/blob/v0.1.1/android_trace/src/lib.rs">android_trace</a> crate), so I still think that&#39;s my fault.</p> <p>Has anyone ever faced this problem? Do anyone know how can I fix this?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/nasccped"> /u/nasccped </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1ox4ncp/whats_wrong_with_my_doc_include_str/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1ox4ncp/whats_wrong_with_my_doc_include_str/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1oy3qde/media_typeman_small_project_big_update/" target="_blank">[Media] TypeMan - small project, big update</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>A few months ago I posted this project here and it received a lot of valuable feedback and contributions that really helped me improve.</p> <p>TLDR: it&#39;s a typing test with TUI, CLI and GUI modes.</p> <p>Link to code: <a href="https://github.com/mzums/typeman">github</a> and crates: <a href="https://crates.io/crates/typeman">crates.io</a></p> <p>Installation:<br/> <code>cargo install typeman</code></p> <p>or if you don&#39;t want GUI (it might be too heavy for your needs):<br/> <code>cargo install typeman --no-default-features --features &quot;tui cli&quot;</code></p> <p>There are many typing tests, but I wanted one that works in terminals, offline, and is fully customizable.</p> <p>TypeMan has changed a lot since the previous version:<br/> - color scheme selection<br/> - wikipedia mode<br/> - local leaderboard<br/> - better UI<br/> - language selection<br/> - top words selection<br/> - batch size options</p> <p>What do you think? How can I make it better?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/mzums2"> /u/mzums2 </a> <br/> <span><a href="https://i.redd.it/18jn8r7wph1g1.png">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1oy3qde/media_typeman_small_project_big_update/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1ox4j3u/the_mobile_voting_project_is_written_in_rust/" target="_blank">The Mobile Voting Project is written in Rust!</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p><a href="https://github.com/FreeAndFair/VoteSecure">https://github.com/FreeAndFair/VoteSecure</a></p> <p>There is a push to modernize voting in America and to boost turnout too. One of the projects is the Mobile Voting Project which aims to increase access to elections by allowing people to vote easier, like by phones. Alaska seems to be the first state that will have a mobile phone election.</p> <p>It turns out the system behind the mobile voting project is open source, and written in rust too.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/NYPuppy"> /u/NYPuppy </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1ox4j3u/the_mobile_voting_project_is_written_in_rust/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1ox4j3u/the_mobile_voting_project_is_written_in_rust/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1oy20d4/ideas_of_crater_and_coverage/" target="_blank">Ideas Of Crater And Coverage</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/xd009642"> /u/xd009642 </a> <br/> <span><a href="https://xd009642.github.io/2025/11/15/Ideas-of-Crater-and-Coverage.html">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1oy20d4/ideas_of_crater_and_coverage/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1ox2lvo/i_completed_my_first_project_on_rust/" target="_blank">I completed my first project on rust...</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>So. I shifted to linux and wanted to develop something for fun.</p> <p>What better than a clipboard app that allows me to paste items and emoiis? (Definitelv not because I have a habit of pressing Win+V and pressing clear or windows).</p> <p>I chose rust as my main language and It took me a while to learn it...</p> <p>Oh man. Finally, now I can spam clear every now and then for no reason.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/ecstranaut"> /u/ecstranaut </a> <br/> <span><a href="https://github.com/ecstra/super_v">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1ox2lvo/i_completed_my_first_project_on_rust/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1oy1ejn/a_tiny_proxy_in_rust_for_using_alternative_llm/" target="_blank">A tiny proxy in Rust for using alternative LLM providers with Anthropic-compatible tools (like Claude Code or Claude Agent SDK successors)</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I built a lightweight Rust proxy that lets you use tools designed for the Anthropic API with alternative providers – OpenRouter, self-hosted models, or pretty much anything with an OpenAI-compatible API ¯\_(ツ)_/¯</p> <p><a href="https://github.com/m0n0x41d/anthropic-proxy-rs">https://github.com/m0n0x41d/anthropic-proxy-rs</a></p> <p>Some open-source models are performing surprisingly well these days, and this allows you to experiment with them in tools that normally only support Claude.</p> <p>I personally built it for some CI/CD agents I wrote using the Claude Agent SDK, but I want to cut down on a few token prices with cheaper models from OpenRouter.</p> <p><strong>Setup is silly-willy:</strong></p> <ul> <li>Configure via <code>.env</code> file (place it wherever you want)</li> <li>Run as a daemon: <code>anthropic-proxy --daemon</code></li> </ul> <p><strong>Works okay with Claude Code</strong> – just set one environment variable (models and upstream are configured in the proxy):</p> <pre><code>ANTHROPIC_BASE_URL=http://0.0.0.0:3000 claude </code></pre> <p>If there&#39;s any interest, I&#39;ll compile proper binaries for releases.</p> <p>Let me know if you find this useful or have suggestions on improving it!</p> <p>I am very new to Rust, so I would really appreciate any feedback from Rust gurus. </p> <p>Thank you for your time; I hope it will help someone too :)</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/m0n0x41d"> /u/m0n0x41d </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1oy1ejn/a_tiny_proxy_in_rust_for_using_alternative_llm/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1oy1ejn/a_tiny_proxy_in_rust_for_using_alternative_llm/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1ox1gv3/xila_embedded_operating_system_running_wasm_apps/" target="_blank">Xila - Embedded Operating System running WASM apps (not OC)</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/Mubelotix"> /u/Mubelotix </a> <br/> <span><a href="https://github.com/Xila-Project/Core">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1ox1gv3/xila_embedded_operating_system_running_wasm_apps/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1oy11tz/built_a_3d_file_system_navigator_in_rust_inspired/" target="_blank">Built a 3D file system navigator in Rust inspired by Jurassic Park hacker scene, it actually works</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hey folks! I’ve been hacking on a silly-but-surprisingly-useful project and wanted to share it here. It’s written in Rust using macroquad, and it’s actually my first time experimenting with macroquad. The app shows directories and files as 3D blocks you can orbit around, click, and navigate using vim-like keys. If you want to check it out or see how it works, here’s the repo: <a href="https://github.com/ErickJ3/raptor">https://github.com/ErickJ3/raptor</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/MaleficentLow6262"> /u/MaleficentLow6262 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1oy11tz/built_a_3d_file_system_navigator_in_rust_inspired/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1oy11tz/built_a_3d_file_system_navigator_in_rust_inspired/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1ox0sca/varpro_014_function_fitting_made_easy_now_16x/" target="_blank">varpro 0.14: Function Fitting Made Easy: now 1.6x faster *</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p><code>varpro</code> is a nonlinear least squares function fitting library for a special class of functions, specifically those which can be written as sums of nonlinear functions. Those functions come up e.g. when fitting sums of exponentials which are famously ill-conditioned.</p> <h1>Why Use <code>varpro</code>?</h1> <ul> <li>If your fitting problem looks like a sum of nonlinear functions, see if you can take advantage. There&#39;s a good chance that <code>varpro</code> will solve your problem many times (benchmarks ~5.8x) faster than just using a general purpose least squares solver.</li> <li>If you care about simple interfaces: <code>varpro</code> exposes both a simple and performant interface to get you started (which is already ~3x faster), but </li> </ul> <h1>What&#39;s new?</h1> <ul> <li>I&#39;ve implemented a wide range of optimizations and new solver backends. Using the QR backend now solves single fitting problems roughly 40% faster than before.</li> </ul> <h1>What Did It Take to Get Here?</h1> <p>I&#39;d like to think I made a positive impact in a small corner of the scientific Rust ecosystem, especially when it comes to reviving <code>nalgebra-lapack</code>. Somehow, I became a <code>nalgebra</code> maintainer in this process, too.</p> <h1>Benchmarks</h1> <p><code>*</code>: please do your own benchmarks, all reported speedups measured <em>on my machine</em> (TM) with my particular benchmark suite. It&#39;s likely you&#39;ll get a benefit when using <code>varpro</code>, but the ultimate archstick is measuring for yourself!</p> <p>I don&#39;t want to waffle on, please ask away if you have questions.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/geo-ant"> /u/geo-ant </a> <br/> <span><a href="https://github.com/geo-ant/varpro">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1ox0sca/varpro_014_function_fitting_made_easy_now_16x/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1oy0cy1/syn_how_to_parse_proc_macro_args_with_comma_and/" target="_blank">Syn: How to parse proc_macro args with comma and equal? (Ex: states = ProtocolStates)</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;m working on a <code>proc_macro</code> lib and I wanted to parse the arguments of the macro which looks like this:</p> <p>```</p> <h1>[some_macro(states = ProtocolStates, context = Context)]</h1> <p>struct App {} ```</p> <p>If it was separated only by commas, it&#39;d work with this:</p> <p><code> let vars = Punctuated::&lt;Type, Token![,]&gt;::parse_terminated(args)?; </code></p> <p>However, I can&#39;t seem to find a way to parse with the equal sign present. I didn&#39;t find any example with this in their repos.</p> <p>Any help is appreciated.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/hbacelar8"> /u/hbacelar8 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1oy0cy1/syn_how_to_parse_proc_macro_args_with_comma_and/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1oy0cy1/syn_how_to_parse_proc_macro_args_with_comma_and/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1owx802/pdf_crate_to_render_invoices/" target="_blank">PDF crate to render invoices?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>What do you recommend?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/yehors"> /u/yehors </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1owx802/pdf_crate_to_render_invoices/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1owx802/pdf_crate_to_render_invoices/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1oxyz2r/rust_support_for_aws_lambda_is_now_ga/" target="_blank">Rust support for AWS Lambda is now GA</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/neverentoma"> /u/neverentoma </a> <br/> <span><a href="https://aws.amazon.com/blogs/compute/building-serverless-applications-with-rust-on-aws-lambda/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1oxyz2r/rust_support_for_aws_lambda_is_now_ga/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1owx1y0/is_there_an_action_or_bot_for_github_prs_to/" target="_blank">Is there an action or bot for GitHub PRs to monitor API changes?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I recently made a PR that accidentally changed the public API of my crate (derived a new trait for a pub type + added a <code>pub</code> method which should have been <code>pub(crate)</code>).</p> <p>This made me wonder, are there tools that can help with that? </p> <p><a href="https://github.com/obi1kenobi/cargo-semver-checks-action"><code>cargo-semver-check</code></a> and <a href="https://crates.io/crates/cargo-public-api"><code>cargo-public-api</code></a> come to mind, but I want something more PR-focused. Basically, when I make a PR, the tool should tell the reviewer how the API of the crate changed.</p> <p>I can imagine 2 workflows for that:</p> <ol> <li>A bot that adds comments on the PR with all API changes + the semver of these changes (minor/major). This would allow reviews to see all API changes at once.</li> <li>A CI action that runs <code>cargo-semver-check</code>. The action will fail if the PR contains API changes, unless the PR author adds something like <code>change: minor</code> to the PR description.</li> </ol> <p>Basically, I want it to be hard to not notice API changes in PRs. Are there tools like that out there already?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/rundevelopment"> /u/rundevelopment </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1owx1y0/is_there_an_action_or_bot_for_github_prs_to/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1owx1y0/is_there_an_action_or_bot_for_github_prs_to/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1oxxsg8/has_anyone_here_got_a_job_because_of_stuff_you/" target="_blank">Has anyone here got a job because of stuff you have done in rust?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I know its a bit of odd question but I just wanted to know if you don&#39;t directly work on rust at your job do you feel like it has helped you in any way as far as careers ( regardless of whether you work in development or any sector of tech).</p> <p>I have been applying to some development roles (non rust) and I was debating whether or not to put some of my projects and open source contributions on my resume but it feels like it could be irrelevant to most since its not in the typical JS, java realm etc.</p> <p>Thanks,</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/No_Attention_486"> /u/No_Attention_486 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1oxxsg8/has_anyone_here_got_a_job_because_of_stuff_you/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1oxxsg8/has_anyone_here_got_a_job_because_of_stuff_you/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1owt0e6/keynote_rust_in_the_linux_kernel_why_greg/" target="_blank">Keynote: Rust in the Linux Kernel, Why? - Greg Kroah-Hartman</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p><a href="https://www.youtube.com/watch?v=HX0GH-YJbGw">https://www.youtube.com/watch?v=HX0GH-YJbGw</a></p> <p>I&#39;m wondering if my time spent started learning c and c++ will be a wise decision now rust is slowly creeping up. Things like &quot;stupid little corner cases in C that are totally gone in Rust&quot;.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/nosyeaj"> /u/nosyeaj </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1owt0e6/keynote_rust_in_the_linux_kernel_why_greg/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1owt0e6/keynote_rust_in_the_linux_kernel_why_greg/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1oxxlr6/announcing_tholospq_v011_a_pure_rust_postquantum/" target="_blank">ANNOUNCING: tholos-pq v0.1.1 a pure Rust post-quantum multi-recipient encryption library.</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>tholos-pq v0.1.0 is the initial release of a pure Rust post-quantum multi-recipient encryption library. This release provides a complete implementation of post-quantum cryptography for encrypting messages to multiple recipients with sender authentication.</p> <h2>Features</h2> <h3>Core Functionality</h3> <ul> <li><strong>Multi-recipient encryption</strong>: Encrypt a single message for multiple recipients efficiently</li> <li><strong>Post-quantum security</strong>: All cryptographic primitives are quantum-resistant</li> <li><strong>Sender authentication</strong>: Verify sender identity using Dilithium-3 signatures</li> <li><strong>Stable wire format</strong>: Versioned CBOR format for interoperability</li> </ul> <h3>Cryptographic Algorithms</h3> <ul> <li><strong>ML-KEM-1024</strong> (Kyber-1024): Key encapsulation mechanism for per-recipient key wrapping</li> <li><strong>XChaCha20-Poly1305</strong>: Authenticated encryption for payload and content encryption keys</li> <li><strong>Dilithium-3</strong>: Digital signatures for sender authentication</li> <li><strong>HKDF-SHA256</strong>: Key derivation with domain separation</li> </ul> <h3>API</h3> <p>The library provides a simple, straightforward API:</p> <p>```rust // Key generation let (pub_key, priv_key) = gen_recipient_keypair(&quot;recipient_id&quot;); let sender = gen_sender_keypair(&quot;sender_id&quot;);</p> <p>// Encryption let wire = encrypt(message, &amp;sender, &amp;[pub_key1, pub_key2, ...])?;</p> <p>// Decryption let plaintext = decrypt(&amp;wire, &quot;recipient_id&quot;, &amp;priv_key.sk_kyber, &amp;allowed_senders)?; ```</p> <h2>Security</h2> <ul> <li>Secure random number generation using the operating system RNG</li> <li>Post-quantum algorithms throughout (ML-KEM-1024, Dilithium-3)</li> <li>Proper key derivation with domain separation</li> <li>Authenticated encryption for all ciphertexts</li> <li>Signature verification enforced before decryption</li> <li>Per-recipient key encapsulation</li> </ul> <h2>Testing</h2> <p>Comprehensive test coverage including:</p> <ul> <li>41 unit and integration tests</li> <li>13 property-based tests using proptest</li> <li>Error path testing for malformed inputs</li> <li>Edge case testing (empty messages, multiple recipients)</li> </ul> <h2>Documentation</h2> <ul> <li>Complete API documentation with examples</li> <li>README with usage guide</li> <li>Inline code documentation following Rust standards</li> <li>Security considerations documented</li> </ul> <h2>Dependencies</h2> <ul> <li><code>ml-kem = &quot;0.2&quot;</code>: Pure Rust ML-KEM-1024 implementation</li> <li><code>pqcrypto-dilithium = &quot;0.5&quot;</code>: Dilithium-3 signature implementation</li> <li><code>chacha20poly1305 = &quot;0.10.1&quot;</code>: XChaCha20-Poly1305 AEAD</li> <li><code>serde_cbor = &quot;0.11&quot;</code>: CBOR serialization</li> <li><code>hkdf = &quot;0.12&quot;</code>: Key derivation</li> </ul> <h2>Wire Format</h2> <p>The wire format is a versioned CBOR structure containing:</p> <ul> <li>Header with version, suite identifier, sender ID, recipient IDs, message ID, timestamp</li> <li>Encrypted payload using XChaCha20-Poly1305</li> <li>Per-recipient envelopes with ML-KEM ciphertexts and wrapped content encryption keys</li> <li>Dilithium-3 signature over the unsigned bundle</li> </ul> <p>Format version: 1<br/> Suite identifier: <code>Kyber1024+XChaCha20P1305+Dilithium3</code></p> <h2>Breaking Changes</h2> <p>None. This is the initial release.</p> <h2>Known Limitations</h2> <ul> <li>Maximum message size is limited by available memory</li> <li>No built-in key management or distribution mechanisms</li> <li>No support for key rotation or revocation</li> </ul> <h2>Future Plans</h2> <p>Future releases may include:</p> <ul> <li>Additional algorithm suites</li> <li>Key rotation and revocation support</li> <li>Performance optimizations</li> <li>Additional wire format versions</li> </ul> <h2>License</h2> <p>Licensed under the Apache License, Version 2.0.</p> <h2>Repository</h2> <p><a href="https://github.com/thanos/tholos-pq">https://github.com/thanos/tholos-pq</a></p> <h2>Documentation</h2> <p><a href="https://docs.rs/tholos-pq">https://docs.rs/tholos-pq</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Shoddy_One4465"> /u/Shoddy_One4465 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1oxxlr6/announcing_tholospq_v011_a_pure_rust_postquantum/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1oxxlr6/announcing_tholospq_v011_a_pure_rust_postquantum/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1ownejb/ribir_nonintrusive_gui_framework_for_rust/" target="_blank">Ribir - Non-intrusive GUI Framework for Rust</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/zxyzyxz"> /u/zxyzyxz </a> <br/> <span><a href="https://github.com/RibirX/Ribir">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1ownejb/ribir_nonintrusive_gui_framework_for_rust/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1oxvcc4/solving_the_n_queen_problem_in_the_rust_type/" target="_blank">Solving the N queen problem in the Rust type system</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/frr00ssst"> /u/frr00ssst </a> <br/> <span><a href="https://gist.github.com/frroossst/6734a750c35f7964a38df10a58f4acd8">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1oxvcc4/solving_the_n_queen_problem_in_the_rust_type/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1oxthzw/is_it_possible_to_implement_a_trait_for_a_generic/" target="_blank">Is It Possible To Implement a Trait For a Generic Iterator With The Goal Of Yielding Reference Values?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Is it possible to implement a trait for a generic iterator and yield reference values without consuming the original type? I have this code that does not work ```rust use std::ops::Range;</p> <p>pub trait Span { fn span(&amp;self) -&gt; Range&lt;usize&gt;; }</p> <p>impl&lt;&#39;a, I, T&gt; Span for &amp;&#39;a I where &amp;&#39;a I: IntoIterator&lt;Item = T&gt;, T: Span + &#39;a, { fn span(&amp;self) -&gt; Range&lt;usize&gt; { let mut iter = self.into_iter();</p> <pre><code> let first = match iter.next() { Some(item) =&gt; item.span(), None =&gt; return 0..0, }; iter.fold(first, |acc, item| { let item_span = item.span(); let start = acc.start.min(item_span.start); let end = acc.end.max(item_span.end); start..end }) } </code></pre> <p>}</p> <p>impl Span for Range&lt;usize&gt; { fn span(&amp;self) -&gt; Range&lt;usize&gt; { self.clone() } }</p> <p>fn main() { let x: Vec&lt;Range&lt;usize&gt;&gt; = Vec::new(); (&amp;x).span(); } ``` <a href="https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2024&amp;gist=a30a7493f6ae3734a662ab2f51b329e7">https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2024&amp;gist=a30a7493f6ae3734a662ab2f51b329e7</a></p> <p>Since <code>IntoIterator</code> is consuming I am having a hard time implementing this. I just want to implement it for any reference that can be turned into an iterator. How can I accomplish this or is this not possible?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/InternalServerError7"> /u/InternalServerError7 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1oxthzw/is_it_possible_to_implement_a_trait_for_a_generic/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1oxthzw/is_it_possible_to_implement_a_trait_for_a_generic/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1oxsbiw/uni_service_universal_service_crate_for_building/" target="_blank">uni_service - Universal service crate for building cross platform OS services</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I created <code>uni_service</code> and <code>uni_service_manager</code> after not finding much in the Rust ecosystem for creating universal, portable OS services (or least nothing that fully worked for me). Hopefully they are helpful to someone else as well.</p> <h2>Highlights:</h2> <ul> <li>Lets you create/manage OS services in a platform agnostic manner. <ul> <li>When differences are relevant, they can be discovered by asking for underlying platform capabilities</li> </ul></li> <li>Supports Windows per-user services (a relatively obscure Windows 10+ feature)</li> <li>Allows you to run any service both interactively as a CLI app or as a system/user service</li> <li>Services can be created by implementing a single function</li> <li>Services can be sync or async (There is an axum example in the repo)</li> </ul> <p><strong>uni_service</strong>: <a href="https://crates.io/crates/uni_service">crates.io</a> <a href="https://github.com/nu11ptr/uni_service">github</a> <a href="https://docs.rs/uni_service">docs.rs</a></p> <p><strong>uni_service_manager</strong>: <a href="https://crates.io/crates/uni_service_manager">crates.io</a> <a href="https://github.com/nu11ptr/uni_service/tree/main/manager">github</a> <a href="https://docs.rs/uni_service_manager">docs.rs</a></p> <p>Hello world service example (<code>hello_service</code> is the service, the rest is boilerplate):</p> <p>```rust use std::sync::mpsc::Receiver;</p> <p>use uni_service::{BaseService, run_service};</p> <p>fn hello_service(shutdown: Receiver&lt;()&gt;, is_service: bool) -&gt; uni_service::Result&lt;()&gt; { if is_service { println!(&quot;Hello, World! (service mode)&quot;); } else { println!(&quot;Hello, World! (interactive mode)&quot;); } shutdown.recv()?; println!(&quot;Shutdown signal received. Shutting down...&quot;); Ok(()) }</p> <p>fn run() -&gt; uni_service::Result&lt;()&gt; { let service_mode = match std::env::args().nth(1).as_deref() { Some(&quot;service&quot;) =&gt; true, _ =&gt; false, }; let service = BaseService::new_sync(&quot;hello_world&quot;, hello_service, service_mode);</p> <pre><code>run_service(service, service_mode)?; Ok(()) </code></pre> <p>}</p> <p>fn main() { if let Err(e) = run() { eprintln!(&quot;Error: {}&quot;, e); std::process::exit(1); } } ```</p> <p>Quick example of <code>uni_service_manager</code>:</p> <p>```rust use std::{env, io, process}; use std::{io::Write as _, time::Duration};</p> <p>use uni_service_manager::{ServiceCapabilities, ServiceSpec, UniServiceManager};</p> <p>const TIMEOUT: Duration = Duration::from_secs(5);</p> <p>fn main() { // Windows <em>user</em> services require a new logon before they can be started, so we will use a system service on Windows let user = !UniServiceManager::capabilities() .contains(ServiceCapabilities::USER_SERVICES_REQUIRE_NEW_LOGON); let user_manager = UniServiceManager::new(&quot;my_service&quot;, &quot;com.example.&quot;, user).unwrap();</p> <pre><code>let spec = ServiceSpec::new(&quot;path/to/my/executable&quot;) .arg(&quot;my_arg&quot;).unwrap() .display_name(&quot;My display name&quot;).unwrap() .description(&quot;My awesome service&quot;).unwrap() .set_autostart() .set_restart_on_failure(); user_manager.install_if_needed_and_start(&amp;spec, TIMEOUT).unwrap(); io::stdout().flush().unwrap(); println!(&quot;Press Enter to stop the service...&quot;); let mut buffer = String::new(); io::stdin().read_line(&amp;mut buffer).unwrap(); user_manager.stop_if_needed_and_uninstall(TIMEOUT).unwrap(); </code></pre> <p>} ```</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/_nullptr_"> /u/_nullptr_ </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1oxsbiw/uni_service_universal_service_crate_for_building/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1oxsbiw/uni_service_universal_service_crate_for_building/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1oxp5qh/beginnerlooking_for_code_buddy_to_make_projects/" target="_blank">[Beginner]Looking for code buddy to make projects in rust</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>About me :</p> <p>I&#39;m 24, Working in big tech for about a year now .<br/> Found myself drawn towards infra code which led me to start learning rust.<br/> I am mostly done with basics completed rust book made some basic cli projects .<br/> I will be happy to find someone who would like to collaborate with me in the journey to make new projects and learn together.</p> <p>Thanks!!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/CoolAnteater9012"> /u/CoolAnteater9012 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1oxp5qh/beginnerlooking_for_code_buddy_to_make_projects/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1oxp5qh/beginnerlooking_for_code_buddy_to_make_projects/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1oxo0jw/is_it_possible_to_make_projects_take_up_less/" target="_blank">Is it possible to make projects take up less storage space? Even with simple projects, the couple of crates I use skyrocket the storage space for every project I make, and it is making me hesitant to actually commit to properly learning Rust.</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hello! I&#39;m really interested in Rust, however the main thing that is keeping me from wanting to really get into learning it is the resulting file size for all of my projects. Even when only needing (what I assume to be) minimal usage of a crate, like when I tried coding a fractal renderer, and needed to save the output as an image, I need to install the entire crate which I assume has loads of more functionality, which takes up a ton of space.</p> <p>Are there ways to reduce this file size? My ideas for how to do this are either to somehow only download the needed parts of crates, so that a bunch of the unused functionality that takes up extra space doesn&#39;t need to be stored, or to instead of storing unique crates for each project, I have some place where I store all of my crates, where different projects get the crates from there, so that I don&#39;t have to download a bunch of duplicates. Are there potentially any other possible solutions that I missed?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/baksoBoy"> /u/baksoBoy </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1oxo0jw/is_it_possible_to_make_projects_take_up_less/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1oxo0jw/is_it_possible_to_make_projects_take_up_less/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1oxnhkd/another_fun_proof_of_concept_modular_webassembly/" target="_blank">Another fun proof of concept. Modular WebAssembly “graph engine” using Rust + Axum + Next.js</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I’ve been experimenting with a simple idea: treating WebAssembly modules as tiny, self-contained “logic capsules” that you wire together using a graph.</p> <p>Each WASM module includes:</p> <ul> <li>a few tiny functions in Rust (<code>get_text</code>, <code>get_color</code>)</li> <li>a tiny asset (string or color)</li> <li>no dependencies</li> <li>isolated execution</li> </ul> <p>A small Axum backend endpoint delivers on demand each <code>.wasm</code> file chunk-by-chunk, and a Next.js frontend loads + executes them in order based on a <code>graph.json</code> definition.</p> <p>The UI lets you:</p> <ul> <li>step manually through the graph (one module at a time), just keep pressing the button. The graph does not resets, so you need to refresh the page.</li> <li>auto-run the whole sequence, same as above, refresh the page.</li> <li>see the output from each module (log text + box color)</li> </ul> <p>It is a minimal and simple POC, definitely could be improved. So the main bullet points below are:</p> <ul> <li>modular WebAssembly.</li> <li>dynamic WASM loading, could be cached but I left it out for now.</li> <li>AXUM based streaming, or close enough.</li> <li>simple plugin-style architecture, plugins here for the app, not the server.</li> </ul> <p>Repo (MIT-licensed):<br/> <a href="https://github.com/erwinacher/wasm-server">https://github.com/erwinacher/wasm-server</a></p> <p>Note: This is a quick proof-of-concept. The code can definitely be improved or refactored, but the core idea is there. Feel free to tinker with it.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/erwinacher"> /u/erwinacher </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1oxnhkd/another_fun_proof_of_concept_modular_webassembly/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1oxnhkd/another_fun_proof_of_concept_modular_webassembly/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1oxl6zi/better_collect_fold_declaratively/" target="_blank">better_collect — fold declaratively</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p><em>Updated</em>: Can&#39;t edit the title, but I mean: Collect and fold declaratively and composably.</p> <p>My first time posting something on Reddit so I’m quite shy 😄</p> <p>Anyway, my crate’s idea is simple: you can calculate sum and max of an array in one pass, declaratively, and more.</p> <p>I don’t know what else to tell so how about checking it on crates.io. I’m open as possible to receive your feedbacks! The crate is still early.</p> <p><del>Note: on GitHub the main branch isn’t merged yet, so it still shows the previous version. You can check the nightly branch in the mean time. At the time of this post, the version is 0.2.0.</del> <em>Updated</em>: the main branch is merged!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/discreaminant2809"> /u/discreaminant2809 </a> <br/> <span><a href="https://crates.io/crates/better_collect">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1oxl6zi/better_collect_fold_declaratively/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1oxikky/announcing_plotlars_0110_faceting_subplotgrid/" target="_blank">Announcing Plotlars 0.11.0: Faceting, SubplotGrid & Dimensions! 🦀📊✨</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hello Rustaceans!</p> <p>I&#39;m excited to announce Plotlars 0.11.0, a powerful release that brings advanced multi-plot layouts and data faceting to the Rust ecosystem!</p> <p>This update focuses on making complex visualizations simple, enabling you to create publication-quality dashboards and faceted plots with minimal code.</p> <p>🚀 What&#39;s New in Plotlars 0.11.0</p> <ul> <li>📐 Dimensions Component – Precise control over plot sizing with width, height, and auto_size parameters. Perfect for creating dashboards with consistent layouts.</li> <li>🔲 SubplotGrid – Create multi-plot grid layouts with automatic positioning and configurable spacing. Supports both regular grids and irregular layouts with custom row/column spanning.</li> <li>🎨 Faceting – Split data by categorical variables across 14 plot types! Similar to ggplot&#39;s facet_wrap, automatically create subplots for each group in your data.</li> <li>🎯 Custom Axis Title Positioning – Position axis titles anywhere on your plot for perfect alignment and presentation.</li> </ul> <p>🎉 Celebrating Growth!</p> <ul> <li>🌟 600+ GitHub Stars – We&#39;ve surpassed 600 stars! Your support continues to make Plotlars the go-to choice for Rust data visualization.</li> </ul> <p>⭐ Help Us Reach 1000 Stars!</p> <p>If Plotlars powers your data stories, please star us on GitHub! Every star helps more developers discover the power of Rust for data</p> <p>visualization.</p> <p>Share the repo on X, Reddit, LinkedIn, Mastodon—let&#39;s spread the word together!</p> <p>🔗 Explore More</p> <ul> <li>📚 <a href="https://docs.rs/plotlars/latest/plotlars/">https://docs.rs/plotlars/latest/plotlars/</a></li> <li>💻 <a href="https://github.com/alceal/plotlars">https://github.com/alceal/plotlars</a></li> </ul> <p>Thank you for your continued support. Here&#39;s to building beautiful, powerful visualizations in Rust!</p> <p>As always—happy plotting! 🎉📊</p> <p><a href="https://preview.redd.it/vzgy3e1soc1g1.png?width=2620&amp;format=png&amp;auto=webp&amp;s=3dd729e0cdac8ddbf28d370b3b40da5b9acf5a89">https://preview.redd.it/vzgy3e1soc1g1.png?width=2620&amp;format=png&amp;auto=webp&amp;s=3dd729e0cdac8ddbf28d370b3b40da5b9acf5a89</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Maleficent_Motor_173"> /u/Maleficent_Motor_173 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1oxikky/announcing_plotlars_0110_faceting_subplotgrid/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1oxikky/announcing_plotlars_0110_faceting_subplotgrid/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1oxi5mf/anyone_here_seriously_using_rust_for_ios/" target="_blank">Anyone here seriously using Rust for IOS development? Where did you learn how to do it?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;ve been porting a custom engine written in Rust to apple platforms because that kind of low level software engineering is extraordinarily fun to me. I&#39;ve managed to get it working well on macOS. I&#39;m currently using glfw and metal.</p> <p>I&#39;m finding the jump to IOS is one of the hardest engineering problem I&#39;ve ever faced. I&#39;ve picked up quite a bit I made my <a href="https://zachsmith.info/blog/apps/">own .app bundling tool</a> (I can open source this, but I suggest most people use <a href="https://github.com/burtonageo/cargo-bundle">cargo-bundle</a>), learnt about how <a href="https://developer.apple.com/documentation/uikit/about-the-app-launch-sequence">apple&#39;s very unique method of launching apps</a>, Spent a lot of time looking through <a href="https://github.com/madsmtm/objc2">objc2 examples</a> (Shoutout to <a href="/u/madsmtm">u/madsmtm</a> who&#39;s work on objc2 is incredible).</p> <p>And yet I&#39;m still having trouble creating a window, then creating an NsView for a CAMetalLayer. I&#39;m also still unsure how all this works with the UIApplication. I get the impression it starts an event loop? And that event loop effectively takes up the whole main thread? I was hoping to simply have a render thread and a tick thread. </p> <p><a href="https://github.com/bevyengine/bevy/tree/main/examples/mobile">Bevy has a working iOS example</a>, but my attempts to understand what it&#39;s doing have failed. <a href="https://docs.rs/winit/latest/winit/">Winit</a> seems like what I want (it creates the UIApplication for me, and a <a href="https://github.com/rust-windowing/winit/blob/master/winit-uikit/src/lib.rs">non-metal example</a>), but I don&#39;t know how to start using metal after that.</p> <p>I am not really expecting answers to all of these questions. Instead I&#39;m hoping there are wgpu/winit/objc2/bevy developers or others in this subreddit who can point me to tutorials or examples or guides or reading material. I want to learn how they figured out all this stuff and wrote the libraries I mentioned here.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/codedcosmos"> /u/codedcosmos </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1oxi5mf/anyone_here_seriously_using_rust_for_ios/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1oxi5mf/anyone_here_seriously_using_rust_for_ios/">[comments]</a></span></div>
+          </li>
+  
+        </ul>
+  
+        <h3 class="subreddit">r/golang</h3>
+        <ul class="item-list">
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1oyasw9/has_anyone_seen_kevent_errors_when_building_on_an/" target="_blank">Has anyone seen kevent errors when building on an older version of FreeBSD?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I can build up to go1.19.3 on FreeBSD-11 but no further. I saw something about &quot;no FreeBSD 11 specific code in go1.20 and above&quot;, but I also can&#39;t download and run any go packages.</p> <p>Build attempts and downloaded packages all give me kevent errors. Any thoughts?</p> <pre><code>2025-11-15 03:46:49.710: using go version go1.19.3 freebsd/amd64 2025-11-15 03:46:49.711: cwd: /usr/local/go12014/go/src 2025-11-15 03:46:49.712: bootgo=1.17.13 2025-11-15 03:46:49.713: running make.bash Building Go cmd/dist using /usr/local/go. (go1.19.3 freebsd/amd64) Building Go toolchain1 using /usr/local/go. Building Go bootstrap cmd/go (go_bootstrap) using Go toolchain1. Building Go toolchain2 using go_bootstrap and Go toolchain1. go: cannot find GOROOT directory: /usr/local/go12014/go go tool dist: FAILED: /usr/local/go12014/go/pkg/tool/freebsd_amd64/go_bootstrap install cmd/asm cmd/cgo cmd/compile cmd/link: exit status 2 ./build-120[68]: ../bin/go: not found [No such file or directory] 2025-11-15 03:47:12.673: finished -- me% /usr/local/go12014/go/pkg/tool/freebsd_amd64/go_bootstrap install cmd/asm cmd/cgo cmd/compile cmd/link runtime: kevent failed with 78 fatal error: runtime: kevent failed goroutine 1 [running, locked to thread]: runtime.throw({0x862716?, 0xc00008d2e0?}) /usr/local/go12014/go/src/runtime/panic.go:1047 +0x5d fp=0xc00008d288 sp=0xc00008d258 pc=0x43523d runtime.netpollinit() /usr/local/go12014/go/src/runtime/netpoll_kqueue.go:44 +0x185 fp=0xc00008d330 sp=0xc00008d288 pc=0x431605 runtime.netpollGenericInit() /usr/local/go12014/go/src/runtime/netpoll.go:197 +0x3b fp=0xc00008d348 sp=0xc00008d330 pc=0x430bfb ... </code></pre> <p>Thanks.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/vogelke"> /u/vogelke </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1oyasw9/has_anyone_seen_kevent_errors_when_building_on_an/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1oyasw9/has_anyone_seen_kevent_errors_when_building_on_an/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1oy54ki/profiling_go_programs_using_pprof_and_k6/" target="_blank">Profiling Go Programs using Pprof and k6</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/Pears1789"> /u/Pears1789 </a> <br/> <span><a href="https://pears.one/profiling-go-programs/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1oy54ki/profiling_go_programs_using_pprof_and_k6/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1oxsd5s/show_rgolang_updated_refdir_fork_a_linter_to/" target="_blank">[Show r/golang] Updated Refdir fork - A linter to enforce reference-based ordering of definitions in a file</a>
+            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/golang/comments/1oxsd5s/show_rgolang_updated_refdir_fork_a_linter_to/">  </a> </td><td> <!-- SC_OFF --><div class="md"><p>Sharing a fork <a href="https://github.com/ppipada/refdir">ppipada/refdir</a> of <a href="https://github.com/devnev/refdir">devnev/refdir</a>. </p> <p>What is refdir: Go linter that can enforce reference-based ordering of definitions in a <em>file.</em></p> <p>Why the fork: No response on issue reported and needed few enhancements. </p> <p>What does the fork add: </p> <ul> <li>Don&#39;t report recursive functions as an issue. Original <a href="https://github.com/devnev/refdir/issues/10">issue</a> with <a href="https://github.com/devnev/refdir/pull/11">PR</a></li> <li>Respect Ignore checks.</li> <li>Interface selections are treated as type references rather than function references. Avoids logical contradiction wrt interface type definition and reference inside same file.</li> <li>Lesser noise for universal scope identifiers.</li> <li>Working <code>golangci-lint</code> custom module plugin for version &gt; 2.</li> <li><p>Chores: Stricter <code>golangci-lint</code> config compliant code; <a href="http://taskfile.dev"><code>taskfile.dev</code></a> tasks; github action integration, vscode settings folders, updated and pinned dependencies/tools; improved readme.</p> <p>Any feedback or comments are welcome !</p></li> </ul> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/ppipada"> /u/ppipada </a> <br/> <span><a href="https://github.com/ppipada/refdir">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1oxsd5s/show_rgolang_updated_refdir_fork_a_linter_to/">[comments]</a></span> </td></tr></table></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1oxo5fy/aofc_learning_go_this_year_question/" target="_blank">AofC - learning Go this year - question</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi all,</p> <p>This year I have decided to try learning Go by using it for Advent of Code. Since 2017 I have used Ruby and embrace its simplicity and - as Copilot puts it &quot;developer happiness and flexibility&quot;.</p> <p>Should I create my own packages to perform file input and string to integer conversion and all the other frequent routine operations required.</p> <p>One thing I love about Ruby is simplicity of converting &quot;2x3x4\n&quot; to integer variables with something like</p> <pre><code>a, b, c = line.chomp.split(&#39;x&#39;).map(&amp;:to_i).sort </code></pre> <p>If I understand correctly, this is in large part due to Ruby&#39;s dynamic typing and Go uses static types.</p> <p>Are there packages available to repurpose in the ether?</p> <p>Regards<br/> Craig </p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/craigontour"> /u/craigontour </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1oxo5fy/aofc_learning_go_this_year_question/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1oxo5fy/aofc_learning_go_this_year_question/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1oxmmsj/centrifuge_a_scalable_realtime_messaging_library/" target="_blank">Centrifuge — a scalable real-time messaging library for Go (WebSocket with HTTP-based fallbacks, built-in connection distribution over many nodes). Now supports WebSocket over HTTP/2 (RFC 8441) and server-side dropping of publications based on client-supplied filters.</a>
+            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/golang/comments/1oxmmsj/centrifuge_a_scalable_realtime_messaging_library/">  </a> </td><td> &#32; submitted by &#32; <a href="https://www.reddit.com/user/FZambia"> /u/FZambia </a> <br/> <span><a href="https://github.com/centrifugal/centrifuge/releases/tag/v0.38.0">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1oxmmsj/centrifuge_a_scalable_realtime_messaging_library/">[comments]</a></span> </td></tr></table></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1oxm9n2/generating_html_godoc_documentation/" target="_blank">Generating html godoc documentation</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>So I&#39;ve been looking for a way to locally generate an html bundle from my module&#39;s documentation that I can then add to a static site. Apparently there&#39;s no native way of doing it. You can serve it locally with <a href="https://pkg.go.dev/golang.org/x/pkgsite@v0.0.0-20251114215028-9f629f032eec/cmd/pkgsite">pkgsite</a>, but there seems to be no public API that generates it. You can also generate it in text form with <code>go doc</code>, but sadly not html.</p> <p>Am I wrong, did I miss something?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/habarnam"> /u/habarnam </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1oxm9n2/generating_html_godoc_documentation/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1oxm9n2/generating_html_godoc_documentation/">[comments]</a></span></div>
           </li>
   
         </ul>
@@ -1329,49 +455,22 @@ communities. We wish you all the best in the coming year!</p>
         <ul class="item-list">
   
           <li>
-            <a href="https://www.reddit.com/r/rust_gamedev/comments/1oxa4lj/considering_iced_for_your_game_ui_be_aware_of/" target="_blank">Considering Iced for your game UI? Be aware of these red flags</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>For those evaluating UI frameworks for Rust game development, I wanted to share an experience that might be relevant to your decision-making.</p> <p>I recently raised concerns in the Iced repository about how the maintainer handles community feedback. The response revealed some things about how this project is managed that I think game developers should be aware of before committing to it.</p> <p>Key statements from the maintainer:</p> <p>&quot;The entire project depends on me and my mood. Isn&#39;t the new documentation clear about this?&quot;</p> <p>&quot;iced is not a professional project. It&#39;s a personal project. A gift from me to everyone.&quot;</p> <p>When I tried to discuss how this approach might affect community growth and project stability, the response was: &quot;I don&#39;t care what you believe open source at its best is. This is my project and I manage it as I please.&quot;</p> <p>Full thread: <a href="https://github.com/iced-rs/book/issues/20">https://github.com/iced-rs/book/issues/20</a></p> <p>For game developers choosing between Iced, egui, Bevy UI, or other options, this matters. If you build a game on Iced and later need to contribute fixes, report bugs, or suggest improvements, this exchange suggests your experience may vary depending on factors beyond the technical merits of your contribution.</p> <p>I&#39;m not saying don&#39;t use Iced - it&#39;s technically impressive. But I think this context is important for making informed decisions about what to build your project on. Has anyone else had experiences (positive or negative) contributing to or getting support from Iced?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/rdalves"> /u/rdalves </a> <br/> <span><a href="https://www.reddit.com/r/rust_gamedev/comments/1oxa4lj/considering_iced_for_your_game_ui_be_aware_of/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust_gamedev/comments/1oxa4lj/considering_iced_for_your_game_ui_be_aware_of/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust_gamedev/comments/1oy11ez/built_a_3d_file_system_navigator_in_rust_inspired/" target="_blank">Built a 3D file system navigator in Rust inspired by Jurassic Park hacker scene, it actually works</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hey folks!<br/> I’ve been hacking on a silly-but-surprisingly-useful project and wanted to share it here. It’s written in Rust using macroquad, and it’s actually my first time experimenting with macroquad. The app shows directories and files as 3D blocks you can orbit around, click, and navigate using vim-like keys. If you want to check it out or see how it works, here’s the repo:<br/> <a href="https://github.com/ErickJ3/raptor">https://github.com/ErickJ3/raptor</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/MaleficentLow6262"> /u/MaleficentLow6262 </a> <br/> <span><a href="https://www.reddit.com/r/rust_gamedev/comments/1oy11ez/built_a_3d_file_system_navigator_in_rust_inspired/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust_gamedev/comments/1oy11ez/built_a_3d_file_system_navigator_in_rust_inspired/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust_gamedev/comments/1oxa2js/ive_just_released_v08_update_from_my_game_colony/" target="_blank">I’ve just released v0.8 update from my game colony deep core! Go get it!</a>
-            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/rust_gamedev/comments/1oxa2js/ive_just_released_v08_update_from_my_game_colony/">  </a> </td><td> <!-- SC_OFF --><div class="md"><p><a href="https://meapps.itch.io/terminal-colony-deep-core">https://meapps.itch.io/terminal-colony-deep-core</a></p> <p>Build in Rust, featuring Bevy and egui.<br/> <a href="https://bevy.org/">https://bevy.org/</a><br/> <a href="https://www.egui.rs/">https://www.egui.rs/</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Big_Membership9737"> /u/Big_Membership9737 </a> <br/> <span><a href="https://i.redd.it/gdghncnspa1g1.png">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust_gamedev/comments/1oxa2js/ive_just_released_v08_update_from_my_game_colony/">[comments]</a></span> </td></tr></table></div>
+            <a href="https://www.reddit.com/r/rust_gamedev/comments/1oxuyor/raytracing_with_fake_reflections_using_my_engine/" target="_blank">Raytracing with "fake" reflections using my engine</a>
+            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/rust_gamedev/comments/1oxuyor/raytracing_with_fake_reflections_using_my_engine/">  </a> </td><td> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Ok-Campaign-1100"> /u/Ok-Campaign-1100 </a> <br/> <span><a href="https://v.redd.it/ythog278xf1g1">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust_gamedev/comments/1oxuyor/raytracing_with_fake_reflections_using_my_engine/">[comments]</a></span> </td></tr></table></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust_gamedev/comments/1oxudxg/isometric_showcase_of_my_new_engine/" target="_blank">Isometric showcase of my new engine</a>
+            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/rust_gamedev/comments/1oxudxg/isometric_showcase_of_my_new_engine/">  </a> </td><td> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Ok-Campaign-1100"> /u/Ok-Campaign-1100 </a> <br/> <span><a href="https://v.redd.it/4iq4htpcpf1g1">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust_gamedev/comments/1oxudxg/isometric_showcase_of_my_new_engine/">[comments]</a></span> </td></tr></table></div>
           </li>
   
         </ul>
   
-      </div>
-  
-      <div class="card">
-        <h2>Movie Trailers</h2>
-        <ul class="item-list">
-  
-          <li>
-            <a href="http://www.filmjabber.com/movie-trailers/kill-bill-the-whole-bloody-affair.html" target="_blank">Kill Bill: The Whole Bloody Affair Movie Trailer</a>
-            
-          </li>
-  
-          <li>
-            <a href="http://www.filmjabber.com/movie-trailers/the-devil-wears-prada-2.html" target="_blank">The Devil Wears Prada 2 Movie Trailer</a>
-            
-          </li>
-  
-          <li>
-            <a href="http://www.filmjabber.com/movie-trailers/good-luck-have-fun-dont-die.html" target="_blank">Good Luck, Have Fun, Don't Die Movie Trailer</a>
-            
-          </li>
-  
-          <li>
-            <a href="http://www.filmjabber.com/movie-trailers/the-spongebob-movie-search-for-squarepants.html" target="_blank">The SpongeBob Movie: Search for SquarePants Movie Trailer</a>
-            
-          </li>
-  
-          <li>
-            <a href="http://www.filmjabber.com/movie-trailers/wuthering-heights-emerald-fennell.html" target="_blank">Wuthering Heights Movie Trailer</a>
-            
-          </li>
-  
-        </ul>
       </div>
   
     </div>
