@@ -240,8 +240,8 @@
   
       <div class="card">
         <h2>Huginn Daily</h2>
-        <p class="header-p">Thursday, December 4, 2025</p>
-        <p class="header-p">51ab000f-9825-43b3-8f49-9cc17645d535</p>
+        <p class="header-p">Friday, December 5, 2025</p>
+        <p class="header-p">c46ac52c-2412-4748-ba91-e001fc665527</p>
       </div>
   
       <div class="card">
@@ -249,47 +249,47 @@
         <table class="weather-table">
           <tr>
             <th>Summary</th>
-            <td>⛅️ Mostly clear starting in the afternoon.</td>
+            <td>⛅️ Light rain in the evening.</td>
           </tr>
           <tr>
             <th>Temperature Range</th>
-            <td>13°C to 22°C (55°F to 71°F)</td>
+            <td>13°C to 20°C (56°F to 69°F)</td>
           </tr>
           <tr>
             <th>Feels Like</th>
-            <td>Low: 50°F | High: 70°F</td>
+            <td>Low: 53°F | High: 63°F</td>
           </tr>
           <tr>
             <th>Humidity</th>
-            <td>59%</td>
+            <td>65%</td>
           </tr>
           <tr>
             <th>Wind</th>
-            <td>12 km/h (8 mph), Direction: 101°</td>
+            <td>15 km/h (10 mph), Direction: 69°</td>
           </tr>
           <tr>
             <th>Precipitation</th>
-            <td>Probability: 0%, Type: No precipitation expected</td>
+            <td>Probability: 100%, Type: rain</td>
           </tr>
           <tr>
             <th>Sunrise / Sunset</th>
-            <td>🌅 06:39 AM / 🌇 04:36 PM</td>
+            <td>🌅 06:40 AM / 🌇 04:36 PM</td>
           </tr>
           <tr>
             <th>Moon Phase</th>
-            <td>Waxing Gibbous (48%)</td>
+            <td>Waning Gibbous (52%)</td>
           </tr>
           <tr>
             <th>Cloud Cover</th>
-            <td>39%</td>
+            <td>54%</td>
           </tr>
           <tr>
             <th>Pressure</th>
-            <td>1017.06 hPa</td>
+            <td>1013.27 hPa</td>
           </tr>
           <tr>
             <th>Dew Point</th>
-            <td>48.19°F</td>
+            <td>52.08°F</td>
           </tr>
           <tr>
             <th>Visibility</th>
@@ -299,185 +299,1346 @@
       </div>
   
       <div class="card">
-        <h2>XKCD</h2>
+        <h2>Other</h2>
+        <ul class="item-list">
   
-        <div class="comic">
-          <a href="//imgs.xkcd.com/comics/inverted_catenaries.png" target="_blank">
-            <img src="//imgs.xkcd.com/comics/inverted_catenaries.png" alt="Inverted Catenaries">
-          </a>
-        </div>
+          <li>
+            <a href="https://selfh.st/post/filebrowser-quantum-hits-stable/" target="_blank"> FileBrowser Quantum Hits Stable! </a>
+            <div class="item-content">
+			  A guest post from Graham Steffaniak, the developer of the popular file management platform FileBrowser Quantum
+			  <br>
+			  <a href="https://selfh.st/post/filebrowser-quantum-hits-stable/">Continue reading on selfh.st...</a>
+		  </div>
+          </li>
   
+        </ul>
+      </div>
+  
+      <div class="card">
+        <h2>Golang</h2>
+        <ul class="item-list">
+  
+          <li>
+            <a href="https://go.dev/blog/jsonv2-exp" target="_blank">A new experimental Go API for JSON</a>
+            <div class="item-content">
+<div id="blog"><div id="content">
+  <div id="content">
+
+    <div class="Article" data-slug="/blog/jsonv2-exp">
+    
+    <h1 class="small"><a href="/blog/">The Go Blog</a></h1>
+    
+
+    <h1>A new experimental Go API for JSON</h1>
+      
+      <p class="author">
+      Joe Tsai, Daniel Martí, Johan Brandhorst-Satzkorn, Roger Peppe, Chris Hines,  and Damien Neil<br>
+      9 September 2025
+      </p>
+      
+      <div class='markdown'>
+<h2 id="introduction">Introduction</h2>
+<p><a href="https://datatracker.ietf.org/doc/html/rfc8259" rel="noreferrer" target="_blank">JavaScript Object Notation (JSON)</a>
+is a simple data interchange format. Almost 15 years ago,
+we wrote about <a href="/blog/json">support for JSON in Go</a>,
+which introduced the ability to serialize and deserialize Go types to and from JSON data.
+Since then, JSON has become the most popular data format used on the Internet.
+It is widely read and written by Go programs,
+and encoding/json now ranks as the 5th most imported Go package.</p>
+<p>Over time, packages evolve with the needs of their users,
+and <code>encoding/json</code> is no exception. This blog post is about Go 1.25’s new
+experimental <code>encoding/json/v2</code> and <code>encoding/json/jsontext</code> packages,
+which bring long-awaited improvements and fixes.
+This post argues for a new major API version,
+provides an overview of the new packages,
+and explains how you can make use of it.
+The experimental packages are not visible by default and
+may undergo future API changes.</p>
+<h2 id="problems-with-encodingjson">Problems with <code>encoding/json</code></h2>
+<p>Overall, <code>encoding/json</code> has held up well.
+The idea of marshaling and unmarshaling arbitrary Go types
+with some default representation in JSON, combined with the ability to
+customize the representation, has proven to be highly flexible.
+However, in the years since its introduction,
+various users have identified numerous shortcomings.</p>
+<h3 id="behavior-flaws">Behavior flaws</h3>
+<p>There are various behavioral flaws in <code>encoding/json</code>:</p>
+<ul>
+<li>
+<p><strong>Imprecise handling of JSON syntax</strong>: Over the years, JSON has seen
+increased standardization in order for programs to properly communicate.
+Generally, decoders have become stricter at rejecting ambiguous inputs,
+to reduce the chance that two implementations will have different
+(successful) interpretations of a particular JSON value.</p>
+<ul>
+<li>
+<p><code>encoding/json</code> currently accepts invalid UTF-8,
+whereas the latest Internet Standard (RFC 8259) requires valid UTF-8.
+The default behavior should report an error in the presence of invalid UTF-8,
+instead of introducing silent data corruption,
+which may cause problems downstream.</p>
+</li>
+<li>
+<p><code>encoding/json</code> currently accepts objects with duplicate member names.
+RFC 8259 does not specify how to handle duplicate names,
+so an implementation is free to choose an arbitrary value,
+merge the values, discard the values, or report an error.
+The presence of a duplicate name results in a JSON value
+without a universally agreed upon meaning.
+This could be <a href="https://www.youtube.com/watch?v=avilmOcHKHE&amp;t=1057s" rel="noreferrer" target="_blank">exploited by attackers in security applications</a>
+and has been exploited before (as in <a href="https://nvd.nist.gov/vuln/detail/CVE-2017-12635" rel="noreferrer" target="_blank">CVE-2017-12635</a>).
+The default behavior should err on the side of safety and reject duplicate names.</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Leaking nilness of slices and maps</strong>: JSON is often used to communicate with
+programs using JSON implementations that do not allow <code>null</code> to be unmarshaled
+into a data type expected to be a JSON array or object.
+Since <code>encoding/json</code> marshals a nil slice or map as a JSON <code>null</code>,
+this may lead to errors when unmarshaling by other implementations.
+<a href="/issue/63397#discussioncomment-7201222">A survey</a>
+indicated that most Go users prefer that nil slices and maps
+are marshaled as an empty JSON array or object by default.</p>
+</li>
+<li>
+<p><strong>Case-insensitive unmarshaling</strong>: When unmarshaling, a JSON object member name
+is resolved to a Go struct field name using a case-insensitive match.
+This is a surprising default, a potential security vulnerability, and a performance limitation.</p>
+</li>
+<li>
+<p><strong>Inconsistent calling of methods</strong>: Due to an implementation detail,
+<code>MarshalJSON</code> methods declared on a pointer receiver
+are <a href="/issue/22967">inconsistently called by <code>encoding/json</code></a>. While regarded as a bug,
+this cannot be fixed as too many applications depend on the current behavior.</p>
+</li>
+</ul>
+<h3 id="api-deficiencies">API deficiencies</h3>
+<p>The API of <code>encoding/json</code> can be tricky or restrictive:</p>
+<ul>
+<li>
+<p>It is difficult to correctly unmarshal from an <code>io.Reader</code>.
+Users often write <code>json.NewDecoder(r).Decode(v)</code>,
+which fails to reject trailing junk at the end of the input.</p>
+</li>
+<li>
+<p>Options can be set on the <code>Encoder</code> and <code>Decoder</code> types,
+but cannot be used with the <code>Marshal</code> and <code>Unmarshal</code> functions.
+Similarly, types implementing the <code>Marshaler</code> and <code>Unmarshaler</code> interfaces
+cannot make use of the options and there is no way to plumb options down the call stack.
+For example, the <code>Decoder.DisallowUnknownFields</code> option loses its effect
+when calling a custom <code>UnmarshalJSON</code> method.</p>
+</li>
+<li>
+<p>The <code>Compact</code>, <code>Indent</code>, and <code>HTMLEscape</code> functions write to a <code>bytes.Buffer</code>
+instead of something more flexible like a <code>[]byte</code> or <code>io.Writer</code>.
+This limits the usability of those functions.</p>
+</li>
+</ul>
+<h3 id="performance-limitations">Performance limitations</h3>
+<p>Setting aside internal implementation details,
+the public API commits it to certain performance limitations:</p>
+<ul>
+<li>
+<p><strong>MarshalJSON</strong>: The <code>MarshalJSON</code> interface method forces the implementation
+to allocate the returned <code>[]byte</code>. Also, the semantics require that
+<code>encoding/json</code> verify that the result is valid JSON
+and also to reformat it to match the specified indentation.</p>
+</li>
+<li>
+<p><strong>UnmarshalJSON</strong>: The <code>UnmarshalJSON</code> interface method requires that
+a complete JSON value be provided (without any trailing data).
+This forces <code>encoding/json</code> to parse the JSON value to be unmarshaled
+in its entirety to determine where it ends before it can call <code>UnmarshalJSON</code>.
+Afterwards, the <code>UnmarshalJSON</code> method itself must parse the provided JSON value again.</p>
+</li>
+<li>
+<p><strong>Lack of streaming</strong>: Even though the <code>Encoder</code> and <code>Decoder</code> types operate
+on an <code>io.Writer</code> or <code>io.Reader</code>, they buffer the entire JSON value in memory.
+The <code>Decoder.Token</code> method for reading individual tokens is allocation-heavy
+and there is no corresponding API for writing tokens.</p>
+</li>
+</ul>
+<p>Furthermore, if the implementation of a <code>MarshalJSON</code> or <code>UnmarshalJSON</code> method
+recursively calls the <code>Marshal</code> or <code>Unmarshal</code> function,
+then the performance becomes quadratic.</p>
+<h2 id="trying-to-fix-encodingjson-directly">Trying to fix <code>encoding/json</code> directly</h2>
+<p>Introducing a new, incompatible major version of a package is a heavy consideration.
+If possible, we should try to fix the existing package.</p>
+<p>While it is relatively easy to add new features,
+it is difficult to change existing features.
+Unfortunately, these problems are inherent consequences of the existing API,
+making them practically impossible to fix within the <a href="/doc/go1compat">Go 1 compatibility promise</a>.</p>
+<p>We could in principle declare separate names, such as <code>MarshalV2</code> or <code>UnmarshalV2</code>,
+but that is tantamount to creating a parallel namespace within the same package.
+This leads us to <code>encoding/json/v2</code> (henceforth called <code>v2</code>),
+where we can make these changes within a separate <code>v2</code> namespace
+in contrast to <code>encoding/json</code> (henceforth called <code>v1</code>).</p>
+<h2 id="planning-for-encodingjsonv2">Planning for <code>encoding/json/v2</code></h2>
+<p>The planning for a new major version of <code>encoding/json</code> spanned years.
+In late 2020, spurred on by the inability to fix issues in the current package,
+Daniel Martí (one of the maintainers of <code>encoding/json</code>) first drafted his
+thoughts on <a href="https://docs.google.com/document/d/1WQGoM44HLinH4NGBEv5drGlw5_RNW-GP7DdGEpm7Y3o" rel="noreferrer" target="_blank">what a hypothetical <code>v2</code> package should look like</a>.
+Separately, after previous work on the <a href="/blog/protobuf-apiv2">Go API for Protocol Buffers</a>,
+Joe Tsai was disapppointed that <a href="/pkg/google.golang.org/protobuf/encoding/protojson">the <code>protojson</code> package</a>
+needed to use a custom JSON implementation because <code>encoding/json</code> was
+neither capable of adhering to the stricter JSON standard that the
+Protocol Buffer specification required,
+nor of efficiently serializing JSON in a streaming manner.</p>
+<p>Believing a brighter future for JSON was both beneficial and achievable,
+Daniel and Joe joined forces to brainstorm on <code>v2</code> and
+<a href="https://github.com/go-json-experiment/json" rel="noreferrer" target="_blank">started to build a prototype</a>
+(with the initial code being a polished version of the JSON serialization logic from the Go protobuf module).
+Over time, a few others (Roger Peppe, Chris Hines, Johan Brandhorst-Satzkorn, and Damien Neil)
+joined the effort by providing design review, code review, and regression testing.
+Many of the early discussions are publicly available in our
+<a href="https://www.youtube.com/playlist?list=PLZgrQPcV8W8EChkaAvv-3NUu6PYmnGG3b" rel="noreferrer" target="_blank">recorded meetings</a> and
+<a href="https://docs.google.com/document/d/1rovrOTd-wTawGMPPlPuKhwXaYBg9VszTXR9AQQL5LfI" rel="noreferrer" target="_blank">meeting notes</a>.</p>
+<p>This work has been public since the beginning,
+and we increasingly involved the wider Go community,
+first with a
+<a href="https://www.youtube.com/watch?v=avilmOcHKHE" rel="noreferrer" target="_blank">GopherCon talk</a> and
+<a href="/issue/63397">discussion posted in late 2023</a>,
+<a href="/issue/71497">formal proposal posted in early 2025</a>,
+and most recently <a href="/issue/71845">adopting <code>encoding/json/v2</code> as a Go experiment</a>
+(available in Go 1.25) for wider-scale testing by all Go users.</p>
+<p>The <code>v2</code> effort has been going on for 5 years,
+incorporating feedback from many contributors and also gaining valuable
+empirical experience from use in production settings.</p>
+<p>It&rsquo;s worth noting that it&rsquo;s largely been developed and promoted by people
+not employed by Google, demonstrating that the Go project is a collaborative endeavor
+with a thriving global community dedicated to improving the Go ecosystem.</p>
+<h2 id="building-on-encodingjsonjsontext">Building on <code>encoding/json/jsontext</code></h2>
+<p>Before discussing the <code>v2</code> API, we first introduce the experimental
+<a href="/pkg/encoding/json/jsontext"><code>encoding/json/jsontext</code></a> package
+that lays the foundation for future improvements to JSON in Go.</p>
+<p>JSON serialization in Go can be broken down into two primary components:</p>
+<ul>
+<li><em>syntactic functionality</em> that is concerned with processing JSON based on its grammar, and</li>
+<li><em>semantic functionality</em> that defines the relationship between JSON values and Go values.</li>
+</ul>
+<p>We use the terms &ldquo;encode&rdquo; and &ldquo;decode&rdquo; to describe syntactic functionality and
+the terms &ldquo;marshal&rdquo; and &ldquo;unmarshal&rdquo; to describe semantic functionality.
+We aim to provide a clear distinction between functionality
+that is purely concerned with encoding versus that of marshaling.</p>
+
+<p>This diagram provides an overview of this separation.
+Purple blocks represent types, while blue blocks represent functions or methods.
+The direction of the arrows approximately represents the flow of data.
+The bottom half of the diagram, implemented by the <code>jsontext</code> package,
+contains functionality that is only concerned with syntax,
+while the upper half, implemented by the <code>json/v2</code> package,
+contains functionality that assigns semantic meaning to syntactic data
+handled by the bottom half.</p>
+<p>The basic API of <code>jsontext</code> is the following:</p>
+<pre><code>package jsontext
+
+type Encoder struct { ... }
+func NewEncoder(io.Writer, ...Options) *Encoder
+func (*Encoder) WriteValue(Value) error
+func (*Encoder) WriteToken(Token) error
+
+type Decoder struct { ... }
+func NewDecoder(io.Reader, ...Options) *Decoder
+func (*Decoder) ReadValue() (Value, error)
+func (*Decoder) ReadToken() (Token, error)
+
+type Kind byte
+type Value []byte
+func (Value) Kind() Kind
+type Token struct { ... }
+func (Token) Kind() Kind
+</code></pre>
+<p>The <code>jsontext</code> package provides functionality for interacting with JSON
+at a syntactic level and derives its name from
+<a href="https://datatracker.ietf.org/doc/html/rfc8259#section-2" rel="noreferrer" target="_blank">RFC 8259, section 2</a>
+where the grammar for JSON data is literally called <code>JSON-text</code>.
+Since it only interacts with JSON at a syntactic level,
+it does not depend on Go reflection.</p>
+<p>The <a href="/pkg/encoding/json/jsontext#Encoder"><code>Encoder</code></a> and
+<a href="/pkg/encoding/json/jsontext#Decoder"><code>Decoder</code></a>
+provide support for encoding and decoding JSON values and tokens.
+The constructors
+<a href="/pkg/encoding/json/jsontext#Options">accept variadic options</a>
+that affect the particular behavior of encoding and decoding.
+Unlike the <code>Encoder</code> and <code>Decoder</code> types declared in <code>v1</code>,
+the new types in <code>jsontext</code> avoid muddling the distinction between syntax and
+semantics and operate in a truly streaming manner.</p>
+<p>A JSON value is a complete unit of data and is represented in Go as
+<a href="/pkg/encoding/json/jsontext#Value">a named <code>[]byte</code></a>.
+It is identical to <a href="/pkg/encoding/json#RawMessage"><code>RawMessage</code></a> in <code>v1</code>.
+A JSON value is syntactically composed of one or more JSON tokens.
+A JSON token is represented in Go as the <a href="/pkg/encoding/json/jsontext#Token">opaque <code>Token</code> type</a>
+with constructors and accessor methods.
+It is analogous to <a href="/pkg/encoding/json#Token"><code>Token</code></a> in <code>v1</code>
+but is designed represent arbitrary JSON tokens without allocation.</p>
+<p>To resolve the fundamental performance problems with
+the <code>MarshalJSON</code> and <code>UnmarshalJSON</code> interface methods,
+we need an efficient way of encoding and decoding JSON
+as a streaming sequence of tokens and values.
+In <code>v2</code>, we introduce the <code>MarshalJSONTo</code> and <code>UnmarshalJSONFrom</code> interface methods
+that operate on an <code>Encoder</code> or <code>Decoder</code>, allowing the methods&rsquo; implementations
+to process JSON in a purely streaming manner. Thus, the <code>json</code> package need not
+be responsible for validating or formatting a JSON value returned by <code>MarshalJSON</code>,
+nor would it need to be responsible for determining the boundaries of a JSON value
+provided to <code>UnmarshalJSON</code>. These responsibilities belong to the <code>Encoder</code> and <code>Decoder</code>.</p>
+<h2 id="introducing-encodingjsonv2">Introducing <code>encoding/json/v2</code></h2>
+<p>Building on the <code>jsontext</code> package, we now introduce the experimental
+<a href="/pkg/encoding/json/v2"><code>encoding/json/v2</code></a> package.
+It is designed to fix the aforementioned problems,
+while remaining familiar to users of the <code>v1</code> package.
+Our goal is that usages of <code>v1</code> will operate <em>mostly</em> the same if directly migrated to <code>v2</code>.</p>
+<p>In this article, we will primarily cover the high-level API of <code>v2</code>.
+For examples on how to use it, we encourage readers to
+study <a href="/pkg/encoding/json/v2#pkg-examples">the examples in the <code>v2</code> package</a> or
+read <a href="https://antonz.org/go-json-v2/" rel="noreferrer" target="_blank">Anton Zhiyanov&rsquo;s blog covering the topic</a>.</p>
+<p>The basic API of <code>v2</code> is the following:</p>
+<pre><code>package json
+
+func Marshal(in any, opts ...Options) (out []byte, err error)
+func MarshalWrite(out io.Writer, in any, opts ...Options) error
+func MarshalEncode(out *jsontext.Encoder, in any, opts ...Options) error
+
+func Unmarshal(in []byte, out any, opts ...Options) error
+func UnmarshalRead(in io.Reader, out any, opts ...Options) error
+func UnmarshalDecode(in *jsontext.Decoder, out any, opts ...Options) error
+</code></pre>
+<p>The <a href="/pkg/encoding/json/v2#Marshal"><code>Marshal</code></a>
+and <a href="/pkg/encoding/json/v2#Unmarshal"><code>Unmarshal</code></a> functions
+have a signature similar to <code>v1</code>, but accept options to configure their behavior.
+The <a href="/pkg/encoding/json/v2#MarshalWrite"><code>MarshalWrite</code></a>
+and <a href="/pkg/encoding/json/v2#UnmarshalRead"><code>UnmarshalRead</code></a> functions
+directly operate on an <code>io.Writer</code> or <code>io.Reader</code>,
+avoiding the need to temporarily construct an <code>Encoder</code> or <code>Decoder</code>
+just to write or read from such types.
+The <a href="/pkg/encoding/json/v2#MarshalEncode"><code>MarshalEncode</code></a>
+and <a href="/pkg/encoding/json/v2#UnmarshalDecode"><code>UnmarshalDecode</code></a> functions
+operate on a <code>jsontext.Encoder</code> and <code>jsontext.Decoder</code> and
+is actually the underlying implementation of the previously mentioned functions.
+Unlike <code>v1</code>, options are a first-class argument to each of the marshal and unmarshal functions,
+greatly extending the flexibility and configurability of <code>v2</code>.
+There are <a href="/pkg/encoding/json/v2#Options">several options available</a>
+in <code>v2</code> which are not covered by this article.</p>
+<h3 id="type-specified-customization">Type-specified customization</h3>
+<p>Similar to <code>v1</code>, <code>v2</code> allows types to define their own JSON representation
+by satisfying particular interfaces.</p>
+<pre><code>type Marshaler interface {
+    MarshalJSON() ([]byte, error)
+}
+type MarshalerTo interface {
+    MarshalJSONTo(*jsontext.Encoder) error
+}
+
+type Unmarshaler interface {
+    UnmarshalJSON([]byte) error
+}
+type UnmarshalerFrom interface {
+    UnmarshalJSONFrom(*jsontext.Decoder) error
+}
+</code></pre>
+<p>The <a href="/pkg/encoding/json/v2#Marshaler"><code>Marshaler</code></a>
+and <a href="/pkg/encoding/json/v2#Unmarshaler"><code>Unmarshaler</code></a> interfaces
+are identical to those in <code>v1</code>.
+The new <a href="/pkg/encoding/json/v2#MarshalerTo"><code>MarshalerTo</code></a>
+and <a href="/pkg/encoding/json/v2#UnmarshalerFrom"><code>UnmarshalerFrom</code></a> interfaces
+allow a type to represent itself as JSON using a <code>jsontext.Encoder</code> or <code>jsontext.Decoder</code>.
+This allows options to be forwarded down the call stack, since options
+can be retrieved via the <code>Options</code> accessor method on the <code>Encoder</code> or <code>Decoder</code>.</p>
+<p>See <a href="/pkg/encoding/json/v2#example-package-OrderedObject">the <code>OrderedObject</code> example</a>
+for how to implement a custom type that maintains the ordering of JSON object members.</p>
+<h3 id="caller-specified-customization">Caller-specified customization</h3>
+<p>In <code>v2</code>, the caller of <code>Marshal</code> and <code>Unmarshal</code> can also specify
+a custom JSON representation for any arbitrary type,
+where caller-specified functions take precedence over type-defined methods
+or the default representation for a particular type.</p>
+<pre><code>func WithMarshalers(*Marshalers) Options
+
+type Marshalers struct { ... }
+func MarshalFunc[T any](fn func(T) ([]byte, error)) *Marshalers
+func MarshalToFunc[T any](fn func(*jsontext.Encoder, T) error) *Marshalers
+
+func WithUnmarshalers(*Unmarshalers) Options
+
+type Unmarshalers struct { ... }
+func UnmarshalFunc[T any](fn func([]byte, T) error) *Unmarshalers
+func UnmarshalFromFunc[T any](fn func(*jsontext.Decoder, T) error) *Unmarshalers
+</code></pre>
+<p><a href="/pkg/encoding/json/v2#MarshalFunc"><code>MarshalFunc</code></a> and
+<a href="/pkg/encoding/json/v2#MarshalToFunc"><code>MarshalToFunc</code></a>
+construct a custom marshaler that can be passed to a <code>Marshal</code> call
+using <code>WithMarshalers</code> to override the marshaling of particular types.
+Similarly,
+<a href="/pkg/encoding/json/v2#UnmarshalFunc"><code>UnmarshalFunc</code></a> and
+<a href="/pkg/encoding/json/v2#UnmarshalFromFunc"><code>UnmarshalFromFunc</code></a>
+support similar customization for <code>Unmarshal</code>.</p>
+<p><a href="/pkg/encoding/json/v2#example-package-ProtoJSON">The <code>ProtoJSON</code> example</a>
+demonstrates how this feature allows serialization of all
+<a href="/pkg/google.golang.org/protobuf/proto#Message"><code>proto.Message</code></a> types
+to be handled by the <a href="/pkg/google.golang.org/protobuf/encoding/protojson"><code>protojson</code></a> package.</p>
+<h3 id="behavior-differences">Behavior differences</h3>
+<p>While <code>v2</code> aims to behave <em>mostly</em> the same as <code>v1</code>,
+its behavior has changed <a href="/pkg/github.com/go-json-experiment/json/v1#hdr-Migrating_to_v2">in some ways</a>
+to address problems in <code>v1</code>, most notably:</p>
+<ul>
+<li>
+<p><code>v2</code> reports an error in the presence of invalid UTF-8.</p>
+</li>
+<li>
+<p><code>v2</code> reports an error if a JSON object contains a duplicate name.</p>
+</li>
+<li>
+<p><code>v2</code> marshals a nil Go slice or Go map as an empty JSON array or JSON object, respectively.</p>
+</li>
+<li>
+<p><code>v2</code> unmarshals a JSON object into a Go struct using a
+case-sensitive match from the JSON member name to the Go field name.</p>
+</li>
+<li>
+<p><code>v2</code> redefines the <code>omitempty</code> tag option to omit a field if it would have
+encoded as an &ldquo;empty&rdquo; JSON value (which are <code>null</code>, <code>&quot;&quot;</code>, <code>[]</code>, and <code>{}</code>).</p>
+</li>
+<li>
+<p><code>v2</code> reports an error when trying to serialize a <code>time.Duration</code>,
+which currently has <a href="/issue/71631">no default representation</a>,
+but provides options to let the caller decide.</p>
+</li>
+</ul>
+<p>For most behavior changes, there is a struct tag option or caller-specified option
+that can configure the behavior to operate under <code>v1</code> or <code>v2</code> semantics,
+or even other caller-determined behavior.
+See <a href="/pkg/github.com/go-json-experiment/json/v1#hdr-Migrating_to_v2">&ldquo;Migrating to v2&rdquo;</a> for more information.</p>
+<h3 id="performance-optimizations">Performance optimizations</h3>
+<p>The <code>Marshal</code> performance of <code>v2</code> is roughly at parity with <code>v1</code>.
+Sometimes it is slightly faster, but other times it is slightly slower.
+The <code>Unmarshal</code> performance of <code>v2</code> is significantly faster than <code>v1</code>,
+with benchmarks demonstrating improvements of up to 10x.</p>
+<p>In order to obtain greater performance gains,
+existing implementations of
+<a href="/pkg/encoding/json/v2#Marshaler"><code>Marshaler</code></a> and
+<a href="/pkg/encoding/json/v2#Unmarshaler"><code>Unmarshaler</code></a> should
+migrate to also implement
+<a href="/pkg/encoding/json/v2#MarshalerTo"><code>MarshalerTo</code></a> and
+<a href="/pkg/encoding/json/v2#UnmarshalerFrom"><code>UnmarshalerFrom</code></a>,
+so that they can benefit from processing JSON in a purely streaming manner.
+For example, recursive parsing of OpenAPI specifications in <code>UnmarshalJSON</code> methods
+significantly hurt performance in a particular service of Kubernetes
+(see <a href="https://github.com/kubernetes/kube-openapi/issues/315" rel="noreferrer" target="_blank">kubernetes/kube-openapi#315</a>),
+while switching to <code>UnmarshalJSONFrom</code> improved performance by orders of magnitude.</p>
+<p>For more information, see the
+<a href="https://github.com/go-json-experiment/jsonbench" rel="noreferrer" target="_blank"><code>go-json-experiment/jsonbench</code></a>
+repository.</p>
+<h2 id="retroactively-improving-encodingjson">Retroactively improving <code>encoding/json</code></h2>
+<p>We want to avoid two separate JSON implementations in the Go standard library,
+so it is critical that, under the hood, <code>v1</code> is implemented in terms of <code>v2</code>.</p>
+<p>There are several benefits to this approach:</p>
+<ol>
+<li>
+<p><strong>Gradual migration</strong>: The <code>Marshal</code> and <code>Unmarshal</code> functions in <code>v1</code> or <code>v2</code>
+represent a set of default behaviors that operate according to <code>v1</code> or <code>v2</code> semantics.
+Options can be specified that configure <code>Marshal</code> or <code>Unmarshal</code> to operate with
+entirely <code>v1</code>, mostly <code>v1</code> with a some <code>v2</code>, a mix of <code>v1</code> or <code>v2</code>,
+mostly <code>v2</code> with some <code>v1</code>, or entirely <code>v2</code> semantics.
+This allows for gradual migration between the default behaviors of the two versions.</p>
+</li>
+<li>
+<p><strong>Feature inheritance</strong>: As backward-compatible features are added to <code>v2</code>,
+they will inherently be made available in <code>v1</code>. For example, <code>v2</code> adds
+support for several new struct tag options such as <code>inline</code> or <code>format</code> and also
+support for the <code>MarshalJSONTo</code> and <code>UnmarshalJSONFrom</code> interface methods,
+which are both more performant and flexible.
+When <code>v1</code> is implemented in terms of <code>v2</code>, it will inherit support for these features.</p>
+</li>
+<li>
+<p><strong>Reduced maintenance</strong>: Maintenance of a widely used package demands significant effort.
+By having <code>v1</code> and <code>v2</code> use the same implementation, the maintenance burden is reduced.
+In general, a single change will fix bugs, improve performance, or add functionality to both versions.
+There is no need to backport a <code>v2</code> change with an equivalent <code>v1</code> change.</p>
+</li>
+</ol>
+<p>While select parts of <code>v1</code> may be deprecated over time (supposing <code>v2</code> graduates from being an experiment),
+the package as a whole will never be deprecated.
+Migrating to <code>v2</code> will be encouraged, but not required.
+The Go project will not drop support for <code>v1</code>.</p>
+<h2 id="experimenting-with-jsonv2">Experimenting with <code>jsonv2</code></h2>
+<p>The newer API in the <code>encoding/json/jsontext</code> and <code>encoding/json/v2</code> packages are not visible by default.
+To use them, build your code with <code>GOEXPERIMENT=jsonv2</code> set in your environment or with the <code>goexperiment.jsonv2</code> build tag.
+The nature of an experiment is that the API is unstable and may change in the future.
+Though the API is unstable, the implementation is of a high quality and
+has been successfully used in production by several major projects.</p>
+<p>The fact that <code>v1</code> is implemented in terms of <code>v2</code> means that the underlying implementation of <code>v1</code>
+is completely different when building under the <code>jsonv2</code> experiment.
+Without changing any code, you should be able to run your tests
+under <code>jsonv2</code> and theoretically nothing new should fail:</p>
+<pre><code>GOEXPERIMENT=jsonv2 go test ./...
+</code></pre>
+<p>The re-implementation of <code>v1</code> in terms of <code>v2</code> aims to provide identical behavior
+within the bounds of the <a href="/doc/go1compat">Go 1 compatibility promise</a>,
+though some differences might be observable such as the exact wording of error messages.
+We encourage you to run your tests under <code>jsonv2</code> and
+report any regressions <a href="/issues">on the issue tracker</a>.</p>
+<p>Becoming an experiment in Go 1.25 is a significant milestone on the road to
+formally adopting <code>encoding/json/jsontext</code> and <code>encoding/json/v2</code> into the standard library.
+However, the purpose of the <code>jsonv2</code> experiment is to gain broader experience.
+Your feedback will determine our next steps, and the outcome of this experiment,
+which may result in anything from abandonment of the effort, to adoption as stable packages of Go 1.26.
+Please share your experience on <a href="/issue/71497">go.dev/issue/71497</a>, and help determine the future of Go.</p>
+</div>
+
+    </div>
+
+    
+    <div class="Article prevnext">
+    
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        <p>
+        
+          
+            <b>Next article: </b><a href="/blog/survey2025-announce">It&#39;s survey time! How has Go has been working out for you?</a><br>
+          
+        
+        
+          
+            <b>Previous article: </b><a href="/blog/testing-time">Testing Time (and other asynchronicities)</a><br>
+          
+        
+        <b><a href="/blog/all">Blog Index</a></b>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    </div>
+    
+
+  </div>
+</div>
+
+<script src="/js/play.js"></script>
+
+</div>
+          </li>
+  
+        </ul>
       </div>
   
       <div class="card">
         <h2>Reddit</h2>
   
-        <h3 class="subreddit">r/rust</h3>
-        <ul class="item-list">
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1pdp3y3/how_to_do_remote_gpu_virtaulization/" target="_blank">How to do Remote GPU Virtaulization?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p><strong>My goal :-</strong> What i am trying to achieve is creating a software where a system (laptop , vm or pc) that has a GPU can be shared with a system that doesn&#39;t have a GPU. </p> <p><strong>Similar projects :-</strong> rCUDA, sCUDA, Juice Labs, Cricket . </p> <p>I have came accross the LD_PRELOAD trick which can be used to intercept gpu api calls and thus forwarding them over a network to a remote gpu, executing them over there and returning the result back. </p> <p><strong>My doubts :-</strong><br/> 1. Are there any other posssible ways in which this can be implemented.<br/> 2. Let say I use the LD_PRELOAD trick, i choose to intercept CUDA .<br/> <strong>2.1</strong> will i be able to intercept both runtime and driver apis or do I need to intercept them both.<br/> <strong>2.2</strong> there are over 500 cuda driver apis, wouldn&#39;t i be needing to creating a basic wrapper or dummy functions of all these apis, inorder for intercepting them.<br/> <strong>2.3</strong> Can this wrapper or shim implementation of the apis be done using rust or c++ or should i do it in &#39;c&#39; , like using other languages cause issues with types and stuff.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/web-degen"> /u/web-degen </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1pdp3y3/how_to_do_remote_gpu_virtaulization/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1pdp3y3/how_to_do_remote_gpu_virtaulization/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1pdozi0/what_would_you_want_to_see_in_a_new_tensor_crate/" target="_blank">What would you want to see in a new tensor crate?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;ve been making a crate for tensors (nd-arrays), with the goal of using this to implement <em>inference</em> for neural networks, in particular CNNs (maybe LLMs as well). </p> <p>I am wondering if anyone has had negative experiences with the ndarray crate, and any other tensor library in the rust ecosystem. Also, what are your favorite parts of existing projects? I confess, I haven&#39;t used any of these crates myself, so I don&#39;t know what I can improve in terms of usability and ergonomics for the general population - ideally, the code I write could be useful to other people. </p> <p>The reason I am not jumping into the inference part of my project using an existing ND-Array crate is two-fold:</p> <ol> <li>I want infinite control/understanding of the memory layout, and device (cpu vs cuda) locations</li> <li>I I feel like it</li> </ol> <p>My crate supports CPU and Cuda right now, and I plan to deck it out with macros for everything (unless people think that would be a bad idea?). <a href="https://github.com/aheschl1/tensors">https://github.com/aheschl1/tensors</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/WorldlinessThese8484"> /u/WorldlinessThese8484 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1pdozi0/what_would_you_want_to_see_in_a_new_tensor_crate/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1pdozi0/what_would_you_want_to_see_in_a_new_tensor_crate/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1pdhdqa/isize_and_usize/" target="_blank">isize and usize</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>So tonight I am reading up.on variables and types. So there&#39;s 4 main types int, float, bool and char. Easy..</p> <p>ints can be signed (i) or unsigned (u) and the remainder of the declaration is the bit length (8, 16, 32 and 64). U8, a number between 0 to 255 (i understand binary to a degree). There can&#39;t be two zeros, so i8 is -1 to -256. So far so good.</p> <p>Also there&#39;s isize and usize, which can be 32bit or 64bit depending on the system it&#39;s run on. A compatability layer, maybe? While a 64bit system can run 32bit programs, as far as I understand, the reverse isn&#39;t true..</p> <p>But that got me thinking.. Wouldn&#39;t a programmer know what architecture they&#39;re targeting? And even old computers are mostly 64bit, unless it&#39;s a relic.. So is isize/usize even worth considering in the 1st place?</p> <p>Once again, my thanks in advance for any replies given..</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Senior_Tangerine7555"> /u/Senior_Tangerine7555 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1pdhdqa/isize_and_usize/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1pdhdqa/isize_and_usize/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1pdeyfo/alternatives_to_rcrefcell/" target="_blank">Alternatives to Rc<RefCell></a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I am working on a code analyzer and ran into a problem where I need a data structure that can hold itself as mutable. I could not use something like .clone() as I might need to assign a variable from one of the scopes &quot;higher up&quot; in the tree. Example: <code>rust fn some_fn() { // Scope 1 let mut x = 43; if true { // Scope 2 x = 12; // Assigns x from scope 1 } } </code></p> <p>When I analyze something with a body, a function or an if statement, for instance, I call an analyze_node function for each node in the body. Since this is in a for-loop, I can&#39;t simply borrow mutably. Thus I ended up just wrapping the scope in an Rc&lt;RefCell&gt;.</p> <p>Personally, I am not a fan of this solution. Is there any other way to solve this?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/slurpy-films"> /u/slurpy-films </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1pdeyfo/alternatives_to_rcrefcell/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1pdeyfo/alternatives_to_rcrefcell/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1pdd9uq/thoughts_on_rapx/" target="_blank">Thoughts on RapX</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Has anyone used <a href="https://github.com/Artisan-Lab/RAPx">RapX</a> by FudanU?</p> <p>I tried using it on a no-std tool of mine and it could not compile it but it seems to be very well maintained and the goals of the project are ambitious. </p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/FanFabulous5606"> /u/FanFabulous5606 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1pdd9uq/thoughts_on_rapx/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1pdd9uq/thoughts_on_rapx/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1pd8wqx/quetite_a_modern_comfy_scripting_language/" target="_blank">Quetite: A Modern & Comfy Scripting Language</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hey everyone! I created my very first interpreted language in Rust, it isn&#39;t complete yet but it does have the majority of my planned features implemented so I decided to make it public. I mainly followed the amazing &quot;Crafting Interpreters&quot; book in the implementation but my language is quite different from Lox (the language implemented in the book) in a lot of ways because of the syntax choices and features I&#39;ve added. It&#39;s currently a tree-walk interpreter, I will definitely turn it into a bytecode VM in the near future.</p> <p>Github link: <a href="https://github.com/qewer33/quetite">https://github.com/qewer33/quetite</a></p> <p>I also wrote a rather concise &quot;Language Reference&quot; documentation that provides just enough info along with a simple &quot;API Reference&quot; for builtin functions and namespaces.</p> <p>Language reference: <a href="https://github.com/qewer33/quetite/blob/main/REFERENCE.md">https://github.com/qewer33/quetite/blob/main/REFERENCE.md</a></p> <p>API reference: <a href="https://github.com/qewer33/quetite/blob/main/API.md">https://github.com/qewer33/quetite/blob/main/API.md</a></p> <p>It also has a REPL with an interactive <code>help</code> command that you can use to read/discover the language and API references.</p> <p>Feel free to check it out! I would appreciate any suggestions and criticisms, especially from experienced language developers.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/qewer3333"> /u/qewer3333 </a> <br/> <span><a href="https://github.com/qewer33/quetite">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1pd8wqx/quetite_a_modern_comfy_scripting_language/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1pd7ot1/lua_hypertext_pre_processor/" target="_blank">Lua Hypertext Pre Processor</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hey everyone, this is a little project that I have recently been toying with. Personally, I love server side rendering content, and mostly use PHP to achieve this. However, I don&#39;t actually enjoy PHP as a language. Instead that lead me to create the Lua Hypertext Pre Processor (LHPP)™️.</p> <pre><code>&lt;!DOCTYPE html&gt; &lt;html lang=&quot;en&quot;&gt; &lt;head&gt; &lt;meta charset=&quot;UTF-8&quot;&gt; &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt; &lt;title&gt;Document&lt;/title&gt; &lt;/head&gt; &lt;body&gt; &lt;p&gt; This is &lt;lua&gt; return &quot;A valid lua program!&quot;; &lt;/lua&gt; with html &lt;p&gt; &lt;/body&gt; &lt;/html&gt; </code></pre> <p>Would become:</p> <pre><code>&lt;!DOCTYPE html&gt; &lt;html lang=&quot;en&quot;&gt; &lt;head&gt; &lt;meta charset=&quot;UTF-8&quot;&gt; &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt; &lt;title&gt;Document&lt;/title&gt; &lt;/head&gt; &lt;body&gt; &lt;p&gt; This is A valid lua program! with html &lt;p&gt; &lt;/body&gt; &lt;/html&gt; </code></pre> <p>LHPP uses the mlua crate behind the scenes in order to actually execute any Lua code that it finds.</p> <p>This is just a small project in its infancy, so don&#39;t be surprised if the code is atrocious. However, I encourage you to check it out!</p> <p><span class="md-spoiler-text">P.S why are the reddit code blocks so awful</span></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/DidTheCoding"> /u/DidTheCoding </a> <br/> <span><a href="https://github.com/SonOfLawB/LuaHypertextPreProcessor-rs">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1pd7ot1/lua_hypertext_pre_processor/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1pd7lez/media_a_fun_bit_of_rust_trivia/" target="_blank">[Media] A fun bit of rust trivia</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p><a href="https://play.rust-lang.org/?version=stable&amp;mode=release&amp;edition=2021&amp;gist=294abde820cab3b3e1f28ca7d0bdd1cd">https://play.rust-lang.org/?version=stable&amp;mode=release&amp;edition=2021&amp;gist=294abde820cab3b3e1f28ca7d0bdd1cd</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/ControlNational"> /u/ControlNational </a> <br/> <span><a href="https://i.redd.it/y588x2ule05g1.png">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1pd7lez/media_a_fun_bit_of_rust_trivia/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1pd61oi/wasmi_10_webassembly_interpreter_stable_at_last/" target="_blank">Wasmi 1.0 — WebAssembly Interpreter Stable At Last</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/Robbepop"> /u/Robbepop </a> <br/> <span><a href="https://wasmi-labs.github.io/blog/posts/wasmi-v1.0/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1pd61oi/wasmi_10_webassembly_interpreter_stable_at_last/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1pd5k88/announcing_hyperrs_composable_pool_layers/" target="_blank">Announcing hyper.rs' Composable Pool Layers</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/seanmonstar"> /u/seanmonstar </a> <br/> <span><a href="https://seanmonstar.com/blog/hyper-util-composable-pools/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1pd5k88/announcing_hyperrs_composable_pool_layers/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1pd552c/ferrocene_2511_actually_includes_core_now/" target="_blank">Ferrocene 25.11 actually includes core now</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Ferrocene 25.11.0 just dropped, and it now includes a certified subset of the Rust core library (core) for IEC 61508. That means certifiable Rust for safety-critical use across multiple architectures, which is pretty significant for anyone working in regulated environments.</p> <p>Release notes:<br/> <a href="https://public-docs.ferrocene.dev/main/release-notes/25.11.0.html">https://public-docs.ferrocene.dev/main/release-notes/25.11.0.html</a></p> <p>Technical blog post with details on what exactly is certified:<br/> <a href="https://ferrous-systems.com/blog/ferrocene-25-11-0/">https://ferrous-systems.com/blog/ferrocene-25-11-0/</a></p> <p>Posting because I figured some folks here working in embedded / safety-critical might find this interesting. They announced it a while ago and now it&#39;s actually here.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/cat_bee12"> /u/cat_bee12 </a> <br/> <span><a href="https://ferrous-systems.com/blog/ferrocene-25-11-0/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1pd552c/ferrocene_2511_actually_includes_core_now/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1pd4lib/added_jwt_auth_to_rapidrs_zeroconfig_web_framework/" target="_blank">Added JWT auth to rapid-rs (zero-config web framework)</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Last week I posted about rapid-rs, a web framework focused on convention over configuration. Authentication was the most requested feature, so I spent the week implementing it.</p> <p>The approach: single <code>AuthUser</code> extractor that handles JWT validation, with built-in routes for login/register/refresh. Uses Argon2id for password hashing and supports role-based access control.</p> <p>Example:</p> <pre><code>async fn protected(user: AuthUser) -&gt; impl IntoResponse { format!(&quot;Hello, {}!&quot;, user.email) } </code></pre> <p>The auth system is configured through environment variables - no boilerplate needed. Full example in the repo.</p> <p>Still early (v0.2.2) but functional. Working on database migrations next.</p> <p>Available at <a href="https://crates.io/crates/rapid-rs">https://crates.io/crates/rapid-rs</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Melodic_Resolve2613"> /u/Melodic_Resolve2613 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1pd4lib/added_jwt_auth_to_rapidrs_zeroconfig_web_framework/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1pd4lib/added_jwt_auth_to_rapidrs_zeroconfig_web_framework/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1pd49uf/new_matrix_server_written_in_rust/" target="_blank">New matrix server written in Rust</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi,</p> <p>We created a new matrix server <a href="https://github.com/palpo-im/palpo">https://github.com/palpo-im/palpo</a>, it use Apache 2.0 license. Welcome to use, test and give feedback.</p> <p>Most complement tests passed, you can check results: <a href="https://github.com/palpo-im/palpo/blob/main/tests/results/test_all.result.jsonl">https://github.com/palpo-im/palpo/blob/main/tests/results/test_all.result.jsonl</a> </p> <p>Thanks!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/chrislearn-young"> /u/chrislearn-young </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1pd49uf/new_matrix_server_written_in_rust/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1pd49uf/new_matrix_server_written_in_rust/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1pd2xso/nicer_rust_diagnostics_for_neovim_users/" target="_blank">Nicer rust diagnostics for Neovim users</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/damien__f1"> /u/damien__f1 </a> <br/> <span><a href="https://github.com/alexpasmantier/krust.nvim">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1pd2xso/nicer_rust_diagnostics_for_neovim_users/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1pcz8z3/rsstats_simple_statistical_lib/" target="_blank">rs-stats simple statistical lib</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hello ! </p> <p>I worked on rs-stats crate to provide an easy to use statistical functions </p> <p>You can easily do some :</p> <ul> <li>basic stats ( mean variance std dev … ) </li> <li>distribution ( normal, binomial … ) </li> <li>hypothesis test ( t-test, chi-test ) </li> <li>simple linear regression and multi linear regression </li> </ul> <p><a href="https://github.com/Lsh0x/rs-stats">https://github.com/Lsh0x/rs-stats</a></p> <p>I’m beginning with rust and stats and will love to have feedbacks (feature / improvement / rust advices ) </p> <p>Cheers 😊</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Flat_Degree8811"> /u/Flat_Degree8811 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1pcz8z3/rsstats_simple_statistical_lib/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1pcz8z3/rsstats_simple_statistical_lib/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1pcz38c/wanted_to_share_my_project_online_judge_in_rust/" target="_blank">Wanted to share my project: Online judge in rust.</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Been loving rust so far. I just finished the book Zero to Production In Rust and wanted to build something of my own. I got too excited and wanted to share this project. It&#39;s not complete (doesnt support compiled languages and much more)</p> <p>Would love to have people review it and provide suggestions for a beginner. </p> <p>REPO : <a href="https://github.com/CatinPajama/crabjudge">https://github.com/CatinPajama/crabjudge</a></p> <p><a href="https://preview.redd.it/1ndgsxw37y4g1.png?width=1373&amp;format=png&amp;auto=webp&amp;s=be9e6d502c9f5057a04c9c3750f4cc0c538a974b">https://preview.redd.it/1ndgsxw37y4g1.png?width=1373&amp;format=png&amp;auto=webp&amp;s=be9e6d502c9f5057a04c9c3750f4cc0c538a974b</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/odd_dev"> /u/odd_dev </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1pcz38c/wanted_to_share_my_project_online_judge_in_rust/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1pcz38c/wanted_to_share_my_project_online_judge_in_rust/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1pcv05f/my_first_rust_crate_qshr_a_toolkit_for_writing/" target="_blank">My first Rust crate: Qshr - a toolkit for writing shell-style scripts in Rust (inspired by Turtle of Haskell)</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/sharno"> /u/sharno </a> <br/> <span><a href="https://crates.io/crates/qshr">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1pcv05f/my_first_rust_crate_qshr_a_toolkit_for_writing/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1pcua2p/yazi_terminal_file_manager_now_supports_managing/" target="_blank">Yazi terminal file manager now supports managing remote files</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Yazi now supports remote file management, allowing you to manage remote files as if they were local and working smoothly with Yazi&#39;s existing features.</p> <p>Any feedback is greatly appreciated! See <a href="https://github.com/sxyazi/yazi/pull/3396">https://github.com/sxyazi/yazi/pull/3396</a> for more info</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/sxyazi"> /u/sxyazi </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1pcua2p/yazi_terminal_file_manager_now_supports_managing/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1pcua2p/yazi_terminal_file_manager_now_supports_managing/">[comments]</a></span></div>
-          </li>
-  
-        </ul>
-  
         <h3 class="subreddit">r/golang</h3>
         <ul class="item-list">
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1pdl1lm/ktyei_array_language_in_arthur_whitney_style_go/" target="_blank">ktye/i: Array Language in Arthur Whitney style Go</a>
-            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/golang/comments/1pdl1lm/ktyei_array_language_in_arthur_whitney_style_go/">  </a> </td><td> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Veqq"> /u/Veqq </a> <br/> <span><a href="https://github.com/ktye/i">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1pdl1lm/ktyei_array_language_in_arthur_whitney_style_go/">[comments]</a></span> </td></tr></table></div>
+            <a href="https://www.reddit.com/r/golang/comments/1pekor4/quick_reference_cheatsheet_for_go_developers/" target="_blank">Quick reference cheatsheet for Go developers</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hey gophers!</p> <p>I recently finished building this concise cheatsheet focused on Go fundamentals and patterns.</p> <p>It&#39;s currently under development, and I designed it to be a quick reference for things like concurrency basics, error handling, etc.</p> <p>I&#39;d love suggestions on what to add next!</p> <p>Check it out here: <a href="https://app.gointerview.dev/cheatsheet">https://app.gointerview.dev/cheatsheet</a></p> <p>Let me know what you think!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/RezaSi_"> /u/RezaSi_ </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1pekor4/quick_reference_cheatsheet_for_go_developers/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1pekor4/quick_reference_cheatsheet_for_go_developers/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1pdh1nm/does_a_readable_make_sense_here/" target="_blank">Does a Readable make sense here?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I just want to make sure that I am understanding the reader interface properly. I&#39;m writing a text editor, one can read from a buffer (using vim or emacs terms). And they can also read from other things, such as the underlying storage used by a buffer. Now I want a way of saying that I can read from something, so that I can pass that interface to functions that do things like saving. So I thought of the following </p> <pre><code>type Readable interface { NewReader() io.Reader } </code></pre> <p>Does this make sense or have I got a bit confused?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Moist-Plenty-9499"> /u/Moist-Plenty-9499 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1pdh1nm/does_a_readable_make_sense_here/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1pdh1nm/does_a_readable_make_sense_here/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1pek2c9/robotgo_v100_and_pro_easy_build_automation_auto/" target="_blank">Robotgo v1.0.0 and Pro, easy build automation, auto test, computer use</a>
+            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/golang/comments/1pek2c9/robotgo_v100_and_pro_easy_build_automation_auto/">  </a> </td><td> <!-- SC_OFF --><div class="md"><p>You can use golang to Desktop Automation, auto test and AI Computer Use.<br/> Control the mouse, keyboard, read the screen, process, Window Handle, image and bitmap and global event listener.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/veni0"> /u/veni0 </a> <br/> <span><a href="https://github.com/go-vgo/robotgo/releases/tag/v1.0.0">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1pek2c9/robotgo_v100_and_pro_easy_build_automation_auto/">[comments]</a></span> </td></tr></table></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1pdfdh4/solve_this_go_challenge_octant_conway/" target="_blank">Solve this Go challenge: Octant Conway</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/der_gopher"> /u/der_gopher </a> <br/> <span><a href="https://github.com/plutov/practice-go/tree/master/octantconway">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1pdfdh4/solve_this_go_challenge_octant_conway/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1pej6xd/getting_permissions_errors_on_macos/" target="_blank">Getting permissions errors on MacOS</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I recently bought a MacBook that I use almost exclusively for writing and running code, mostly in go.</p> <p>Everything was working just fine until today. I haven&#39;t used my macbook in about a week. Today I opened it and woke it up and got a message saying that it has rebooted due to a system error, but everything seemed fine.</p> <p>Anyway, I went to run one of my programs using &quot;go run&quot; and it gave me a permissions error (permission denied), saying that it couldn&#39;t create a temp folder in /var/folders/zz/zy&lt;something&gt;/T. It&#39;s trying to create a directory called go-build&lt;something&gt;, presumably as a working directory for the build. I get a similar error if I try to run any go command at all (eg, go env)</p> <p>This worked fine up until last week and I haven&#39;t changed or updated anything -- my laptop has been closed and asleep since then. A reboot didn&#39;t help. The T directory it&#39;s trying to write to is owned by root/wheel and has mode 800 so it makes sense that only root can create directories there.</p> <p>Is it normal for go to create its temp working directory there? I&#39;m trying to figure out if go somehow got misconfigured or if there&#39;s something wrong with my Mac. As a workaround, I am able to run go using sudo and chown any output files back to me, but obviously this isn&#39;t a great solution. I wonder if anyone has seen anything similar on macos, and how you&#39;ve fixed it? I&#39;ve only had this laptop for a couple of months but at my last job I used go on MacOS (for about 3-4 years) and never had this issue pop up. Before that I&#39;ve only ever used Linux.</p> <p>It all seems strange because I didn&#39;t change it reconfigure anything and everything used to work just fine.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Keith_13"> /u/Keith_13 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1pej6xd/getting_permissions_errors_on_macos/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1pej6xd/getting_permissions_errors_on_macos/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1pdfcyy/lucide_icons_for_go_templ_now_available/" target="_blank">Lucide Icons for Go Templ – Now Available!</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi, I just make a Go package that let you use the official Lucide Icons directly in your Go + Templ projects</p> <p><strong>Why you&#39;ll love it:</strong></p> <ul> <li>Direct integration with Go Templ</li> <li><a href="https://en.wikipedia.org/wiki/KISS_principle">KISS</a></li> </ul> <p><strong>Quick Installation:</strong></p> <pre><code>go get github.com/wux4an/lucide-templ@latest </code></pre> <p><strong>Example Usage:</strong></p> <pre><code>package main import ( lucide &quot;github.com/wux4an/lucide-templ/icons&quot; ) templ Animal(name string) { &lt;div&gt; &lt;h1&gt;Hello, { name }&lt;/h1&gt; @lucide.PawPrint(templ.Attributes{&quot;class&quot;: &quot;icon&quot;}) &lt;/div&gt; &lt;style&gt; .icon { color: #b76a24; } &lt;/style&gt; } </code></pre> <p><strong>Github</strong>: <a href="https://github.com/wux4an/lucide-templ">https://github.com/wux4an/lucide-templ</a></p> <p><sup>Disclaimer: This package uses the official Lucide icons, respecting their open license. It is not affiliated with or endorsed by the Lucide team.</sup></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/CommonYear2589"> /u/CommonYear2589 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1pdfcyy/lucide_icons_for_go_templ_now_available/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1pdfcyy/lucide_icons_for_go_templ_now_available/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1pechqt/who_else_has_or_wants_to_move_from_java_to_go/" target="_blank">Who else has or wants to move from Java to Go because of the Java culture and bike shedding?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I swear, if I had a penny for every time I&#39;ve had/seen PR comments saying &quot;Why not x way?&quot;, to perfectly good code, I&#39;d retire just to get away from Java developers.</p> <p>More often than not, what&#39;s really being said is &quot;I would have done it this way and I want it that way, and maybe I want to point things out to make myself look good as im contributing and noticing things you didnt&quot;. Now you&#39;re wasting time replying to the comment and waiting, or waiting for your colleage to respond on Slack so you can waste time talking about trivial shit.</p> <p>IMO as a rule, you should refactor it yourself if you care so much to hold up a PR using an if else while you prefer Optional.of(...).orElse(...). Mind you, if you make the change, you have to wait for the CI, which costs in CI minutes and dev time (lets be real, your manager may say you shouldnt be waiting during CI, but you work on one ticket at a time for the most part? And we all hate context switching. Oh and the 20-30 min CI&#39;s typical in &quot;Enterprise&quot; Java codebases don&#39;t help), and then you have to wait for the reviewer again... the amount of times they&#39;ve went MIA is also a pain point.</p> <p>Holy shit. Java as a language is fine, but the &quot;Enterprise Java Programmer&quot;s you work with make me want to flip my laptop and look after sheep in the mountains. All this talk about shipping fast, then PR&#39;s being held up over trivial things because there&#39;s a 100 ways to do the same thing and a reviewer thinks he&#39;s actually adding value and coming across as a good dev because he caught a potential change. F*ck your preference, the work has been done, is done well, and works. Approve the damn thing or change it yourself. The amount of times I&#39;ve seen sprints not being completed in time because collectivley a day or two has been lost in the review process. Baffling.</p> <p>There&#39;s often talk about Spring Boot, and how much you get out the box. I&#39;d bet my house you save time using Go when you calculate all the bike shedding comapred to Java teams.</p> <p>Rant over.</p> <p>I&#39;m reading Learning Go and Let&#39;s Go, then moving on to Let&#39;s Go Further and Concurrency in Go. Time for a change, it&#39;ll be tough as there arent many remote Go jobs in the UK but you gotta have some hope eh.</p> <p>Edit: Fully agree, this is a IC/team issue, not a language issue. But I feel its especially prevalant in Java teams, and Go challenges a lot of things Java devs are used to, and the simpler language also helps. </p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/theonlywayisupwards"> /u/theonlywayisupwards </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1pechqt/who_else_has_or_wants_to_move_from_java_to_go/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1pechqt/who_else_has_or_wants_to_move_from_java_to_go/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1pde9rf/need_feedback_for_a_go_project/" target="_blank">Need feedback for a go project</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi,</p> <p>I&#39;m building <code>sparkpdf.dev</code> : a no-nonsense PDF generation API focused purely on speed and simplicity.</p> <p><strong>What it is:</strong> A single endpoint that takes JSON and returns a PDF (invoices at the moment) in under 100ms.</p> <p><strong>Tech Stack:</strong> Backend is pure Go. The goal is to be the fastest and most reliable option.</p> <p><strong>Pricing Model:</strong> Straight pay-per-use at $0.01 per document, with the first 100 free every month. No subscriptions.</p> <p>Does this API design make sense? What&#39;s the one feature that would make or break it for you? Is pay-per-use a model you&#39;d prefer over monthly subscriptions for this tool?</p> <p>Website is available at <a href="https://sparkpdf.dev">https://sparkpdf.dev</a> you can register to get notified of the release,</p> <p>Thanks!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Xrecibo"> /u/Xrecibo </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1pde9rf/need_feedback_for_a_go_project/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1pde9rf/need_feedback_for_a_go_project/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1pe2lc1/scopeguard_002_your_helper_for_tighter_scopes/" target="_blank">ScopeGuard 0.0.2 - Your helper for tighter scopes</a>
+            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/golang/comments/1pe2lc1/scopeguard_002_your_helper_for_tighter_scopes/">  </a> </td><td> <!-- SC_OFF --><div class="md"><p>Let’s start with a puzzle. You’ve implemented a function to reverse text:</p> <pre><code>type Reverse string func (r Reverse) String() string { s := []rune(r); slices.Reverse(s); return string(s) } func reverse(s string) (string, Reverse) { r := Reverse(s); return r.String(), r } func main1() { h, w := reverse(&quot;olleh&quot;) fmt.Println(h, w) } </code></pre> <p>And it works fine, printing <code>hello hello</code>. Good. You expand it to a “hello world” program:</p> <pre><code>func main2() { h, w := reverse(&quot;olleh&quot;) b, w := &quot;beautiful&quot;, &quot;dlrow&quot; if b != &quot;&quot; { fmt.Println(b, w) } fmt.Println(h, w) } </code></pre> <p>And it works, printing:</p> <pre><code>beautiful world hello world </code></pre> <p>Great.</p> <p>After a (long) while you come back and realize a <a href="https://staticcheck.dev/docs/checks/#SA4006">staticcheck warning</a> on the first short declaration: <code>this value of w is never used (SA4006)</code>.</p> <p>Okay, you’ll try to pull the declaration into the <code>if</code>:</p> <pre><code>func main3() { h, w := reverse(&quot;olleh&quot;) if b, w := &quot;beautiful&quot;, &quot;dlrow&quot;; b != &quot;&quot; { fmt.Println(b, w) } fmt.Println(h, w) } </code></pre> <p>But this produces different output. So you try again, simply eliminating the unused variable:</p> <pre><code>func main4() { h, _ := reverse(&quot;olleh&quot;) b, w := &quot;beautiful&quot;, &quot;dlrow&quot; if b != &quot;&quot; { fmt.Println(b, w) } fmt.Println(h, w) } </code></pre> <p>This also fails? Try it on the <a href="https://go.dev/play/p/RaeBIfSn_AZ">Go Playground</a>.</p> <p><em>You</em> obviously understood all of this, so take the “you” in a metaphorical sense.</p> <h1>The Point</h1> <p>The point I’m trying to make here is that variables <em>in the same scope</em> can have subtle interactions that make (justified) refactoring tricky.</p> <p>In my opinion, using the <code>if</code> statement&#39;s initializer pattern (as done in <code>main3</code>) is the clearest approach, ensuring variables only exist in the scope where they&#39;re needed. You should start from there. The mistake in <code>main3</code> stems not from a wrong technique, but from the subtle variable interactions in the code you&#39;re refactoring. Obviously, this is a style issue, so your different opinion is justified.</p> <p>I’ve written the static Go analyzer <code>scopeguard</code> to point out places where a tighter scope may be beneficial to code readability - and, as mentioned above, it’s still a personal style question.</p> <p>I ran it on my personal projects and was surprised by the opportunities, especially in tests where I find</p> <pre><code> if got, want := s[i], byte(&#39;b&#39;); got != want { t.Errorf(&quot;Expected %q, got %q&quot;, want, got) } i++ </code></pre> <p>is much more readable than:</p> <pre><code> got := s[i] i++ if got != byte(&#39;b&#39;) { t.Errorf(&quot;Expected %q, got %q&quot;, byte(&#39;b&#39;), got) } } </code></pre> <p>In the first example, <code>got</code> only lives inside the if&#39;s scope. This locality makes the code easier to reason about, as you can be sure <code>got</code> isn&#39;t used or its calculation influenced elsewhere. In the second example <code>got</code> is no longer <code>s[i]</code>.</p> <p>Try <code>scopeguard</code> on your codebase and see what you think. I appreciate constructive feedback, even when you don’t want to run the static analyzer.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/___oe"> /u/___oe </a> <br/> <span><a href="https://github.com/fillmore-labs/scopeguard#installation">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1pe2lc1/scopeguard_002_your_helper_for_tighter_scopes/">[comments]</a></span> </td></tr></table></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1pd6g9k/current_best_practices_for_go_http_api_design/" target="_blank">Current Best Practices for Go HTTP API Design: Code-First, Schema-First, or Protobuf? Looking for the sweet spot</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hello everyone,</p> <p>I am currently evaluating the workflow for designing and developing HTTP APIs in Go for my team. I&#39;m familiar with the three most common approaches, but each seems to have significant trade-offs. I&#39;d love to hear how other teams are handling this effectively.</p> <p>Here is my assessment of the current landscape:</p> <ol> <li><p><strong>Code-First (Comments -&gt; OpenAPI)</strong>: Writing Go code first and generating OpenAPI docs via comments (e.g., using swag).</p> <p>My take: I strictly avoid this. API design should precede implementation (Contract-First). Furthermore, cluttering the codebase with massive comment blocks feels messy, and there is no guarantee that the comments remain in sync with the actual implementation logic.</p></li> <li><p><strong>Schema-First (OpenAPI -&gt; Code)</strong>: Writing the OpenAPI YAML manually, then implementing or generating the Go code (e.g., oapi-codegen).</p> <p>My take: This is my preferred conceptual approach because the contract is the source of truth. However, maintaining large, verbose YAML files manually is painful, and ensuring the implementation strictly matches the spec can be cumbersome without strict generation tools.</p></li> <li><p><strong>Protobuf-First (Proto -&gt; gRPC Gateway)</strong>: Defining APIs in Protobuf and generating the HTTP gateway.</p> <p>My take: This offers the best consistency between docs and code. However, for a pure HTTP/REST API, it feels like a mismatch. Certain HTTP-specific features (File Uploads, SSE, Websockets, precise JSON control) often require messy workarounds or bypassing the gRPC logic entirely.</p></li> </ol> <p><strong>The Dilemma</strong>: I recently looked into <strong>TypeSpec</strong> (formerly Cadl) as a way to simplify the &quot;Schema-First&quot; approach (TypeSpec -&gt; OpenAPI -&gt; Go). While it looks cleaner, I am hesitant to introduce &quot;yet another language/DSL&quot; to the team&#39;s tech stack just for API definitions.</p> <p><strong>My Question</strong>: Is there a better workflow I&#39;m missing?</p> <p>How do you balance the rigor of Schema-First with developer experience?</p> <p>Are there tools that bridge the gap without introducing new DSLs?</p> <p>Is anyone successfully using frameworks like <strong>Huma</strong> to keep the &quot;Code-First&quot; experience while maintaining strict contract guarantees?</p> <p>Thanks for your insights!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Successful_Plant2759"> /u/Successful_Plant2759 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1pd6g9k/current_best_practices_for_go_http_api_design/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1pd6g9k/current_best_practices_for_go_http_api_design/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1pdzpbh/what_are_the_best_practices_for_error_handling_in/" target="_blank">What are the best practices for error handling in Go applications?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>As I continue to build applications in Go, I&#39;ve been reflecting on how vital effective error handling is to robust software. Go&#39;s approach to errors, with its explicit return values, is quite different from other languages that rely on exceptions. I&#39;m curious about the best practices the community has developed for managing errors in Go. </p> <p>How do you structure your error handling?<br/> Do you use custom error types, and if so, what patterns have you found to be the most useful? </p> <p>Additionally, how do you balance between returning detailed errors for debugging and keeping your API clean and user-friendly? </p> <p>I&#39;m looking forward to hearing your thoughts and experiences!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/willwolf18"> /u/willwolf18 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1pdzpbh/what_are_the_best_practices_for_error_handling_in/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1pdzpbh/what_are_the_best_practices_for_error_handling_in/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1pd4tls/how_can_you_visualize_user_defined_regions_in/" target="_blank">How can you visualize user defined regions in traces?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi there,<br/> I have been experimenting a little bit with the -trace option. But I am not quite satisfied with the results. The fragmentation of goroutines over different threads is quite annoying. But the real problem is not being able to see Regions/Traces in the graph. They seem to be completely ignored, and the only way to visualize is to query them one at the time, which is rather useless. </p> <p>The <a href="https://pkg.go.dev/runtime/trace">Trace API </a>is not difficult to use, and documentation does not state any extra step than to run tests with `-trace` and open `go tool trace`. But no luck. </p> <p>What are your experiences with this tool? Is it there anything that I can do to improve the experience? </p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Conscious_Reason_770"> /u/Conscious_Reason_770 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1pd4tls/how_can_you_visualize_user_defined_regions_in/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1pd4tls/how_can_you_visualize_user_defined_regions_in/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1pdzgt5/ignore_autogenerated_files_in_coverage/" target="_blank">Ignore autogenerated files in coverage</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>My code base contains some autogenerated Go files:</p> <p>mocks: created by testify (own package)</p> <p>zz_generated: generated deepcopy (file in a package)</p> <p>I want to see my functions sorted by &quot;most uncovered lines first&quot;.</p> <p>But I want to ignore the autogenerated files.</p> <p>How would you do that?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/guettli"> /u/guettli </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1pdzgt5/ignore_autogenerated_files_in_coverage/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1pdzgt5/ignore_autogenerated_files_in_coverage/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1pd4430/i_built_bubblyui_a_vueinspired_reactive_tui/" target="_blank">I built BubblyUI — a Vue-inspired reactive TUI framework for Go (built on Bubbletea)</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hey <a href="/r/golang">r/golang</a>!</p> <p>I&#39;ve been working on BubblyUI and just released v0.12.0 publicly. I wanted to share it here and get feedback from the community.</p> <p><strong>The Problem I Was Solving</strong></p> <p>I love Bubbletea for building terminal UIs, but as my apps grew more complex, managing state and keeping the UI in sync became tedious. I kept wishing for something like Vue&#39;s reactivity system — where you declare dependencies once and the framework handles updates automatically.</p> <p><strong>What BubblyUI Offers</strong></p> <ul> <li><strong>Reactive primitives</strong>: <code>Ref[T]</code> for mutable state, <code>Computed[T]</code> for derived values that auto-update, <code>Watch</code> and <code>WatchEffect</code> for side effects</li> <li><strong>Component-based architecture</strong>: Fluent builder API, lifecycle hooks, template rendering</li> <li><strong>Vue-style composables</strong>: Reusable reactive logic (useDebounce, useThrottle, useForm, etc.)</li> <li><strong>Router</strong>: Path matching and navigation</li> <li><strong>Directives</strong>: Declarative template manipulation</li> <li><strong>DevTools</strong>: Real-time debugging with MCP integration</li> <li><strong>Profiler</strong>: Performance monitoring built-in</li> <li><strong>Testing utilities</strong>: Helpers for testing components and composables</li> </ul> <p><strong>Quick Example</strong></p> <p>go</p> <pre><code>counter, _ := bubblyui.NewComponent(&quot;Counter&quot;). Setup(func(ctx *bubblyui.Context) { count := ctx.Ref(0) doubled := bubblyui.NewComputed(func() int { return count.Get() * 2 }) ctx.Expose(&quot;count&quot;, count) ctx.Expose(&quot;doubled&quot;, doubled) }). Template(func(ctx bubblyui.RenderContext) string { return fmt.Sprintf(&quot;Count: %v (doubled: %v)&quot;, ctx.Get(&quot;count&quot;), ctx.Get(&quot;doubled&quot;)) }). Build() bubblyui.Run(counter) </code></pre> <p><strong>Links</strong></p> <ul> <li>GitHub: <a href="http://github.com/newbpydev/bubblyui">github.com/newbpydev/bubblyui</a></li> <li>Docs: <a href="http://pkg.go.dev/github.com/newbpydev/bubblyui">pkg.go.dev/github.com/newbpydev/bubblyui</a></li> </ul> <p>I&#39;d genuinely appreciate feedback — what works, what&#39;s confusing, what features you&#39;d want. This is my first major open-source project and I want to make it useful for the community.</p> <p>Thanks for reading!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/EffectiveWebDev404"> /u/EffectiveWebDev404 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1pd4430/i_built_bubblyui_a_vueinspired_reactive_tui/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1pd4430/i_built_bubblyui_a_vueinspired_reactive_tui/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1pdzaax/double_index_map_readwrite_benchmarks_better_copy/" target="_blank">Double index map read/write benchmarks, better copy available for [16]byte keys?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;ve got a project I&#39;m working on with two uint64 ids, <code>typeID</code> and <code>objectID</code>, and I&#39;m planning to hold lite metadata in memory. This got me thinking about map access speeds and I found a double map was fastest (code: <a href="https://github.com/borgehl/arbitrary-playgrounds/blob/main/go/maps/benchmarking/main.go">https://github.com/borgehl/arbitrary-playgrounds/blob/main/go/maps/benchmarking/main.go</a>). </p> <p><code> // time in seconds, 3000 x 3000 size, read/write all mapmap took 0.782382 to make mapmap took 0.318538 to read mapStr took 4.336261 to make mapStr took 2.557962 to read mapStr2 took 4.529796 to make mapStr2 took 2.648919 to read mapBytes took 2.155650 to make mapBytes took 1.455430 to read </code></p> <p>There&#39;s lots of optimization to make on the use case (typeID &lt;&lt; fileID for one), I was surprised the keys of <code>[16]byte</code> weren&#39;t more performant. I expect this has to do with creating the key by copying over the indexes into the key. Is there a better way to place the bytes from uint64 into [16]byte?</p> <p>Conventional wisdom says a single map index should be more performant, but perhaps this is one of those edge cases (based on the keys being uints) that it&#39;s not the case?</p> <p>Compared to everything else, this is likely not a necessary optimization but I got curious.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Heavy_Manufacturer_6"> /u/Heavy_Manufacturer_6 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1pdzaax/double_index_map_readwrite_benchmarks_better_copy/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1pdzaax/double_index_map_readwrite_benchmarks_better_copy/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1pd1tv9/i18n/" target="_blank">i18n</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Is there any <em>best</em> way to do i18n for web apps using templates? I&#39;m using templ for ssr and I&#39;ve come across a few possible solutions (<a href="https://github.com/nicksnyder/go-i18n">go-i18n</a>, <a href="https://github.com/invopop/ctxi18n">ctxi18n</a>, <a href="https://pkg.go.dev/golang.org/x/text">x/text</a>), none of which seems to have nice dx. I&#39;ve looked at some of the older reddit posts here, but they are mostly rather outdated, so I mainly want to check whether some things have changed in this area, or is it still poor dx, poor performance, no good way thingy... (there is even some rant about it on google tech talks&#39; youtube)</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/dolekejos"> /u/dolekejos </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1pd1tv9/i18n/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1pd1tv9/i18n/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1pdwtwg/sipgodiago_news/" target="_blank">SIPgo/Diago news</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hello gophers. Did not post here for quite some time. </p> <p>SIPgo is in some beta testing still, but checkout latest releases. It has IPV6 support, exposed transport configuration and lot of race fixes<br/> <a href="https://github.com/emiago/sipgo/releases">https://github.com/emiago/sipgo/releases</a></p> <p>Diago new release with latest SIPgo! Checkout more here.</p> <p><a href="https://github.com/emiago/diago/releases/tag/v0.23.0">https://github.com/emiago/diago/releases/tag/v0.23.0</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/emiago"> /u/emiago </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1pdwtwg/sipgodiago_news/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1pdwtwg/sipgodiago_news/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1pd0yg2/how_do_you_design_the_tabledriven_tests_in_go/" target="_blank">How do you design the table-driven tests in Go?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Some time ago I created a mini game written completely with Go. It was a hobby and a sandbox for learning the language.</p> <p>Testing in Go is great, but over time I faced an issue. My end‑to‑end (integration) tests grew complex and it became very hard to refactor when I was changing the behaviour of old features. Also, thanks to the AI I made that code base even worse. I tried to be lazy at some moment and I’m sorry for that. It became a disaster so <em>I ended up deleting all end-to-end testing</em>.</p> <p>So, I started from scratch. I created an internal micro-library that lets me write tests like the following code. </p> <p>```go var scenarios = []table_core.Scenario{ table_core.MakeIsolatedScenario( []table_core.Step{ assertion.PlayerNotAuthorized(3), util.OnEnd( events.RegisterWithPassword(3), assertion.PlayerAuthorized(3), ), events.UpdatePlayerName(3, &quot;Player-3-vs-Bot&quot;), util.OnEnd( events.StartVsBot(3, &quot;Easy&quot;), assertion.ARoomState(3,graph_test_req.RoomStateBattleshiplocating), ), events.Enter(3), events.NoAction(app.DefaultPlayerTTL-app.BotShootDelayMax<em>5), util.OnEnd( events.PlaceShips(3), assertion.ARoomState(3, graph_test_req.RoomStateBattleinprocess), ), events.NoAction(app.DefaultPlayerTTL-app.BotShootDelayMax</em>5), assertion.ABattleTurn(3, graph_test_req.PlayerNumberPlayer1), util.OnEnd( events.ShootAll(3), assertion.ARoomState(3, graph_test_req.RoomStateFinished), ), events.NoAction(app.DefaultPlayerTTL-app.BotShootDelayMax*5),</p> <pre><code> util.OnEnd( events.NoAction(app.DefaultPlayerTTL), assertion.StartRoomHasNoError(0), assertion.PlayerNotAuthorized(3), assertion.ABattleTurnNil(3), assertion.ARoomStateNotExist(3), ), }, ), table_core.MakeScenario([]table_core.Step{ ... } </code></pre> <p>} ```</p> <p>Internally it also has some kind of shared state to access the result of some assertions or actions.</p> <p>It has “isolated” scenarios that should be tested with the separate instance of app for each one. And “shared‑instance&quot; scenarios (multiple users on the same app) simulating real world users.</p> <p>Assertions are executed <em>for each</em> event when defined once. Internally design forces me to redefine assertion of the same kind in case some related behaviour changes. Yes. It can be verbose, but helps me to be sure I nothing missed.</p> <p><em>How do you design the table driven tests?</em></p> <p>Hope you will find some inspiration in my example. <em>I would be glad to hear about your experience in that direction!</em></p> <p>P.S. I extensively use the <code>synctest</code> package. That was a revolution for my project. Since I use the virtual clock all my internal gaming delays/cleanup functions are tested within seconds. It caught production‑only timing bugs by reusing the same timeout configuration in tests. For isolated environment it’s amazing feature.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/you-l-you"> /u/you-l-you </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1pd0yg2/how_do_you_design_the_tabledriven_tests_in_go/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1pd0yg2/how_do_you_design_the_tabledriven_tests_in_go/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1pdw9i7/go_deserves_more_support_in_gui_development/" target="_blank">Go deserves more support in GUI development</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>The Go community is a bit behind when it comes to GUI development, and that really doesn’t fit a language as strong, simple, and fast as Go. The language has already proven itself in servers, backend systems, and distributed architectures… but when it comes to graphical interfaces, the potential is still not being used enough.</p> <p>What makes this frustrating is that Go actually <em>has the capability</em>:</p> <ul> <li>High performance without heavy resource usage</li> <li>Clean, simple, and maintainable code</li> <li>Multiplatform builds without complexity</li> </ul> <p>And this isn’t just theory — there are real projects proving it’s absolutely possible. A good example:</p> <p><a href="https://github.com/crypto-power/cryptopower">https://github.com/crypto-power/cryptopower</a></p> <p>A complete GUI application written in Go that runs across multiple platforms, without WebView, Electron, or any extra bloat.</p> <p>This shows that GUI in Go isn’t “impossible,” it just needs more support and interest from the community. If we start pushing more in this area, we’ll get stronger libraries, better documentation, and a more enjoyable development experience — without the complexity of other GUI stacks.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/m-unknown-2025"> /u/m-unknown-2025 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1pdw9i7/go_deserves_more_support_in_gui_development/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1pdw9i7/go_deserves_more_support_in_gui_development/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1pczxje/malloc_in_go_nonzeroing_allocations/" target="_blank">Malloc in Go (non-zeroing allocations)</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p><a href="https://pkg.go.dev/github.com/rocketlaunchr/unsafe@v1.2.2#Malloc">https://pkg.go.dev/github.com/rocketlaunchr/unsafe@v1.2.2#Malloc</a></p> <p>I have created a package that can <strong>create new structs faster</strong> than using <code>new(T)</code> or <code>:= &amp;T{}</code>. <strong>It uses the unexported standard library function:</strong> <strong><em>runtime.mallocgc</em></strong>.</p> <p>The example struct for benchmarking is:</p> <pre><code>type Person struct { name string age int phone *int } </code></pre> <p><a href="https://github.com/rocketlaunchr/unsafe/blob/main/malloc_test.go">https://github.com/rocketlaunchr/unsafe/blob/main/malloc_test.go</a></p> <p>I have created a benchmark that tests 3 things:</p> <ol> <li>Create a new struct using Malloc</li> <li>Create a new struct using Malloc but selectively zero the name and phone field (since they contain pointers so it is dangerous).</li> <li>Create a new struct using <code>new(Person)</code>.</li> </ol> <p>The results show:</p> <pre><code>BenchmarkMallocNew-4 21085 ns/op BenchmarkMallocNewSelectiveZeroing-4 33378 ns/op BenchmarkStdNew-4 29665 ns/op </code></pre> <p><strong>Why is Go builtin new faster than Malloc (with selective zeroing) when standard go new zeros out everything but my implementation zeros only 2 out of 3 fields?</strong></p> <blockquote> <p>Epilogue:<br/> <strong>An interesting thing I just noticed is when I call my function with the zero argument set to true (i.e. it acts as a calloc), my &quot;Malloc&quot; function is STILL faster than calling the builtin new!!!!!!</strong> That was a surprising bonus.</p> </blockquote> <p>.</p> <blockquote> <p><strong>UPDATE: I found the issue:</strong></p> <p><code>sync.Once</code> is super-slow.</p> <p>I also now use <code>runtime.memclrNoHeapPointers</code></p> </blockquote> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/rocketlaunchr-cloud"> /u/rocketlaunchr-cloud </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1pczxje/malloc_in_go_nonzeroing_allocations/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1pczxje/malloc_in_go_nonzeroing_allocations/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1pdqu5o/what_is_the_idiomatic_go_approach_to_writing/" target="_blank">What is the idiomatic Go approach to writing business logic for CRUD involving multiple tables/models?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I am refactoring my backend where clients can start threads and make replies. I keep a 3-layer architecture with thin handlers that bind and validate, service layer with all business logic, and a repo layer. When a reply is created I need to check filters, create the reply, link media attachments, and update the thread&#39;s reply count. In certain cases I also need to log a system action such as when a user hits a filter, the admin/owner should see a reason why a reply was blocked.What I currently have is a separate service <code>PostingService</code> that injects the <code>RepliesService</code>, <code>ThreadsService</code>, <code>FiltersService</code>, and <code>LogsService</code>, to calls their respective methods:</p> <pre><code>func (s *Service) CreateReply(ctx, req) (resp, error) { // more business logic such as checking filters, bans, etc. s.repliesSvc.CreateReply(ctx, req.User.ID, req.Message); s.threadsSvc.UpdateReplyCount(ctx, req.ThreadID); } </code></pre> <p>For reference I keep my services in a folder</p> <pre><code>infra/ postgres/ threads.go reply.go models/ thread.go reply.go services/ posting/ service.go threads/ service.go repo.go replies/ service.go repo.go </code></pre> <p>I want to keep it simple and not over-abstract, but without a separate posting service I risk circular dependencies between threads and replies. Is this the idiomatic Go approach?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Mundane-Car-3151"> /u/Mundane-Car-3151 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1pdqu5o/what_is_the_idiomatic_go_approach_to_writing/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1pdqu5o/what_is_the_idiomatic_go_approach_to_writing/">[comments]</a></span></div>
+          </li>
+  
+        </ul>
+  
+        <h3 class="subreddit">r/rust</h3>
+        <ul class="item-list">
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1peh0bl/i_wrote_a_port_registry_daemon_written_in_rust_to/" target="_blank">I wrote a port registry daemon written in Rust to ease local development servers port collisions</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;ve been trying to deal with remembering that the API runs on port :3847, frontend on :5173, and admin on :4200.</p> <p>I built Unport to remedy this pain.</p> <p># 1. Start the daemon (needs sudo for port 80)</p> <p><code>sudo unport daemon start -d</code></p> <p># 2. In your project directory, create unport.json</p> <p><code>echo &#39;{&quot;domain&quot;: &quot;myapp&quot;}&#39; &gt; unport.json</code></p> <p># 3. Start your app</p> <p><code>unport start</code></p> <p># Your app is now at <a href="http://myapp.localhost">http://myapp.localhost</a></p> <p>Feel free to give it a try at <a href="https://github.com/ozankasikci/unport">https://github.com/ozankasikci/unport</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/kasikciozan"> /u/kasikciozan </a> <br/> <span><a href="https://github.com/ozankasikci/unport">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1peh0bl/i_wrote_a_port_registry_daemon_written_in_rust_to/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1pcz7ob/looking_for_automatic_swagger_definition/" target="_blank">Looking for automatic swagger definition generators in golang</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Are there any packages in Go that generate Swagger definitions using annotations, or packages that generate definitions without doing it manually?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/ScientistPositive568"> /u/ScientistPositive568 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1pcz7ob/looking_for_automatic_swagger_definition/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1pcz7ob/looking_for_automatic_swagger_definition/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1pegwcb/i_wrote_a_new_process_injection_library_in_rust/" target="_blank">I wrote a new Process Injection library in Rust called Injectum 🦀</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hey fellow Rustaceans!</p> <p>I’ve started working on a new library called Injectum for learning and implementing process injection. It’s designed to be modular, type-safe, and easy to integrate into your own offensive security projects.</p> <p>I&#39;ve mapped the strategies to MITRE ATT&amp;CK T1055 techniques (like DLL Injection, Process Hollowing, and APC) so you can swap them out easily.</p> <p>Feel free to check out the examples, contribute, or leave some feedback to help the repo grow. A little star for support would be much appreciated!</p> <p>Repo: <a href="https://github.com/0x536b796ec3b578/injectum">https://github.com/0x536b796ec3b578/injectum</a></p> <p>Happy hacking!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/sky_nox"> /u/sky_nox </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1pegwcb/i_wrote_a_new_process_injection_library_in_rust/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1pegwcb/i_wrote_a_new_process_injection_library_in_rust/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1pcyya2/why_isnt_there_a_community_fork_of_go/" target="_blank">Why isn't there a community fork of Go</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi peeps,</p> <p>Don&#39;t kill me for asking. I&#39;ve been working with Go now for 5 years - and I like it a lot. But, there are myriad things in Go that I would change, and I am not alone in this. The Go maintainers prioritize the needs of Google, and also have very clear opinions on what should and shouldnt be. So, on more than one occasion I found myself wishing for a Go fork that will add, change or fix something with the language. But, I am frankly surprised there isn&#39;t one out. All I found is this: <a href="https://github.com/gofork-org/goFork">https://github.com/gofork-org/goFork</a>, which sorta looks like a PoC. </p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Goldziher"> /u/Goldziher </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1pcyya2/why_isnt_there_a_community_fork_of_go/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1pcyya2/why_isnt_there_a_community_fork_of_go/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1pefi3k/wētā_workshop_are_seeking_a_rust_developer/" target="_blank">Wētā Workshop are seeking a Rust Developer</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>My workplace is looking to hire another Rust developer to work in our Animatronics/Robotics team. Expressions of interest are welcome :)</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/raupeti"> /u/raupeti </a> <br/> <span><a href="https://jobs.smartrecruiters.com/WetaWorkshop/744000096351195-senior-software-developer-animatronics-expressions-of-interest-welcome">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1pefi3k/wētā_workshop_are_seeking_a_rust_developer/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1pcysxk/joining_services_back_together_options/" target="_blank">Joining services back together - options</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi</p> <p>Over a few years I&#39;ve built an internally used toolkit in GO that helps with business transformation projects. Functionally it includes process mining, data mining, process design, sequence diagramming, API design &amp; testing and document generation all glued around a thing called projects.</p> <p>I architected it from day 1 with a backend SQL database, Go server layer containing all business logic that presented GRPC / RESTful APIs and a separate GO client that is a web server consuming those APIs to provide a user interface via web browsers.</p> <p>Originally it was just deployed on servers but as we work on customer sites with lockdown to the outside world, it&#39;s more useful if people have their own copies on their own laptops with import/export between the central version and whatever they&#39;ve done, so I developed a GIT style check-in, version tags etc.</p> <p>The problem with this is that to run on a laptop means starting a database and 2 Executables, the server and client.</p> <p>Because it&#39;s always evolving upgrades are commonplace and after unzipping the latest version, running the server automatically takes care of schema changes.</p> <p>I&#39;m wondering if I&#39;m really getting any advantage of a separate client and server and mulling over the idea of turning this into a single application but not lose the published APIs that are used by others.</p> <p>Conversely I&#39;ve been thinking of breaking the server down into separate services because really the bit doing API testing could easily be carved out and has little to do with process design accept for running E2E tests of a process, and that&#39;s just reading from the database.</p> <p>I&#39;m just wondering if there is some way of packaging stuff so that for servers it&#39;s all separate but for windows just one thing. I was thinking of putting the two GO services excluding the database and pointer to local static data in docker but I&#39;m not sure docker can be shipped as a point and click executable</p> <p>Is their a quick way of doing this without mass refactoring?</p> <p>As I write this, I&#39;m thinking just live and let live, but I thought I would ask in case anyone has a bright idea</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Extension_Grape_585"> /u/Extension_Grape_585 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1pcysxk/joining_services_back_together_options/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1pcysxk/joining_services_back_together_options/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1peed33/par_fractal_gpuaccelerated_crossplatform_fractal/" target="_blank"># Par Fractal - GPU-Accelerated Cross-Platform Fractal Renderer</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/probello"> /u/probello </a> <br/> <span><a href="/r/fractals/comments/1peecp2/par_fractal_gpuaccelerated_crossplatform_fractal/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1peed33/par_fractal_gpuaccelerated_crossplatform_fractal/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1pecshu/how_to_keep_package_versions_in_sync_with/" target="_blank">How to keep package versions in sync with multi-crate workspaces?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;m still a bit new to rust, coming from a primarily TypeScript and C# background, and I&#39;m trying to figure out how to set up workspaces, as I&#39;ve only done single-crate projects so far, and I have a few questions that I can&#39;t seem to find answers for.</p> <p>Question 1: I&#39;m creating a Leptos website with an Axum API, which will share a few libraries for DTOs and such. How does managing multi-crate workspaces with when there are multiple binaries? How do I specify which one to run via the commandline?</p> <p>Question 2: Is it possible to specify the version or features of packages in a central place, so I don&#39;t have to copy-paste package dependencies across multiple Cargo.toml files? For example, in C# you can specify all of your packages in separate projects while omitting their versions, and then there&#39;s a solution-level file that specifies <em>all</em> packages used by every project, now including their versions and such. Is this possible with Rust workspaces?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Tuckertcs"> /u/Tuckertcs </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1pecshu/how_to_keep_package_versions_in_sync_with/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1pecshu/how_to_keep_package_versions_in_sync_with/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1pea67v/optionable_recursive_partial_structsenums/" target="_blank">optionable: recursive partial structs/enums + kubernetes server-side apply</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Project I have been worked on for the last months :)</p> <p>A library create to derive recursive partial representation of types. The idea is roughly to derive types where all fields are recursively replaced with an Option&lt;...&gt; version for the purpose to express e.g. patching of those values. The crate supports nested structs as well as enums.</p> <p>The original motivation for this project was to express Kubernetes server-side-apply patches in a type-safe way. This is now also provided by having such partial representations generated for all k8s-openapi types as well as some extra tooling to derive such partial types for kube::CustomResources.</p> <p>The general purpose tooling and the Kubernetes focussed additions share a crate due to the orphan rule but all Kubernetes-specific additions are gated by features.</p> <p>Feedback is very welcome!</p> <p>Repo: <a href="https://github.com/ngergs/optionable">https://github.com/ngergs/optionable</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/SelfEnergy"> /u/SelfEnergy </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1pea67v/optionable_recursive_partial_structsenums/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1pea67v/optionable_recursive_partial_structsenums/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1pe9eps/a_udp_canvas/" target="_blank">A UDP canvas</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hello <a href="/r/rust">r/rust</a>,</p> <p>today I wrote netcanvas, a UDP canvas.<br/> Each datagram specifies the color of one pixel and these pixels are set in the order they are received as fast as possible, so different clients can &quot;battle&quot; for the canvas by trying to send datagrams faster.</p> <p>I made the source code available at <a href="https://codeberg.org/raketexyz/netcanvas">https://codeberg.org/raketexyz/netcanvas</a>. Feel free to use under GPL-v3.0-or-later.</p> <p>This was inspired by <a href="https://github.com/defnull/pixelflut">Pixelflut</a>.</p> <p>Please tell me what you think and how I could improve it!</p> <p>EDIT: When I run it using <code>cargo r</code> (debug) it always overflows its stack immediately, idk why, but <code>cargo r --release</code> works for me.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Otherwise-Flight4839"> /u/Otherwise-Flight4839 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1pe9eps/a_udp_canvas/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1pe9eps/a_udp_canvas/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1pe7cdm/palindromeproducts_performance_rust_vs_go_haskell/" target="_blank">Palindrome-products performance: Rust vs Go, Haskell, Lisp, TypeScript, Python</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I went way down the rabbit hole on a &quot;palindromic products&quot; kata (from Exercism) and turned it into a cross-language performance shootout.</p> <p><strong>Problem (short version)</strong><br/> Given a range <code>[min, max]</code> (with <code>min &gt; 0</code>), find:</p> <ul> <li>the <strong>smallest</strong> palindromic product of two factors in that range<br/></li> <li>the <strong>largest</strong> palindromic product of two factors in that range<br/></li> </ul> <p>A &quot;palindromic product&quot; is just a product that is a palindrome, like 11 x 11 = 121, and 121 is a palindrome.</p> <p>All implementations:</p> <ul> <li>only accept <code>min &gt; 0</code></li> <li>only benchmark ranges up to <code>1..=999</code></li> <li>return both the palindrome value <strong>and</strong> the list of factor pairs that produce it</li> </ul> <p><a href="https://github.com/PrismaPhonic/palindrome-finder">Check out the repo here</a>.</p> <h2>Languages compared</h2> <p>I implemented the same problem in:</p> <ul> <li><strong>Rust</strong><br/> <ul> <li>imperative versions<br/></li> <li>a more &quot;functional&quot; version<br/></li> <li>SIMD versions<br/></li> <li>each with and without <strong>PGO + BOLT</strong></li> </ul></li> <li><strong>Haskell</strong> (LLVM backend, with primops)</li> <li><strong>Go</strong> (with and without PGO)</li> <li><strong>Common Lisp (SBCL)</strong> and <strong>Coalton</strong></li> <li><strong>TypeScript</strong> (Bun + Deno)</li> <li><strong>Python</strong> (PyPy + CPython)</li> </ul> <p>Everything is compiled to standalone binaries. Then a Rust <strong>Criterion</strong> harness shells out to those binaries using a tiny line-based protocol. The idea is to keep parsing/IO overhead trivial and measure mostly the hot palindrome / factor-search loops.</p> <p>The protocol each binary implements looks like this:</p> <p><code>text INIT &lt;min&gt; &lt;max&gt; # set factor range WARMUP &lt;iters&gt; # run without reporting, warm up branch predictors etc RUN &lt;iters&gt; # run and print: OK &lt;product&gt; &lt;acc&gt; QUIT # exit </code></p> <p>There&#39;s also an accumulator trick so the compiler can&#39;t just optimize everything away:<br/> every iteration updates a running sum based on the factors, the product, and the iteration counter, and the final accumulator is printed. This is mostly because it was exceedingly difficult to get Haskell to not optimize away work (it would register in the picoseconds, which was obviously impossible until I added accumulation, and even then only a certain style of accumulation would finally get it to not optimize away the work)</p> <h2>Hardware &amp; setup</h2> <ul> <li>Laptop: <strong>2025 ROG Flow Z13</strong></li> <li>CPU: <strong>Zen 5</strong> (x86_64)</li> <li>Range: <code>2..999</code></li> <li>Task: &quot;smallest&quot; and &quot;largest&quot; palindromic product in that range</li> <li>Metric: <strong>average time per iteration</strong> of the core search, from Criterion</li> </ul> <h2>Results – largest (2..999)</h2> <p>Top contenders for the <strong>largest</strong> palindrome:</p> <table><thead> <tr> <th>Implementation</th> <th>Time per iter</th> </tr> </thead><tbody> <tr> <td>Rust SIMD (PGO + BOLT)</td> <td><strong>773 ns</strong></td> </tr> <tr> <td>Rust SIMD</td> <td>804 ns</td> </tr> <tr> <td>Rust (PGO + BOLT)</td> <td>929 ns</td> </tr> <tr> <td>Rust</td> <td>988 ns</td> </tr> <tr> <td>Haskell (LLVM backend)</td> <td>993 ns</td> </tr> <tr> <td>Rust functional</td> <td>1.09 µs</td> </tr> <tr> <td>Rust functional (PGO+BOLT)</td> <td>1.10 µs</td> </tr> </tbody></table> <p>Some other notable entries:</p> <table><thead> <tr> <th>Implementation</th> <th>Time per iter</th> </tr> </thead><tbody> <tr> <td>Common Lisp (SBCL)</td> <td>1.49 µs</td> </tr> <tr> <td>Coalton</td> <td>1.74 µs</td> </tr> <tr> <td>Go</td> <td>1.75 µs</td> </tr> <tr> <td>Go (PGO)</td> <td>1.76 µs</td> </tr> <tr> <td>TypeScript (Bun)</td> <td>1.86 µs</td> </tr> <tr> <td>TypeScript (Deno)</td> <td>2.10 µs</td> </tr> <tr> <td>Python (PyPy)</td> <td>3.41 µs</td> </tr> <tr> <td>Python (CPython)</td> <td>105 µs</td> </tr> </tbody></table> <p>The <strong>smallest</strong> palindrome benchmarks have basically the same ordering: Rust SIMD on top, Haskell very close behind, then CL / Coalton / Go / TypeScript / Python.</p> <h2>Rust-specific stuff</h2> <h3>1. SIMD implementation</h3> <p>There’s a <strong>SIMD</strong> Rust version of the search that ends up on top, especially when combined with PGO and BOLT. Compared to the already optimized non-SIMD Rust, SIMD gives a clear win for this workload. That being said, this implementation only works on AVX512 - even though I used portable simd, it&#39;s not actually that portable since it depends on very large lanes.</p> <h3>2. PGO + BOLT on Rust</h3> <p>I used <a href="https://github.com/Kobzol/cargo-pgo"><code>cargo-pgo</code></a> to generate PGO profiles and then ran <strong>BOLT</strong> on top of the PGO build.</p> <p>On this machine / workload:</p> <ul> <li>Baseline Rust -&gt; Rust + PGO+BOLT: ~6% faster<br/></li> <li>Rust SIMD -&gt; Rust SIMD + PGO+BOLT: ~4% faster<br/></li> </ul> <p>So even on a tight, inner-loop-heavy benchmark, PGO+BOLT still buys a noticeable (if not huge) improvement.</p> <h3>3. Functional Rust + nightly <code>become</code></h3> <p>I also ported a more Haskell-style, three-level recursive search to Rust.</p> <ul> <li>The initial version was slower than the imperative Rust solution.</li> <li>Switching to <strong>nightly</strong> and selectively adding the experimental <code>become</code> keyword to simple tail-recursive helpers (palindrome half-reverse, factor-pair loop, inner scan) helped a lot.</li> <li>You have to be careful where you use <code>become</code> - some complex match arms trigger LLVM <code>musttail</code> issues or even segfaults.</li> </ul> <h2>Notes on other languages</h2> <h3>Haskell</h3> <ul> <li>GHC&#39;s <strong>native backend</strong> was <em>much</em> slower for this workload.</li> <li>Turning on the <strong>LLVM backend</strong> (<code>-fllvm</code> via Cabal, with <code>opt</code> / <code>llc</code> / <code>clang</code> wired correctly) gave about a <strong>4x</strong> speedup.</li> <li>With LLVM enabled, Haskell lands very close to Rust&#39;s non-SIMD versions.</li> </ul> <h3>Common Lisp &amp; Coalton</h3> <ul> <li>The CL version adds type declarations so SBCL can stay in fixnum arithmetic. This does make the code significantly less readable.</li> <li>Coalton is nice for clarity, but: <ul> <li><code>zero?</code> / <code>nonzero?</code> are class-based and add dispatch overhead.</li> <li><code>Optional</code> / <code>Result</code>-style values in inner loops allocate on the heap.</li> <li>Tuples and some Coalton to CL bridging patterns add extra allocations / calls.</li> </ul></li> </ul> <h3>Go PGO</h3> <ul> <li>Go 1.21+ has PGO, so I tried it on the same workload.<br/></li> <li>On this machine and profile, <strong>PGO builds were actually slightly slower</strong> than non-PGO.<br/></li> <li>Kept them in the repo anyway so people can see the effect themselves.</li> </ul> <h3>JS &amp; Python</h3> <ul> <li>TypeScript on <strong>Bun</strong> and <strong>Deno</strong> does surprisingly well.</li> <li><strong>PyPy</strong> is decent; <strong>CPython</strong> falls way behind. This showed me just how big of a difference JIT compilation makes</li> </ul> <h2>What&#39;s in the repo</h2> <p>The repo includes:</p> <ul> <li>Implementations in <strong>Rust</strong>, <strong>Go</strong>, <strong>Haskell</strong>, <strong>Common Lisp</strong>, <strong>Coalton</strong>, <strong>TypeScript</strong>, <strong>Python</strong></li> <li>Build scripts for each language that drop binaries into a shared <code>target-bin/</code></li> <li>A Rust <strong>Criterion</strong> project that: <ul> <li>shells out to those binaries</li> <li>runs warmups and timed runs</li> <li>reports distributions and comparisons</li> </ul></li> <li>Cross-checking scripts that: <ul> <li>run all implementations over the same ranges</li> <li>assert that products and factor lists match across languages</li> </ul></li> </ul> <h3>Thoughts</h3> <p>I fully admit that this is stupid, and not indicative of real software engineering, but I had fun hacking on it for a while, and thought it might be interesting to others :) </p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/UrpleEeple"> /u/UrpleEeple </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1pe7cdm/palindromeproducts_performance_rust_vs_go_haskell/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1pe7cdm/palindromeproducts_performance_rust_vs_go_haskell/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1pe6gyh/apache_fory_serialization_0132_released/" target="_blank">Apache Fory Serialization 0.13.2 Released</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/Shawn-Yang25"> /u/Shawn-Yang25 </a> <br/> <span><a href="https://github.com/apache/fory/releases/tag/v0.13.2">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1pe6gyh/apache_fory_serialization_0132_released/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1pe5mke/learning_rust_deserializing_10k_csvs_from_s3/" target="_blank">Learning Rust: Deserializing 10K CSVs from S3 (semaphores and task buffers)</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/ruptwelve"> /u/ruptwelve </a> <br/> <span><a href="https://rup12.net/posts/download-and-deserialize-10000-files-in-10-seconds/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1pe5mke/learning_rust_deserializing_10k_csvs_from_s3/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1pe4gd2/this_month_in_redox_november_2025/" target="_blank">This Month in Redox - November 2025</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>This month was very exciting as always: Wayland, WebKitGTK, MATE Desktop, more boot fixes, build system simplification, more GitLab protection, many system improvements/bug fixes and more.</p> <p><a href="https://www.redox-os.org/news/this-month-251130/">https://www.redox-os.org/news/this-month-251130/</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/ribbon_45"> /u/ribbon_45 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1pe4gd2/this_month_in_redox_november_2025/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1pe4gd2/this_month_in_redox_november_2025/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1pe4b24/how_hard_would_it_be_to_rewrite_some_core_logic/" target="_blank">How hard would it be to rewrite some core logic for matplotlib's pcolormesh or imshow in Rust?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I use these two functions often in my research. But it&#39;s so annoyingly slow especially since the arrays I need to plot can have like tens of thousands of pixels.</p> <p>I was wondering if there&#39;s some specific logic or class in it that could be rewritten in Rust to speed it up. Or if it&#39;s like too much legacy bloat to do anything.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Affectionate_Use9936"> /u/Affectionate_Use9936 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1pe4b24/how_hard_would_it_be_to_rewrite_some_core_logic/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1pe4b24/how_hard_would_it_be_to_rewrite_some_core_logic/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1pe44k8/learning_compilerlanguage_tooling_by_building_a/" target="_blank">Learning compiler/language tooling by building a LOLCODE linter - would love feedback</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hey everyone,</p> <p>I&#39;m a student trying to get deeper into compiler design and language tooling in Rust. As a learning project, I built a complete linter for LOLCODE, because when you need something simple enough to implement from scratch without getting lost in complexity, you naturally pick the most reasonable language available /s</p> <p>The project includes:</p> <p>- Handwritten lexer (character-by-character, no regex)</p> <p>- Recursive descent parser that builds an AST</p> <p>- Single-pass semantic analyzer</p> <p>- Variable tracking across scopes</p> <p>- Position tracking for precise error messages</p> <p>I avoided parser generators on purpose because I wanted to understand the full pipeline end to end.</p> <p>*What I&#39;d appreciate feedback on:*</p> <p>- Does the parser and AST structure make sense?</p> <p>- Are there obvious Rust mistakes or things that could be written more idiomatically?</p> <p>- Any architectural improvements you&#39;d make?</p> <p>- General feedback on the approach</p> <p><a href="https://github.com/jerankda/lol-lint">GitHub</a></p> <p>It&#39;s also on <a href="http://crates.io">crates.io</a> and the AUR if you want to try it.</p> <p>Feel free to contribute :) (for whatever reason)</p> <p>*TL;DR:*</p> <p>Built a LOLCODE linter in Rust . Looking for feedback on the parser/AST design.</p> <p>KTHXBYE</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/MinerBenS"> /u/MinerBenS </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1pe44k8/learning_compilerlanguage_tooling_by_building_a/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1pe44k8/learning_compilerlanguage_tooling_by_building_a/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1pe2pps/a_cli_tool_that_converts_rustdoc_json_of_your/" target="_blank">A CLI tool that converts rustdoc JSON of your project and all of its dependencies as well organized, module by module markdown files.</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I wanted something that mirrors how rustdoc actually organizes things, one file per module, with working cross-references between them, there&#39;s also a breadcrumb added on top of all md files, for easier navigation. To be honest I made this so that I could just have docs I can grep through :&#39;D , and have all docs of all of my dependencies in one place. Opening up a browser is a hassle and I just end up browsing other sites instead. Especially as a neovim user it&#39;s quite annoying to switch between a browser and terminal. I also forget things very quickly so I am extremely dependent on docs to remember how stuff work.</p> <p>Could be useful for people like me who likes to go through the docs. It will organize the markdown files into folders as below. But there should be many bugs, I am still working on some the regex patterns. Expect many bugs :&#39;D</p> <p><a href="https://preview.redd.it/xzhd9utvd75g1.png?width=502&amp;format=png&amp;auto=webp&amp;s=059e060d8d0e3520641d447d6fe166d3fdb5b6a5">https://preview.redd.it/xzhd9utvd75g1.png?width=502&amp;format=png&amp;auto=webp&amp;s=059e060d8d0e3520641d447d6fe166d3fdb5b6a5</a></p> <p>Repo: <a href="https://github.com/consistent-milk12/docs-md">https://github.com/consistent-milk12/docs-md</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Consistent_Milk4660"> /u/Consistent_Milk4660 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1pe2pps/a_cli_tool_that_converts_rustdoc_json_of_your/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1pe2pps/a_cli_tool_that_converts_rustdoc_json_of_your/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1pe0khl/rustc_performance_cores_vs_memory_bandwidth/" target="_blank">rustc performance: cores vs memory bandwidth?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>With all the improvements to rustc&#39;s performance this year, and it having been a while since I&#39;ve seen one of these posts (together with my being in the market for a new machine), I thought I&#39;d ask for the community&#39;s thoughts as I try to spec a development workstation.</p> <p>In the past, rustc had limited (or no) parallelism—but this has considerably improved in 2025, and therefore the more cores the better right?</p> <p>However, thanks to LLVM, codegen still isn&#39;t parallelised... so perhaps there&#39;s a limit to the number of cores that can actually be utilised in a given workload. And even if not, I&#39;m guessing memory bandwidth remains the next best place to look for gains?</p> <p>Which leaves me trying to decide between a quad-channel Threadripper 9970X or an octo-channel Threadripper pro 9965WX, albeit the former having 50% more cores for roughly the same money.</p> <p>Does anyone have any thoughts, or better yet benchmarks (eg of compiling rustc itself) that they can share here?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/eggyal"> /u/eggyal </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1pe0khl/rustc_performance_cores_vs_memory_bandwidth/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1pe0khl/rustc_performance_cores_vs_memory_bandwidth/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1pdy3rw/dieselbuilders_typesafe_builders_for_complex/" target="_blank">diesel-builders: Type-safe builders for complex Diesel inserts</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi everyone,</p> <p>I’ve been working on a crate called <strong>diesel-builders</strong>, developed over the past year as part of a <a href="https://github.com/earth-metabolome-initiative/emi-monorepo">the larger EMI monorepo</a> and <a href="https://github.com/LucaCappelletti94/diesel-builders">now spinned-off into a standalone crate</a>.</p> <p>It aims to make <strong>complex Diesel insert operations type-safe and ergonomic</strong>, even when your schema involves patterns that are normally painful to write correctly, such as multi-table inheritance (chains or full DAGs) or table triangular dependencies. It takes care of all insert-time co-dependencies that usually require careful manual sequencing.</p> <p>Since I am not sure whether it is a standard term, we defined <em>triangular dependencies</em> as a pattern where <em>A is extended by B</em>, <em>A is referenced in C</em>, and <em>B references C</em>. Think of a case where inserting B requires a C record, and that C must (mandatory case) or may (discretionary case) reference the same A record extended by B. These patterns are valid but tricky because the right insertion order and cross-references must be preserved.</p> <p>The library provides builder types and derives fluent APIs that guarantee, at compile time, that:</p> <ul> <li>insert order is correct</li> <li>column setter with check constraint can be implemented with custom error types</li> <li>foreign keys point to valid parents</li> <li>triangular constraints are satisfied</li> <li>complex insert graphs won’t fail at runtime</li> </ul> <p>Example (multiple inheritance / DAG):</p> <pre><code>let pet = pets::table::builder() .try_name(&quot;Buddy&quot;)? .breed(&quot;Labrador&quot;) .try_color(&quot;Black&quot;)? .owner_name(&quot;Alice&quot;) .insert(&amp;mut conn)?; </code></pre> <p>Diagrams and detailed examples are in the README: <a href="https://github.com/LucaCappelletti94/diesel-builders">https://github.com/LucaCappelletti94/diesel-builders</a></p> <p>This is <strong>almost a beta</strong>, and the API may still change. I’d love feedback from Diesel users on:</p> <ul> <li>API ergonomics</li> <li>naming conventions</li> <li>schema patterns you&#39;d want supported which I have not discussed</li> <li>whether you know of any related library I should be aware of</li> </ul> <p>Best, Luca</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Personal_Juice_2941"> /u/Personal_Juice_2941 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1pdy3rw/dieselbuilders_typesafe_builders_for_complex/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1pdy3rw/dieselbuilders_typesafe_builders_for_complex/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1pdx1k7/finally_finished_my_first_rust_project/" target="_blank">Finally Finished my first rust project</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I have created this text editor in rust. This is my first rust project. It supports syntax highlighting for c, cpp and rust. It also support search feature and other features. I also have a question how can I make the src folder the root folder of the project. I tried to ask this question to ask but it didn&#39;t helped me. This is the code if you are curious <a href="https://github.com/ryukgod26/Text-Editor-in-rust">https://github.com/ryukgod26/Text-Editor-in-rust</a>.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/QualityIntrepid3330"> /u/QualityIntrepid3330 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1pdx1k7/finally_finished_my_first_rust_project/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1pdx1k7/finally_finished_my_first_rust_project/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1pdwg46/trust_your_benchmarks_not_your_instincts_a_rust/" target="_blank">Trust Your Benchmarks, Not Your Instincts: A Rust Performance Quiz - Arthur & Adrien | EuroRust 2025</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>A new talk is out on YouTube 🙌 In this interactive quiz, the audience had to guess which implementations are faster. Using real-world Rust examples, Arthur and Adrien and show us how our intuition about what code is “fast” can often mislead us, even when it comes to Rust. Hit pause and play along! 🦀</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/EuroRust"> /u/EuroRust </a> <br/> <span><a href="https://youtu.be/b9I9eVEVCzU">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1pdwg46/trust_your_benchmarks_not_your_instincts_a_rust/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1pdvzxp/life_calendar/" target="_blank">Life Calendar</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p><a href="https://preview.redd.it/v7977tf0s55g1.png?width=1351&amp;format=png&amp;auto=webp&amp;s=395d5135c175e64f255bd6141aceda26c581b900">Execution example</a></p> <p>Hi, everyone! I&#39;m just getting into Rust, and I wanted to build a small CLI tool after finishing chapter 12 of &quot;The Rust Programming Language&quot; in order to learn something by myself.</p> <p>I was inspired by this <a href="https://www.reddit.com/r/commandline/comments/1p7vfem/program_that_shows_you_how_many_weeks_youve_lived/">post</a> and wanted to build something similar, so here it is!</p> <p>I would really appreciate any feedback on the <a href="https://github.com/burs1/lifec.git">source code</a>.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/bursJr"> /u/bursJr </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1pdvzxp/life_calendar/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1pdvzxp/life_calendar/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1pdqeup/this_week_in_rust_628/" target="_blank">This Week in Rust #628</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/b-dillo"> /u/b-dillo </a> <br/> <span><a href="https://this-week-in-rust.org/blog/2025/12/03/this-week-in-rust-628/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1pdqeup/this_week_in_rust_628/">[comments]</a></span></div>
           </li>
   
         </ul>
@@ -486,13 +1647,13 @@
         <ul class="item-list">
   
           <li>
-            <a href="https://www.reddit.com/r/rust_gamedev/comments/1pd3152/pistonwindow_plan_for_transition_to_winit_and/" target="_blank">PistonWindow: Plan for transition to Winit and WGPU + future plans for batteries included and how it will fit in with Turbine and Eco</a>
-            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/rust_gamedev/comments/1pd3152/pistonwindow_plan_for_transition_to_winit_and/">  </a> </td><td> &#32; submitted by &#32; <a href="https://www.reddit.com/user/long_void"> /u/long_void </a> <br/> <span><a href="https://github.com/PistonDevelopers/piston_window/issues/317">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust_gamedev/comments/1pd3152/pistonwindow_plan_for_transition_to_winit_and/">[comments]</a></span> </td></tr></table></div>
+            <a href="https://www.reddit.com/r/rust_gamedev/comments/1pe8dqn/rustycabcom/" target="_blank">rustycab.com</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p><a href="http://Rustycab.com">Rustycab.com</a> bet website is scamming. Dont play on there. It says u need reach level 10 to get your stuff. Its also blocking your steam inventory on the website. it says u can be level 9 to 10 only winning jackpot. but never let u win jackpot when u are level 9. </p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/SweetyAzrA"> /u/SweetyAzrA </a> <br/> <span><a href="https://www.reddit.com/r/rust_gamedev/comments/1pe8dqn/rustycabcom/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust_gamedev/comments/1pe8dqn/rustycabcom/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust_gamedev/comments/1pcxr0l/3d_planet/" target="_blank">3d Planet</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/Adroit_Light"> /u/Adroit_Light </a> <br/> <span><a href="https://v.redd.it/xgc00extex4g1">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust_gamedev/comments/1pcxr0l/3d_planet/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust_gamedev/comments/1pe1yb1/i_create_an_arkanoid_game_in_14min/" target="_blank">I create an Arkanoid game in 14min</a>
+            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/rust_gamedev/comments/1pe1yb1/i_create_an_arkanoid_game_in_14min/">  </a> </td><td> <!-- SC_OFF --><div class="md"><p>Rust + Macroquad is very powerful to develop fast prototypes and to have fun too. After a lot of programming frustration I&#39;ve been doing these kind of games and is very satisfying.</p> <p><a href="https://preview.redd.it/2knepk8da75g1.png?width=1280&amp;format=png&amp;auto=webp&amp;s=a78d818c7a3cf3b97b9abdd2f6fe701e8aa31636">https://preview.redd.it/2knepk8da75g1.png?width=1280&amp;format=png&amp;auto=webp&amp;s=a78d818c7a3cf3b97b9abdd2f6fe701e8aa31636</a></p> <p>Hope you like it! </p> <p><a href="https://www.youtube.com/watch?v=XiZShAAXl8E">https://www.youtube.com/watch?v=XiZShAAXl8E</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/NazgulResebo"> /u/NazgulResebo </a> <br/> <span><a href="https://www.reddit.com/r/rust_gamedev/comments/1pe1yb1/i_create_an_arkanoid_game_in_14min/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust_gamedev/comments/1pe1yb1/i_create_an_arkanoid_game_in_14min/">[comments]</a></span> </td></tr></table></div>
           </li>
   
         </ul>
