@@ -240,8 +240,8 @@
   
       <div class="card">
         <h2>Huginn Daily</h2>
-        <p class="header-p">Wednesday, January 21, 2026</p>
-        <p class="header-p">1072dce3-aceb-4d99-8cc8-45032ee6943a</p>
+        <p class="header-p">Thursday, January 22, 2026</p>
+        <p class="header-p">7387ef18-cc8e-4275-b4ce-07b8dc15e9f5</p>
       </div>
   
       <div class="card">
@@ -249,53 +249,1333 @@
         <table class="weather-table">
           <tr>
             <th>Summary</th>
-            <td>⛅️ Light rain overnight.</td>
+            <td>⛅️ Light rain throughout the day and breezy in the afternoon.</td>
           </tr>
           <tr>
             <th>Temperature Range</th>
-            <td>4°C to 14°C (40°F to 58°F)</td>
+            <td>10°C to 13°C (50°F to 56°F)</td>
           </tr>
           <tr>
             <th>Feels Like</th>
-            <td>Low: 30°F | High: 50°F</td>
+            <td>Low: 40°F | High: 50°F</td>
           </tr>
           <tr>
             <th>Humidity</th>
-            <td>57%</td>
+            <td>82%</td>
           </tr>
           <tr>
             <th>Wind</th>
-            <td>18 km/h (11 mph), Direction: 88°</td>
+            <td>21 km/h (13 mph), Direction: 49°</td>
           </tr>
           <tr>
             <th>Precipitation</th>
-            <td>Probability: 22%, Type: rain</td>
+            <td>Probability: 100%, Type: rain</td>
           </tr>
           <tr>
             <th>Sunrise / Sunset</th>
-            <td>🌅 06:53 AM / 🌇 05:05 PM</td>
+            <td>🌅 06:52 AM / 🌇 05:06 PM</td>
           </tr>
           <tr>
             <th>Moon Phase</th>
-            <td>Waxing Crescent (9%)</td>
+            <td>Waxing Crescent (12%)</td>
           </tr>
           <tr>
             <th>Cloud Cover</th>
-            <td>62%</td>
+            <td>97%</td>
           </tr>
           <tr>
             <th>Pressure</th>
-            <td>1024.37 hPa</td>
+            <td>1015.92 hPa</td>
           </tr>
           <tr>
             <th>Dew Point</th>
-            <td>33.8°F</td>
+            <td>47.76°F</td>
           </tr>
           <tr>
             <th>Visibility</th>
-            <td>6.1 miles</td>
+            <td>5.07 miles</td>
           </tr>
         </table>
+      </div>
+  
+      <div class="card">
+        <h2>XKCD</h2>
+  
+        <div class="comic">
+          <a href="//imgs.xkcd.com/comics/cost_savings.png" target="_blank">
+            <img src="//imgs.xkcd.com/comics/cost_savings.png" alt="Cost Savings">
+          </a>
+        </div>
+  
+      </div>
+  
+      <div class="card">
+        <h2>Golang</h2>
+        <ul class="item-list">
+  
+          <li>
+            <a href="https://go.dev/blog/survey2025" target="_blank">Results from the 2025 Go Developer Survey</a>
+            <div class="item-content">
+<div id="blog"><div id="content">
+  <div id="content">
+
+    <div class="Article" data-slug="/blog/survey2025">
+    
+    <h1 class="small"><a href="/blog/">The Go Blog</a></h1>
+    
+
+    <h1>Results from the 2025 Go Developer Survey</h1>
+      
+      <p class="author">
+      Todd Kulesza, on behalf of the Go team<br>
+      21 January 2026
+      </p>
+      
+      <div class='markdown'>
+<style type="text/css" scoped>
+  blockquote p {
+    color: var(--color-text-subtle) !important;
+  }
+
+  .chart {
+    margin-left: 1.5rem;
+    margin-right: 1.5rem;
+    width: 800px;
+  }
+
+  .quote_source {
+    font-style: italic;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .chart {
+      border-radius: 8px;
+    }
+  }
+</style>
+<p>Hello! In this article we&rsquo;ll discuss the results of the 2025 Go Developer
+Survey, conducted during September 2025.</p>
+<p>Thank you to the 5,379 Go developers who responded to our survey invitation
+this year. Your feedback helps both the Go team at Google and the wider Go
+community understand the current state of the Go ecosystem and prioritize
+projects for the year ahead.</p>
+<p>Our three biggest findings are:</p>
+<ul>
+<li>Broadly speaking, Go developers asked for help with identifying and applying
+best practices, making the most of the standard library, and expanding the
+language and built-in tooling with more modern capabilities.</li>
+<li>Most Go developers are now using AI-powered development tools when seeking
+information (e.g., learning how to use a module) or toiling (e.g., writing
+repetitive blocks of similar code), but their satisfaction with these tools
+is middling due, in part, to quality concerns.</li>
+<li>A surprisingly high proportion of respondents said they frequently need to
+review documentation for core <code>go</code> subcommands, including <code>go build</code>, <code>go run</code>, and <code>go mod</code>, suggesting meaningful room for improvement with the <code>go</code>
+command&rsquo;s help system.</li>
+</ul>
+<p>Read on for the details about these findings, and much more.</p>
+<h2 id="sections">Sections</h2>
+<ul>
+<li><a href="#demographics">Who did we hear from?</a></li>
+<li><a href="#sentiment">How do people feel about Go?</a></li>
+<li><a href="#uses">What are people building with Go?</a></li>
+<li><a href="#challenges">What are the biggest challenges facing Go
+developers?</a></li>
+<li><a href="#devenv">What do their development environments look like?</a></li>
+<li><a href="#methodology">Survey methodology</a></li>
+</ul>
+<h2 id="demographics">Who did we hear from?</h2>
+<p>Most survey respondents self-identified as professional developers (87%) who
+use Go for their primary job (82%). A large majority also uses Go for personal
+or open-source projects (72%). Most respondents were between 25 – 45
+years old (68%) with at least six years of professional development experience
+(75%). Going deeper, 81% of respondents told us they had more professional
+development experience than Go-specific experience, strong evidence that Go is
+usually not the first language developers work with. In fact, one of the
+themes that repeatedly surfaced during this year&rsquo;s survey analysis seems to
+stem from this fact: when the way to do a task in Go is substantially
+different from a more familiar language, it creates friction for developers to
+first learn the new (to them) idiomatic Go pattern, and then to consistently
+recall these differences as they continue to work with multiple languages.
+We&rsquo;ll return to this theme later.</p>
+<p>The single most common industry respondents work in was &ldquo;Technology&rdquo; (46%),
+but a majority of respondents work outside of the tech industry (54%). We saw
+representation of all sizes of organizations, with a bare majority working
+somewhere with 2 – 500 employees (51%), 9% working alone, and 30%
+working at enterprises of over 1,000 employees. As in prior years, a majority
+of responses come from North America and Europe.</p>
+<p>This year we observed a decrease in the proportion of respondents who said
+they were fairly new to Go, having worked with it for less than one year
+(13%, vs. 21% in 2024). We suspect this is related to <a
+href="https://digitaleconomy.stanford.edu/wp-content/uploads/2025/08/Canaries_BrynjolfssonChandarChen.pdf">industry-wide
+declines in entry-level software engineering roles</a>; we commonly hear from
+people that they learned Go for a specific job, so a downturn in hiring would
+be expected to reduce the number of developers learning Go in that year. This
+hypothesis is further supported by our finding that over 80% of respondents
+learned Go <em>after</em> beginning their professional career.</p>
+<p>Other than the above, we found no significant changes in other demographics
+since our 2024 survey.</p>
+<p>       </p>
+<h2 id="sentiment">How do people feel about Go?</h2>
+<p>The vast majority of respondents (91%) said they felt satisfied while working
+with Go. Almost ⅔ were &ldquo;very satisfied&rdquo;, the highest rating. Both of these
+metrics are incredibly positive, and have been stable since we began asking
+this question in 2019. The stability over time is really what we monitor from
+this metric — we view it as a lagging indicator, meaning by the time
+this satisfaction metric shows a meaningful change, we would expect to already
+have seen earlier signals from issue reports, mailing lists, or other
+community feedback.</p>
+<p></p>
+<p>Why were respondents so positive about Go? Looking at open-text responses to
+several different survey questions suggests that it&rsquo;s the gestalt, rather than
+any one thing. These folks are telling us that they find tremendous value in
+Go as a holistic platform. That doesn&rsquo;t mean it supports all programming
+domains equally well (it surely does not), but that developers&rsquo; value the
+domains it <em>does</em> nicely support via stdlib and built-in tooling.</p>
+<p>Below are some representative quotations from respondents. To provide context
+for each quote, we also identify the satisfaction level, years of experience
+with Go, and industry of the respondent.</p>
+<blockquote>
+<p>&ldquo;Go is by far my favorite language; other languages feel far too complex and
+unhelpful. The fact that Go is comparatively small, simple, with fewer bells
+and whistles plays a massive role in making it such a good long-lasting
+foundation for building programs with it. I love that it scales well to
+being used by a single programmer and in large teams.&rdquo; <span
+class="quote_source">— Very satisfied / 10+ years / Technology
+company</span></p>
+</blockquote>
+<blockquote>
+<p>&ldquo;The entire reason I use Go is the great tooling and standard library.  I&rsquo;m
+very thankful to the team for focusing on great HTTP, crypto, math, sync,
+and other tools that make developing service-oriented applications easy and
+reliable.&rdquo; <span class="quote_source">— Very satisfied / 10+ years /
+Energy company</span></p>
+</blockquote>
+<blockquote>
+<p>&ldquo;[The] Go ecosystem is the reason why I really like the programming
+language. There are a lot of npm issues lately but not with Go.&rdquo; <span
+class="quote_source">— Very satisfied / 3 – 10 years / Financial
+services</span></p>
+</blockquote>
+<p>This year we also asked about the other languages that people use. Survey
+respondents said that besides Go, they enjoy working with Python, Rust, and
+TypeScript, among a long tail of other languages. Some shared characteristics
+of these languages align with common points of friction reported by Go
+developers, including  areas like error handling, enums, and object-oriented
+design patterns. For example, when we sum the proportion of respondents who
+said their next-favorite language included one of the following factors, we
+found that majorities of respondents enjoy using languages with inheritance,
+type-safe enums, and exceptions, with only a bare majority of these languages
+including a static type system by default.</p>
+<table>
+<thead>
+<tr>
+<th>Concept or feature</th>
+<th>Proportion of respondents</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Inheritance</td>
+<td>71%</td>
+</tr>
+<tr>
+<td>Type-safe enums</td>
+<td>65%</td>
+</tr>
+<tr>
+<td>Exceptions</td>
+<td>60%</td>
+</tr>
+<tr>
+<td>Static typing</td>
+<td>51%</td>
+</tr>
+</tbody>
+</table>
+<p>We think this is important because it reveals the larger environment in which
+developers operate — it suggests that people need to use different
+design patterns for fairly mundane tasks, depending on the language of the
+codebase they&rsquo;re currently working on. This leads to additional cognitive load
+and confusion, not only among developers new to Go (who must learn idiomatic
+Go design patterns), but also among the many developers who work in multiple
+codebases or projects. One way to alleviate this additional load is
+context-specific guidance, such as a tutorial on &ldquo;Error handling in Go for
+Java developers&rdquo;. There may even be opportunities to build some of this
+guidance into code analyzers, making it easier to surface directly in an IDE.</p>
+<p></p>
+<p>This year we asked the Go community to share their sentiment towards the Go
+project itself. These results were quite different from the 91% satisfaction
+rate we discussed above, and point to areas the Go Team plans to invest our
+energy during 2026. In particular, we want to encourage more contributors to
+get involved, and ensure the Go Team accurately understands the challenges Go
+developers currently face. We hope this focus, in turn, will help to increase
+developer trust in both the Go project and the Go Team leadership. As one
+respondent explained the problem:</p>
+<blockquote>
+<p>&ldquo;Now that the founding first generation of Go Team members [are] not
+involved much anymore in the decision making, I am a bit worried about the
+future of Go in terms of quality of maintenance, and its balanced decisions
+so far wrt to changes in the language and std lib. More presence in form of
+talks [by] the new core team members about the current state and future
+plans might be helpful to strengthen trust.&rdquo; <span
+class="quote_source">— Very satisfied / 10+ years / Technology
+company</span></p>
+</blockquote>
+<p></p>
+<h2 id="uses">What are people building with Go?</h2>
+<p>We revised this list of &ldquo;what types of things do you build with Go?&rdquo; from 2024
+with the intent of more usefully teasing apart what people are building with
+Go, and avoid confusion around evolving terms like &ldquo;agents&rdquo;. Respondent&rsquo;s top
+use cases remain CLIs and API services, with no meaningful change in either
+since 2024. In fact, a majority of respondents (55%) said they build <em>both</em>
+CLIs and API services with Go. Over ⅓ of respondents specifically build cloud
+infrastructure tooling (a new category), and 11% work with ML models, tools,
+or agents (an expanded category). Unfortunately embedded use cases were left
+off of the revised list, but we&rsquo;ll fix this for next year&rsquo;s survey.</p>
+<p></p>
+<p>Most respondents said they are not currently building AI-powered features into
+the Go software they work on (78%), with ⅔ reporting that their software does
+not use AI functionality at all (66%). This appears to be a decrease in
+production-related AI usage year-over-year; in 2024, 59% of respondents were
+not involved in AI feature work, while 39% indicated some level of
+involvement. That marks a shift of 14 points away from building AI-powered
+systems among survey respondents, and may reflect some natural pullback from
+the early hype around AI-powered applications: it&rsquo;s plausible that lots of
+folks tried to see what they could do with this technology during its initial
+rollout, with some proportion deciding against further exploration (at least
+at this time).</p>
+<p></p>
+<p>Among respondents who are building AI- or LLM-powered functionality, the most
+common use case was to create summaries of existing content (45%). Overall,
+however, there was little difference between most uses, with between 28%
+– 33% of respondents adding AI functionality to support classification,
+generation, solution identification, chatbots, and software development.</p>
+<p></p>
+<h2 id="challenges">What are the biggest challenges facing Go developers?</h2>
+<p>One of the most helpful types of feedback we receive from developers are
+details about the challenges people run into while working with Go. The Go
+Team considers this information holistically and over long time horizons,
+because there is often tension between improving Go&rsquo;s rougher edges and
+keeping the language and tooling consistent for developers. Beyond technical
+factors, every change also incurs some cost in terms of developer attention
+and cognitive disruption. Minimizing disruption may sound a bit dull or
+boring, but we view this as an important strength of Go. As Russ Cox wrote in
+2023, <a href="/blog/compat">&ldquo;Boring is good&hellip; Boring means being able to focus on your work, not
+on what&rsquo;s different about Go.&rdquo;</a>.</p>
+<p>In that spirit, this year&rsquo;s top challenges are not radically different from
+last year&rsquo;s. The top three frustrations respondents reported were &ldquo;Ensuring
+our Go code follows best practices / Go idioms&rdquo; (33% of respondents), &ldquo;A
+feature I value from another language isn&rsquo;t part of Go&rdquo; (28%), and &ldquo;Finding
+trustworthy Go modules and packages&rdquo; (26%). We examined open-text responses to
+better understand what people meant. Let&rsquo;s take a minute to dig into each.</p>
+<p>Respondents who were most frustrated by writing idiomatic Go were often
+looking for more official guidance, as well as tooling support to help enforce
+this guidance in their codebase. As in prior surveys, questions about how to
+structure Go projects were also a common theme. For example:</p>
+<blockquote>
+<p>&ldquo;The simplicity of go helps to read and understand code from other
+developers, but there are still some aspects that can differ quite a lot
+between programmers. Especially if developers come from other languages,
+e.g. Java.&rdquo; <span class="quote_source">— Very satisfied / 3 – 10
+years / Healthcare and life sciences</span></p>
+</blockquote>
+<blockquote>
+<p>&ldquo;More opinionated way to write go code. Like how to structure a Go project
+for services/cli tool.&rdquo; <span class="quote_source">— Very satisfied /
+&lt; 3 years / Technology</span></p>
+</blockquote>
+<blockquote>
+<p>&ldquo;It&rsquo;s hard to figure out what are good idioms. Especially since the core
+team doesn&rsquo;t keep Effective Go up-to-date.&rdquo; <span
+class="quote_source">— Very satisfied / 3 – 10 years /
+Technology</span></p>
+</blockquote>
+<p>The second major category of frustrations were language features that
+developers enjoyed working with in other ecosystems. These open-text comments
+largely focused on error handling and reporting patterns, enums and sum types,
+nil pointer safety, and general expressivity / verbosity:</p>
+<blockquote>
+<p>&ldquo;Still not sure what is the best way to do error handling.&rdquo; <span
+class="quote_source">— Very satisfied / 3 – 10 years / Retail
+and consumer goods</span></p>
+</blockquote>
+<blockquote>
+<p>&ldquo;Rust&rsquo;s enums are great, and lead to writing great type safe code.&rdquo; <span
+class="quote_source">— Somewhat satisfied / 3 – 10 years /
+Healthcare and life sciences</span></p>
+</blockquote>
+<blockquote>
+<p>&ldquo;There is nothing (in the compiler) that stops me from using a maybe nil
+pointer, or using a value without checking the err first. That should be
+[baked into] the type system.&rdquo; <span class="quote_source">— Somewhat
+satisfied / &lt; 3 years / Technology</span></p>
+</blockquote>
+<blockquote>
+<p>&ldquo;I like [Go] but I didn&rsquo;t expect it to have nil pointer exceptions :)&rdquo; <span
+class="quote_source">— Somewhat satisfied / 3 – 10 years /
+Financial services</span></p>
+</blockquote>
+<blockquote>
+<p>&ldquo;I often find it hard to build abstractions and to provide clear intention
+to the future readers of my code.&rdquo; <span class="quote_source">—
+Somewhat dissatisfied / &lt; 3 years / Technology</span></p>
+</blockquote>
+<p>The third major frustration was finding trustworthy Go modules. Respondents
+often described two aspects to this problem. One is that they considered many
+3rd-party modules to be of marginal quality, making it hard for really good
+modules to stand out. The second is identifying which modules are commonly
+used and under which types of conditions (including recent trends over time).
+These are both problems that could be addressed by showing what we&rsquo;ll vaguely
+call &ldquo;quality signals&rdquo; on pkg.go.dev. Respondents provided helpful
+explanations of the signals they use to identify trustworthy modules,
+including project activity, code quality, recent adoption trends, or the
+specific organizations that support or rely upon the module.</p>
+<blockquote>
+<p>&ldquo;Being able to filter by criteria like stable version, number of users and
+last update age at pkg.go.dev could make things a bit easier.&rdquo; <span
+class="quote_source">— Very satisfied / &lt; 3 years / Technology</span></p>
+</blockquote>
+<blockquote>
+<p>&ldquo;Many pacakges are just clones/forks or one-off pojects with no
+history/maintenance. [sic]&rdquo; <span class="quote_source">— Very
+satisfied / 10+ years / Financial services</span></p>
+</blockquote>
+<blockquote>
+<p>&ldquo;Maybe flagging trustworthy packages based on experience, maturity and
+community feedback?&rdquo; <span class="quote_source">— Very satisfied / 3
+– 10 years / Healthcare and life sciences</span></p>
+</blockquote>
+<p>We agree that these are all areas where the developer experience with Go could
+be improved. The challenge, as discussed earlier, is doing so in such a way
+that doesn&rsquo;t lead to breaking changes, increased confusion among Go
+developers, or otherwise gets in the way of people trying to get their work
+done with Go. Feedback from this survey is a major source of information we
+use when discussing proposals, but if you&rsquo;d like to get involved more directly
+or follow along with other contributors, visit the <a href="https://github.com/golang/go/issues?q=state%3Aopen%20label%3AProposal" rel="noreferrer" target="_blank">Go proposals on
+GitHub</a>;
+please be sure to <a href="https://github.com/golang/proposal" rel="noreferrer" target="_blank">follow this process</a> if
+you&rsquo;d like to add a new proposal.</p>
+<p></p>
+<p>In addition to these (potentially) ecosystem-wide challenges, this year we
+also asked specifically about working with the <code>go</code> command. We&rsquo;ve informally
+heard from developers that this tool&rsquo;s help system can be confusing to
+navigate, but we haven&rsquo;t had a great sense of how frequently people find
+themselves reviewing this documentation.</p>
+<p>Respondents told us that except for <code>go test</code>, between 15% – 25% of them
+felt they &ldquo;often needed to review documentation&rdquo; with working with these
+tools. This was surprising, especially for commonly-used subcommands like
+<code>build</code> and <code>run</code>. Common reasons included remembering specific flags,
+understanding what different options do, and navigating the help system
+itself. Participants also confirmed that infrequent use was one reason for
+frustration, but navigating and parsing command help appears to be the
+underlying cause. In other words, we all expect to need to review
+documentation sometimes, but we don&rsquo;t expect to need help navigating the
+documentation system itself. As on respondent described their journey:</p>
+<blockquote>
+<p>&ldquo;Accessing the help is painful. go test &ndash;help # didn&rsquo;t work, but tell[s] me
+to type <code>go help test</code> instead&hellip; go help test # oh, actually, the info I&rsquo;m
+looking for is in <code>testflag</code> go help testflag # visually parsing through
+text that looks all the same without much formatting&hellip; I just lack time to
+dig into this rabbit hole.&rdquo; <span class="quote_source">— Very
+satisfied / 10+ years / Technology</span></p>
+</blockquote>
+<p></p>
+<h2 id="devenv">What does their development environment look like?</h2>
+<h3 id="operating-systems-and-architectures">Operating systems and architectures</h3>
+<p>Generally, respondents told us their development platforms are UNIX-like. Most
+respondents develop on macOS (60%) or Linux (58%) and deploy to Linux-based
+systems, including containers (96%). The largest year-over-year change was
+among &ldquo;embedded devices / IoT&rdquo; deployments, which increased from 2% -&gt; 8% of
+respondents; this was the only meaningful change in deployment platforms since
+2024.</p>
+<p>The vast majority of respondents develop on x86-64 or ARM64 architectures,
+with a sizable group (25%) still potentially working on 32-bit x86 systems.
+However, we believe the wording of this question was confusing to respondents;
+next year we&rsquo;ll clarify the 32-bit vs. 64-bit distinction for each
+architecture.</p>
+<p>  </p>
+<h3 id="code-editors">Code editors</h3>
+<p>Several new code editors have become available in the past two years, and we
+expanded our survey question to include the most popular ones. While we saw
+some evidence of early adoption, most respondents continued to favor <a href="https://code.visualstudio.com/" rel="noreferrer" target="_blank">VS
+Code</a> (37%) or
+<a href="https://www.jetbrains.com/go/" rel="noreferrer" target="_blank">GoLand</a> (28%). Of the newer editors, Zed and
+Cursor were the highest ranked, each becoming the preferred editor of 4% of
+respondents. To put those numbers in context, we looked back at when VS Code
+and GoLand were first introduced. VS Code (released in 2015) was favored by
+16% of respondents one year after its release. IntelliJ has had a
+community-led Go plugin longer than we&rsquo;ve been surveying Go developers (💙),
+but if we look at when JetBrains began officially supporting Go in IntelliJ
+(2016), within one year IntelliJ was preferred by 20% of respondents.</p>
+<p>Note: This analysis of code editors does not include respondents who were
+referred to the survey directly from VS Code or GoLand.</p>
+<p></p>
+<h3 id="cloud-environments">Cloud environments</h3>
+<p>The most common deployment environments for Go continue to be Amazon Web
+Services (AWS) at 46% of respondents, company-owned servers (44%), and Google
+Cloud Platform (GCP) at 26%. These numbers show minor shifts since 2024, but
+nothing statistically significant. We found that the &ldquo;Other&rdquo; category
+increased to 11% this year, and this was primarily driven by Hetzner (20% of
+Other responses); we plan to include Hetzner as a response choice in next
+year&rsquo;s survey.</p>
+<p>We also asked respondents about their development experience of working with
+different cloud providers. The most common responses, however, showed that
+respondents weren&rsquo;t really sure (46%) or don&rsquo;t directly interact with public
+cloud providers (21%). The biggest driver behind these responses was a theme
+we&rsquo;ve heard often before: with containers, it&rsquo;s possible to abstract many
+details of the cloud environment away from the developer, so that they don&rsquo;t
+meaningfully interact with most provider-specific technologies. This result
+suggests that even developers whose work is <em>deployed</em> to clouds may have
+limited experience with the larger suite of tools and technology associated
+with each cloud provider. For example:</p>
+<blockquote>
+<p>&ldquo;Kinda abstract to the platform, Go is very easy to put in a container and
+so pretty easy to deploy anywhere: one of its big strength[s].&rdquo; <span
+class="quote_source">— [no satisfaction response] / 3 – 10 years
+/ Technology</span></p>
+</blockquote>
+<blockquote>
+<p>&ldquo;The cloud provider really doesn&rsquo;t make much difference to me. I write code
+and deploy it to containers, so whether that&rsquo;s AWS or GCP I don&rsquo;t really
+care.&rdquo; <span class="quote_source">— Somewhat satisfied / 3 – 10
+years / Financial services</span></p>
+</blockquote>
+<p>We suspect this level of abstraction is dependant on the use case and
+requirements of the service that&rsquo;s being deployed — it may not always
+make sense or be possible to keep it highly abstracted. In the future, we plan
+to further investigate how Go developers tend to interact with the platforms
+where their software is ultimately deployed.</p>
+<p></p>
+<p></p>
+<h3 id="developing-with-ai">Developing with AI</h3>
+<p>Finally, we can&rsquo;t discuss development environments in 2025 without also
+mentioning AI-powered software development tools. Our survey suggests
+bifurcated adoption — while a majority of respondents (53%) said they
+use such tools daily, there is also a large group (29%) who do not use these
+at all, or only used them a few times during the past month. We expected this
+to negatively correlate with age or development experience, but were unable to
+find strong evidence supporting this theory except for <em>very</em> new developers:
+respondents with less than one year of professional development experience
+(not specific to Go) did report more AI use than every other cohort, but this
+group only represented 2% of survey respondents.</p>
+<p></p>
+<p>At this time, agentic use of AI-powered tools appears nascent among Go
+developers, with only 17% of respondents saying this is their primary way of
+using such tools, though a larger group (40%) are occasionally trying agentic
+modes of operation.</p>
+<p></p>
+<p>The most commonly used AI assistants remain ChatGPT, GitHub Copilot, and
+Claude. Most of these agents show lower usage numbers <a href="/blog/survey2024-h2-results#ai-assistance">compared with our 2024
+survey</a> (Claude and Cursor are
+notable exceptions), but due to a methodology change, this is not an
+apples-to-apples comparison. It is, however, plausible that developers are
+&ldquo;shopping around&rdquo; less than they were when these tools were first released,
+resulting in more people using a single assistant for most of their work.</p>
+<p></p>
+<p>We also asked about overall satisfaction with AI-powered development tools. A
+majority (55%) reported being satisfied, but this was heavily weighted towards
+the &ldquo;Somewhat satisfied&rdquo; category (42%) vs. the &ldquo;Very satisfied&rdquo; group (13%).
+Recall that Go itself consistently shows a 90%+ satisfaction rate each year;
+this year, 62% of respondents said they are &ldquo;Very satisfied&rdquo; with Go. We add
+this context to show that while AI-powered tooling is starting to see adoption
+and finding some successful use cases, developer sentiment  towards them
+remains much softer than towards more established tooling (among Go
+developers, at least).</p>
+<p>What is driving this lower rate of satisfaction? In a word: quality. We asked
+respondents to tell us something good they&rsquo;ve accomplished with these tools,
+as well as something that didn&rsquo;t work out well. A majority said that creating
+non-functional code was their primary problem with AI developer tools (53%),
+with 30% lamenting that even working code was of poor quality. The most
+frequently cited benefits, conversely, were generating unit tests, writing
+boilerplate code, enhanced autocompletion, refactoring, and documentation
+generation. These appear to be cases where code quality is perceived as less
+critical, tipping the balance in favor of letting AI take the first pass at a
+task. That said, respondents also told us the AI-generated code in these
+successful cases still required careful review (and often, corrections), as it
+can be buggy, insecure, or lack context.</p>
+<blockquote>
+<p>&ldquo;I&rsquo;m never satisfied with code quality or consistency, it never follows the
+practices I want to.&rdquo; <span class="quote_source">— [no satisfaction
+response] / 3 – 10 years / Financial services</span></p>
+</blockquote>
+<blockquote>
+<p>&ldquo;All AI tools tend to hallucinate quickly when working with medium-to-large
+codebases (10k+ lines of code). They can explain code effectively but
+struggle to generate new, complex features&rdquo; <span
+class="quote_source">— Somewhat satisfied / 3 – 10 years /
+Retail and consumer goods</span></p>
+</blockquote>
+<blockquote>
+<p>&ldquo;Despite numerous efforts to make it write code in an established codebase,
+it would take too much effort to steer it to follow the practices in the
+project, and it would add subtle behaviour paths - i.e. if it would miss
+some method it would try to find its way around it or rely on some side
+effect. Sometimes those things are hard to recognize during code review. I
+also found it mentally taxing to review ai generated code and that overhead
+kills the productivity potential in writing code.&rdquo; <span
+class="quote_source">— Very satisfied / 10+ years / Technology</span></p>
+</blockquote>
+<p></p>
+<p>When we asked developers what they used these tools for, a pattern emerged
+that is consistent with these quality concerns. The tasks with most adoption
+(green in the chart below) and least resistance (red) deal with bridging
+knowledge gaps, improving local code, and avoiding toil. The frustrations that
+developers talk about with code-generating tools were much less evident when
+they&rsquo;re seeking information, like how to use a specific API or configure test
+coverage, and perhaps as a result, we see higher usage of AI in these areas.
+Another spot that stood out was <em>local</em> code review and related suggestions
+— people were less interested in using AI to review other people&rsquo;s code
+than in reviewing their own. Surprisingly, &ldquo;testing code&rdquo; showed lower AI
+adoption than other toilsome tasks, though we don&rsquo;t yet have strong
+understanding of why.</p>
+<p>Of all the tasks we asked about, &ldquo;Writing code&rdquo; was the most bifurcated, with
+66% of respondents already or hoping to soon use AI for this, while ¼ of
+respondents didn&rsquo;t want AI involved at all. Open-ended responses suggest
+developers primarily use this for toilsome, repetitive code, and continue to
+have concerns about the quality of AI-generated code.</p>
+<p></p>
+<h2 id="closing">Closing</h2>
+<p>Once again, a tremendous thank-you to everyone who responded to this year&rsquo;s Go
+Developer Survey!</p>
+<p>We plan to share the raw survey dataset in Q1 2026, so the larger community
+can also explore the data underlying these findings. This will only include
+responses from people who opted in to share this data (82% of all
+respondents), so there may be some differences from the numbers we reference
+in this post.</p>
+<h2 id="methodology">Survey methodology</h2>
+<p>This survey was conducted between Sept 9 - Sept 30, 2025. Participants were
+publicly invited to respond via the Go Blog, invitations on social media
+channels (including Bluesky, Mastodon, Reddit, and X), as well as randomized
+in-product invitations to people using VS Code and GoLand to write Go
+software. We received a total of 7,070 responses. After data cleaning to
+remove bots and other very low quality responses, 5,379 were used for the
+remainder of our analysis. The median survey response time was between 12
+– 13 minutes.</p>
+<p>Throughout this report we use charts of survey responses to provide supporting
+evidence for our findings. All of these charts use a similar format. The title
+is the exact question that survey respondents saw. Unless otherwise noted,
+questions were multiple choice and participants could only select a single
+response choice; each chart&rsquo;s subtitle will tell the reader if the question
+allowed multiple response choices or was an open-ended text box instead of a
+multiple choice question. For charts of open-ended text responses, a Go team
+member read and manually categorized all of the responses. Many open-ended
+questions elicited a wide variety of responses; to keep the chart sizes
+reasonable, we condensed them to a maximum of the top 10-12 themes, with
+additional themes all grouped under &ldquo;Other&rdquo;. The percentage labels shown in
+charts are rounded to the nearest integer (e.g., 1.4% and 0.8% will both be
+displayed as 1%), but the length of each bar and row ordering are based on the
+unrounded values.</p>
+<p>To help readers understand the weight of evidence underlying each finding, we
+included error bars showing the 95% <a href="https://en.wikipedia.org/wiki/Confidence_interval" rel="noreferrer" target="_blank">confidence
+interval</a> for responses;
+narrower bars indicate increased confidence. Sometimes two or more responses
+have overlapping error bars, which means the relative order of those responses
+is not statistically meaningful (i.e., the responses are effectively tied).
+The lower right of each chart shows the number of people whose responses are
+included in the chart, in the form &ldquo;n = [number of respondents]&rdquo;.</p>
+</div>
+
+    </div>
+
+    
+    <div class="Article prevnext">
+    
+    
+      
+        <p>
+        
+        
+          
+            <b>Previous article: </b><a href="/blog/16years">Go’s Sweet 16</a><br>
+          
+        
+        <b><a href="/blog/all">Blog Index</a></b>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    </div>
+    
+
+  </div>
+</div>
+
+<script src="/js/play.js"></script>
+
+</div>
+          </li>
+  
+        </ul>
+      </div>
+  
+      <div class="card">
+        <h2>Other</h2>
+        <ul class="item-list">
+  
+          <li>
+            <a href="https://selfh.st/weekly/2025-10-24/" target="_blank"> Self-Host Weekly (24 October 2025) </a>
+            <div class="item-content">
+			  Become a <a href="https://selfh.st/membership">paid subscriber</a> to access the newsletter’s full-text RSS feed or <a href="https://selfh.st">continue reading on selfh.st</a>.
+		  </div>
+          </li>
+  
+        </ul>
       </div>
   
       <div class="card">
@@ -305,168 +1585,108 @@
         <ul class="item-list">
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1qimau9/research_analyzing_parallelisation_for_poststore/" target="_blank">[Research] Analyzing Parallelisation for PostStore Fetching in X Recommendation Algorithm</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I’ve been looking into <a href="https://github.com/xai-org/x-algorithm">xAI open-sourced recommendation algorithm</a>, specifically the <a href="https://github.com/xai-org/x-algorithm/blob/main/thunder/posts/post_store.rs#L228">Thunder PostStore </a>(written in Rust). </p> <p>While exploring the codebase, I noticed that PostStore fetches in-network posts from followed accounts sequentially. Since these fetches are independent, it seemed like a prime candidate for parallelisation. </p> <p>I benchmarked a sequential implementation against a parallel one using Rayon. </p> <p>𝐓𝐡𝐞 𝐁𝐞𝐧𝐜𝐡𝐦𝐚𝐫𝐤𝐬 (𝐌𝟒 𝐏𝐫𝐨 𝟏𝟒 𝐜𝐨𝐫𝐞𝐬):<br/> - 100 Users: Sequential wins (420µs vs 522µs).<br/> - 500 Users: Parallel starts to pull ahead (1.78x speedup).<br/> - 5,000 Users: Parallel dominates (5.43x speedup). </p> <p>Parallelisation only becomes &quot;free&quot; after ~138 users. Below that, the fixed overhead of thread management actually causes a regression. </p> <p>Just parallelisation of user post fetch wouldn&#39;t guarantee an overall gain in system performance. There are other considerations such as </p> <ol> <li><p>𝐑𝐞𝐪𝐮𝐞𝐬𝐭-𝐋𝐞𝐯𝐞𝐥 𝐯𝐬. 𝐈𝐧𝐭𝐞𝐫𝐧𝐚𝐥 𝐏𝐚𝐫𝐚𝐥𝐥𝐞𝐥𝐢𝐬𝐦: If every single feed generation request tries to saturate all CPU cores (Internal), the system’s ability to handle thousands of concurrent feed generation requests for different users (Request-Level) drops due to context switching and resource contention. </p></li> <li><p>𝐓𝐡𝐞 𝐏𝟗𝟓 𝐁𝐨𝐭𝐭𝐥𝐞𝐧𝐞𝐜𝐤: If the real bottleneck is downstream I/O or heavy scoring, this CPU optimisation might be &quot;invisible&quot; to the end-user. </p></li> <li><p>𝐓𝐡𝐞 &quot;𝐌𝐞𝐝𝐢𝐚𝐧&quot; 𝐔𝐬𝐞𝐫: Most users follow fewer than 200 accounts. Optimising for &quot;Power Users&quot; (1k+ follows) shouldn&#39;t come at the cost of the average user&#39;s latency. </p></li> </ol> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Normal-Tangelo-7120"> /u/Normal-Tangelo-7120 </a> <br/> <span><a href="https://github.com/shbhmrzd/x-algorithm/pull/1">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qimau9/research_analyzing_parallelisation_for_poststore/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1qjj4pe/i_heard_the_community_asking_for_a_free_and/" target="_blank">I heard the community asking for a free and modern alternative to Scrivener, so I built this in Rust.</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/ResolutionSmooth5259"> /u/ResolutionSmooth5259 </a> <br/> <span><a href="/r/scrivener/comments/1qjh14g/i_listened_to_the_community_asking_for_a_free/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qjj4pe/i_heard_the_community_asking_for_a_free_and/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1qihnvp/another_validation_crate_for_rust/" target="_blank">Another validation crate for Rust</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>A project to which I have dedicated part of my college break. The idea came to me while I was studying Axum.</p> <p>Repository: <a href="https://github.com/L-Marcel/validy">https://github.com/L-Marcel/validy</a></p> <p>Crates: <a href="https://crates.io/crates/validy">https://crates.io/crates/validy</a></p> <p>It&#39;s heavily inspired by libraries like <code>Validator</code> and <code>Validify</code>, but designed with a focus on seamless <code>Axum</code> integration and unified modification rules.</p> <p><strong>Key Features:</strong></p> <ul> <li><strong>Validation &amp; Modification:</strong> You can <code>#[modify(...)]</code> and <code>#[validate(...)]</code> in the same struct;</li> <li><strong>Axum Integration:</strong> Automatic <code>FromRequest</code> generation. Just drop your struct into the handler;</li> <li><strong>Context Support:</strong> Easily inject context for async validations (e.g., checking unique emails);</li> <li><strong>Custom Rules:</strong> Support for both sync and async custom rules.</li> </ul> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/l-marcel"> /u/l-marcel </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qihnvp/another_validation_crate_for_rust/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qihnvp/another_validation_crate_for_rust/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1qjhypg/bevy_ropes/" target="_blank">Bevy Ropes</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi there, do y&#39;all know if there&#39;s a crate updated to bevy 18 that can simulate moving ropes/hoses? And if it&#39;s GPU accerlated? If not I might make my first crate, (I don&#39;t wanna reinvent the rope but I might use <a href="https://crates.io/crates/vibe-graph-layout-gpu">https://crates.io/crates/vibe-graph-layout-gpu</a> it looks nice) and I haven&#39;t found anything updated to it yet.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Flimsy_Pumpkin_3812"> /u/Flimsy_Pumpkin_3812 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qjhypg/bevy_ropes/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qjhypg/bevy_ropes/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1qierbb/recruiter_contacted_about_rust_based_role_how_can/" target="_blank">Recruiter contacted about Rust based role. How can I put my best foot forward?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Recruiter called and left a message about a Rust role. Not much information about the nature of the job so could be anything. </p> <p>Over 10 years as a swe. Employment history primarily on the frontend but have had to dip into the backend regularly so consider myself full-stack as I enjoy the backend elements more, it&#39;s just how things have panned out. I&#39;d like to do more Rust-based dev, so could be a good opportunity. how can I best prepare, given my Rust experience is mostly just playing around at home?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Mr-Silly-Bear"> /u/Mr-Silly-Bear </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qierbb/recruiter_contacted_about_rust_based_role_how_can/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qierbb/recruiter_contacted_about_rust_based_role_how_can/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1qjhw28/luhorm_a_simple_modular_orm_for_rust/" target="_blank">LuhOrm - A simple modular ORM for Rust</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>For a long time, I wrote out manually long structs in rust using sqlx binding parameters etc... Well here is my solution to that problem I introspect the database at compile time and generate rust code to be compiled alongside your project... a few features here:</p> <ul> <li><strong>Type-safe queries</strong> - Builder pattern with compile-time checked columns</li> <li><strong>Foreign key relationships</strong> - Automatic join methods and aggregation helpers</li> <li><strong>Multiple databases</strong> - Built-in support for SQLite and PostgreSQL and can be extended</li> </ul> <p>something that sets us apart from diesel, seaorm and others is that we do NOT try to replace sql... sql is a core part of the system at luhorm so if your not into sql this is not for you &lt;3</p> <p>This still is a heavy work in progress so if you want to come and contribute feel free! thank you for reading... s.c ❤️</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Interesting-Lab-8327"> /u/Interesting-Lab-8327 </a> <br/> <span><a href="https://github.com/calizoots/luhorm">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qjhw28/luhorm_a_simple_modular_orm_for_rust/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1qiecz4/moving_from_c_to_rust_in_embedded_a_good_choice/" target="_blank">Moving from C to Rust in embedded, a good choice?</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/Neither-Nose1091"> /u/Neither-Nose1091 </a> <br/> <span><a href="/r/embedded/comments/1qiebuw/moving_from_c_to_rust_in_embedded_a_good_choice/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qiecz4/moving_from_c_to_rust_in_embedded_a_good_choice/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1qjh2yb/bevy_rust_017_bevy_material_ui_026_wasm_showcase/" target="_blank">Bevy (Rust) 0.17 bevy_material_ui 0.2.6 WASM Showcase</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/bombthetorpedos"> /u/bombthetorpedos </a> <br/> <span><a href="https://youtube.com/watch?v=cfIMIfuPiP4&amp;si=WgKyyp8dVwq8bicH">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qjh2yb/bevy_rust_017_bevy_material_ui_026_wasm_showcase/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1qidzus/someone_named_zamazan4ik_opened_an_issue_in_my/" target="_blank">Someone named "zamazan4ik" opened an issue in my project about enabling LTO. 3 weeks later, it happened again in another project of mine. I opened his profile, and he has opened issues and PRs in over 500 projects about enabling LTO. Has this happened to you?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p><a href="https://github.com/search?q=author%3Azamazan4ik+LTO&amp;type=issues">GitHub Search Result</a></p> <p>This is like the 8th time I randomly find zamazan4k suggesting LTO on a random project I visited.</p> <p>I applaud the effort, just wow. That is what I call <em>dedicated</em>.</p> <p>I&#39;m wondering what drives him to do this</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/nik-rev"> /u/nik-rev </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qidzus/someone_named_zamazan4ik_opened_an_issue_in_my/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qidzus/someone_named_zamazan4ik_opened_an_issue_in_my/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1qjgemo/rustup_connection_reset/" target="_blank">rustup connection reset?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>hey guys im a new rustacean (havent even started yet) and i have been getting errors installing rust. (excuse me if the terms im using are wrong im new to rust)</p> <p>So basically, i installed it just like normal until is gave me this error: (image)</p> <p>error 10054.</p> <p>Its a rustup error and it cant install rust due to my connection being reset. (although the file it cant download i can download with chrome)</p> <p>Its alot that happened but its literally word for word with this:<br/> <a href="https://github.com/rust-lang/rustup/issues/3791">https://github.com/rust-lang/rustup/issues/3791</a></p> <p>Chatgpt said it might be my firewall blocking it but i even checked that and no :(</p> <p>i yearn to be a mighty rusteacean so anything helps 🙏</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/KitchenWise3903"> /u/KitchenWise3903 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qjgemo/rustup_connection_reset/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qjgemo/rustup_connection_reset/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1qidhtp/bevy_material_ui_025_hits_700_fps/" target="_blank">Bevy Material UI 0.2.5 Hits 700+ FPS</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/bombthetorpedos"> /u/bombthetorpedos </a> <br/> <span><a href="https://youtube.com/watch?v=nHE3kzdCjOw&amp;si=aPhaAe04RU_gyS-N">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qidhtp/bevy_material_ui_025_hits_700_fps/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1qjewit/marbles_bouncing_using_rust_macroquad/" target="_blank">Marbles bouncing using rust + macroquad</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>In this video, I create a simulation of marbles bouncing inside a container, completed in just 25 minutes.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/NazgulResebo"> /u/NazgulResebo </a> <br/> <span><a href="https://www.youtube.com/watch?v=qooRMkPvO3o">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qjewit/marbles_bouncing_using_rust_macroquad/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1qibb2o/software_engineer_rust_uk/" target="_blank">Software Engineer - Rust - UK</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>COMPANY: Obsidian Systems</p> <p>TYPE: Fulltime employee</p> <p>LOCATION: Preference for London Metro, open to residents of the United Kingdom</p> <p>REMOTE: ~100% remote, however if in London - the team meets once a week at a co-working location in London</p> <p>VISA: Requires work eligibility for the United Kingdom</p> <p>Apply: <a href="https://jobs.gem.com/obsidian-systems/am9icG9zdDpcByvt6ijk7H_1v0AapABv">Software Engineer - Rust - UK</a></p> <p><strong>About Obsidian Systems</strong> </p> <p>Obsidian Systems builds unusually high‑quality software by combining the best ideas from industry and academia. Since 2014, we’ve worked at the frontier of functional programming, distributed systems, cryptography, and AI—choosing rigorous tools and methods to solve genuinely hard problems. </p> <p>We are a low‑ego, high‑standards team that values clarity, correctness, and continuous learning. </p> <p><strong>The Role</strong> </p> <p>We’re hiring a Rust Software Engineer to work on an ARIA‑funded project focused on Safeguarded AI. This role sits at the intersection of mathematics, software engineering, and AI safety, translating theoretical ideas into robust, production‑quality systems. You’ll collaborate with researchers and engineers to design and build high‑assurance software where correctness and safety truly matter. </p> <p>The project we’re initially hiring for will be implementing the frontend of a database system and query language based on geometric logic and dependent type theory. There will be an initial prototype written in Haskell, and once we have some confidence in the design, a high-performance implementation in Rust, integrating with an existing Rust distributed database backend. </p> <p> <strong>What You’ll Do</strong> </p> <ul> <li>Design and build reliable systems in Rust, Haskell, and other functional languages </li> <li>Implement mathematically grounded or research‑driven ideas as real software </li> <li>Contribute to system architecture, APIs, and core abstractions </li> <li>Write clear, well‑tested, and well‑documented code </li> <li>Participate in thoughtful code reviews and technical discussions </li> <li>Work with a team of talented functional language software engineers, technical architect, and project management </li> </ul> <p><strong>What We’re Looking For</strong> </p> <ul> <li>Experience writing and optimizing Rust code </li> <li>Strong background in mathematics (especially categorical logic), computer science, or a related field </li> <li>Professional software engineering experience (typically 3+ years) </li> <li>Confidence at least reading Haskell code, even better if you can also write it </li> <li>A solid grasp of system design and architecture principles </li> <li>Experience collaborating on distributed, fully remote teams </li> <li>Strong written and verbal communication skills across time zones </li> <li>Comfort working with abstractions, types, and complex problem domains </li> <li>Ability to communicate clearly in a remote, distributed team </li> </ul> <p> <strong>Nice to have:</strong> </p> <ul> <li>Knowledge pertaining to implementing databases (query analysis and optimization) </li> <li>Exposure to formal methods, verification, or static analysis </li> <li>Comfort working with Nix </li> <li>Experience working close to research or implementing theoretical work </li> <li>Open‑source contributions </li> </ul> <p>Compensation and Benefits - This role is a fulltime employee with an annual salary, benefits, and paid time off. The salary is based on experience with a range of 75,000 - 90,000 GBP</p> <p>CONTACT: <a href="https://jobs.gem.com/obsidian-systems/am9icG9zdDpcByvt6ijk7H_1v0AapABv">https://jobs.gem.com/obsidian-systems/am9icG9zdDpcByvt6ijk7H_1v0AapABv</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/DistinctDeal7602"> /u/DistinctDeal7602 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qibb2o/software_engineer_rust_uk/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qibb2o/software_engineer_rust_uk/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1qjdxl1/keeping_traits_dyncompatible_while_preserving/" target="_blank">Keeping traits dyn-compatible while preserving zero-cost abstraction where possible</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>A pattern for when you want zero-cost abstraction but still need to use trait objects sometimes</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/SCP-iota"> /u/SCP-iota </a> <br/> <span><a href="https://scp-iota.github.io/software/2026/01/20/rust-dyn-compatibility-proxying.html?utm_source=reddit&amp;utm_medium=post&amp;utm_campaign=rust-dyn-compatibility-proxying">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qjdxl1/keeping_traits_dyncompatible_while_preserving/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1qia7jp/built_a_new_integer_codec_lotus_that_beats/" target="_blank">Built a new integer codec (Lotus) that beats LEB128/Elias codes on many ranges – looking for feedback on gaps/prior art before arXiv submission</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I designed and implemented an integer compression codec called Lotus that reclaims the “wasted” representational space in standard binary encoding by treating each distinct bitstring (including leading zeros) as a unique value.</p> <p>Core idea: Instead of treating `1`, `01`, `001` as the same number, Lotus maps every bitstring of length L to a contiguous integer range, then uses a small tiered header (anchored by a fixed-width “jumpstarter”) to make it self-delimiting.</p> <p>Why it matters: On uniform 32-bit and 64-bit integer distributions, Lotus consistently beats:</p> <p>• LEB128 (the protobuf varint) by ~2–5 bits/value</p> <p>• Elias Delta/Omega by ~3–4 bits/value</p> <p>• All classic universal codes across broad ranges</p> <p>The codec is parametric (you tune J = jumpstarter width, d = tier depth) so you can optimize for your distribution.</p> <p>Implementation: Full Rust library with streaming BitReader/BitWriter, benchmarks against LEB128/Elias, and a formal whitepaper with proofs.</p> <p>GitHub: <a href="https://github.com/coldshalamov/lotus">https://github.com/coldshalamov/lotus</a> </p> <p>Whitepaper: <a href="https://docs.google.com/document/d/1CuUPJ3iI87irfNXLlMjxgF1Lr14COlsrLUQz4SXQ9Qw/edit?usp=drivesdk">https://docs.google.com/document/d/1CuUPJ3iI87irfNXLlMjxgF1Lr14COlsrLUQz4SXQ9Qw/edit?usp=drivesdk</a></p> <p>What I’m looking for:</p> <p>• What prior art am I missing? (I cite Elias codes, LEB128, but there’s probably more)</p> <p>• Does this map cleanly to existing work in information theory or is the “density reclaiming” framing actually novel?</p> <p>• Any obvious bugs in my benchmark methodology or claims?</p> <p>• If this seems solid, any suggestions on cleaning it up for an arXiv submission (cs.IT or cs.DS)?</p> <p>I’m an independent dev with no academic affiliation, I’ve had a hell of a time even getting endorsed to publish in arXive but I’m working on it, so any pointers on improving rigor or finding relevant related work would be hugely appreciated.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Coldshalamov"> /u/Coldshalamov </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qia7jp/built_a_new_integer_codec_lotus_that_beats/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qia7jp/built_a_new_integer_codec_lotus_that_beats/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1qjdq4n/implementing_a_numerical_library_in_both_rust_and/" target="_blank">Implementing a Numerical Library in both Rust and C++</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p><code>gf2</code> focuses on efficient <em>numerical</em> work in <em>bit-space</em>, where mathematical entities such as vectors, matrices, and polynomial coefficients are limited to zeros and ones.</p> <p>It is available both as a <a href="https://github.com/nessan/gf2">C++ library</a> <em>and</em> as a <a href="https://crates.io/crates/gf2">Rust crate</a> with similar, though not identical, interfaces and features. </p> <p>Even if you aren&#39;t involved in the mathematics of bit-space, you may find comparing the two implementations interesting.</p> <p>Mathematicians refer to bit-space as <a href="https://en.wikipedia.org/wiki/GF(2">GF(2)</a>). It is the simplest Galois Field with just two elements, 0 and 1.</p> <p>All arithmetic is modulo 2, so what starts in bit-space stays in bit-space. Addition/subtraction becomes the <code>XOR</code> operation, and multiplication/division becomes the <code>AND</code> operation. <code>gf2</code> uses those equivalences to efficiently perform most operations by simultaneously operating on entire blocks of bit elements at a time. We never have to worry about overflows or carries as we would with normal integer arithmetic. Moreover, these operations are highly optimised in modern CPUs, enabling fast computation even on large bit-matrices and bit-vectors.</p> <h1>Principal Classes &amp; Types</h1> <p>The principal C++ classes and Rust types in the two versions of <code>gf2</code> are:</p> <table><thead> <tr> <th align="left">C++ Class</th> <th align="left">Rust Type</th> <th align="left">Description</th> </tr> </thead><tbody> <tr> <td align="left"><code>BitArray</code></td> <td align="left"><code>BitArray</code></td> <td align="left">A fixed-size vector of bits.</td> </tr> <tr> <td align="left"><code>BitVec</code></td> <td align="left"><code>BitVec</code></td> <td align="left">A dynamically-sized vector of bits.</td> </tr> <tr> <td align="left"><code>BitSpan</code></td> <td align="left"><code>BitSlice</code></td> <td align="left">A non-owning view into contiguous ranges of bits.</td> </tr> <tr> <td align="left"><code>BitPoly</code></td> <td align="left"><code>BitPoly</code></td> <td align="left">A polynomial over GF(2).</td> </tr> <tr> <td align="left"><code>BitMat</code></td> <td align="left"><code>BitMat</code></td> <td align="left">A dynamically-sized matrix of bits.</td> </tr> </tbody></table> <p>As you can see, there are is a name change to accommodate idioms in the languages; the C++ <code>BitSpan</code> class corresponds to the <code>BitSlice</code> type in Rust (C++ uses spans, Rust uses slices). There are other changes in the same vein elsewhere — C++ vectors have a <code>size()</code> method, Rust vectors have a <code>len()</code> method, and so on.</p> <p>The <code>BitArray</code>, <code>BitVec</code>, and <code>BitSpan</code>/<code>BitSlice</code> classes and types share many methods. In C++, each satisfies the requirements of a <code>BitStore</code> <em>concept</em>. In Rust, they implement a <code>BitStore</code> <em>trait</em>. In either case, the <code>BitStore</code> core provides a rich common interface for manipulating collections of bits. Those functions include bit accessors, mutators, fills, queries, iterators, stringification methods, bit-wise operators on and between bit-stores, arithmetic operators, and more.</p> <p>There are other classes and types in <code>gf2</code> to support linear algebra operations, such as solving systems of linear equations, finding matrix inverses, and computing eigenvalues and eigenvectors. Among other things, the interface includes methods for examining the eigen-structure of large bit-matrices.</p> <p>The <code>BitPoly</code> class provides methods to compute <code>x^N mod p(x)</code>, where <code>p(x)</code> is a bit-polynomial and <code>N</code> is a potentially large integer.</p> <p>The classes and types are efficient and pack the individual bit elements into natural unsigned word blocks. There is a rich interface for setting up and manipulating instances, and for allowing them to interact with each other.</p> <p>The C++ library has a comprehensive long-form <a href="https://nessan.github.io/gf2">documentation site</a>. &lt;br&gt; The C++ code is available <a href="https://github.com/nessan/gf2">here</a>.</p> <p>The Rust crate is available on <a href="https://crates.io/crates/gf2">crates.io</a>, its source code is available <a href="https://github.com/nessan/gf2_rs">here</a>, and there is documentation on <a href="https://docs.rs/gf2/latest/gf2/">docs.rs</a>. The Rust documentation is complete but a little less comprehensive than the C++ version, mainly because <code>docs.rs</code> does not support MathJax — a long-standing issue for scientific Rust.</p> <p>All the code is under a permissive MIT license.</p> <p>The C++ version predates the Rust crate. We ported to Rust <em>manually</em>, as, at least for now, LLMs cannot handle this sort of translation task and produce anything that is at all readable or verifiable.</p> <p>As you might expect with a rewrite, the new version considerably improved on the original. There were two beneficial factors at play:</p> <ul> <li>We approached the problem anew, and fresh eyes quickly saw several areas for improvement that had nothing to do with the implementation language per se.</li> <li>Other improvements came about <em>because</em> we were using a different language with its own idioms, strengths, and weaknesses that forced some new thinking.</li> </ul> <p>We rewrote the C++ version to incorporate those improvements and to backport some of the new ideas from using Rust.</p> <p>Writing solutions to the same problem in multiple languages has significant benefits, but of course, it is expensive and hard to justify in commercial settings. Perhaps we should repeat this <code>gf2</code> exercise in a third language someday!</p> <p>For the most part, the two versions are feature equivalent (a few things are not possible in Rust). They also have very similar performance characteristics, with neither being significantly faster than the other in most scenarios.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/nzznfitz"> /u/nzznfitz </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qjdq4n/implementing_a_numerical_library_in_both_rust_and/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qjdq4n/implementing_a_numerical_library_in_both_rust_and/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1qi8wan/project_we_built_a_rustbased_dropin_replacement/" target="_blank">[Project] We built a Rust-based drop-in replacement for PyTorch DataLoader (4.4x faster than ImageFolder)</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/YanSoki"> /u/YanSoki </a> <br/> <span><a href="/r/deeplearning/comments/1qi8blc/project_we_built_a_rustbased_dropin_replacement/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qi8wan/project_we_built_a_rustbased_dropin_replacement/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1qjd8nk/is_uniffi_ready_for_production/" target="_blank">Is Uniffi ready for production?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Any headaches I should be aware off? </p> <p><a href="https://github.com/mozilla/uniffi-rs">https://github.com/mozilla/uniffi-rs</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/conconxweewee1"> /u/conconxweewee1 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qjd8nk/is_uniffi_ready_for_production/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qjd8nk/is_uniffi_ready_for_production/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1qi7dhs/yet_another_gui_question/" target="_blank">Yet another GUI question</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Please don&#39;t hate me.</p> <p>I am looking to start a rust project and want to create a desktop GUI app, but I&#39;d like to use QT if possible. I know there are bindings for it, but I was curious what the general state of it was and how the community felt about it&#39;s readiness, ease of use, functionality, etc?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/millhouse513"> /u/millhouse513 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qi7dhs/yet_another_gui_question/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qi7dhs/yet_another_gui_question/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1qjcus5/problemo_yet_another_error_handling_library_for/" target="_blank">Problemo: Yet another error handling library for Rust</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>The biggest problem with Rust is that there are not enough error handling libraries... ha!</p> <p>But, seriously, after trying all the popular ones and some of the niche ones in large, complex projects I found myself unsatisfied (and tired). However, the process did help me clarify what my specific needs are and identify common patterns and pain points. So I rolled my own library, and at this point I think it&#39;s Good Enough™ to share with those who are interested:</p> <ul> <li><a href="https://docs.rs/problemo">https://docs.rs/problemo</a></li> <li><a href="https://github.com/tliron/problemo">https://github.com/tliron/problemo</a><a href="https://docs.rs/problemo"></a></li> </ul> <p>The main documentation page is quite long, but the point is to explain the goals and solutions as clearly as possible. Towards the end there is a FAQ that will hopefully answer your most burning questions. Also included are examples that showcase some basic and advanced usage.</p> <p>The main differentiator is that Problemo intends not to replace std <code>Error</code> but to make working with it easier. It takes a, shall we say, compositional approach to constructing your errors. It also features a rather innovative way to accumulate errors (which you don&#39;t have to use).</p> <p>Problemo is deliberately straightforward in its implementation and it should be very easy to understand the code.</p> <p>I hope you would find it interesting even if you decide not to use it. I&#39;m here to answer questions (check the FAQ first, maybe?), hoping you will be kind and constructive.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/emblemparade"> /u/emblemparade </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qjcus5/problemo_yet_another_error_handling_library_for/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qjcus5/problemo_yet_another_error_handling_library_for/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1qi5ekj/how_do_experienced_rust_developers_decide_when_to/" target="_blank">How do experienced Rust developers decide when to stick with ownership and borrowing as-is versus introducing Arc, Rc, or interior mutability (RefCell, Mutex)</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I’m curious how you reason about those trade-offs in real-world code, beyond simple examples.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Own-Physics-1255"> /u/Own-Physics-1255 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qi5ekj/how_do_experienced_rust_developers_decide_when_to/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qi5ekj/how_do_experienced_rust_developers_decide_when_to/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1qjbpbx/sysinfo_next_release_needs_some_help/" target="_blank">Sysinfo next release needs some help</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi everyone. Next <a href="https://crates.io/crates/sysinfo">sysinfo</a> release is kinda stuck at the moment as I&#39;m trying to get the missing parts for the NetBSD support. Currently I&#39;m missing:</p> <ul> <li><a href="https://github.com/GuillaumeGomez/sysinfo/blob/main/src/unix/bsd/netbsd/process.rs#L52-L55"><code>Process::open_files</code></a></li> <li><a href="https://github.com/GuillaumeGomez/sysinfo/blob/main/src/unix/bsd/netbsd/motherboard.rs">All <code>Motherboard</code> information</a></li> <li><a href="https://github.com/GuillaumeGomez/sysinfo/blob/main/src/unix/bsd/netbsd/product.rs">All <code>Product</code> information</a></li> </ul> <p>If anyone knows how to get the missing information, it&#39;d be awesome!</p> <p>Otherwise, well, I&#39;ll just release an incomplete support.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/imperioland"> /u/imperioland </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qjbpbx/sysinfo_next_release_needs_some_help/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qjbpbx/sysinfo_next_release_needs_some_help/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1qi5c6n/ndc_techtown_videos_are_out/" target="_blank">NDC Techtown videos are out</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>The videos from NDC Techtown are now out. This is a conference focused on SW for products (including embedded). Mostly C++, some Rust and C.</p> <p>My Rust talk was promoted to the keynote talk after the original keynote speaker had to cancel, so this was the first time we had a Rust talk as the keynote. A few minutes were lost due to a crash in the recording system, but it should still be watchable: <a href="https://www.youtube.com/watch?v=ngTZN09poqk">https://www.youtube.com/watch?v=ngTZN09poqk</a></p> <p>The full playlist is here: <a href="https://www.youtube.com/playlist?list=PL03Lrmd9CiGexnOm6X0E1GBUM0llvwrqw">https://www.youtube.com/playlist?list=PL03Lrmd9CiGexnOm6X0E1GBUM0llvwrqw</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/hpenne"> /u/hpenne </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qi5c6n/ndc_techtown_videos_are_out/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qi5c6n/ndc_techtown_videos_are_out/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1qjbmjk/i_made_a_stack_based_vm_for_educational_purposes/" target="_blank">I made a stack based VM (for educational purposes) with generational GC in Rust</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Few remarks:</p> <ul> <li>The number of supported data types is quite small - integers and string objects only</li> <li>The generational GC doesn&#39;t feature write barrier (since the VM features only string objects)</li> <li>The assembly language is only for demonstration purposes and it features quite a basic parser - as a side note, the focus is on the VM</li> </ul> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/AppearanceNatural741"> /u/AppearanceNatural741 </a> <br/> <span><a href="https://github.com/BranislavLazic/cabbage">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qjbmjk/i_made_a_stack_based_vm_for_educational_purposes/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1qi449v/rusts_standard_library_on_the_gpu/" target="_blank">Rust's standard library on the GPU</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/LegNeato"> /u/LegNeato </a> <br/> <span><a href="https://www.vectorware.com/blog/rust-std-on-gpu/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qi449v/rusts_standard_library_on_the_gpu/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1qja80v/cot_v05_released_new_features_for_lazy_web/" target="_blank">Cot v0.5 Released: New Features for Lazy Web Developers</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/m4tx"> /u/m4tx </a> <br/> <span><a href="https://mackow.ski/blog/cot-v05-new-features-for-lazy-web-developers/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qja80v/cot_v05_released_new_features_for_lazy_web/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1qi13w9/does_using_rust_to_develop_webapps_make_sense_or/" target="_blank">Does using Rust to develop webapps make sense or is it overkill?</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/NutellaPancakes13"> /u/NutellaPancakes13 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qi13w9/does_using_rust_to_develop_webapps_make_sense_or/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qi13w9/does_using_rust_to_develop_webapps_make_sense_or/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1qj6oyx/s2lite_an_open_source_stream_store_written_in/" target="_blank">s2-lite, an open source Stream Store – written in Rust using SlateDB</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>S2 <a href="https://s2.dev/blog/intro">started out</a> as purely a serverless API — think S3, but for streams.</p> <p>The idea of streams as a cloud storage primitive resonated with a lot of folks, but not having an open source option was a sticking point for adoption – especially from projects that were themselves open source! So we decided to build it: <a href="https://github.com/s2-streamstore/s2">https://github.com/s2-streamstore/s2</a></p> <p><strong>s2-lite</strong> is MIT-licensed, written in Rust, and uses <a href="https://slatedb.io">SlateDB</a> as its storage engine. SlateDB is an embedded LSM-style key-value database on top of object storage, which made it a great match for delivering the same durability guarantees as s2.dev.</p> <p>You can specify a bucket and path to run against an object store like AWS S3 — or skip to run entirely in-memory. (This also makes it a great emulator for dev/test environments).</p> <p>Why not just open up the backend of our cloud service? <a href="http://s2.dev">s2.dev</a> has a decoupled architecture with multiple components running in Kubernetes, including our own K8S operator – we made tradeoffs that optimize for operation of a thoroughly multi-tenant cloud infra SaaS. With s2-lite, our goal was to ship something dead simple to operate. There is a lot of shared code between the two that now lives in the OSS repo.</p> <p>A few features remain (notably deletion of resources and records), but s2-lite is <strong>substantially ready</strong>. Try the Quickstart in the README to stream Star Wars using the s2 CLI!</p> <p>The key difference between S2 vs a Kafka or Redis Streams: supporting tons of durable streams. I have blogged about the <a href="https://s2.dev/blog/agent-sessions#landscape">landscape</a> in the context of agent sessions. Kafka and NATS Jetstream treat streams as provisioned resources, and the protocols/implementations are oriented around such assumptions. Redis Streams and NATS allow for larger numbers of streams, but without proper durability.</p> <p>The cloud service is completely elastic, but you can also get pretty far with lite despite it being a single-node binary that needs to be scaled vertically. Streams in lite are &quot;just keys&quot; in SlateDB, and cloud object storage is bottomless – although of course there is metadata overhead.</p> <p>One thing I am excited to improve in s2-lite is pipelining of writes for performance (already supported behind a knob, but needs upstream interface changes for safety). It&#39;s a technique we use extensively in s2.dev. Essentially when you are dealing with high latencies like S3, you want to keep data flowing throughout the pipe between client and storage, rather than go lock-step where you first wait for an acknowledgment and then issue another write. This is why S2 has a session protocol over HTTP/2, in addition to stateless REST.</p> <p>You can test throughput/latency for lite yourself using the <code>s2 bench</code> <a href="https://github.com/s2-streamstore/s2-cli?tab=readme-ov-file#installation">CLI</a> command The main factors are: your network quality to the storage bucket region, the latency characteristics of the remote store, SlateDB&#39;s flush interval (<code>SL8_FLUSH_INTERVAL=..ms</code>), and whether pipelining is enabled (<code>S2LITE_PIPELINE=true</code> to taste the future).</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/shikhar-bandar"> /u/shikhar-bandar </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qj6oyx/s2lite_an_open_source_stream_store_written_in/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qj6oyx/s2lite_an_open_source_stream_store_written_in/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1qi0wgx/ergon_a_durable_execution_library/" target="_blank">Ergon - A Durable Execution Library</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I wanna introduce my curiosity project <a href="https://github.com/richinex/ergon">Ergon </a></p> <p>Ergon was inspired by my reading of <a href="https://www.morling.dev/blog/building-durable-execution-engine-with-sqlite/">Gunnar Morlings Blog</a> and several posts by <a href="https://jack-vanlightly.com/blog/2025/12/4/the-durable-function-tree-part-1">Jack Vanlightly Blogs</a>. I thought it would be a great way to practice various concepts in Rust, such as async programming, typestate, autoref specialization, and more. The storage abstractions show how similar functionalities can be implemented using various technologies such as maps, SQLite, Redis, and PostgreSQL.</p> <p>I have been working on this project for about two months now, refining the code with each passing day, and while I wouldn’t consider it production-ready yet, it is functional and includes a variety of examples that explore several of the concepts implemented in the project. However, the storage backends may still require some rework in the future, as they represent the largest bottlenecks.</p> <p>I invite you to explore the repository, even if it’s just for learning purposes. I would also appreciate your feedback. </p> <p>Feel free to roast my work; I would appreciate that. If you think I did a good job, please give me a star.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Feisty-Assignment393"> /u/Feisty-Assignment393 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qi0wgx/ergon_a_durable_execution_library/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qi0wgx/ergon_a_durable_execution_library/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1qj62g6/rust_podcasts_conference_talks_week_4_2025/" target="_blank">Rust Podcasts & Conference Talks (week 4, 2025)</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi <a href="/r/rust">r/rust</a>! Welcome to another post in this series. Below, you&#39;ll find all the Rust conference talks and podcasts published in the last 7 days:</p> <h1>📺 Conference talks</h1> <h1>NDC TechTown 2025</h1> <ol> <li><a href="https://youtube.com/watch?v=ngTZN09poqk"><strong>&quot;Keynote: Rust is not about memory safety - Helge Penne - NDC TechTown 2025&quot;</strong></a> ⸱ <strong>+2k views</strong> ⸱ 19 Jan 2026 ⸱ 00h 46m 06s</li> </ol> <h1>EuroRust 2025</h1> <ol> <li><a href="https://youtube.com/watch?v=mWCVgqgep6Y"><strong>&quot;Panic! At The Disk Oh! - Jonas Kruckenberg | EuroRust 2025&quot;</strong></a> ⸱ <strong>+1k views</strong> ⸱ 14 Jan 2026 ⸱ 00h 23m 17s</li> <li><a href="https://youtube.com/watch?v=7Znf3FQih-o"><strong>&quot;A Deep Dive into Serde-Driven Reflection - Ohad Ravid | EuroRust 2025&quot;</strong></a> ⸱ <strong>+800 views</strong> ⸱ 15 Jan 2026 ⸱ 00h 23m 46s</li> <li><a href="https://youtube.com/watch?v=9zigzPUs0VI"><strong>&quot;A Minimal Rust Kernel: Printing to QEMU with core::fmt - Philipp Schuster | EuroRust 2025&quot;</strong></a> ⸱ <strong>+700 views</strong> ⸱ 19 Jan 2026 ⸱ 00h 30m 39s</li> <li><a href="https://youtube.com/watch?v=HW8UALOtUnI"><strong>&quot;Porting Embassy to a Rust-based embedded Operating System - Dănuț Aldea | EuroRust 2025&quot;</strong></a> ⸱ <strong>+300 views</strong> ⸱ 20 Jan 2026 ⸱ 00h 14m 32s</li> </ol> <p><em>This post is an excerpt from the latest issue of</em> <a href="https://www.techtalksweekly.io/"><strong><em>Tech Talks Weekly</em></strong></a> <em>which is a free weekly email with all the recently published Software Engineering podcasts and conference talks. Currently subscribed by +7,900 Software Engineers who stopped scrolling through messy YT subscriptions/RSS feeds and reduced FOMO. Consider subscribing if this sounds useful:</em> <a href="https://www.techtalksweekly.io/"><em>https://www.techtalksweekly.io/</em></a></p> <p>Let me know what you think. Thank you!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/TechTalksWeekly"> /u/TechTalksWeekly </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qj62g6/rust_podcasts_conference_talks_week_4_2025/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qj62g6/rust_podcasts_conference_talks_week_4_2025/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1qhx5wr/maelstroms_distributed_systems_challenges/" target="_blank">Maelstrom's distributed systems challenges</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I had a lot of fun writing my solutions to <a href="https://fly.io/dist-sys/">Maelstrom&#39;s distributed systems challenges</a> in Rust. I started with Jon Gjengset&#39;s partial solutions that he shared on YouTube (&quot;<a href="https://www.youtube.com/watch?v=gboGyccRVXI">Solving Distributed Systems Challenges in Rust</a>&quot;). I completed all challenges on my self (without AI!) and I think these are great exercises to improve your Rust skills! My solutions: <a href="https://github.com/vtramo/rustorm">https://github.com/vtramo/rustorm</a> </p> <p>If you decide to check out my code, please leave some feedback. I&#39;m not a Rust expert yet! Good day</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/atomichbts"> /u/atomichbts </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qhx5wr/maelstroms_distributed_systems_challenges/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qhx5wr/maelstroms_distributed_systems_challenges/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1qj0iow/memory_layout_matters_reducing_metric_storage/" target="_blank">Memory layout matters: Reducing metric storage overhead by 4x in a Rust TSDB</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I started with a &quot;naive&quot; implementation using owned strings that caused RSS to explode to ~35 GiB in under a minute during ingestion. By iterating through five different storage layouts—moving from basic interning to bit-packed dictionary encoding—I managed to reduce the memory footprint from ~<strong>211</strong> bytes per series to just ~<strong>43–69</strong> bytes.</p> <p>The journey involved some interesting Rust-specific optimizations and trade-offs, including:</p> <ul> <li><strong>Hardware Sympathy</strong>: Why the fastest layout (FlatInterned) actually avoids complex dictionary encoding to play nicely with CPU prefetchers.</li> <li><strong>Zero-Allocation Normalisation</strong>: Using Cow to handle label limits without unnecessary heap churn.</li> <li><strong>Sealed Snapshots</strong>: Using bit-level packing for immutable historical blocks to achieve maximum density.</li> <li><strong>Custom U64IdentityHasher</strong>: a no-op hasher to avoid double-hashing, as the store pre-hashes labelsets.</li> </ul> <p>I’ve written a deep dive into the benchmarks, the memory fragmentation issues with Vec&lt;String&gt;, and the final architecture.</p> <p>Read the full technical breakdown here: <a href="https://open.substack.com/pub/baarse/p/69-bytes-per-series-how-i-compressed?utm_campaign=post-expanded-share&amp;utm_medium=web">43 Bytes per Series: How I Compressed OTLP labels with Packed KeySets</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Helpful_Garbage_7242"> /u/Helpful_Garbage_7242 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qj0iow/memory_layout_matters_reducing_metric_storage/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qj0iow/memory_layout_matters_reducing_metric_storage/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1qhv80w/keynote_rust_is_not_about_memory_safety_helge/" target="_blank">Keynote: Rust is not about memory safety - Helge Penne - NDC TechTown 2025</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/Wonderful-Wind-905"> /u/Wonderful-Wind-905 </a> <br/> <span><a href="https://youtube.com/watch?v=ngTZN09poqk">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qhv80w/keynote_rust_is_not_about_memory_safety_helge/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1qiymvw/lori_lorusso_of_the_rust_foundation_on_supporting/" target="_blank">Lori Lorusso of The Rust Foundation on Supporting Humans Behind the Code</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>In this talk, Lori Lorusso of the Rust Foundation explores what it truly means to support the humans behind the code. As Rust adoption accelerates across industries, she explains how foundations must balance growth, compliance, and infrastructure with maintainer health, community alignment, and sustainable funding. The discussion highlights how the Rust Foundation collaborates directly with contributors, invests in project-led priorities, and builds feedback loops that empower maintainers—showing why thriving open source depends as much on people and stewardship as it does on technology.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/WalrusOk4591"> /u/WalrusOk4591 </a> <br/> <span><a href="https://youtu.be/RbSIrEC4Mi8">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qiymvw/lori_lorusso_of_the_rust_foundation_on_supporting/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1qhv0cw/clockworker_singlethreaded_async_executor_with/" target="_blank">Clockworker: single-threaded async executor with powerful scheduling to sit on top of async runtimes</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I often find myself wanting to model my systems as shared-nothing thread-per-core async systems that don&#39;t do work-stealing. While tokio has single-threaded runtime mode, its scheduler is rather rigid and optimizes for throughput, not latency. Further, it doesn&#39;t support notion of different priority queues (e.g. to separate background and latency sensitive foreground work) which makes it hard to use in certain cases. Seastar supports this and so does Glommio (which is inspired from Seastar). However, whenever I&#39;d go down the rabbit hole of picking another runtime, I&#39;d eventually run into some compatibility wall and give up - tokio is far too pervasive in the ecosystem.</p> <p>So I recently wrote <a href="https://github.com/nikhilgarg28/clockworker">Clockworker</a> - a single threaded async executor which can sit on top of any other async runtime (like tokio, monoio, glommio, smol etc) and exposes very powerful and configurable scheduling semantics - semantics that go well beyond those of Seastar/Glommio.</p> <p>Semantics: it exposes multiple queues with per-queue CPU share into which tasks can be spawned. Clockworker has two level scheduler - at the top level, Clockworker chooses a queue based on its fair share of CPU (using something like Linux CFS/EEVDF) and then it choose a task from the queue based on queue specific scheduler. You can choose a separate scheduler per queue by using one of the provided implementations or write your own by implementing a simple trait. It also exposes a notion of task groups which you can optionally leverage in your scheduler to say provide fairness to tenants, or grpc streams, or schedule a task along with its spawned children tasks etc. </p> <p>It&#39;s early and likely has rough edges. I have also not had a chance to build any rigorous benchmarks so far and stacking an executor over another likely has some overhead (but depending on the application patterns, may be justified due to better scheduling).</p> <p>Would love to get feedback from the community - have you all found yourself wanting something like this before and if so, what direction would you want to see this go into?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/nikhilgarg28"> /u/nikhilgarg28 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qhv0cw/clockworker_singlethreaded_async_executor_with/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qhv0cw/clockworker_singlethreaded_async_executor_with/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1qiwx7c/granc_a_grpc_cli_tool_with_reflection_support/" target="_blank">Granc - A gRPC CLI tool with reflection support</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hello there, this is my first ever post on Reddit! :)</p> <p>I wanted to share with the community that I am implementing my own CLI tool to communicate with gRPC servers, with support for server reflection. I am doing this alone and on my own free time so do not expect a feature complete tool, but it has the minimum features to be usable in development:)</p> <p>This is the Github repo: <a href="https://github.com/JasterV/granc">https://github.com/JasterV/granc</a></p> <p>I wanted to have my own Rust replacement for <a href="https://github.com/fullstorydev/grpcurl?tab=readme-ov-file">grpcurl</a>, and while it does not have as much features as they have yet, I think I&#39;m on the right track.</p> <p>Feel free to contribute and try it out with your own gRPC servers! (I haven&#39;t add support for TLS yet, that&#39;s why I say it should only work with local development servers for now)</p> <p>btw. I&#39;d appreciate a lot if you could give it a star if you like the project! &lt;3</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/JasterVX"> /u/JasterVX </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qiwx7c/granc_a_grpc_cli_tool_with_reflection_support/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qiwx7c/granc_a_grpc_cli_tool_with_reflection_support/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1qhui75/lapce_a_rustbased_native_code_editor_lighter_than/" target="_blank">Lapce: A Rust-Based Native Code Editor Lighter Than VSCode and Zed</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/delvin0"> /u/delvin0 </a> <br/> <span><a href="https://levelup.gitconnected.com/lapce-a-rust-based-native-code-editor-lighter-than-vscode-and-zed-627f6f2c2d84?sk=8cba9062b73a7731cc8fb692824326fe">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qhui75/lapce_a_rustbased_native_code_editor_lighter_than/">[comments]</a></span></div>
-          </li>
-  
-        </ul>
-  
-        <h3 class="subreddit">r/gamedev</h3>
-        <ul class="item-list">
-  
-          <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1qiiwi1/tether_balloon_tap_game_that_breaks_muscle_memory/" target="_blank">Tether: balloon tap game that breaks muscle memory (prototype)</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;m experimenting with ultra-minimal browser <strong>Labs</strong> prototypes.</p> <p><strong>Tether</strong> uses a balloon metaphor:<br/> <strong>tap = pull the balloon down</strong>, release = it floats up.<br/> Goal: don&#39;t hit the blocks.</p> <p>Even with the metaphor, it still breaks muscle memory in a fun way, and I&#39;m curious about learnability.</p> <p>Would love feedback on:</p> <ul> <li>Does the balloon analogy make the controls instantly obvious?</li> <li>Should the first few seconds be extra forgiving, or is &quot;die fast, learn fast&quot; better here?</li> <li>Any tiny UI cue you&#39;d add (without a full tutorial)?</li> </ul> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/nguoituyet"> /u/nguoituyet </a> <br/> <span><a href="https://dashy.games/g/tether?src=gamedev">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1qiiwi1/tether_balloon_tap_game_that_breaks_muscle_memory/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1qiw2rf/i_built_a_terminalbased_port_process_manager/" target="_blank">I built a terminal-based port & process manager. Would this be useful to you?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p><a href="https://preview.redd.it/4vte1s1hzoeg1.jpg?width=1080&amp;format=pjpg&amp;auto=webp&amp;s=ef7151881aac2c09b048662e467dd21dadae9586">https://preview.redd.it/4vte1s1hzoeg1.jpg?width=1080&amp;format=pjpg&amp;auto=webp&amp;s=ef7151881aac2c09b048662e467dd21dadae9586</a></p> <p><strong>Screenshot:</strong> Main table view (ports, OFF history, tags, CPU usage)</p> <p>I built this using <strong>Rust</strong>. You can</p> <ul> <li>kill or restart processes</li> <li>view a system info dashboard and CPU/memory graphs</li> <li>tag processes and attach small notes</li> <li>see process lineage (parent/child relationships)</li> <li>keep history of ports that were previously used (shown as OFF)</li> </ul> <p>It can also let you quickly check which ports are available and launch a command on a selected port.</p> <p>I’m sharing a few screenshots to get <strong>feedback:</strong></p> <p><strong>Will this be useful?</strong></p> <p><strong>If it is useful, I would like to make a public release on GitHub.</strong></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/NVSRahul"> /u/NVSRahul </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qiw2rf/i_built_a_terminalbased_port_process_manager/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qiw2rf/i_built_a_terminalbased_port_process_manager/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1qigaov/pixel_over_vs_smack_studio/" target="_blank">Pixel Over vs Smack Studio?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi! Quick question, have any ladies or gentlemen tried pixel art animation using rigs? I’m working on a Godot pixel art game and <em>just recently had an existential crisis</em> when I realized how many animations I’ll need. I studied 3D animation in art school and just found out that there <em>are</em> software tools to rig and animate models. The two mentioned in the title look really promising, what are your thoughts? Are there better ones that exist? I don’t have any problem setting up rigs since I’m the coder for my game.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/_Zzik_"> /u/_Zzik_ </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1qigaov/pixel_over_vs_smack_studio/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1qigaov/pixel_over_vs_smack_studio/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1qiu0jv/elegant_and_safe_concurrency_in_rust_with_async/" target="_blank">Elegant and safe concurrency in Rust with async combinators</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/kivarada"> /u/kivarada </a> <br/> <span><a href="https://kerkour.com/rust-async-combinators-concurrency">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qiu0jv/elegant_and_safe_concurrency_in_rust_with_async/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1qifwfw/like_many_other_beginner_gamedevs_ive_learned_the/" target="_blank">Like many other beginner gamedevs, I've learned the dangers of Instances the hard way, but when are the appropriate times when I SHOULD be using them?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>My first architecture was, to no one&#39;s surprise, a jumble of spaghetti-tangled instances all referenced to each other, where everything was incredibly coupled and my GameManager.cs was thousands of lines long. Since then I&#39;ve been learning slowly how to build a future-proof system, and have been practicing using Events and Delegates, but now I&#39;ve flipped to feeling overly hesitant to use Instances at all.</p> <p>So when should I actually use an Instance? Should I make my InputManager or UIManager an instance since they&#39;re pretty much always there? </p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Phitsik23"> /u/Phitsik23 </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1qifwfw/like_many_other_beginner_gamedevs_ive_learned_the/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1qifwfw/like_many_other_beginner_gamedevs_ive_learned_the/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1qiblxw/falling_out_of_love_with_the_process_not_the_game/" target="_blank">Falling out of love with the process, not the game</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Heyo, I’m in my second year of self-learning game dev (fullstack programmer by day, game developer by night) and yeah game dev is reaaaally challenging.</p> <p>Currently, I&#39;ve been sticking to small game prototypes like proof-of-concepts to keep scope small whilst learning quickly. Despite this, I find it really hard to build a game.</p> <p>What I&#39;ve realized, is that all the &quot;fun&quot; stuff like the core gameplay mechanic, enemy AI, weapons systems, interaction system, inventory its built in the first few weeks. After that it&#39;s just a hardcore slog fest trying to round up the game with all the menu screens, the audio manager, UI elements etc etc. It&#39;s so bad that just opening a project feels like a chore.</p> <p>So now instead of picking my favourite features of the board willy nilly, I&#39;ve started to space out all those &quot;fun&quot; elements with the &quot;boring&quot; stuff. This has really boosted productivity for me. Now I work on a project like the sooner I&#39;m done with this settings menu, the sooner I can start the enemy AI or the quicker I get this audio manager done, the quicker I can jump into the save system. It keeps me engaged with the boring stuff too cause I know there is a treat for me once I&#39;ve completed it.</p> <p>Has anyone else felt the same way? and how do you cope or counter this or any pro tips and tricks, I would love to know</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/rrr-cubed"> /u/rrr-cubed </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1qiblxw/falling_out_of_love_with_the_process_not_the_game/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1qiblxw/falling_out_of_love_with_the_process_not_the_game/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1qi8ybv/no_more_features_i_mean_it/" target="_blank">No more features. I mean it.</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I finally added transition zones to my point-and-click adventure today.</p> <p>Now I’m really done adding features. I want to finally focus on scene production.</p> <p>And don’t you dare say, “But your cellphone flashlight doesn’t work yet.”</p> <p>I don’t want to hear it!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Mondkap"> /u/Mondkap </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1qi8ybv/no_more_features_i_mean_it/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1qi8ybv/no_more_features_i_mean_it/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1qi7e8l/6_years_as_a_gameplay_programmer_at_a_aa_studio/" target="_blank">6 years as a Gameplay Programmer at a AA studio: dream job, burnout, and starting over as a solo dev</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi everyone,</p> <p>I wanted to share a (long) personal story about my journey as a gameplay programmer in a professional game studio: what I learned, what went wrong, and why I recently decided to step away and start over with my own solo project.</p> <p>It’s been a rollercoaster of pure passion, professional success, and eventually, a total burnout due to toxic management. I’m sharing this for anyone in the industry, or those trying to get in, as a reality check on what &quot;studio growth&quot; can sometimes look like.</p> <p>I won’t mention any studio names or people for obvious confidentiality and NDA reasons. The goal here isn’t to attack anyone, but to share an experience that I think is far from unique in this industry.</p> <h1>TL;DR</h1> <p>We tend to romanticize the game dev industry way too much and I definitely did before experiencing it myself. It’s a creative field where massive egos tend to clash. Not everyone can work well together, and when you force it, things break. Company politics are also a big issue: some people spend more time trying to look good to their bosses than actually working on the project.</p> <p>I left my job after six years with a bitter taste, disappointed and honestly pretty disillusioned by how things turned out. Still, I want to believe in it. It’s one of the most beautiful industries out there, and I’m looking forward to discovering new studios in the future. But for now, I really need to take a step back, breathe, and let my creativity flow through my own games.</p> <p>If I had to make an analogy, the game dev industry is pretty much like a ranked solo-queue game in League of Legends:</p> <ul> <li>sometimes it just clicks, everyone communicates, plays together, objectives are secured, calls are good, and even if you lose, you’re still happy with how the match went.</li> <li>and sometimes you end up in a highly toxic environment, where everyone blames someone else and never questions themselves, and where even a win (as unlikely as it may be) doesn’t ease the tension. If anything, it feels worse, because you’re frustrated that people with that kind of behavior get rewarded.</li> </ul> <p>If you’re curious how I ended up with that perspective, here’s a bit of background on how I got into game development in the first place.</p> <h1>Self-Taught &amp; Passion-Driven</h1> <p>I’ve been passionate about video games for as long as I can remember. Very early on, I wanted to understand how they were made, and eventually make my own.</p> <p>I started experimenting with game development at 12 when a friend lent me his copy of RPG Maker XP, then I moved to Game Maker 6.1, later on Unreal Engine 3 and finally Unity3D, back when even real-time shadows were exclusive to the paid version of the engine.</p> <p>Coming from a modest-income family, attending a dedicated game development school was never really an option. So I took a more indirect path: I studied mobile apps development and started working in that field, while continuing to teach myself game development in my free time.</p> <p>I kept making prototypes, game jam projects, small personal games, and I shared some work publicly on GitHub.</p> <h1>Getting into the game industry</h1> <p>I only applied to a handful of studios. Most of them simply never replied and the few that did eventually got back to me with rejections. One game studio eventually decided to give me a chance and offered me a position as a Unity Gameplay Programmer.</p> <p>What really mattered during the hiring process wasn’t my diploma, but the work I could actually show: many playable prototypes, several game jam projects and experimentation I shared publicly. It showed that game development wasn’t just something I wanted to do professionally, it was already what I was spending most of my free time on.</p> <p>I joined the studio right before the COVID lockdowns, and strangely enough, that first year became one of the best years of my life. I arrived at the very start of a new project, working in a small, tight-knit team (fewer than 10 people on that game, in a studio of about 50). The vibe was incredible! Communication was direct, decisions were fast, and everyone trusted each other to do their job. There were very few formal processes, but a strong sense of ownership and responsibility.</p> <p>Because of that, development moved quickly and smoothly. In about 9 months, the game was delivered to the publisher. Physical Switch and PS4 copies were printed, and the Steam version launched before Christmas. Mission accomplished!</p> <h1>The honeymoon is over</h1> <p>Fast forward about a year and a few small games later. </p> <p>The studio landed a much bigger contract: a spin-off of a well-known IP for a new mobile gaming platform. So they decided we needed to &quot;professionalize&quot;. They hired a wave of new directors and managers who wanted to &quot;break old habits&quot;. What made the studio strong was suddenly treated like a disease.</p> <p>I’m not against structure or methodologies. I actually enjoy learning new ways of working when they help solve real problems. But here, it quickly became obvious that many of these processes mainly served project tracking, reporting and control. Suddenly, everything became “what exactly are you working on today?”, “how long will it take and why?”, “why did you put X story points on this task?”.</p> <p>I’ll never forget that one executive who forced his own version of SCRUM on the entire studio. He was the classic &quot;I know better than you&quot; type, constantly saying, &quot;I used to be a [Any Role Name], I know what I’m talking about, it’s not that hard&quot;. Sprint planning lasting 1–2 full days, with 40 people, all disciplines mixed together, for a 3-week sprint (that’s 120 man-days wasted just on planning). Not even counting weekly syncs, reviews and retros that kept eating more production time. Methods were imposed without listening to the team, and extra administrative work was added under the label of “organization”.</p> <p>Another painful memory: my newly hired manager presenting himself as extremely caring and highly skilled. He looked very competent on the surface, confident, well-spoken and always “up to date”. That image likely got him hired. Strangely enough, no actual sign of shipped games linked to his name was found online… In practice, most of his technical knowledge came from Unity blog posts and Talks, engine update videos, and increasingly from ChatGPT. He could repeat the right buzzwords in meetings. Upward he looked perfectly aligned with management. Downward, the work environment became toxic very quickly. He eventually managed to carry out part of his own little ‘purge’, getting a large portion of the people he managed fired, especially those he hadn’t personally hired himself.</p> <p>Unsurprisingly, the project was a fiasco. The development fell behind schedule, the quality became inconsistent, client relationships became tense, yet the game still shipped. The studio ended up not making a profit on that project, and the internal atmosphere was badly damaged.</p> <p>While waiting for the next major project, the team was scattered across small, short-term tasks. Some people were basically sidelined, assigned low-impact work and meaningless tasks with little to no follow-up. Classic strategy: push people to quit from bore-out so the studio wouldn&#39;t have to pay severance, hence reducing operating costs.</p> <h1>New big project, same mistakes (but worse)</h1> <p>All hands on deck new: a new big project started! You would expect lessons to be learned. Spoiler: they were not! </p> <p>The studio hired massively, almost doubled in size very quickly. They recruited &quot;seniors&quot; who were seniors in name only. Processes became even heavier, and they implemented a literal surveillance policy: programmers were judged by the number of commits and lines of code, designers by the number of documents produced, artists by the number of exported assets... IT scrutinized online activity, especially for remote workers. Remote work was progressively attacked under the excuse of “team cohesion,” sometimes even breaking previous agreements. Let’s be honest: it was mainly about control.</p> <p>The teams had raised many issues: unsuitable and difficult-to-work-with profiles, major inconsistencies in work planning, a constant overload of tasks, and methodologies that were ill-suited and slowed everyone down even more.</p> <p>Delays were piling up, the project’s art direction still wasn’t in place after more than a year of production (we’re talking full production, not pre-production), design documents were slow to arrive, technical debt was stacking up, and producers had to negotiate with the client to cut parts of the game just to meet deadlines.</p> <p>In short, what the whole team had been anticipating for months (~6 months!) was finally happening, much to the surprise of management and directors, who had repeatedly dismissed our warnings with cynicism and condescension.</p> <p>A real tug-of-war had developed between management and the production teams, and the work atmosphere was more toxic and hostile than ever. Several employees were even fired for rightly pushing back against these decisions. Yet the project had to go on, no matter what…</p> <h1>Recovery</h1> <p>I left a few months ago after a long period of being targeted (harassed) by management and direction. I didn’t even get to see the end of that project, I just didn’t have the strength or the resilience to keep going like that. </p> <p>And honestly, I feel like I’m living again! The first few days were exhausting, I slept almost all day. With my mind and body finally off high alert, I was finally able to relax and regain strength.</p> <p>This experience left me genuinely disillusioned with the video game development industry, where appearances matter more than actions, and reality is the polar opposite of what’s proudly displayed publicly. For a company and an industry that claims to value inclusivity and diversity, I have never been treated so poorly: harassment, defamation, sexism, racism, burnout, health issues. If that’s what ‘inclusivity and diversity’ means to them, I’d much rather go back to the old-school ways of the past.</p> <p>Although this experience leaves a bitter taste, there was a silver lining: I met amazing people, learned a lot, and improved my technical skills significantly. The pay was decent, I was able to add several professionally released games with strong international reach to my portfolio, and in a way, I realized a childhood dream: leaving my mark on the world of video games through these projects, and seeing players enjoy their experience.</p> <p>That’s also why I’m so frustrated with how things turned out. We had everything in this studio to keep making great, enjoyable games. Unfortunately, it only took a handful of bad actors, a bit of greed, a lot of ego and power trips, and a bucketload of poor decisions to ruin it all.</p> <h1>What’s next</h1> <p>I’ve managed to save up a bit of money, which now allows me to focus on myself and rebuild my confidence after months (years?) of being undervalued. I’ve gotten back into the gym, started cooking good, home-cooked meals, and I’m enjoying the peace of the countryside, far from the hostile urban jungle.</p> <p>Now that I finally have some free time again, I’m using it to work on my own game projects. I’ve actually started developing a minimalistic HD-2D dungeon crawler RPG. I’m intentionally keeping the scope small to make it realistic and achievable, with the goal of releasing it on Steam this year.</p> <p>For now, I’m working alone mostly out of necessity rather than by choice. I’ve found it extremely hard to find people (especially 2D pixel artists or 3D low-poly artists) who are both genuinely motivated, serious about committing long-term and aligned creatively, especially when you’re not backed by a publisher or any kind of funding. That said, I’m absolutely open to collaboration if the right opportunity and the right people come along.</p> <p>Going solo doesn’t mean cutting yourself off from the world, quite the opposite actually! I think it’s more important than ever to stay connected, exchange ideas, get feedback, and learn from others. When you’re on your own, it’s easy to get stuck in your head, lose perspective, or doubt every decision. That’s why I joined a rather small but very active indie gamedev Discord community, where I have people to talk to, share ideas with, challenge my vision, show progress, and get playtests. This is more like a close-knit working group than a huge noisy server and honestly it helps a lot with motivation, structure, and mental health.</p> <h1>Thanks for reading</h1> <p>If you made it this far, thank you! I know this was long, but there’s still so much more to say.</p> <p>I didn’t write this to attack my previous company or to discourage anyone from working in the video games industry. I wrote it because I think we don’t talk enough about what really happens behind the scenes, and because sharing experiences is one of the few ways we can learn and hopefully make this industry healthier over time.</p> <p>Despite everything, I still love making games. That part never left. Right now, I just need to rebuild, create at my own pace, and reconnect with why I started in the first place. That’s why I’m focusing on my own solo project and slowly sharing progress online.</p> <p>If you have questions feel free to ask, I’ll answer what I can. For obvious NDA and confidentiality reasons, I can’t share names or specific details about the studio or projects.</p> <p>Thanks again, and I genuinely wish the best to everyone trying to survive and create in this industry.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/pLeet-Dev"> /u/pLeet-Dev </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1qi7e8l/6_years_as_a_gameplay_programmer_at_a_aa_studio/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1qi7e8l/6_years_as_a_gameplay_programmer_at_a_aa_studio/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1qi75au/theres_currently_over_1300_people_in_my_coworking/" target="_blank">there's currently over 1300 people in my co-working game working/studying together</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>yesterday I released my game ( On-Together: Virtual Co-Working) and now approx. 1300 people are playing it. After 2 days in Popular Upcoming it ended up in New &amp; Trending with the results I couldn&#39;t imagine. </p> <p>the game itself, beyond being a productivity tool, also functions as a social chatroom similar to old-school Habbo Hotel, but with a cartoony Animal Crossing–style aesthetic.</p> <p>I had a demo available for four months, during which it was played by almost 60,000 people, with a median playtime of 1 hour and 50 minutes.</p> <p>As the co-working community of the game is growing, it almost 3000 people now, it&#39;s still hard to see the future of my game in the modern era of game making. But I can’t help saying this: I feel like I made it.</p> <p>Still wanted to share my experience. </p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Firm-Cable1848"> /u/Firm-Cable1848 </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1qi75au/theres_currently_over_1300_people_in_my_coworking/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1qi75au/theres_currently_over_1300_people_in_my_coworking/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1qi4wr0/is_opengl_still_relevant_in_2026_or_should_i/" target="_blank">Is OpenGL still relevant in 2026, or should I switch to Vulkan?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hey everyone, quick question, Is OpenGL still worth learning/using in 2026, or is it time to jump straight to Vulkan?</p> <p>I&#39;ve been learning/using OpenGL for hobby projects. I&#39;m wondering about practical matters like performance, industry relevance, driver support, tooling, mobile/desktop compatibility, and job prospects.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/TastyBlackberry2841"> /u/TastyBlackberry2841 </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1qi4wr0/is_opengl_still_relevant_in_2026_or_should_i/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1qi4wr0/is_opengl_still_relevant_in_2026_or_should_i/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1qi3buy/just_port_it_to_mobile_yeah_and_just_add/" target="_blank">"Just port it to mobile" Yeah. And "just add multiplayer" too.</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I have two adventure games on Steam that use word puzzles for conflict resolution. Nobody cares about these games, but it has been said to me many times that games like these don&#39;t really belong to Steam, as people expect to see &quot;word puzzles&quot; on mobile platforms. Even though they aren&#39;t word puzzles, but I see the source of confusion, since nowadays random games are labeled as &quot;roguelikes&quot; too.</p> <p>Out of curiousity, I figured I&#39;ll try porting one of the games to Android.</p> <p><strong>The key takeaway from this effort is that &quot;porting to mobile&quot; can be compared to the all-time favorite &quot;just add multiplayer&quot; request.</strong></p> <p>Mobile displays have notches and rounded corners, and these must be taken into consideration, as well as the generally smaller screens. This definitely adds complexity, even if the game is capable of adopting to arbitrary screen sizes and aspect ratios.</p> <p>Then, the safe area was incorrectly detected by Godot 4 on a Redmi Note 12S (the right margin remained 0 for the landscape orientation, and this device has a notched camera on the left, so I assume that&#39;s the problem). Then I tried starting the apk on a Lenovo tablet, but it crashed when the main menu started. The remote debugger didn&#39;t report any issues. So that&#39;s why I still won&#39;t offer my games on Android. :)</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/SandorHQ"> /u/SandorHQ </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1qi3buy/just_port_it_to_mobile_yeah_and_just_add/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1qi3buy/just_port_it_to_mobile_yeah_and_just_add/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1qhy2z5/uk_video_games_developers_tax_incentives/" target="_blank">UK Video games developers Tax incentives</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Did you know that the UK government has tax incentives for video game developers? There are two schemes VGTR (video game tax relief) and VGEC (video game expenditure credits). If you have spent money during the production of a game you may be intitled to a tax refund (even if you haven&#39;t paid tax). </p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/BTCNoob12309"> /u/BTCNoob12309 </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1qhy2z5/uk_video_games_developers_tax_incentives/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1qhy2z5/uk_video_games_developers_tax_incentives/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1qhx52t/how_to_get_art_for_your_game_that_isnt_ai/" target="_blank">How To Get Art For Your Game That Isn't AI</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p><strong>So Real talk, as I want this more of a discussion.</strong> </p> <p>How do we as devs find artists who actually make art that is not AI now? Like I feel I am rolling the dice with creators now unless I build a friendship with them first. It&#39;s honestly unnerving. </p> <p>I&#39;m a graphic artist myself, so I can pinpoint some stuff when it is ai and I can create some cool art stuff, but I know a lot of artists run into the issue of paying someone decent money for work only to find out later its AI, get blamed for &#39;using AI&#39; when they are innocent and they could have generated the art for free if they wanted to, and these AI &#39;scam&#39; artists just make off with cash claiming it was real art they made without AI. </p> <p>It&#39;s honestly a bit frustrating and I am truly curious, how do we as artists find &#39;real artists&#39;? </p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/BelfrostStudios"> /u/BelfrostStudios </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1qhx52t/how_to_get_art_for_your_game_that_isnt_ai/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1qhx52t/how_to_get_art_for_your_game_that_isnt_ai/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1qhv5pi/how_would_you_architect_the_effects_of_modular/" target="_blank">How would YOU architect the effects of modular attacks/skills?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I have given this a lot of thought over many years. I have seen a lot of games which primarily consist of players using lots and lots of skills then fail to execute on their vision because some eng design decision made ages ago now means they have a mountain of technical debt they would have to pay down if they want to do what they actually set out to do. Specifically coming to mind are action RPGs, many of which seem to fail or struggle:</p> <ul> <li>Wolcen was a famously buggy mess where skill descriptions only aligned with what happened sometimes</li> <li>Last Epoch had to reengineer the code because of bad architecture</li> <li>Diablo 4, while successful, has a very narrow set of modifiers which mechanically alter the delivery of skills</li> <li>Grim Dawn, while also successful, has the same issue, and it struggled with movement skills because of engineering decisions made back in Titan Quest (same engine)</li> </ul> <p>I could go on. Truly it seems like only Path of Exile 1 &amp; 2 have achieved a truly modular skill system among ARPGs, and this leaves me wondering: how did they do it? Additionally, I believe Expedition 33 has achieved some of the same thing, and its &quot;Pictos&quot; system is a credit to their engineering and success.</p> <p>I have primarily worked in enterprise dev as a FAANG software engineer, but I am getting into gamedev recently and wanted to nail down some of my ideas. Here are my thoughts, and apologies if I&#39;m missing some gamedev jargon in this:</p> <ul> <li>Composition over inheritance: I suspect that many games affix their skills in a complex inheritance tree which turns out not to be as flexible as envisioned. Imo, skills should be factories for generic components like &quot;projectile emitter&quot; or &quot;player mover&quot; which can be passed around and modified. This is opposed to the idea of having these be properties of the skill itself, because then the skill itself must be in charge of applying modifiers to these things.</li> <li>Decorator pattern: things like the &quot;projectile emitter&quot; should follow the decorator pattern so that their behavior can be modified on the fly. Take the &quot;multiple projectiles&quot; support gems from Path of Exile: they take a skill which fires a single projectile and instead make it fire three of them. You could implement this as a decorator on the object emitted by the skill to create a single projectile rather than, within the skill, firing multiple projectiles, which then must be re-implemented for each skill, and forget applying further modifiers like forking and chaining.</li> <li>Skill context: information about what happened when the skill executed should exist in some extensible context. Imagine: you implement a skill modifier which allows a skill to fire from a pet or a totem, using that pet or totem&#39;s stats. You have an item, however, that lets it use part of your stats. Without a skill context, you will have to write in a specific way of passing the player reference to the pet/totem. You might already have that as a reference to an owner, but what if that pet is a skeleton lord who summons lesser skeletons? Then the owner might be the skeleton lord, and your item will break. A skill context solves your problems. Implement as a dictionary, pass by reference.</li> <li>Combat context: similar to the above, but this would allow tracking things like &quot;Every third attack, do x&quot;.</li> </ul> <p>These are the biggest things I can see improving a naive approach of trying to contain all the effects of a skill within the skill itself. I&#39;d be curious to hear others&#39; thoughts, as although I&#39;m good at architecting software, I&#39;m a novice at gamedev specifically.</p> <p>EDIT: also, memoization. A lot of the math involved will be the same up until a final random roll.</p> <p>EDIT 2: looks like I&#39;ve rediscovered <a href="https://en.wikipedia.org/wiki/Entity_component_system">ECS</a> which I found by checking out a thread on PoE in <a href="/r/HowDidTheyCodeIt">/r/HowDidTheyCodeIt</a>.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Socrathustra"> /u/Socrathustra </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1qhv5pi/how_would_you_architect_the_effects_of_modular/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1qhv5pi/how_would_you_architect_the_effects_of_modular/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1qhuwg8/where_i_actually_find_free_game_assets_compiled/" target="_blank">Where I actually find free game assets (compiled my go-to sources)</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I see this question pop up a lot, so I figured I&#39;d just write down where I actually get my assets from.</p> <p>Been collecting stuff for years.. 3D models, sprites, audio, textures, and these are the places I keep going back to. Tried to include the pros and cons of each since not all &quot;free&quot; is created equal.</p> <p><a href="https://assethoard.com/blog/where-to-find-free-game-assets-2026">https://assethoard.com/blog/where-to-find-free-game-assets-2026</a></p> <p>Covers <a href="http://itch.io">itch.io</a>, OpenGameArt, Kenney, Poly Pizza, Freesound, and a bunch of others. Also got into the different Creative Commons licences because that trips people up (myself included).</p> <p>Happy to add any I&#39;ve missed if you&#39;ve got favourites.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/dolfoz"> /u/dolfoz </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1qhuwg8/where_i_actually_find_free_game_assets_compiled/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1qhuwg8/where_i_actually_find_free_game_assets_compiled/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1qisgyl/pugio_030_a_commandline_dependency_binary_size/" target="_blank">Pugio 0.3.0: A command-line dependency binary size graph visualisation tool</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p><a href="https://preview.redd.it/4mov7tafxneg1.png?width=1064&amp;format=png&amp;auto=webp&amp;s=a486c4d35537ac5270e99f5c0068aebd5a45dbec">Pugio output of dependency graph with features, sizes, and other details</a></p> <blockquote> <p><em>Pugio</em> is a graph visualisation tool for Rust to estimate and present the binary size contributions of a crate and its dependencies. It uses <code>cargo-tree</code> and <code>cargo-bloat</code> to build the dependency graph where the diameter of each crate node is logarithmic to its size. The resulting graph can then be either exported with <code>graphviz</code> and opened as an SVG file, or as a DOT graph file for additional processing.</p> </blockquote> <p><a href="https://github.com/my4ng/pugio">Pugio</a></p> <p>Thank you all for supporting and providing feedback to the project back in 0.1.0 a few months ago (<a href="https://www.reddit.com/r/rust/comments/1p1tacx/pugio_a_commandline_dependency_binary_size_graph/">link</a>). I am happy to announce the 0.3.0 version of pugio which has many features added:</p> <ul> <li>custom node/edge formatting (including dependency features)</li> <li>crate regex matching and TOML config support</li> <li>dependency/reverse-dependency highlighting in SVG</li> <li>output layout options</li> <li>and many more!</li> </ul> <p>I have also separated out the <a href="https://docs.rs/pugio-lib/latest/pugio_lib/">library</a><code>pugio-lib</code> which you can add as a dependency with templating, coloring and values traits to produce fully customizable DOT outputs. </p> <p>Once again, all feedback/suggestions/contributions are more than welcome!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/_my4ng"> /u/_my4ng </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qisgyl/pugio_030_a_commandline_dependency_binary_size/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qisgyl/pugio_030_a_commandline_dependency_binary_size/">[comments]</a></span></div>
           </li>
   
         </ul>
@@ -475,38 +1695,83 @@
         <ul class="item-list">
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1qi9ypv/go_native_durable_execution/" target="_blank">Go native durable execution</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p><a href="https://www.dbos.dev/blog/how-we-built-golang-native-durable-execution">https://www.dbos.dev/blog/how-we-built-golang-native-durable-execution</a></p> <p>TL;DR: building a library that supports dependency injection, provides compile-time checking and leverage the standard library as much as possible is challenging :)</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Grouchy-Coat-4707"> /u/Grouchy-Coat-4707 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1qi9ypv/go_native_durable_execution/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1qi9ypv/go_native_durable_execution/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1qjddvm/substitue_for_google_appcheck_and_recaptcha/" target="_blank">Substitue for google appcheck and recaptcha</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi, so I built an api that uses firebase auth with firebase admin. my choice was because it was what I was most comfortable with and it just works for my scenario where i have react vite front end application and planning on an android app soon as well. </p> <p>my use case currently is that users can access pages on my site unauthenticated and authenticated. my concern is around unauthenticated requests so my solution was to use appcheck through firebase because it was trivial for both frontend and backend. But I feel like this adds some overhead to my requests, ive experienced it when there was slow internet in an area and my api was slow to respond, not the fault of the server but because google took ages to respond.</p> <p>I was wondering if there are any other strategies that I could build in go that could be better suited to replace this? I love Go because it&#39;s lightweight, robust and loads of fun to develop. </p> <p>I want to send an extra key in the header to make sure that the source can be trusted.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Select_Day7747"> /u/Select_Day7747 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1qjddvm/substitue_for_google_appcheck_and_recaptcha/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1qjddvm/substitue_for_google_appcheck_and_recaptcha/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1qi98q6/blueprint_vs_llm_would_you_trust_a_maintained_go/" target="_blank">Blueprint vs LLM: would you trust a maintained Go architecture more than generated code?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I’ve been doing web dev for 25 years and Go about 7 One thing I don’t see as repetition is architecture decisions. Every serious project forces the same kind of choices: - how auth is designed - how config is loaded - how Docker images are built - how CI validates things - how security defaults are enforced</p> <p>LLMs are great at generating code. They’re bad at guaranteeing architecture quality over time.</p> <p>So I’m experimenting with a different idea: a blueprint, not a boilerplate, so: opinionated, versioned, validated by CI, front + back + config + packaging, together, upgradeable</p> <p>Kind of like Terraform but for application architecture. -&gt; No: Here’s a repo, good luck :-p -&gt; But: Here’s a maintained standard you can build on.</p> <p>Honest question to Go devs: Would you: - did you use something like this? - did you pay for it? - or do you think LLMs already made this approach irrelevant?</p> <p>I’m testing the market, not selling yet.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/BenjyDev"> /u/BenjyDev </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1qi98q6/blueprint_vs_llm_would_you_trust_a_maintained_go/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1qi98q6/blueprint_vs_llm_would_you_trust_a_maintained_go/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1qjbwth/proposal_spec_type_inferred_composite_literals/" target="_blank">"proposal: spec: type inferred composite literals" has been added to the active column of the proposals project</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Github comment: <a href="https://github.com/golang/go/issues/12854#issuecomment-3781350699">https://github.com/golang/go/issues/12854#issuecomment-3781350699</a></p> <p>Excerpt from the proposal:</p> <blockquote> <p>Composite literals construct values for structs, arrays, slices, and maps. They consist of a type followed by a brace-bound list of elements. e.g.,</p> </blockquote> <pre><code>x := []string{&quot;a&quot;, &quot;b&quot;, &quot;c&quot;} </code></pre> <blockquote> <p>I propose adding untyped composite literals, which omit the type. Untyped composite literals are assignable to any composite type. They do not have a default type, and it is an error to use one as the right-hand-side of an assignment where the left-hand-side does not have an explicit type specified.</p> </blockquote> <pre><code>var x []string = {&quot;a&quot;, &quot;b&quot;, &quot;c&quot;} var m map[string]int = {&quot;a&quot;: 1} type T struct { V int } var s []*T = {{0}, {1}, {2}} a := {1, 2, 3} // error: left-hand-type has no type specified </code></pre> <blockquote> <p>Go already allows the elision of the type of a composite literal under certain circumstances. This proposal extends that permission to all occasions when the literal type can be derived.</p> </blockquote> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/theclapp"> /u/theclapp </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1qjbwth/proposal_spec_type_inferred_composite_literals/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1qjbwth/proposal_spec_type_inferred_composite_literals/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1qi951y/built_an_open_source_prnu_based_camera/" target="_blank">Built an open source PRNU based camera fingerprinting tool in Go</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hey folks,</p> <p>I’ve been working on a small open source project called ShutterTrace. It’s a camera forensics tool based on PRNU, basically the sensor noise that acts like a fingerprint for cameras.</p> <p>The idea is simple: given a set of images from a camera, build a fingerprint, and then check if a new image likely came from the same physical device. No ML, no deep learning, just classical signal processing and a lot of trial and error.</p> <p>Right now it supports:</p> <ul> <li>PRNU extraction and denoising</li> <li>Camera fingerprint enrollment</li> <li>Verification using PCE and Pearson correlation</li> <li>Tile based matching so results are more stable</li> </ul> <p><strong>This is not meant to be some court ready forensic software. It’s more of a learning and research project where you can actually read the code and understand what’s happening. Some results vary, some stuff breaks, and that’s kind of the point.</strong></p> <p>GitHub repo:<br/> <a href="https://github.com/ARJ2211/ShutterTrace">https://github.com/ARJ2211/ShutterTrace</a></p> <p>I’d really appreciate feedback from people who know image processing, forensics, or even just Go. If you find it interesting or useful, a GitHub star would honestly help a lot and keep me motivated to push it further.</p> <p>Thanks for reading, and happy to answer questions!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/indianbollulz"> /u/indianbollulz </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1qi951y/built_an_open_source_prnu_based_camera/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1qi951y/built_an_open_source_prnu_based_camera/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1qjb1n7/why_jsonv2_remains_experimental_in_126/" target="_blank">Why json/v2 remains experimental in 1.26?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>This is unpleasant surprise. I assume it is still not ready for production. But would appreciate to learn what concerns lead authors to postpone it to later.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/alpako70"> /u/alpako70 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1qjb1n7/why_jsonv2_remains_experimental_in_126/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1qjb1n7/why_jsonv2_remains_experimental_in_126/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1qi313q/go_doesnt_need_a_betterauth_alternative_the/" target="_blank">Go doesn’t need a better-auth alternative the standard library works just fine</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>There’s a better-auth alternative in Go on GitHub please don’t use it. It’s 100% AI-slop, and things can go wrong really quickly.</p> <p>People tend to make things more complex than they need to because they skip the fundamentals. All they really need is a wrapper like better-auth. Duh. Of course, meh you can use libraries like jwt it saves time, and you can learn best practices from the OWASP cheatsheet. Maybe maybe you could also try goth for SSO.</p> <p>better-auth is way harder and gives you no real control. I want to have control over authentication so I know exactly what happens when something goes wrong. I don’t get why people fall for wrappers you’re not really learning anything except how to use the wrapper. And better-auth is bloated; it downloads everything you don’t need, while I can do everything I need with just Go’s standard library. But hey, it’s good for them if they want to raise money from dumb VC.</p> <p>All I want to say is: better-auth isn’t going to solve everything for you, and never trust YouTubaars. All you have to do is learn how to do authentication correctly. Once you do, you’ll have way more control over it.</p> <p>This is just my opinion who cares? Maybe it’s stupid.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/CowNearby4264"> /u/CowNearby4264 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1qi313q/go_doesnt_need_a_betterauth_alternative_the/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1qi313q/go_doesnt_need_a_betterauth_alternative_the/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1qjavpe/results_from_the_2025_go_developer_survey/" target="_blank">Results from the 2025 Go Developer Survey</a>
+            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/golang/comments/1qjavpe/results_from_the_2025_go_developer_survey/">  </a> </td><td> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Bomgar85"> /u/Bomgar85 </a> <br/> <span><a href="https://go.dev/blog/survey2025">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1qjavpe/results_from_the_2025_go_developer_survey/">[comments]</a></span> </td></tr></table></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1qi0v3r/using_a_go_package_in_an_android_application_what/" target="_blank">Using a Go package in an Android application: what is the idiomatic approach today?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I have a Go package doing some network related business logic that I want to use in a Android application. A c-shared wrapper already exists for this package so I see 2 options that may work. Build the c-shared library for Android and use that in the Android application. Making bindings to package that may work with <code>gomobile</code>. Do any of you have experience with either approach or is there a better way to use Go packages in Android nowadays? </p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/ee1c0"> /u/ee1c0 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1qi0v3r/using_a_go_package_in_an_android_application_what/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1qi0v3r/using_a_go_package_in_an_android_application_what/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1qja5ds/whodb_cli_terminal_database_client_written_in_go/" target="_blank">WhoDB CLI – terminal database client written in Go (Bubble Tea TUI, optional local AI)</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I wanted to share a Go project we’ve been building: <strong>WhoDB CLI</strong>, a terminal database client written in Go. It’s a TUI (inspired by k9s) that sits somewhere between <code>psql</code> and GUI tools like pgAdmin.</p> <p>Motivation: my cofounder and I kept bouncing between raw CLIs (fast, scriptable) and heavy GUIs (visual but slow). Some database tasks are just easier visually. So we tried to build a Go TUI that covers common exploration/debugging workflows without leaving the terminal.</p> <p><strong>Tech stack</strong></p> <ul> <li>Go</li> <li>Bubble Tea + Lip Gloss for the TUI</li> <li>Single static-ish binary (~50MB depending on OS/arch)</li> <li>Apache 2.0 licensed</li> </ul> <p><strong>Features</strong></p> <ul> <li>TUI-based DB browser with keyboard navigation</li> <li>Visual WHERE-condition builder (column / operator / value via dropdowns)</li> <li>Schema-aware autocomplete (tables + columns)</li> <li>Grid/table viewer</li> <li>Optional natural language → SQL (explicit opt-in); supports OpenAI, Anthropic, or local Ollama</li> <li>Built-in MCP server (we use it locally with Claude Code)</li> <li>DB support: Postgres, MySQL, MariaDB, SQLite, MongoDB, Redis, ClickHouse, Elasticsearch</li> </ul> <p><strong>Performance</strong></p> <ul> <li>Startup: &lt;300ms on my machine</li> <li>Query overhead: ~50–200ms vs raw SQL (mostly rendering)</li> <li>Optimized for interactive exploration, not bulk exports</li> </ul> <p><strong>Tradeoffs / limitations</strong></p> <ul> <li>Large result sets can feel sluggish when scrolling (even with pagination)</li> <li>Syntax highlighting is basic and sometimes wrong</li> <li>Bubble Tea gives a lot of power, but debugging complex state machines can be painful</li> <li>Connections are stored in a local config file; secrets go to the OS keyring</li> </ul> <p>This is built primarily for developers, not DBAs or heavy analytics use cases (yet).</p> <p><strong>Repo / docs</strong><br/> CLI README with screenshots &amp; usage examples:<br/> <a href="https://github.com/clidey/whodb/blob/main/cli/README.md">https://github.com/clidey/whodb/blob/main/cli/README.md</a></p> <p><strong>Questions for Go folks</strong></p> <ul> <li>Any strong opinions on Bubble Tea vs other Go TUI approaches?</li> <li>Is an embedded MCP server in a CLI actually useful outside our setup?</li> <li>For TUIs: tab-based navigation vs vim-style <code>:</code> commands?</li> <li>Anything you’d change to make this feel more “Unix-y”?</li> </ul> <p>Install (for now):</p> <p><code>npm i -g</code> \@clidey/whodb-cli → whodb-cli</p> <p>Binaries are on GitHub releases (macOS / Linux / Windows, arm64 + x64):<br/> <a href="https://github.com/clidey/whodb/releases/tag/0.89.0">https://github.com/clidey/whodb/releases/tag/0.89.0</a></p> <p>Happy to hear feedback—especially from folks who’ve built TUIs in Go before.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/hkdeman"> /u/hkdeman </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1qja5ds/whodb_cli_terminal_database_client_written_in_go/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1qja5ds/whodb_cli_terminal_database_client_written_in_go/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1qhxc8g/my_exe_is_detected_as_a_virus/" target="_blank">My .exe is detected as a virus</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hello,</p> <p>I&#39;m a beginner in Go and I developed a very small program with a friend. It&#39;s very simple; it allows you to copy files from one directory to another, but only if they have the same name. It&#39;s a tool for modding.</p> <p>The problem is that when I try to compile the program and build an .exe, Microsoft detects it as a Trojan. From what I understand, it&#39;s because my program manipulates files and behaves like this type of virus. I tried putting the .exe in a .zip file, but the result is the same.</p> <p>Since I&#39;m a beginner, I don&#39;t really know how to fix this problem. Do you have any suggestions? Thank you!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/_John_117"> /u/_John_117 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1qhxc8g/my_exe_is_detected_as_a_virus/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1qhxc8g/my_exe_is_detected_as_a_virus/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1qj8aac/goful_a_multipane_file_manager_for_synchronizing/" target="_blank">Goful - A multi-pane file manager for synchronizing directories.</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Forked from a solid multi-pane file manager, this version extends functions for navigating and synchronizing multiple targets. Navigation while synchronized is automatic. CLI option to report differences for alternate processing.</p> <p><a href="https://github.com/fareedst/goful/blob/master/.github/demo_compare.gif">Interactive 3-Way Comparison Demo</a></p> <p><a href="https://github.com/fareedst/goful">Goful Multi-Pane File Manager Repo</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/fareedst"> /u/fareedst </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1qj8aac/goful_a_multipane_file_manager_for_synchronizing/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1qj8aac/goful_a_multipane_file_manager_for_synchronizing/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1qhr6qo/parsing_the_request_methods/" target="_blank">Parsing the request methods</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>What is your preferred approach to parsing a request&#39;s URL parameters, query string, form data, json, etc. into a struct?</p> <p>I am using the Chi router but I want to try using only the stdlib.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/ClassicK777"> /u/ClassicK777 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1qhr6qo/parsing_the_request_methods/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1qhr6qo/parsing_the_request_methods/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1qj7w1x/backpressure_patterns_in_go_from_channels_to/" target="_blank">Backpressure Patterns in Go: From Channels to Queues to Load Shedding</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/Real_Blank"> /u/Real_Blank </a> <br/> <span><a href="https://medium.com/@Realblank/backpressure-patterns-in-go-from-channels-to-queues-to-load-shedding-0841c9fe5607">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1qj7w1x/backpressure_patterns_in_go_from_channels_to/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1qj7m7f/belgrade_go_meetup_thursday_jan_29/" target="_blank">Belgrade Go meetup - Thursday, Jan 29</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hello everyone,<br/> Next week in Belgrade, a new meetup will be organized by Golang Serbia. We will have two talks, each lasting half an hour. Afterwards, there will be time for chatting and socializing.</p> <p>More information about the talks is available on Meetup.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/GaussCarl"> /u/GaussCarl </a> <br/> <span><a href="https://www.meetup.com/golang-serbia/events/312819083/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1qj7m7f/belgrade_go_meetup_thursday_jan_29/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1qj71wm/astroladb_schemafirst_tooling_for_databases_apis/" target="_blank">AstrolaDB: Schema-first tooling for databases, APIs, and types</a>
+            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/golang/comments/1qj71wm/astroladb_schemafirst_tooling_for_databases_apis/">  </a> </td><td> <!-- SC_OFF --><div class="md"><p><strong>What My Project Does</strong></p> <p>AstrolaDB is a schema-first tooling language — not an ORM, not a magic generator, just a really obedient schema servant.</p> <p>You define your schema once, and it can generate:</p> <p>- Database migrations</p> <p>- OpenAPI / GraphQL specs</p> <p>- Multi-language types for Go, Python, TypeScript, and Rust</p> <p>For Go developers, that means your structs, database schema, and API specs all stay in sync without you copy-pasting them everywhere. It reduces boilerplate, prevents subtle mismatches, and makes multi-service projects slightly less painful.</p> <p>repo: <a href="https://github.com/hlop3z/astroladb">https://github.com/hlop3z/astroladb</a></p> <p>docs: <a href="https://hlop3z.github.io/astroladb/">https://hlop3z.github.io/astroladb/</a></p> <p><strong>Target Audience</strong></p> <p>AstrolaDB is mainly for:</p> <p>- Go developers building backend APIs who hate repeating themselves</p> <p>- Teams juggling multiple services or languages and dreaming of a single source of truth</p> <p>- Curious folks who want to experiment with schema-first workflows and code generation</p> <p>It’s still early, so consider this more “playground” than “enterprise-ready weapon of mass production.”</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/ixatrap"> /u/ixatrap </a> <br/> <span><a href="https://github.com/hlop3z/astroladb">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1qj71wm/astroladb_schemafirst_tooling_for_databases_apis/">[comments]</a></span> </td></tr></table></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1qj2k4e/linters_are_not_a_religion_but_nolint_is_not_a/" target="_blank">Linters are not a religion, but //nolint is not a free pass either</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p><strong>TL;DR</strong>: Blanket <code>//nolint</code> comments are lazy. If you disable a linter, do it at the rule level and explain why. <code>gosec</code> and <code>revive</code> already support this, but <code>golangci-lint</code> still lets you cheat. I built <code>nolintguard</code> to enforce discipline until the ecosystem catches up.</p> <p>Linters are tools, not dogma. And like any tool, the real skill is knowing <strong>when to follow them, when to push back, and how to do that responsibly</strong>.</p> <p>In Go projects - especially those using <code>golangci-lint</code>- teams tend to fall into one of two camps:</p> <ul> <li>“Never disable a linter, ever.”</li> <li>“Just slap <code>//nolint</code> and move on.”</li> </ul> <p>Both approaches avoid thinking. One hides behind purity, the other behind convenience.</p> <h1>When disabling a linter is justified</h1> <p>Disabling a linter can be reasonable if:</p> <ol> <li>You understand exactly what the rule checks.</li> <li>You know why it’s a false positive <em>in this context</em>.</li> <li>You leave a short explanation next to the code.</li> </ol> <p>If you can’t articulate the reason, you shouldn’t disable it.</p> <h1>When disabling is a smell</h1> <p>It’s a red flag when:</p> <ul> <li>The same suppression appears all over the codebase.</li> <li>Entire linters are disabled instead of specific rules.</li> <li>The comment says nothing beyond “false positive”.</li> </ul> <p>That last one is especially bad. It teaches nothing and invites copy-paste suppression.</p> <h1>The golangci-lint gap</h1> <p><code>golangci-lint</code> is great at aggregation, but its <code>//nolint</code> mechanism is blunt:</p> <ul> <li>You <em>can</em> disable linters inline.</li> <li>You <em>cannot</em> selectively disable individual linter rules via <code>//nolint</code>.</li> </ul> <p>That pushes teams toward over-disabling.</p> <h1>Why gosec and revive deserve better</h1> <p>Both linters already support <strong>rule-level suppression</strong>:</p> <ul> <li><code>gosec</code>: <code>#nosec G404</code> (optionally with justification)</li> <li><code>revive</code>: <code>//revive:disable:rule-name</code> / <code>//revive:enable</code></li> </ul> <p>This is the right model. It forces precision and intent.</p> <p>But <code>golangci-lint</code> still allows:</p> <pre><code>//nolint:gosec //nolint:revive </code></pre> <p>Which silences <em>everything</em>, including rules you never meant to touch.</p> <p>Consider this example:</p> <pre><code>res, _ := http.Get(userURL) </code></pre> <p>This can trigger 3 issues in gosec:</p> <ul> <li>G104: Audit errors not checked</li> <li>G107: Url provided to HTTP request as taint input</li> <li>G114: Use of net/http serve function that has no support for setting timeouts</li> </ul> <p>Now, if our colleague does this:</p> <pre><code>res, _ := http.Get(userURL) //nolint:gosec // G107: url is validated previously </code></pre> <p>G107 is ignored - which might be fine (well, maybe). But we <em>also</em> silently ignored G104 and G114. For the reader it may not be obvious, and thus we may miss more critical issues as ignored. Which is even worse - in some cases they may be added after <code>nolint</code> was put and thus no one will ever see the other linter warnings/errors.</p> <p>If you do see it as a problem, the same way like I do, you might be interested in <code>nolintguard</code>.</p> <h1>Enforcing discipline with nolintguard</h1> <p>To prevent blanket suppression, I built <strong>nolintguard</strong>: <a href="https://github.com/go-extras/nolintguard">https://github.com/go-extras/nolintguard</a></p> <p>What it does:</p> <ul> <li>Disallows <code>//nolint:gosec</code> and <code>//nolint:revive</code>.</li> <li>Forces developers to use rule-specific mechanisms instead.</li> <li>Makes “why is this disabled?” explicit and reviewable.</li> </ul> <p>It is technically possible to embed <code>nolintguard</code> in <code>golangci-lint</code>, but the maintainer of <code>golangci-lint</code> has plans for a native solution in the future, so this lives as a standalone tool for now. Until then, teams that care about linting quality still need guardrails.</p> <h1>Takeaway</h1> <p>Linters exist to support reasoning, not replace it.</p> <p>If you disable a rule:</p> <ul> <li>Be precise.</li> <li>Be explicit.</li> <li>Leave context behind.</li> </ul> <p>Otherwise, you’re not reducing noise - you’re just accumulating technical debt with a green CI badge.</p> <p>If your team struggles with <code>//nolint</code> sprawl, try <code>nolintguard</code>. It’s a small setup cost that pays off in every code review.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/IntentionJolly2730"> /u/IntentionJolly2730 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1qj2k4e/linters_are_not_a_religion_but_nolint_is_not_a/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1qj2k4e/linters_are_not_a_religion_but_nolint_is_not_a/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1qj1ktz/golang_bogdanfinntlsclient_tls_fingerprint_still/" target="_blank">Golang + bogdanfinn/tls-client — TLS fingerprint still getting detected (looking for help)</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I’m using tls-client in Go to mimic real Chrome TLS fingerprints.</p> <p>Even with:</p> <ul> <li>Proper client profiles</li> <li>Correct UA + header order</li> <li>HTTP/2 enabled</li> </ul> <p>I’m still getting detected (real Chrome works on same proxy).</p> <p>Can anyone help?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/echno1"> /u/echno1 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1qj1ktz/golang_bogdanfinntlsclient_tls_fingerprint_still/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1qj1ktz/golang_bogdanfinntlsclient_tls_fingerprint_still/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1qiykjs/markdown_to_pdf_with_cover_pages_toc_watermarks/" target="_blank">Markdown to PDF with cover pages, TOC, watermarks: go-md2pdf</a>
+            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/golang/comments/1qiykjs/markdown_to_pdf_with_cover_pages_toc_watermarks/">  </a> </td><td> <!-- SC_OFF --><div class="md"><p>I wanted something I&#39;d actually use. I&#39;m a French teacher who writes a lot of teaching materials and temporary documentation for my programming projects. I was tired of fighting with Pandoc every time I needed a cover page, a signature, or a table of contents.</p> <p>So I built <strong>go-md2pdf</strong>. It takes Markdown and spits out PDFs with cover pages, table of contents, watermarks, signature blocks. It has 8 styles: some I use for different contexts, others are there as demos. It can batch process a folder if you&#39;ve got a lot of files.</p> <p>It uses headless Chrome (<a href="https://github.com/go-rod/rod">go-rod</a>) under the hood. I don&#39;t need LaTeX, so it doesn&#39;t use it. It&#39;s lib-first: the CLI is built on top of the library.</p> <p><strong>On AI:</strong> Claude generates code from my specs. I design the architecture and review everything before merging. Wanted to mention since the sub asks.</p> <p><a href="https://github.com/alnah/go-md2pdf"><strong>GitHub</strong></a>: Happy to take PRs for new CSS styles or other proposals per the contributing policy. Feedback/Question welcome.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Objective-Pepper-750"> /u/Objective-Pepper-750 </a> <br/> <span><a href="https://github.com/alnah/go-md2pdf">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1qiykjs/markdown_to_pdf_with_cover_pages_toc_watermarks/">[comments]</a></span> </td></tr></table></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1qiw0db/our_golang_api_was_mysteriously_slow_turned_out/" target="_blank">Our golang API was mysteriously slow, turned out the only problem was way too much middleware</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Had this golang API that was mysteriously slow. Code looked fine to me, database queries were fast and no other obvious bottlenecks. Profiling showed most time was spent in the http middleware chain but I figured middleware overhead should be tiny.</p> <p>Turns out over time different teams had added their own middleware and we ended up with like 23 different things running on every single request. Logging stuff that was parsing the entire request body, auth checks hitting the database twice, metrics collection, tracing, cors handlers, some random validation thing nobody even remembered adding. Each one was quick individually but stacked together they were adding hundreds of milliseconds. The request was spending more time going through all this middleware than actually doing the work it was supposed to do. And they all ran one after another so nothing could happen in parallel.</p> <p>Ripped out the ones we didn&#39;t really need, combined some of the others, and moved certain checks to only run on the routes that actually needed them instead of globally. Response times dropped massively with literally no other changes.</p> <p>Feels obvious now but middleware really sneaks up on you when everyone keeps adding their own without thinking about the total cost. Now we have a rule that you need to justify why new middleware is necessary before adding it.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/milli_xoxxy"> /u/milli_xoxxy </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1qiw0db/our_golang_api_was_mysteriously_slow_turned_out/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1qiw0db/our_golang_api_was_mysteriously_slow_turned_out/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1qiuc40/is_there_a_go_library_that_natively_handles/" target="_blank">Is there a Go library that natively handles Tables, Colors, AND Charts ?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;m looking for a Go library to generate PDFs that supports three specific things:</p> <ol> <li><strong>Rich Tables</strong> (Multi-color, headers, grid layouts).</li> <li><strong>Charts</strong> (Bar/Pie charts generated <em>natively</em> inside the PDF, not just embedding an image)</li> <li><strong>Pure Go</strong> (No headless Chrome/Gotenberg, no CGO if possible)<br/></li> </ol> <p><strong>My Question:</strong> Does a library exist that sits between Maroto and UniPDF? Something with the layout ease of Maroto but with a built-in charting engine that draws vectors/shapes directly?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/One_Delay_3313"> /u/One_Delay_3313 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1qiuc40/is_there_a_go_library_that_natively_handles/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1qiuc40/is_there_a_go_library_that_natively_handles/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1qitd0f/graphbased_refactor_analysis_for_go_projects/" target="_blank">Graph-based refactor analysis for Go projects , Arbor v1.4</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Go support was added last release, and now the GUI is live.<br/> Arbor analyzes call/import graphs and shows direct and transitive dependencies before you change code.<br/> Repo : <a href="https://github.com/Anandb71/arbor">https://github.com/Anandb71/arbor</a></p> <p>If anyone here maintains large Go services, I’d love to know whether the results feel useful or if particular patterns (DI, init functions, interfaces) need custom treatment.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/AccomplishedWay3558"> /u/AccomplishedWay3558 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1qitd0f/graphbased_refactor_analysis_for_go_projects/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1qitd0f/graphbased_refactor_analysis_for_go_projects/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1qikukz/making_generic_method_for_getter_and_setter/" target="_blank">Making generic method for getter and setter</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi guys. Is there any way to transform getter and setter methods into generic method. I need it for making generic method to get all data from database!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Independent_Teach686"> /u/Independent_Teach686 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1qikukz/making_generic_method_for_getter_and_setter/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1qikukz/making_generic_method_for_getter_and_setter/">[comments]</a></span></div>
           </li>
   
         </ul>
@@ -515,8 +1780,8 @@
         <ul class="item-list">
   
           <li>
-            <a href="https://www.reddit.com/r/rust_gamedev/comments/1qhuz1e/ive_just_released_my_terminal_game_colony_deep/" target="_blank">I’ve just released my terminal game colony deep core on steam! Go get it!</a>
-            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/rust_gamedev/comments/1qhuz1e/ive_just_released_my_terminal_game_colony_deep/">  </a> </td><td> <!-- SC_OFF --><div class="md"><p>Thanks to feedback from streamers and players. Thank you for playing and the support.</p> <p>Steam: <a href="https://store.steampowered.com/app/4161680/">https://store.steampowered.com/app/4161680/</a></p> <p>Itch.io: <a href="https://meapps.itch.io/terminal-colony-deep-core">https://meapps.itch.io/terminal-colony-deep-core</a></p> <p>Build in Rust, featuring Bevy and egui. <a href="https://bevy.org/">https://bevy.org/</a> <a href="https://www.egui.rs/">https://www.egui.rs/</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Big_Membership9737"> /u/Big_Membership9737 </a> <br/> <span><a href="https://i.redd.it/1a2qvnl2mgeg1.png">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust_gamedev/comments/1qhuz1e/ive_just_released_my_terminal_game_colony_deep/">[comments]</a></span> </td></tr></table></div>
+            <a href="https://www.reddit.com/r/rust_gamedev/comments/1qja9zn/latest_midwinter_remaster_version_06_now_with_a/" target="_blank">Latest Midwinter Remaster Version 0.6 - Now with a Tutorial</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/PlayfulInterview984"> /u/PlayfulInterview984 </a> <br/> <span><a href="/r/retrogamedev/comments/1qj63zd/latest_midwinter_remaster_version_06_now_with_a/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust_gamedev/comments/1qja9zn/latest_midwinter_remaster_version_06_now_with_a/">[comments]</a></span></div>
           </li>
   
         </ul>
