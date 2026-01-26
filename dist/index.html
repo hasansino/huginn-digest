@@ -240,8 +240,8 @@
   
       <div class="card">
         <h2>Huginn Daily</h2>
-        <p class="header-p">Sunday, January 25, 2026</p>
-        <p class="header-p">2e20f69b-ced9-41b4-9dfa-cfbe1e0a60ac</p>
+        <p class="header-p">Monday, January 26, 2026</p>
+        <p class="header-p">e74b0b52-b566-45eb-9dc2-488047ec0341</p>
       </div>
   
       <div class="card">
@@ -249,1970 +249,209 @@
         <table class="weather-table">
           <tr>
             <th>Summary</th>
-            <td>⛅️ Partly cloudy until evening, starting again overnight.</td>
+            <td>⛅️ Partly cloudy until afternoon, starting again in the evening.</td>
           </tr>
           <tr>
             <th>Temperature Range</th>
-            <td>9°C to 18°C (48°F to 64°F)</td>
+            <td>11°C to 19°C (51°F to 65°F)</td>
           </tr>
           <tr>
             <th>Feels Like</th>
-            <td>Low: 43°F | High: 66°F</td>
+            <td>Low: 46°F | High: 64°F</td>
           </tr>
           <tr>
             <th>Humidity</th>
-            <td>85%</td>
+            <td>79%</td>
           </tr>
           <tr>
             <th>Wind</th>
-            <td>10 km/h (6 mph), Direction: 85°</td>
+            <td>14 km/h (9 mph), Direction: 60°</td>
           </tr>
           <tr>
             <th>Precipitation</th>
-            <td>Probability: 0%, Type: No precipitation expected</td>
+            <td>Probability: 16%, Type: No precipitation expected</td>
           </tr>
           <tr>
             <th>Sunrise / Sunset</th>
-            <td>🌅 06:51 AM / 🌇 05:09 PM</td>
+            <td>🌅 06:50 AM / 🌇 05:10 PM</td>
           </tr>
           <tr>
             <th>Moon Phase</th>
-            <td>Waxing Crescent (22%)</td>
+            <td>Waxing Gibbous (26%)</td>
           </tr>
           <tr>
             <th>Cloud Cover</th>
-            <td>42%</td>
+            <td>55%</td>
           </tr>
           <tr>
             <th>Pressure</th>
-            <td>1022.56 hPa</td>
+            <td>1017.0 hPa</td>
           </tr>
           <tr>
             <th>Dew Point</th>
-            <td>50.11°F</td>
+            <td>50.74°F</td>
           </tr>
           <tr>
             <th>Visibility</th>
-            <td>5.94 miles</td>
+            <td>5.72 miles</td>
           </tr>
         </table>
       </div>
   
       <div class="card">
-        <h2>Other</h2>
-        <ul class="item-list">
-  
-          <li>
-            <a href="https://selfh.st/weekly/2026-01-23/" target="_blank"> Self-Host Weekly #155: One Hundred Million </a>
-            <div class="item-content">
-			  Become a <a href="https://selfh.st/membership">paid subscriber</a> to access the newsletter’s full-text RSS feed or <a href="https://selfh.st">continue reading on selfh.st</a>.
-		  </div>
-          </li>
-  
-        </ul>
-      </div>
-  
-      <div class="card">
-        <h2>Golang</h2>
-        <ul class="item-list">
-  
-          <li>
-            <a href="https://go.dev/blog/greenteagc" target="_blank">The Green Tea Garbage Collector</a>
-            <div class="item-content">
-<div id="blog"><div id="content">
-  <div id="content">
-
-    <div class="Article" data-slug="/blog/greenteagc">
-    
-    <h1 class="small"><a href="/blog/">The Go Blog</a></h1>
-    
-
-    <h1>The Green Tea Garbage Collector</h1>
-      
-      <p class="author">
-      Michael Knyszek and Austin Clements<br>
-      29 October 2025
-      </p>
-      
-      <div class='markdown'>
-<style type="text/css" scoped>
-  .centered {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  div.carousel {
-    display: flex;
-    width: 100%;
-    height: auto;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    padding-bottom: 1.1em;
-  }
-  .hide-overflow {
-    overflow-x: hidden !important;
-  }
-  button.scroll-button-left {
-    left: 0;
-    bottom: 0;
-  }
-  button.scroll-button-right {
-    right: 0;
-    bottom: 0;
-  }
-  button.scroll-button {
-    position: absolute;
-    font-size: 1em;
-    font-family: inherit;
-    font-style: oblique;
-  }
-  figure.carouselitem {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    flex-shrink: 0;
-    scroll-snap-align: start;
-  }
-  figure.carouselitem figcaption {
-    display: table-caption;
-    caption-side: top;
-    text-align: left;
-    width: 80%;
-    height: auto;
-    padding: 8px;
-  }
-  figure.captioned {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 0 auto;
-    padding: 0;
-    width: 95%;
-  }
-  figure.captioned figcaption {
-    display: table-caption;
-    caption-side: top;
-    text-align: center;
-    font-style: oblique;
-    height: auto;
-    padding: 8px;
-  }
-  div.row {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-  }
-</style>
-<noscript>
-    <center>
-    <i>For the best experience, view <a href="/blog/greenteagc">this blog post</a>
-    in a browser with JavaScript enabled.</i>
-    </center>
-</noscript>
-<p>Go 1.25 includes a new experimental garbage collector called Green Tea,
-available by setting <code>GOEXPERIMENT=greenteagc</code> at build time.
-Many workloads spend around 10% less time in the garbage collector, but some
-workloads see a reduction of up to 40%!</p>
-<p>It&rsquo;s production-ready and already in use at Google, so we encourage you to
-try it out.
-We know some workloads don&rsquo;t benefit as much, or even at all, so your feedback
-is crucial to helping us move forward.
-Based on the data we have now, we plan to make it the default in Go 1.26.</p>
-<p>To report back with any problems, <a href="/issue/new">file a new issue</a>.</p>
-<p>To report back with any successes, reply to <a href="/issue/73581">the existing Green Tea issue</a>.</p>
-<p>What follows is a blog post based on Michael Knyszek&rsquo;s GopherCon 2025 talk.</p>
-<div class="iframe" style="aspect-ratio: 560 / 315">
-  <iframe src="https://www.youtube.com/embed/gPJkM95KpKo" width="100%" height="100%" frameborder="0" allowfullscreen mozallowfullscreen webkitallowfullscreen></iframe>
-</div>
-<h2 id="tracing-garbage-collection">Tracing garbage collection</h2>
-<p>Before we discuss Green Tea let&rsquo;s get us all on the same page about garbage
-collection.</p>
-<h3 id="objects-and-pointers">Objects and pointers</h3>
-<p>The purpose of garbage collection is to automatically reclaim and reuse memory
-no longer used by the program.</p>
-<p>To this end, the Go garbage collector concerns itself with <em>objects</em> and
-<em>pointers</em>.</p>
-<p>In the context of the Go runtime, <em>objects</em> are Go values whose underlying
-memory is allocated from the heap.
-Heap objects are created when the Go compiler can&rsquo;t figure out how else to allocate
-memory for a value.
-For example, the following code snippet allocates a single heap object: the backing
-store for a slice of pointers.</p>
-<pre><code>var x = make([]*int, 10) // global
-</code></pre>
-<p>The Go compiler can&rsquo;t allocate the slice backing store anywhere except the heap,
-since it&rsquo;s very hard, and maybe even impossible, for it to know how long <code>x</code> will
-refer to the object for.</p>
-<p><em>Pointers</em> are just numbers that indicate the location of a Go value in memory,
-and they&rsquo;re how a Go program references objects.
-For example, to get the pointer to the beginning of the object allocated in the
-last code snippet, we can write:</p>
-<pre><code>&amp;x[0] // 0xc000104000
-</code></pre>
-<h3 id="the-mark-sweep-algorithm">The mark-sweep algorithm</h3>
-<p>Go&rsquo;s garbage collector follows a strategy broadly referred to as <em>tracing garbage
-collection</em>, which just means that the garbage collector follows, or traces, the
-pointers in the program to identify which objects the program is still using.</p>
-<p>More specifically, the Go garbage collector implements the mark-sweep algorithm.
-This is much simpler than it sounds.
-Imagine objects and pointers as a sort of graph, in the computer science sense.
-Objects are nodes, pointers are edges.</p>
-<p>The mark-sweep algorithm operates on this graph, and as the name might suggest,
-proceeds in two phases.</p>
-<p>In the first phase, the mark phase, it walks the object graph from well-defined
-source edges called <em>roots</em>.
-Think global and local variables.
-Then, it <em>marks</em> everything it finds along the way as <em>visited</em>, to avoid going in
-circles.
-This is analogous to your typical graph flood algorithm, like a depth-first or
-breadth-first search.</p>
-<p>Next is the sweep phase.
-Whatever objects were not visited in our graph walk are unused, or <em>unreachable</em>,
-by the program.
-We call this state unreachable because it is impossible with normal safe Go code
-to access that memory anymore, simply through the semantics of the language.
-To complete the sweep phase, the algorithm simply iterates through all the
-unvisited nodes and marks their memory as free, so the memory allocator can reuse
-it.</p>
-<h3 id="thats-it">That&rsquo;s it?</h3>
-<p>You may think I&rsquo;m oversimplifying a bit here.
-Garbage collectors are frequently referred to as <em>magic</em>, and <em>black boxes</em>.
-And you&rsquo;d be partially right, there are more complexities.</p>
-<p>For example, this algorithm is, in practice, executed concurrently with your
-regular Go code.
-Walking a graph that&rsquo;s mutating underneath you brings challenges.
-We also parallelize this algorithm, which is a detail that&rsquo;ll come up again
-later.</p>
-<p>But trust me when I tell you that these details are mostly separate from the
-core algorithm.
-It really is just a simple graph flood at the center.</p>
-<h3 id="graph-flood-example">Graph flood example</h3>
-<p>Let&rsquo;s walk through an example.
-Navigate through the slideshow below to follow along.</p>
-<noscript>
-<i>Scroll horizontally through the slideshow!</i>
-<br />
-<br />
-Consider viewing with JavaScript enabled, which will add "Previous" and "Next"
-buttons.
-This will let you click through the slideshow without the scrolling motion,
-which will better highlight differences between the diagrams.
-<br />
-<br />
-</noscript>
-<div class="centered">
-<button type="button" id="marksweep-prev" class="scroll-button scroll-button-left" hidden disabled>← Prev</button>
-<button type="button" id="marksweep-next" class="scroll-button scroll-button-right" hidden>Next →</button>
-<div id="marksweep" class="carousel">
-    <figure class="carouselitem">
-        
-        <figcaption>
-        Here we have a diagram of some global variables and Go heap.
-        Let's break it down, piece by piece.
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        On the left here we have our roots.
-        These are global variables x and y.
-        They will be the starting point of our graph walk.
-        Since they're marked blue, according to our handy legend in the bottom left, they're currently on our work list.
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        On the right side, we have our heap.
-        Currently, everything in our heap is grayed out because we haven't visited any of it yet.
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        Each one of these rectangles represents an object.
-        Each object is labeled with its type.
-        This object in particular is an object of type T, whose type definition is on the top left.
-        It's got a pointer to an array of children, and some value.
-        We can surmise that this is some kind of recursive tree data structure.
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        In addition to the objects of type T, you'll also notice that we have array objects containing *Ts.
-        These are pointed to by the "children" field of objects of type T.
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        Each square inside of the rectangle represents 8 bytes of memory.
-        A square with a dot is a pointer.
-        If it has an arrow, it is a non-nil pointer pointing to some other object.
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        And if it doesn't have a corresponding arrow, then it's a nil pointer.
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        Next, these dotted rectangles represents free space, what I'll call a free "slot." We could put an object there, but there currently isn't one.
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        You'll also notice that objects are grouped together by these labeled, dotted rounded rectangles.
-        Each of these represents a <i>page</i>, which is a contiguous
-        block of fixed-size, aligned memory.
-        In Go, pages are 8 KiB (regardless of the hardware virtual
-        memory page size).
-        These pages are labeled A, B, C, and D, and I'll refer to them that way.
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        In this diagram, each object is allocated as part of some page.
-        Like in the real implementation, each page here only contains objects of a certain size.
-        This is just how the Go heap is organized.
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        Pages are also how we organize per-object metadata.
-        Here you can see seven boxes, each corresponding to one of the seven object slots in page A.
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        Each box represents one bit of information: whether or not we have seen the object before.
-        This is actually how the real runtime manages whether an object has been visited, and it'll be an important detail later.
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        That was a lot of detail, so thanks for reading along.
-        This will all come into play later.
-        For now, let's just see how our graph flood applies to this picture.
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        We start by taking a root off of the work list.
-        We mark it red to indicate that it's now active.
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        Following that root's pointer, we find an object of type T, which we add to our work list.
-        Following our legend, we draw the object in blue to indicate that it's on our work list.
-        Note also that we set the seen bit corresponding to this object in our metadata.
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        Same goes for the next root.
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        Now that we've taken care of all the roots, we're left with two objects on our work list.
-        Let's take an object off the work list.
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        What we're going to do now is walk the pointers of the objects, to find more objects.
-        By the way, we call walking the pointers of an object "scanning" the object.
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        We find this valid array object…
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        … and add it to our work list.
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        From here, we proceed recursively.
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        We walk the array's pointers.
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        Find some more objects…
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        Then we walk the objects that the array object referred to!
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        And note that we still have to walk over all pointers, even if they're nil.
-        We don't know ahead of time if they will be.
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        One more object down this branch…
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        And now we've reached the other branch, starting from that object in page A we found much earlier from one of the roots.
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        You may be noticing a last-in-first-out discipline for our work list here, indicating that our work list is a stack, and hence our graph flood is approximately depth-first.
-        This is intentional, and reflects the actual graph flood algorithm in the Go runtime.
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        Let's keep going…
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        Next we find another array object…
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        And walk it…
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        Just one more object left on our work list…
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        Let's scan it…
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        And we're done with the mark phase! There's nothing we're actively working on and there's nothing left on our work list.
-        Every object drawn in black is reachable, and every object drawn in gray is unreachable.
-        Let's sweep the unreachable objects, all in one go.
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        We've converted those objects into free slots, ready to hold new objects.
-        </figcaption>
-    </figure>
-</div>
-</div>
-<h2 id="the-problem">The problem</h2>
-<p>After all that, I think we have a handle on what the Go garbage collector is actually doing.
-This process seems to work well enough today, so what&rsquo;s the problem?</p>
-<p>Well, it turns out we can spend <em>a lot</em> of time executing this particular algorithm in some
-programs, and it adds substantial overhead to nearly every Go program.
-It&rsquo;s not that uncommon to see Go programs spending 20% or more of their CPU time in the
-garbage collector.</p>
-<p>Let&rsquo;s break down where that time is being spent.</p>
-<h3 id="garbage-collection-costs">Garbage collection costs</h3>
-<p>At a high level, there are two parts to the cost of the garbage collector.
-The first is how often it runs, and the second is how much work it does each time it runs.
-Multiply those two together, and you get the total cost of the garbage collector.</p>
-<figure class="captioned">
-    <figcaption>
-    Total GC cost = Number of GC cycles &times; Average cost per GC cycle
-    </figcaption>
-</figure>
-<p>Over the years we&rsquo;ve tackled both terms in this equation, and for more on <em>how often</em> the garbage
-collector runs, see <a href="https://www.youtube.com/watch?v=07wduWyWx8M" rel="noreferrer" target="_blank">Michael&rsquo;s GopherCon EU talk from 2022</a>
-about memory limits.
-<a href="/doc/gc-guide">The guide to the Go garbage collector</a> also has a lot to say about this topic,
-and is worth a look if you want to dive deeper.</p>
-<p>But for now let&rsquo;s focus only on the second part, the cost per cycle.</p>
-<p>From years of poring over CPU profiles to try to improve performance, we know two big things
-about Go&rsquo;s garbage collector.</p>
-<p>The first is that about 90% of the cost of the garbage collector is spent marking,
-and only about 10% is sweeping.
-Sweeping turns out to be much easier to optimize than marking,
-and Go has had a very efficient sweeper for many years.</p>
-<p>The second is that, of that time spent marking, a substantial portion, usually at least 35%, is
-simply spent <em>stalled</em> on accessing heap memory.
-This is bad enough on its own, but it completely gums up the works on what makes modern CPUs
-actually fast.</p>
-<h3 id="a-microarchitectural-disaster">&ldquo;A microarchitectural disaster&rdquo;</h3>
-<p>What does &ldquo;gum up the works&rdquo; mean in this context?
-The specifics of modern CPUs can get pretty complicated, so let&rsquo;s use an analogy.</p>
-<p>Imagine the CPU driving down a road, where that road is your program.
-The CPU wants to ramp up to a high speed, and to do that it needs to be able to see far ahead of it,
-and the way needs to be clear.
-But the graph flood algorithm is like driving through city streets for the CPU.
-The CPU can&rsquo;t see around corners and it can&rsquo;t predict what&rsquo;s going to happen next.
-To make progress, it constantly has to slow down to make turns, stop at traffic lights, and avoid
-pedestrians.
-It hardly matters how fast your engine is because you never get a chance to get going.</p>
-<p>Let&rsquo;s make that more concrete by looking at our example again.
-I&rsquo;ve overlaid the heap here with the path that we took.
-Each left-to-right arrow represents a piece of scanning work that we did
-and the dashed arrows show how we jumped around between bits of scanning work.</p>
-<figure class="captioned">
-    
-    <figcaption>
-    The path through the heap the garbage collector took in our graph flood example.
-    </figcaption>
-</figure>
-<p>Notice that we were jumping all over memory doing tiny bits of work in each place.
-In particular, we&rsquo;re frequently jumping between pages, and between different parts of pages.</p>
-<p>Modern CPUs do a lot of caching.
-Going to main memory can be up to 100x slower than accessing memory that&rsquo;s in our cache.
-CPU caches are populated with memory that&rsquo;s been recently accessed, and memory that&rsquo;s nearby to
-recently accessed memory.
-But there&rsquo;s no guarantee that any two objects that point to each other will <em>also</em> be close to each
-other in memory.
-The graph flood doesn&rsquo;t take this into account.</p>
-<p>Quick side note: if we were just stalling fetches to main memory, it might not be so bad.
-CPUs issue memory requests asynchronously, so even slow ones could overlap if the CPU could see
-far enough ahead.
-But in the graph flood, every bit of work is small, unpredictable, and highly dependent on the
-last, so the CPU is forced to wait on nearly every individual memory fetch.</p>
-<p>And unfortunately for us, this problem is only getting worse.
-There&rsquo;s an adage in the industry of &ldquo;wait two years and your code will get faster.&rdquo;</p>
-<p>But Go, as a garbage collected language that relies on the mark-sweep algorithm, risks the opposite.
-&ldquo;Wait two years and your code will get slower.&rdquo;
-The trends in modern CPU hardware are creating new challenges for garbage collector performance:</p>
-<p><strong>Non-uniform memory access.</strong>
-For one, memory now tends to be associated with subsets of CPU cores.
-Accesses by <em>other</em> CPU cores to that memory are slower than before.
-In other words, the cost of a main memory access <a href="https://jprahman.substack.com/p/sapphire-rapids-core-to-core-latency" rel="noreferrer" target="_blank">depends on which CPU core is accessing
-it</a>.
-It&rsquo;s non-uniform, so we call this non-uniform memory access, or NUMA for short.</p>
-<p><strong>Reduced memory bandwidth.</strong>
-Available memory bandwidth per CPU is trending downward over time.
-This just means that while we have more CPU cores, each core can submit relatively fewer
-requests to main memory, forcing non-cached requests to wait longer than before.</p>
-<p><strong>Ever more CPU cores.</strong>
-Above, we looked at a sequential marking algorithm, but the real garbage collector performs this
-algorithm in parallel.
-This scales well to a limited number of CPU cores, but the shared queue of objects to scan becomes
-a bottleneck, even with careful design.</p>
-<p><strong>Modern hardware features.</strong>
-New hardware has fancy features like vector instructions, which let us operate on a lot of data at once.
-While this has the potential for big speedups, it&rsquo;s not immediately clear how to make that work for
-marking because marking does so much irregular and often small pieces of work.</p>
-<h2 id="green-tea">Green Tea</h2>
-<p>Finally, this brings us to Green Tea, our new approach to the mark-sweep algorithm.
-The key idea behind Green Tea is astonishingly simple:</p>
-<p><em>Work with pages, not objects.</em></p>
-<p>Sounds trivial, right?
-And yet, it took a lot of work to figure out how to order the object graph walk and what we needed to
-track to make this work well in practice.</p>
-<p>More concretely, this means:</p>
-<ul>
-<li>Instead of scanning objects we scan whole pages.</li>
-<li>Instead of tracking objects on our work list, we track whole pages.</li>
-<li>We still need to mark objects at the end of the day, but we&rsquo;ll track marked objects locally to each
-page, rather than across the whole heap.</li>
-</ul>
-<h3 id="green-tea-example">Green Tea example</h3>
-<p>Let&rsquo;s see what this means in practice by looking at our example heap again, but this time
-running Green Tea instead of the straightforward graph flood.</p>
-<p>As above, navigate through the annotated slideshow to follow along.</p>
-<noscript>
-<i>Scroll horizontally through the slideshow!</i>
-<br />
-<br />
-Consider viewing with JavaScript enabled, which will add "Previous" and "Next"
-buttons.
-This will let you click through the slideshow without the scrolling motion,
-which will better highlight differences between the diagrams.
-<br />
-<br />
-</noscript>
-<div class="centered">
-<button type="button" id="greentea-prev" class="scroll-button scroll-button-left" hidden disabled>← Prev</button>
-<button type="button" id="greentea-next" class="scroll-button scroll-button-right" hidden>Next →</button>
-<div id="greentea" class="carousel">
-    <figure class="carouselitem">
-        
-        <figcaption>
-        This is the same heap as before, but now with two bits of metadata per object rather than one.
-        Again, each bit, or box, corresponds to one of the object slots in the page.
-        In total, we now have fourteen bits that correspond to the seven slots in page A.
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        The top bits represent the same thing as before: whether or not we've seen a pointer to the object.
-        I'll call these the "seen" bits.
-        The bottom set of bits are new.
-        These "scanned" bits track whether or not we've <i>scanned</i> the object.
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        This new piece of metadata is necessary because, in Green tea, <b>the work list tracks pages,
-        not objects</b>.
-        We still need to track objects at some level, and that's the purpose of these bits.
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        We start off the same as before, walking objects from the roots.
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        But this time, instead of putting an object on the work list,
-        we put a whole page–in this case page A–on the work list,
-        indicated by shading the whole page blue.
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        The object we found is also blue to indicate that when we do take this page off of the work list, we will need to look at that object.
-        Note that the object's blue hue directly reflects the metadata in page A.
-        Its corresponding seen bit is set, but its scanned bit is not.
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        We follow the next root, find another object, and again put the whole page–page C–on the work list and set the object's seen bit.
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        We're done following roots, so we turn to the work list and take page A off the work list.
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        Using the seen and scanned bits, we can tell there's one object to scan on page A.
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        We scan that object, following its pointers.
-        And as a result, we add page B to the work list, since the first object in page A points to an object in page B.
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        We're done with page A.
-        Next we take page C off the work list.
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        Similar to page A, there's a single object on page C to scan.
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        We found a pointer to another object in page B.
-        Page B is already on the work list, so we don't need to add anything to the work list.
-        We simply have to set the seen bit for the target object.
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        Now it's page B's turn.
-        We've accumulated two objects to scan on page B,
-        and we can process both of these objects in a row, in memory order!
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        We walk the pointers of the first object…
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        We find a pointer to an object in page A.
-        Page A was previously on the work list, but isn't at this point, so we put it back on the work list.
-        Unlike the original mark-sweep algorithm, where any given object is only added to the work list at
-        most once per whole mark phase, in Green Tea, a given page can reappear on the work list several times
-        during a mark phase.
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        We scan the second seen object in the page immediately after the first.
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        We find a few more objects in page A…
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        We're done scanning page B, so we pull page A off the work list.
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        This time we only need to scan three objects, not four,
-        since we already scanned the first object.
-        We know which objects to scan by looking at the difference between the "seen" and "scanned" bits.
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        We'll scan these objects in sequence.
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        We're done! There are no more pages on the work list and there's nothing we're actively looking at.
-        Notice that the metadata now all lines up nicely, since all reachable objects were both seen and scanned.
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        You may have also noticed during our traversal that the work list order is a little different from the graph flood.
-        Where the graph flood had a last-in-first-out, or stack-like, order, here we're using a first-in-first-out, or queue-like, order for the pages on our work list.
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        This is intentional.
-        We let seen objects accumulate on each page while the page sits on the queue, so we can process as many as we can at once.
-        That's how we were able to hit so many objects on page A at once.
-        Sometimes laziness is a virtue.
-        </figcaption>
-    </figure>
-    <figure class="carouselitem">
-        
-        <figcaption>
-        And finally we can sweep away the unvisited objects, as before.
-        </figcaption>
-    </figure>
-</div>
-</div>
-<h3 id="getting-on-the-highway">Getting on the highway</h3>
-<p>Let&rsquo;s come back around to our driving analogy.
-Are we finally getting on the highway?</p>
-<p>Let&rsquo;s recall our graph flood picture before.</p>
-<figure class="captioned">
-    
-    <figcaption>
-    The path the original graph flood took through the heap required 7 separate scans.
-    </figcaption>
-</figure>
-<p>We jumped around a whole lot, doing little bits of work in different places.
-The path taken by Green Tea looks very different.</p>
-<figure class="captioned">
-    
-    <figcaption>
-    The path taken by Green Tea requires only 4 scans.
-    </figcaption>
-</figure>
-<p>Green Tea, in contrast, makes fewer, longer left-to-right passes over pages A and B.
-The longer these arrows, the better, and with bigger heaps, this effect can be much stronger.
-<em>That&rsquo;s</em> the magic of Green Tea.</p>
-<p>It&rsquo;s also our opportunity to ride the highway.</p>
-<p>This all adds up to a better fit with the microarchitecture.
-We can now scan objects closer together with much higher probability, so
-there&rsquo;s a better chance we can make use of our caches and avoid main memory.
-Likewise, per-page metadata is more likely to be in cache.
-Tracking pages instead of objects means work lists are smaller,
-and less pressure on work lists means less contention and fewer CPU stalls.</p>
-<p>And speaking of the highway, we can take our metaphorical engine into gears we&rsquo;ve never been able to
-before, since now we can use vector hardware!</p>
-<h3 id="vector-acceleration">Vector acceleration</h3>
-<p>If you&rsquo;re only vaguely familiar with vector hardware, you might be confused as to how we can use it here.
-But besides the usual arithmetic and trigonometric operations,
-recent vector hardware supports two things that are valuable for Green Tea:
-very wide registers, and sophisticated bit-wise operations.</p>
-<p>Most modern x86 CPUs support AVX-512, which has 512-bit wide vector registers.
-This is wide enough to hold all of the metadata for an entire page in just two registers,
-right on the CPU, enabling Green Tea to work on an entire page in just a few straight-line
-instructions.
-Vector hardware has long supported basic bit-wise operations on whole vector registers, but starting
-with AMD Zen 4 and Intel Ice Lake, it also supports a new bit vector &ldquo;Swiss army knife&rdquo; instruction
-that enables a key step of the Green Tea scanning process to be done in just a few CPU cycles.
-Together, these allow us to turbo-charge the Green Tea scan loop.</p>
-<p>This wasn&rsquo;t even an option for the graph flood, where we&rsquo;d be jumping between scanning objects that
-are all sorts of different sizes.
-Sometimes you needed two bits of metadata and sometimes you needed ten thousand.
-There simply wasn&rsquo;t enough predictability or regularity to use vector hardware.</p>
-<p>If you want to nerd out on some of the details, read along!
-Otherwise, feel free to skip ahead to the <a href="#evaluation">evaluation</a>.</p>
-<h4 id="avx-512-scanning-kernel">AVX-512 scanning kernel</h4>
-<p>To get a sense of what AVX-512 GC scanning looks like, take a look at the diagram below.</p>
-<figure class="captioned">
-    
-    <figcaption>
-    The AVX-512 vector kernel for scanning.
-    </figcaption>
-</figure>
-<p>There&rsquo;s a lot going on here and we could probably fill an entire blog post just on how this works.
-For now, let&rsquo;s just break it down at a high level:</p>
-<ol>
-<li>
-<p>First we fetch the &ldquo;seen&rdquo; and &ldquo;scanned&rdquo; bits for a page.
-Recall, these are one bit per object in the page, and all objects in a page have the same size.</p>
-</li>
-<li>
-<p>Next, we compare the two bit sets.
-Their union becomes the new &ldquo;scanned&rdquo; bits, while their difference is the &ldquo;active objects&rdquo; bitmap,
-which tells us which objects we need to scan in this pass over the page (versus previous passes).</p>
-</li>
-<li>
-<p>We take the difference of the bitmaps and &ldquo;expand&rdquo; it, so that instead of one bit per object,
-we have one bit per word (8 bytes) of the page.
-We call this the &ldquo;active words&rdquo; bitmap.
-For example, if the page stores 6-word (48-byte) objects, each bit in the active objects bitmap
-will be copied to 6 bits in the active words bitmap.
-Like so:</p>
-</li>
-</ol>
-<figure class="captioned">
-    <div class="row"><pre>0 0 1 1 ...</pre> &rarr; <pre>000000 000000 111111 111111 ...</pre></div>
-</figure>
-<ol start="4">
-<li>
-<p>Next we fetch the pointer/scalar bitmap for the page.
-Here, too, each bit corresponds to a word (8 bytes) of the page, and it tells us whether that word
-stores a pointer.
-This data is managed by the memory allocator.</p>
-</li>
-<li>
-<p>Now, we take the intersection of the pointer/scalar bitmap and the active words bitmap.
-The result is the &ldquo;active pointer bitmap&rdquo;: a bitmap that tells us the location of every
-pointer in the entire page contained in any live object we haven&rsquo;t scanned yet.</p>
-</li>
-<li>
-<p>Finally, we can iterate over the memory of the page and collect all the pointers.
-Logically, we iterate over each set bit in the active pointer bitmap,
-load the pointer value at that word, and write it back to a buffer that
-will later be used to mark objects seen and add pages to the work list.
-Using vector instructions, we&rsquo;re able to do this 64 bytes at a time,
-in just a couple instructions.</p>
-</li>
-</ol>
-<p>Part of what makes this fast is the <code>VGF2P8AFFINEQB</code> instruction,
-part of the &ldquo;Galois Field New Instructions&rdquo; x86 extension,
-and the bit manipulation Swiss army knife we referred to above.
-It&rsquo;s the real star of the show, since it lets us do step (3) in the scanning kernel very, very
-efficiently.
-It performs a bit-wise <a href="https://en.wikipedia.org/wiki/Affine_transformation" rel="noreferrer" target="_blank">affine
-transformations</a>,
-treating each byte in a vector as itself a mathematical vector of 8 bits
-and multiplying it by an 8x8 bit matrix.
-This is all done over the <a href="https://en.wikipedia.org/wiki/Finite_field" rel="noreferrer" target="_blank">Galois field</a> <code>GF(2)</code>,
-which just means multiplication is AND and addition is XOR.
-The upshot of this is that we can define a few 8x8 bit matrices for each
-object size that perform exactly the 1:n bit expansion we need.</p>
-<p>For the full assembly code, see <a href="https://cs.opensource.google/go/go/+/master:src/internal/runtime/gc/scan/scan_amd64.s;l=23;drc=041f564b3e6fa3f4af13a01b94db14c1ee8a42e0" rel="noreferrer" target="_blank">this
-file</a>.
-The &ldquo;expanders&rdquo; use different matrices and different permutations for each size class,
-so they&rsquo;re in a <a href="https://cs.opensource.google/go/go/+/master:src/internal/runtime/gc/scan/expand_amd64.s;drc=041f564b3e6fa3f4af13a01b94db14c1ee8a42e0" rel="noreferrer" target="_blank">separate file</a>
-that&rsquo;s written by a <a href="https://cs.opensource.google/go/go/+/master:src/internal/runtime/gc/scan/mkasm.go;drc=041f564b3e6fa3f4af13a01b94db14c1ee8a42e0" rel="noreferrer" target="_blank">code generator</a>.
-Aside from the expansion functions, it&rsquo;s really not a lot of code.
-Most of it is dramatically simplified by the fact that we can perform most of the above
-operations on data that sits purely in registers.
-And, hopefully soon this assembly code <a href="/issue/73787">will be replaced with Go code</a>!</p>
-<p>Credit to Austin Clements for devising this process.
-It&rsquo;s incredibly cool, and incredibly fast!</p>
-<h3 id="evaluation">Evaluation</h3>
-<p>So that&rsquo;s it for how it works.
-How much does it actually help?</p>
-<p>It can be quite a lot.
-Even without the vector enhancements, we see reductions in garbage collection CPU costs
-between 10% and 40% in our benchmark suite.
-For example, if an application spends 10% of its time in the garbage collector, then that
-would translate to between a 1% and 4% overall CPU reduction, depending on the specifics of
-the workload.
-A 10% reduction in garbage collection CPU time is roughly the modal improvement.
-(See the <a href="/issue/73581">GitHub issue</a> for some of these details.)</p>
-<p>We&rsquo;ve rolled Green Tea out inside Google, and we see similar results at scale.</p>
-<p>We&rsquo;re still rolling out the vector enhancements,
-but benchmarks and early results suggest this will net an additional 10% GC CPU reduction.</p>
-<p>While most workloads benefit to some degree, there are some that don&rsquo;t.</p>
-<p>Green Tea is based on the hypothesis that we can accumulate enough objects to scan on a
-single page in one pass to counteract the costs of the accumulation process.
-This is clearly the case if the heap has a very regular structure: objects of the same size at a
-similar depth in the object graph.
-But there are some workloads that often require us to scan only a single object per page at a time.
-This is potentially worse than the graph flood because we might be doing more work than before while
-trying to accumulate objects on pages and failing.</p>
-<p>The implementation of Green Tea has a special case for pages that have only a single object to scan.
-This helps reduce regressions, but doesn&rsquo;t completely eliminate them.</p>
-<p>However, it takes a lot less per-page accumulation to outperform the graph flood
-than you might expect.
-One surprise result of this work was that scanning a mere 2% of a page at a time
-can yield improvements over the graph flood.</p>
-<h3 id="availability">Availability</h3>
-<p>Green Tea is already available as an experiment in the recent Go 1.25 release and can be enabled
-by setting the environment variable <code>GOEXPERIMENT</code> to <code>greenteagc</code> at build time.
-This doesn&rsquo;t include the aforementioned vector acceleration.</p>
-<p>We expect to make it the default garbage collector in Go 1.26, but you&rsquo;ll still be able to opt-out
-with <code>GOEXPERIMENT=nogreenteagc</code> at build time.
-Go 1.26 will also add vector acceleration on newer x86 hardware, and include a whole bunch of
-tweaks and improvements based on feedback we&rsquo;ve collected so far.</p>
-<p>If you can, we encourage you to try at Go tip-of-tree!
-If you prefer to use Go 1.25, we&rsquo;d still love your feedback.
-See <a href="/issue/73581#issuecomment-2847696497">this GitHub
-comment</a> with some details on
-what diagnostics we&rsquo;d be interested in seeing, if you can share, and the preferred channels for
-reporting feedback.</p>
-<h2 id="the-journey">The journey</h2>
-<p>Before we wrap up this blog post, let&rsquo;s take a moment to talk about the journey that got us here.
-The human element of the technology.</p>
-<p>The core of Green Tea may seem like a single, simple idea.
-Like the spark of inspiration that just one single person had.</p>
-<p>But that&rsquo;s not true at all.
-Green Tea is the result of work and ideas from many people over several years.
-Several people on the Go team contributed to the ideas, including Michael Pratt, Cherry Mui, David
-Chase, and Keith Randall.
-Microarchitectural insights from Yves Vandriessche, who was at Intel at the time, also really helped
-direct the design exploration.
-There were a lot of ideas that didn&rsquo;t work, and there were a lot of details that needed figuring out.
-Just to make this single, simple idea viable.</p>
-<figure class="captioned">
-    
-    <figcaption>
-    A timeline depicting a subset of the ideas we tried in this vein before getting to
-    where we are today.
-    </figcaption>
-</figure>
-<p>The seeds of this idea go all the way back to 2018.
-What&rsquo;s funny is that everyone on the team thinks someone else thought of this initial idea.</p>
-<p>Green Tea got its name in 2024 when Austin worked out a prototype of an earlier version while cafe
-crawling in Japan and drinking LOTS of matcha!
-This prototype showed that the core idea of Green Tea was viable.
-And from there we were off to the races.</p>
-<p>Throughout 2025, as Michael implemented and productionized Green Tea, the ideas evolved and changed even
-further.</p>
-<p>This took so much collaborative exploration because Green Tea is not just an algorithm, but an entire
-design space.
-One that we don&rsquo;t think any of us could&rsquo;ve navigated alone.
-It&rsquo;s not enough to just have the idea, but you need to figure out the details and prove it.
-And now that we&rsquo;ve done it, we can finally iterate.</p>
-<p>The future of Green Tea is bright.</p>
-<p>Once again, please try it out by setting <code>GOEXPERIMENT=greenteagc</code> and let us know how it goes!
-We&rsquo;re really excited about this work and want to hear from you!</p>
-<script src="greenteagc/carousel.js"></script>
-</div>
-
-    </div>
-
-    
-    <div class="Article prevnext">
-    
-    
-      
-    
-      
-    
-      
-        <p>
-        
-          
-            <b>Next article: </b><a href="/blog/16years">Go’s Sweet 16</a><br>
-          
-        
-        
-          
-            <b>Previous article: </b><a href="/blog/flight-recorder">Flight Recorder in Go 1.25</a><br>
-          
-        
-        <b><a href="/blog/all">Blog Index</a></b>
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-    </div>
-    
-
-  </div>
-</div>
-
-<script src="/js/play.js"></script>
-
-</div>
-          </li>
-  
-        </ul>
-      </div>
-  
-      <div class="card">
         <h2>Reddit</h2>
-  
-        <h3 class="subreddit">r/rust</h3>
-        <ul class="item-list">
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1qm7wck/about_maybeuninituninitassume_init/" target="_blank">About `MaybeUninit::uninit().assume_init()`</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>In the popular <a href="https://crates.io/crates/arrayvec">arrayvec</a> crate, the definition of <code>ArrayVec</code> and the implementation for <code>ArrayVec::new()</code> (<a href="https://docs.rs/arrayvec/0.7.6/src/arrayvec/arrayvec.rs.html#86">see here</a>) are as follows:</p> <pre><code>#[repr(C)] pub struct ArrayVec&lt;T, const CAP: usize&gt; { len: LenUint, // the `len` first elements of the array are initialized xs: [MaybeUninit&lt;T&gt;; CAP], } // ... impl&lt;T, const CAP: usize&gt; ArrayVec&lt;T, CAP&gt; { pub fn new() -&gt; ArrayVec&lt;T, CAP&gt; { assert_capacity_limit!(CAP); unsafe { ArrayVec { xs: MaybeUninit::uninit().assume_init(), len: 0 } } } // ... </code></pre> <p>But the docs for <code>MaybeUninit::assume_init()</code> (<a href="https://doc.rust-lang.org/beta/std/mem/union.MaybeUninit.html#safety">see here</a>) say:</p> <blockquote> <p>Calling this when the content is not yet fully initialized causes immediate undefined behavior.</p> </blockquote> <p>So what am I missing here? There&#39;s no safety comment, and I can&#39;t see any relevant bounds or invariants (I think <code>assert_capacity_limit!(CAP)</code> just asserts that the capacity is less than the platform&#39;s pointer width, so that doesn&#39;t seem relevant either).</p> <p>Why is this valid?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Spengleberb"> /u/Spengleberb </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qm7wck/about_maybeuninituninitassume_init/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qm7wck/about_maybeuninituninitassume_init/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1qm646h/comptimeif_simple_compiletime_if_procmacro/" target="_blank">comptime-if: Simple compile-time `if` proc-macro</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I wanted to create a macro like this: <code>export_module!(MyStruct, some_param = true)</code> So I made a simple proc-macro that is useful for making macro like that: ```rust mod test_module { use comptime_if::comptime_if;</p> <pre><code>macro_rules! export { ($struct_name:ident, $($key:ident = $value:expr),* $(,)?) =&gt; { // `export = true` before `$(key = $value),*` works as the default value comptime_if! { if export where (export = true, $($key = $value),*) { pub struct $struct_name; } else { struct $struct_name; } } }; // You might want to provide a default for the case when no key-value pairs are given ($struct_name:ident) =&gt; { export!($struct_name, ); }; } // Expands to `pub struct MyStruct;` export!(MyStruct, export = true); </code></pre> <p>}</p> <p>// <code>MyStruct</code> is publicly accessible use test_module::MyStruct; ```</p> <p>Or, with <code>duplicate</code> crate: ```rust</p> <h1>[duplicate::duplicate_item(</h1> <pre><code>Integer Failable; [i8] [true]; [i16] [true]; [i64] [false]; [i128] [false]; [isize] [false]; [u8] [true]; [u16] [true]; [u32] [true]; [u64] [false]; [u128] [false]; [usize] [false]; </code></pre> <p>)] impl&lt;&#39;a&gt; FromCallHandle&lt;&#39;a&gt; for Integer { fn from_param(param: &amp;&#39;a CallHandle, index: usize) -&gt; Option&lt;Self&gt; { if index &lt; param.len() { // get_param_int returns i32, thus <code>try_into()</code> might raise <code>unnecessary_fallible_conversions</code> let value = param.get_param_int(index); comptime_if::comptime_if!( if failable where (failable = Failable) { value.try_into().ok() } else { Some(value as Integer) } ) } else { None } } } ```</p> <p>GitHub: <a href="https://github.com/sevenc-nanashi/comptime-if">https://github.com/sevenc-nanashi/comptime-if</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/SevenC-Nanashi"> /u/SevenC-Nanashi </a> <br/> <span><a href="https://crates.io/crates/comptime-if">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qm646h/comptimeif_simple_compiletime_if_procmacro/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1qm43ge/jbundle_a_rust_cli_to_package_jvm_apps_into/" target="_blank">jbundle: A Rust CLI to package JVM apps into self-contained binaries</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>built a tool in Rust that solves a painful problem in the Java ecosystem: distributing JVM applications without requiring Java on the target machine.</p> <p>**GitHub**: <a href="https://github.com/avelino/jbundle">https://github.com/avelino/jbundle</a></p> <p>## The problem</p> <p>If you want to ship a Java/Clojure/Kotlin app as a single binary, the standard answer is GraalVM native-image. But it comes with reflection configuration hell, incompatible libraries, and 10+ minute builds. Most devs just give up and ship a JAR with &quot;please install Java 21&quot; instructions.</p> <p>## The solution</p> <p>jbundle takes a different approach: bundle your JAR + a minimal JVM runtime (created via jlink) into a single self-extracting executable. No AOT compilation, no reflection configs, 100% JVM compatibility.</p> <p>your-app.jar → jbundle → single binary (~30-50 MB)</p> <p>## Why Rust?</p> <p>- **Fast**: Build tooling shouldn&#39;t be slow. The packaging step takes seconds.</p> <p>- **No runtime dependencies**: A single static binary. No irony of needing Java to package Java.</p> <p>- **Cross-platform**: Currently supports linux-x64, linux-aarch64, macos-x64, macos-aarch64.</p> <p>## Technical bits that might interest this community</p> <p>- Multi-layer binary format with content-hash caching (runtime layer reused across app rebuilds)</p> <p>- Structured compiler error diagnostics with source context (rustc-style)</p> <p>- Uses flate2 for compression, reqwest for JDK downloads, clap for CLI</p> <p>- ~2.5k lines of Rust, nothing fancy but gets the job done</p> <p>## What I learned</p> <p>Building dev tools in Rust for other ecosystems is a sweet spot. The JVM world is used to slow, memory-hungry tooling. Showing up with a fast, single-binary CLI written in Rust gets attention.</p> <p>---</p> <p>Still missing Windows support and could use more testing with exotic JVM setups. PRs welcome.</p> <p>Feedback on the code structure is also appreciated — this is one of my first &quot;real&quot; Rust projects beyond toy examples.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/SmartLow8757"> /u/SmartLow8757 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qm43ge/jbundle_a_rust_cli_to_package_jvm_apps_into/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qm43ge/jbundle_a_rust_cli_to_package_jvm_apps_into/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1qm1lxz/trait_method_visibility_workarounds_public_to_the/" target="_blank">Trait method visibility workarounds - public to the implementor only ?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I understand the philosophy that all methods on a trait should be public, but yet, sometimes I feel like I would really want to make some parts of a trait private.</p> <p>There are different workarounds for different situations -</p> <p>For example, if the implementing structures are within the crate, or if it&#39;s something that can be auto-implemented from the public part of the trait, well, simple, just make the private part a trait within a private module, and add a blanket implementation/specific implementation internally for the struct.</p> <p>If it&#39;s for a helper method, don&#39;t define the helper as part of the trait, but as a single private function.</p> <p>But what if it&#39;s something the implementor should specify (and the implementor can be outside the crate) but should only be used within the trait itself ?</p> <p>For example, let&#39;s say we have a &quot;read_text&quot; method, which starts by reading the header, mutate its state using that header, then always do the same thing. So we would have a &quot;read_header&quot; method, that does some specific things, and &quot;read_text&quot; would be implemented within by the trait, using read_header.</p> <p>We would like only &quot;read_text&quot; to be visible by users of the trait, but the implementor must provide a definition for &quot;read_header&quot;. So it should be only public to the implementor.</p> <p>Any idea ?</p> <p>(I guess if I split the trait in the internal and public part, but make both trait public, then implement the internal part within a private module, that would work, but the implementor wouldn&#39;t be constrained to do this at all)</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Leklo_Ono"> /u/Leklo_Ono </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qm1lxz/trait_method_visibility_workarounds_public_to_the/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qm1lxz/trait_method_visibility_workarounds_public_to_the/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1qm0vsq/i_built_sqlite_for_vectors_from_scratch/" target="_blank">I built SQLite for vectors from scratch</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;ve been working on satoriDB and wanted to share it for feedback.</p> <p>Most vector databases (Qdrant, Milvus, Weaviate) run as heavy standalone servers. Docker containers, networking, HTTP/gRPC serialization just for nearest neighbor search.</p> <p>I wanted the &quot;SQLite experience&quot; for vector search, i.e. just drop it into Cargo.toml, point at a directory, and go without dealing with any servers. The current workflow looks like this:</p> <pre><code>use satoridb::SatoriDb; fn main() -&gt; anyhow::Result&lt;()&gt; { let db = SatoriDb::builder(&quot;my_app&quot;) .workers(4) // Worker threads (default: num_cpus) .fsync_ms(100) // Fsync interval (default: 200ms) .data_dir(&quot;/tmp/mydb&quot;) // Data directory .build()?; db.insert(1, vec![0.1, 0.2, 0.3])?; db.insert(2, vec![0.2, 0.3, 0.4])?; db.insert(3, vec![0.9, 0.8, 0.7])?; let results = db.query(vec![0.15, 0.25, 0.35], 10)?; for (id, distance) in results { println!(&quot;id={id} distance={distance}&quot;); } Ok(()) } </code></pre> <p>repo: <a href="https://github.com/nubskr/satoriDB">https://github.com/nubskr/satoriDB</a></p> <p><strong>Architecture Notes</strong></p> <p>SatoriDB is an embedded, persistent vector search engine with a two-tier design. In RAM, an HNSW index of quantized centroids acts as a router to locate relevant disk regions. On disk, full-precision f32 vectors are stored in buckets and scanned in parallel at query time.</p> <p>The engine is built on Glommio using a shared-nothing, thread per core architecture to minimize context switching and mutex contention. I implemented a custom WAL (Walrus) that supports io_uring for async batch I/O on Linux with an mmap fallback elsewhere. The hot path L2 distance calculation uses hand written AVX2, FMA, and AVX-512 intrinsics. RocksDB handles metadata storage to avoid full WAL scans for lookups.</p> <p>currently I&#39;m working to integrate object storage support as well, would love to hear your thoughts on the architecture</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Ok_Marionberry8922"> /u/Ok_Marionberry8922 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qm0vsq/i_built_sqlite_for_vectors_from_scratch/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qm0vsq/i_built_sqlite_for_vectors_from_scratch/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1qlykf8/i_made_a_very_fast_websockets_library_in_rust/" target="_blank">I made a very fast WebSockets library in Rust</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I made this ws library in rust that is comparable with uWebSokets in benchmarks. In Rust space is the fastest along most popular ones. It supports compression extenions, ws over http2 / http 3 and it has an integrated pubsub system. It was heavily inspired by uWebScokets regarding the optimizations made. napi-rs bindings are on the way.<br/> <a href="https://github.com/sockudo/sockudo-ws">https://github.com/sockudo/sockudo-ws</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/AcanthopterygiiKey62"> /u/AcanthopterygiiKey62 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qlykf8/i_made_a_very_fast_websockets_library_in_rust/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qlykf8/i_made_a_very_fast_websockets_library_in_rust/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1qlxulo/simd_programming_in_pure_rust/" target="_blank">SIMD programming in pure Rust</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/kibwen"> /u/kibwen </a> <br/> <span><a href="https://kerkour.com/introduction-rust-simd">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qlxulo/simd_programming_in_pure_rust/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1qlx7xo/released_decal_a_declarative_svg_rendering/" target="_blank">Released Decal, a declarative SVG rendering library written in Rust with layout and rasterization</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/MaverickM7"> /u/MaverickM7 </a> <br/> <span><a href="https://github.com/mem-red/decal">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qlx7xo/released_decal_a_declarative_svg_rendering/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1qlww0l/december_in_servo_multiple_windows_proxy_support/" target="_blank">December in Servo: multiple windows, proxy support, better caching, and more</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/kibwen"> /u/kibwen </a> <br/> <span><a href="https://servo.org/blog/2026/01/23/december-in-servo/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qlww0l/december_in_servo_multiple_windows_proxy_support/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1qlvtna/granc_050_grpc_reflection_made_simple/" target="_blank">granc 0.5.0 - gRPC Reflection made simple</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>A few days ago I <a href="https://www.reddit.com/r/rust/comments/1qiwx7c/granc_a_grpc_cli_tool_with_reflection_support/">published the first release</a> of `granc`, a gRPC CLI that offers a way to call a gRPC API with json data.</p> <p>Now after iterating on it for some days, the following things have been added:</p> <p>+ `granc_core` now has been released as a separate library, so people can use the `GrancClient` programatically without the need of using the CLI (To build a gRPC proxy for example)<br/> + New commands for reflection have been added, `list` and `describe` allow you to see what services a server has available and to get the protobuffer code of services, messages and enums.<br/> + Colored output for reflection data! The protobuffer code returned by the `describe` command is fully colored if your terminal supports coloring :)</p> <p>I hope that now this is starting to get closer to an actual functional tool that can help people improve their workflow when working with gRPC servers</p> <p><a href="https://github.com/JasterV/granc">https://github.com/JasterV/granc</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/JasterVX"> /u/JasterVX </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qlvtna/granc_050_grpc_reflection_made_simple/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qlvtna/granc_050_grpc_reflection_made_simple/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1qluyre/understanding_rust_closures/" target="_blank">Understanding rust closures</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hello,</p> <p>I have been playing with rust closures lately and summarized what I discovered in this article.</p> <p>It starts from the basics and explore how closures are desugared by the compiler.</p> <p>Let me know what you think!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/avandecreme"> /u/avandecreme </a> <br/> <span><a href="https://antoine.vandecreme.net/blog/rust-closures/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qluyre/understanding_rust_closures/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1qlrfm1/how_would_you_structure_a_rust_monorepo_for/" target="_blank">How would you structure a Rust monorepo for scientific computing with multiple language bindings?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p><a href="https://preview.redd.it/rkcsuzk1sbfg1.png?width=1024&amp;format=png&amp;auto=webp&amp;s=1de837b702ca147a424bee6aaf657ff156efd2e8">https://preview.redd.it/rkcsuzk1sbfg1.png?width=1024&amp;format=png&amp;auto=webp&amp;s=1de837b702ca147a424bee6aaf657ff156efd2e8</a></p> <p>Hey everyone. I’m working on a scientific computing project built around a <strong>Rust core</strong> that implements a numerical algorithm (LOWESS smoothing), with bindings for <strong>Python, R, Julia, C++,</strong> and <strong>Nodejs/WASM</strong>. I’m using a <strong>monorepo / workspace-style setup</strong>, where the Rust core lives alongside language bindings and optional features.</p> <p>Repo:<br/> <a href="https://github.com/thisisamirv/lowess-project?utm_source=chatgpt.com">https://github.com/thisisamirv/lowess-project</a></p> <p>What I’m mainly looking for is <strong>feedback on the architecture</strong>, not the algorithm itself.</p> <p>Some context on the current approach:</p> <p>* A Rust core crate that contains all numerical logic and is intended to stay dependency-light (lowess crate), allowing easy integration into other external crates.</p> <p>* Another Rust crate (fastLowess) built on top of the previous crate, adding Rayon+Ndarray, GPU, or possibly polars support, optimizing the core crate for most real-world use cases.</p> <p>* Bindings for other languages pointing to the second Rust crate (fastLowess) as the main source to utilize all the optimizations Rust can offer.</p> <p>Questions I’d love feedback on:</p> <ul> <li>Does a monorepo/workspace make sense for this kind of scientific library, or would you split things differently?</li> <li>Would you keep the Rust core in two different crates as I did, to offer a lightweight crate for integration into other external crates, or would you put everything in one crate and just feature-gate the optimizations like Rayon and GPU support?</li> <li>All other feedback on things I may have missed or overlooked is welcome.</li> </ul> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/amir_valizadeh"> /u/amir_valizadeh </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qlrfm1/how_would_you_structure_a_rust_monorepo_for/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qlrfm1/how_would_you_structure_a_rust_monorepo_for/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1qlpaj5/built_a_24mb_offline_ml_app_with_burn_tauri_runs/" target="_blank">Built a 24MB offline ML app with Burn + Tauri - runs on my iPhone at 80ms inference</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hey <a href="/r/rust">r/rust</a>, Just finished a project I wanted to share - a plant disease detection AI built entirely in Rust using the Burn framework, deployed to my iPhone 12 via Tauri.</p> <p><strong>TL;DR numbers:</strong> - 24MB total deployment (vs 7.1GB for equivalent PyTorch) - 0.39ms inference / 2,579 FPS on desktop GPU (RTX 3060) - ~80ms inference on iPhone 12 via Tauri - 38 disease classes, trained with 30% labeled data (semi-supervised)</p> <p><strong>Why Rust over Python?</strong> The use case required offline inference on devices farmers already own - no cloud, no dedicated hardware. PyTorch was a non-starter: 7GB dependencies, 3s cold start, installation hell. Burn compiles to a single binary and targets wgpu (native GPU), ndarray (CPU), and WASM (browser) from one codebase.</p> <p><strong>The Model (Burn)</strong> The CNN is pretty standard, but Burn&#39;s derive macros make it clean: #[derive(Module, Debug)] pub struct PlantClassifier&lt;B: Backend&gt; { conv1: ConvBlock&lt;B&gt;, conv2: ConvBlock&lt;B&gt;, conv3: ConvBlock&lt;B&gt;, conv4: ConvBlock&lt;B&gt;, global_pool: AdaptiveAvgPool2d, fc1: Linear&lt;B&gt;, dropout: Dropout, fc2: Linear&lt;B&gt;, }</p> <p>4 conv blocks (32→64→128→256), BatchNorm + ReLU, GlobalAvgPool, then FC layers. The <code>#[derive(Module)]</code> macro handles all the weight serialization and device placement automatically.</p> <p><strong>The Semi-Supervised Learning Part</strong></p> <p>Labeled agricultural data is expensive (~€2/image for expert annotation). We used pseudo-labeling with a configurable confidence threshold: #[derive(Debug, Clone, Serialize, Deserialize)] pub struct PseudoLabelConfig { pub confidence_threshold: f64, // Default: 0.9 pub max_per_class: Option&lt;usize&gt;, // Prevent class imbalance pub retrain_threshold: usize, // Min samples before retrain pub curriculum_learning: bool, // Start strict, relax over time }</p> <p>Train on 30% labeled → predict on 70% unlabeled → accept predictions &gt;90% confidence → retrain. Result: accuracy comparable to 60% fully-labeled.</p> <p><strong>The Tauri Deployment</strong></p> <p>This was the fun part. Tauri 2.0 wraps the Burn model in a native iOS app: cargo tauri ios build 80ms inference on the A14 chip. The Rust backend does all the ML, the UI is just HTML/JS. It&#39;s <em>actually running Rust on an iPhone</em>.</p> <p><strong>What I learned:</strong> - Burn is genuinely production-ready for inference workloads - <code>burn-cuda</code> with the <code>0.20.0-pre</code> release has solid CUDA 13 support - WASM performance is better than expected (~80ms on mobile Safari) - Compile times are... Rust compile times. <code>lto = true</code> + <code>codegen-units = 1</code> = 5+ min release builds - Tauri mobile is legit - one codebase, native perf</p> <p><strong>Links:</strong> - Full writeup with benchmarks: <a href="https://snaetwarre.github.io/My-Portofolio/blog/intelligent-disease-detection.html">https://snaetwarre.github.io/My-Portofolio/blog/intelligent-disease-detection.html</a> - Source code: <a href="https://github.com/SnaetWarre/Research_Project_Rust_Semi-Supervised_Learning">https://github.com/SnaetWarre/Research_Project_Rust_Semi-Supervised_Learning</a> (still working on orginazing this, also the mobile tauri code is yet to be put on here, figuring out on how to do this nicely without breaking it on my laptop)</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Commercial-Comb1667"> /u/Commercial-Comb1667 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qlpaj5/built_a_24mb_offline_ml_app_with_burn_tauri_runs/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qlpaj5/built_a_24mb_offline_ml_app_with_burn_tauri_runs/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1qln95w/understanding_packages_crates_and_modules/" target="_blank">Understanding packages, crates, and modules</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I am reading Chapter 7 of <em>The Rust Programming Language</em> (2021 edition), and so far this has been the chapter I am having the most difficulty understanding.</p> <p>I made an illustration of what I believe I have understood so far about packages, crates, and modules.</p> <p>I have not finished reading the chapter yet, but I believe you can help me understand this better before I continue reading.</p> <p>Please follow the illustration.</p> <p><a href="https://preview.redd.it/0ufami71wafg1.png?width=917&amp;format=png&amp;auto=webp&amp;s=00f04fecf1c36045ce0bc49f04b027ff8cb08572">https://preview.redd.it/0ufami71wafg1.png?width=917&amp;format=png&amp;auto=webp&amp;s=00f04fecf1c36045ce0bc49f04b027ff8cb08572</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/franzz4"> /u/franzz4 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qln95w/understanding_packages_crates_and_modules/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qln95w/understanding_packages_crates_and_modules/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1qlm834/mediatui_tryrs_a_projectexperiment_organizer_that/" target="_blank">[MEDIA][TUI] try-rs - A project/experiment organizer that makes life much easier.</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Try-RS is getting really good with the community&#39;s help; we already have several issues closed and many PRs accepted.</p> <p><a href="https://github.com/tassiovirginio/try-rs/">https://github.com/tassiovirginio/try-rs/</a></p> <p><a href="https://try-rs.org/">https://try-rs.org/</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/_allsafe_"> /u/_allsafe_ </a> <br/> <span><a href="https://i.redd.it/euw30l61nafg1.gif">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qlm834/mediatui_tryrs_a_projectexperiment_organizer_that/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1qlkp3q/media_pathcollab_optimizing_rust_backend_for_a/" target="_blank">[Media] PathCollab: optimizing Rust backend for a real-time collaborative pathology viewer</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I built PathCollab, a self-hosted collaborative viewer for whole-slide images (WSI). The server is written in Rust with Axum, and I wanted to share some of the technical decisions that made it work.</p> <p>As a data scientist working with whole-slide images, I got frustrated by the lack of web-based tools capable of smoothly rendering WSIs with millions of cell overlays and tissue-level heatmaps. In practice, sharing model inferences was especially cumbersome: I could not self-deploy a private instance containing proprietary slides and model outputs, generate an invite link, and review the results live with a pathologist in an interactive setting. There exist some alternatives but they typically do not allow to render millions of polygons (cells) smoothly.</p> <p>The repo is <a href="https://github.com/PABannier/PathCollab">here</a></p> <h2>The problem</h2> <p>WSIs are huge (50k x 50k pixels is typical, some go to 200k x 200k). You can&#39;t load them into memory. Instead of loading everything at once, you serve tiles on demand using the Deep Zoom Image (DZI) protocol, similar to how Google Maps works.</p> <p>I wanted real-time collaboration where a presenter can guide followers through a slide, with live cursor positions and synchronized viewports. This implies:</p> <ul> <li>Tile serving needs to be fast (users pan/zoom constantly)</li> <li>Cursor updates at 30Hz, viewport sync at 10Hz</li> <li>Support for 20+ concurrent followers per session</li> <li>Cell overlay queries on datasets with 1M+ polygons</li> </ul> <p>First, I focus on the cursor updates.</p> <h2>WebSocket architecture</h2> <p>Each connection spawns three tasks:</p> <p><code>rust // Connection state cached to avoid session lookups on hot paths pub struct Connection { pub id: Uuid, pub session_id: Option&lt;String&gt;, pub participant_id: Option&lt;Uuid&gt;, pub is_presenter: bool, pub sender: mpsc::Sender&lt;ServerMessage&gt;, // Cached to avoid session lookups on every cursor update pub name: Option&lt;String&gt;, pub color: Option&lt;String&gt;, } </code></p> <p>The registry uses <code>DashMap</code> instead of <code>RwLock&lt;HashMap&gt;</code> for lock-free concurrent access:</p> <p><code>rust pub type ConnectionRegistry = Arc&lt;DashMap&lt;Uuid, Connection&gt;&gt;; pub type SessionBroadcasters = Arc&lt;DashMap&lt;String, broadcast::Sender&lt;ServerMessage&gt;&gt;&gt;; </code></p> <p>I replaced the RwLock&lt;HashMap&lt;…&gt;&gt; used to protect the ConnectionRegistry with a DashMap after stress-testing the server under realistic collaborative workloads. In a setup with 10 concurrent sessions (1 host and 19 followers each), roughly 200 users were continuously panning and zooming at ~30 Hz, resulting in millions of cursor and viewport update events per minute.</p> <p>Profiling showed that the dominant bottleneck was lock contention on the global RwLock: frequent short-lived reads and writes to per-connection websocket broadcast channels were serializing access and limiting scalability. Switching to DashMap alleviated this issue by sharding the underlying map and reducing contention, allowing concurrent reads and writes to independent buckets and significantly improving throughput under high-frequency update patterns.</p> <p>Each session (a session is one presenter presenting to up to 20 followers) gets a <code>broadcast::channel(256)</code> for fan-out. The broadcast task polls with a 100ms timeout to handle session changes:</p> <p><code>rust match tokio::time::timeout(Duration::from_millis(100), rx.recv()).await { Ok(Ok(msg)) =&gt; { /* forward to client */ } Ok(Err(RecvError::Lagged(n))) =&gt; { /* log, continue */ } Err(_) =&gt; { /* timeout, check if session changed */ } } </code></p> <p>For cursor updates (the hottest path), I cache participant name/color in the Connection struct. This avoids hitting the session manager on every 30Hz cursor broadcast.</p> <p>Metrics use an RAII guard pattern so latency is recorded on all exit paths:</p> <p>```rust struct MessageMetricsGuard { start: Instant, msg_type: &amp;&#39;static str, }</p> <p>impl Drop for MessageMetricsGuard { fn drop(&amp;mut self) { histogram!(&quot;pathcollab_ws_message_duration_seconds&quot;, &quot;type&quot; =&gt; self.msg_type) .record(self.start.elapsed()); } } ```</p> <h2>Avoiding the hot path: tile caching strategy</h2> <p>When serving tiles via the DZI route, the expensive path is: OpenSlide read -&gt; resize -&gt; JPEG encode. On a cache miss, this takes 200-300ms. Most of the time is spent on the libopenslide library actually reading bytes from the disk, so I could not do much to optimize the hot path. On a cache hit, it&#39;s ~3ms.</p> <p>So the goal became clear: avoid this path as much as possible through different layers of caching.</p> <h3>Layer 1: In-memory tile cache (moka)</h3> <p>I started by caching encoded JPEG bytes (~50KB) in a 256MB cache. The weighter function counts actual bytes, not entry count.</p> <p>```rust pub struct TileCache { cache: Cache&lt;TileKey, Bytes&gt;, // moka concurrent cache hits: AtomicU64, misses: AtomicU64, }</p> <p>let cache = Cache::builder() .weigher(|_key: &amp;TileKey, value: &amp;Bytes| -&gt; u32 { value.len().min(u32::MAX as usize) as u32 }) .max_capacity(256 * 1024 * 1024) // 256MB .time_to_live(Duration::from_secs(3600)) .time_to_idle(Duration::from_secs(1800)) .build(); ```</p> <h3>Layer 2: Slide handle cache with probabilistic LRU</h3> <p>Opening an OpenSlide handle is expensive. I cache handles in an <code>IndexMap</code> that maintains insertion order for O(1) LRU eviction:</p> <p><code>rust pub struct SlideCache { slides: RwLock&lt;IndexMap&lt;String, Arc&lt;OpenSlide&gt;&gt;&gt;, metadata: DashMap&lt;String, Arc&lt;SlideMetadata&gt;&gt;, access_counter: AtomicU64, } </code></p> <p>Updating LRU order still requires a write lock, which kills throughput under load. So I only update LRU position 1 in 8 times:</p> <p>```rust pub async fn get_cached(&amp;self, id: &amp;str) -&gt; Option&lt;Arc&lt;OpenSlide&gt;&gt; { let slides = self.slides.read().await; if let Some(slide) = slides.get(id) { let slide_clone = Arc::clone(slide);</p> <pre><code> // Probabilistic LRU: only update every N accesses let count = self.access_counter.fetch_add(1, Ordering::Relaxed); if count % 8 == 0 { drop(slides); let mut slides_write = self.slides.write().await; if let Some(slide) = slides_write.shift_remove(id) { slides_write.insert(id.to_string(), slide); } } return Some(slide_clone); } None </code></pre> <p>} ```</p> <p>This is technically imprecise but dramatically reduces write lock contention. In practice, the &quot;wrong&quot; slide getting evicted occasionally is fine.</p> <h3>Layer 3: Cloudflare CDN for the online demo</h3> <p>As I wanted to setup a public web demo (it&#39;s <a href="https://pathcollab.io">here</a> ), I rented a small Hetzner instance CPX22 (2 cores, 4GB RAM) with fast NVMe SSD. I was concerned that my server would be completely overloaded by too many users. In fact, when I initially tested the deployed app <strong>alone</strong>, I quickly realized that ~20% of my requests had a 503 Service Temporarily Available response. Even with the 2 layers of cache above, the server was still not able to serve all these tiles.</p> <p>I wanted to experiment with Cloudflare CDN (never used before). Tiles are immutable (same coordinates always return the same image), so I added cache headers to the responses:</p> <p><code>rust (header::CACHE_CONTROL, &quot;public, max-age=31536000, immutable&quot;) </code></p> <p>For the online demo at <a href="https://pathcollab.io">pathcollab.io</a>, Cloudflare sits in front and caches tiles at the edge. The first request hits the origin, subsequent requests from the same region are served from CDN cache. This is the biggest win for the demo since most users look at the same regions.</p> <p>Here are the main rules that I set:</p> <h4>Rule 1:</h4> <ul> <li>Name: Bypass dynamic endpoints</li> <li>Expression Preview: <code>bash (http.request.uri.path eq &quot;/ws&quot;) or (http.request.uri.path eq &quot;/health&quot;) or (http.request.uri.path wildcard r&quot;/metrics*&quot;) </code></li> <li>Then: Bypass cache</li> </ul> <p>Indeed, we do not want to cache anything on the websocket route.</p> <h4>Rule 2:</h4> <ul> <li>Name: Cache slide tiles</li> <li>Expression Preview: <code>bash (http.request.uri.path wildcard r&quot;/api/slide/*/tile/*&quot;) </code></li> <li>Then: Eligible for cache</li> </ul> <p>This is the most important rule, to relieve the server from serving all the tiles requested by the clients.</p> <h3>The slow path: <code>spawn_blocking</code></h3> <p>At first, I inserted blocking I/O instructions (using OpenSlide to read bytes from disk) between two await instructions. After profiling and researching on Tokio&#39;s forums, I realized this is a big no-no, and that I/O blocking code inside async code should be wrapped inside a Tokio&#39;s <code>spawn_blocking</code> task.</p> <p>I referred to <a href="https://ryhl.io/blog/async-what-is-blocking/">Alice Ryhl&#39;s blogpost</a> on how long a task is to be considered blocking. Simply put, tasks taking more than 100ms are considered blocking. This was clearly the case for OpenSlide with non-sequential reads typically taking 300 to 500ms.</p> <p>Therefore, for the &quot;cache-miss&quot; route, the CPU-bound work runs in <code>spawn_blocking</code>: </p> <p>```rust let result = tokio::task::spawn_blocking(move || { // OpenSlide read (blocking I/O) let rgba_image = slide.read_image_rgba(&amp;region)?; histogram!(&quot;pathcollab_tile_phase_duration_seconds&quot;, &quot;phase&quot; =&gt; &quot;read&quot;) .record(read_start.elapsed());</p> <pre><code>// Resize with Lanczos3 (CPU-intensive) let resized = image::imageops::resize(&amp;rgba_image, target_w, target_h, FilterType::Lanczos3); histogram!(&quot;pathcollab_tile_phase_duration_seconds&quot;, &quot;phase&quot; =&gt; &quot;resize&quot;) .record(resize_start.elapsed()); // JPEG encode encode_jpeg_inner(&amp;resized, jpeg_quality) </code></pre> <p>}).await??; ```</p> <h2>R-tree for cell overlay queries</h2> <p>Moving on to the routes serving cell overlays. Cell segmentation overlays can have 1M+ polygons. When the user pans, the client sends a request with the (x, y) coordinate of the top left of the viewport, as well as the height and width. This allows me to query efficiently the cell polygons lying inside the user viewport (if not already cached on the client side) using the <code>rstar</code> crate with bulk loading:</p> <p>```rust pub struct OverlaySpatialIndex { tree: RTree&lt;CellEntry&gt;, cells: Vec&lt;CellMask&gt;, }</p> <h1>[derive(Clone)]</h1> <p>pub struct CellEntry { pub index: usize, // Index into cells vector pub centroid: [f32; 2], // Spatial key }</p> <p>impl RTreeObject for CellEntry { type Envelope = AABB&lt;[f32; 2]&gt;;</p> <pre><code>fn envelope(&amp;self) -&gt; Self::Envelope { AABB::from_point(self.centroid) } </code></pre> <p>} ```</p> <p>Query is O(log n + k) where k is result count:</p> <p>```rust pub fn query_region(&amp;self, x: f64, y: f64, width: f64, height: f64) -&gt; Vec&lt;&amp;CellMask&gt; { let envelope = AABB::from_corners( [x as f32, y as f32], [(x + width) as f32, (y + height) as f32] );</p> <pre><code>self.tree .locate_in_envelope(&amp;envelope) .map(|entry| &amp;self.cells[entry.index]) .collect() </code></pre> <p>} ```</p> <p>As a side note, the index building runs in <code>spawn_blocking</code> since parsing the cell coordinate overlays (stored in a Protobuf file) and building the R-tree for 1M cells takes more than 100ms.</p> <h2>Performance numbers</h2> <p>On my M1 MacBook Pro, with a 40,000 x 40,000 pixel slide, PathCollab (run locally) gives the following numbers:</p> <table><thead> <tr> <th>Operation</th> <th>P50</th> <th>P99</th> </tr> </thead><tbody> <tr> <td>Tile cache hit</td> <td>2ms</td> <td>5ms</td> </tr> <tr> <td>Tile cache miss</td> <td>180ms</td> <td>350ms</td> </tr> <tr> <td>Cursor broadcast (20 clients)</td> <td>0.3ms</td> <td>1.2ms</td> </tr> <tr> <td>Cell query (10k cells in viewport)</td> <td>8ms</td> <td>25ms</td> </tr> </tbody></table> <p>The cache hit rate after a few minutes of use is typically 85-95%, so most tile requests are sub-millisecond.</p> <p>I hope you liked this post. I&#39;m happy to answer questions about any of these decisions. Feel free to suggest more ideas for an even more efficient server, if you have!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Psychological-Ad5119"> /u/Psychological-Ad5119 </a> <br/> <span><a href="https://i.redd.it/aylrcim29afg1.png">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qlkp3q/media_pathcollab_optimizing_rust_backend_for_a/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1qljnpe/media_tui_tmmpr_terminal_mind_mapper/" target="_blank">[Media] [TUI] tmmpr - terminal mind mapper</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>A Linux terminal application for creating mind maps with vim-inspired navigation.</p> <p>Built with Rust + Ratatui.</p> <p>What it does:</p> <p>Place notes anywhere on an infinite canvas (0,0 to infinity)</p> <p>Draw connections between notes with customizable colors</p> <p>Navigate with hjkl, multiple modes for editing/moving/connecting</p> <p>Auto-save and backup system</p> <p>Entirely keyboard-driven</p> <p>Status: Work in progress - core functionality is solid and usable, but some features and code quality need improvement. Feedback and contributions welcome!</p> <p>Install: cargo install tmmpr</p> <p>Repo: <a href="https://github.com/tanciaku/tmmpr">https://github.com/tanciaku/tmmpr</a> </p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/tanciaku"> /u/tanciaku </a> <br/> <span><a href="https://i.redd.it/tej3qmfox9fg1.gif">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qljnpe/media_tui_tmmpr_terminal_mind_mapper/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1qlhvod/why_how_does_unsafe_not_affect_niche_optimisations/" target="_blank">Why / how does unsafe not affect niche optimisations?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>For example, in the classic example of NonZeroU8, you have a safe constructor that guarantees the input is &gt; 0 (otherwise return None), and an unsafe version that lets you pass in any input without checks.</p> <p>This would imply that niche layout optimisations only take into account safe functions. However what about types with only unsafe constructors, which one is used?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/ElOwlinator"> /u/ElOwlinator </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qlhvod/why_how_does_unsafe_not_affect_niche_optimisations/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qlhvod/why_how_does_unsafe_not_affect_niche_optimisations/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1qleizg/succinctly_a_fast_jqyq_alternative_built_on/" target="_blank">Succinctly: A fast jq/yq alternative built on succinct data structures</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;ve been working on Succinctly, a Rust library and CLI tool that provides jq and yq functionality using succinct data structures (semi-indexing with rank/select).</p> <p>What it does:</p> <ul> <li>Covers most jq and yq query patterns (reduce, limit, recurse, regex, path functions, etc.)</li> <li>Parses JSON at ~880 MiB/s, YAML at ~250-400 MiB/s</li> <li>Supports position-based navigation (at_offset, at_position) for IDE integration</li> </ul> <p>What it doesn&#39;t do (yet):</p> <ul> <li>input/inputs (streaming multiple JSON values from stdin)</li> <li>Streaming for files larger than memory</li> <li>Some advanced YAML edge cases</li> </ul> <p>Performance vs jq (AMD Ryzen 9 7950X):</p> <table><thead> <tr> <th align="left">Size</th> <th align="left">succinctly</th> <th align="left">jq</th> <th align="left">Speedup</th> <th align="left">succ Mem</th> <th align="left">jq Mem</th> <th align="left">Mem Ratio</th> </tr> </thead><tbody> <tr> <td align="left">1MB</td> <td align="left">25ms</td> <td align="left">45ms</td> <td align="left">1.8x</td> <td align="left">5 MB</td> <td align="left">17 MB</td> <td align="left">0.30x</td> </tr> <tr> <td align="left">10MB</td> <td align="left">221ms</td> <td align="left">382ms</td> <td align="left">1.7x</td> <td align="left">14 MB</td> <td align="left">149 MB</td> <td align="left">0.09x</td> </tr> <tr> <td align="left">100MB</td> <td align="left">2.3s</td> <td align="left">3.9s</td> <td align="left">1.7x</td> <td align="left">104 MB</td> <td align="left">1 GB</td> <td align="left">0.07x</td> </tr> </tbody></table> <p>Performance vs yq (Apple M1 Max):</p> <table><thead> <tr> <th align="left">Size</th> <th align="left">succinctly</th> <th align="left">yq</th> <th align="left">Speedup</th> <th align="left">succ Mem</th> <th align="left">yq Mem</th> <th align="left">Mem Ratio</th> </tr> </thead><tbody> <tr> <td align="left">1MB</td> <td align="left">16ms</td> <td align="left">117ms</td> <td align="left">7.2x</td> <td align="left">12 MB</td> <td align="left">78 MB</td> <td align="left">0.16x</td> </tr> <tr> <td align="left">10MB</td> <td align="left">112ms</td> <td align="left">1.07s</td> <td align="left">9.5x</td> <td align="left">66 MB</td> <td align="left">687 MB</td> <td align="left">0.10x</td> </tr> <tr> <td align="left">100MB</td> <td align="left">1.06s</td> <td align="left">10.3s</td> <td align="left">9.7x</td> <td align="left">573 MB</td> <td align="left">6 GB</td> <td align="left">0.09x</td> </tr> </tbody></table> <p>Hardware optimizations:</p> <ul> <li>x86_64: AVX2 SIMD, POPCNT, BMI2 (PDEP/PEXT for DSV parsing)</li> <li>ARM: NEON intrinsics</li> <li>Benchmarks run on AMD Zen 4 and Apple M1 Max — results will vary on older CPUs without these instructions</li> </ul> <p>Example usage:</p> <pre><code>succinctly jq &#39;.users[].name&#39; data.json succinctly yq &#39;.spec.containers[]&#39; k8s.yaml succinctly yq -o json &#39;.&#39; config.yaml # YAML to JSON </code></pre> <p>Why succinct data structures?</p> <p>Instead of building a full DOM, semi-indexing creates a lightweight index over the raw text. This enables O(1) navigation to any node without parsing the entire document upfront — and uses 6-10x less memory than jq/yq on large files.</p> <p>The library is no_std compatible.</p> <p><strong>Links:</strong></p> <ul> <li>GitHub: <a href="https://github.com/rust-works/succinctly">https://github.com/rust-works/succinctly</a></li> <li>Crates.io: <a href="https://crates.io/crates/succinctly">https://crates.io/crates/succinctly</a></li> </ul> <p>Feedback welcome — especially bug reports for queries that work in jq/yq but fail here.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/john-ky"> /u/john-ky </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qleizg/succinctly_a_fast_jqyq_alternative_built_on/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qleizg/succinctly_a_fast_jqyq_alternative_built_on/">[comments]</a></span></div>
-          </li>
-  
-        </ul>
   
         <h3 class="subreddit">r/golang</h3>
         <ul class="item-list">
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1qm5lff/how_do_you_deploy_a_project_on_cloud_that_depends/" target="_blank">How do you deploy a project on cloud that depends on private github repositories?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>i have a project that depends on private github repositories. I was using <a href="http://go.work">go.work</a> to sync the project locally, but I now need to deploy the project on cloud.</p> <p>I&#39;ve tried ssh and deploy key way but they are making the deployment process a bit complex. What&#39;s the right and easy way to setup deployment for such projects? Also, repositories need to be sync. </p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Ill_Concept_6002"> /u/Ill_Concept_6002 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1qm5lff/how_do_you_deploy_a_project_on_cloud_that_depends/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1qm5lff/how_do_you_deploy_a_project_on_cloud_that_depends/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1qn4ve6/studying_esp32_firmware_feels_like_go_isnt_really/" target="_blank">Studying ESP32 firmware, feels like Go isn’t really used in production</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I’ve been studying ESP32 firmware lately.</p> <p>I like Go a lot and naturally looked into TinyGo and other Go-based approaches.</p> <p>They’re interesting and fun to experiment with.</p> <p>But when I look at how firmware is actually written in production,</p> <p>almost everything still seems to be C or C++.</p> <p>It doesn’t feel like people “hate” Go,</p> <p>more like the ecosystem, tooling, and long-term trust just aren’t there yet for firmware.</p> <p>Curious if anyone here has seen Go used seriously in ESP32 or embedded projects,</p> <p>or if it’s still mostly a hobby / experiment space.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/ConsiderationMean593"> /u/ConsiderationMean593 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1qn4ve6/studying_esp32_firmware_feels_like_go_isnt_really/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1qn4ve6/studying_esp32_firmware_feels_like_go_isnt_really/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1qm120z/integration_test_in_memory_or_in_a_container/" target="_blank">Integration Test: In memory or in a container</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Is it correct to use an in-memory DB and initialize the connection with GORM, or should I replicate the production DB (Postgres) in a Docker container and point my tests to that DB?</p> <p>What is the standard?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/matecito123"> /u/matecito123 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1qm120z/integration_test_in_memory_or_in_a_container/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1qm120z/integration_test_in_memory_or_in_a_container/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1qmy3vq/how_do_i_learn/" target="_blank">How do I learn?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Given my history with the moderators, this post may not last very long, but I will give it a try anyway.</p> <p>Given my name here, you probably already know that learning by doing things wrong, err in error, is a major that I and I think most of us learn. While I think I may better than most, in my humble opinion of course, at reading dry technical documentation and synthesizing how to apply that technical content to solve problems. But sometimes, I find this difficult to do because of how the documentation is written, organized ... or the phase of the moon.</p> <p>Of late, I have taken to learning from A.I. Sometimes, this is simply how to curse faster and longer :) But last month it was how to build a web server in Go with some very specific functional and performance needs. While there are probably a million tutorials, blogs ... on how to write a web server in Go using <a href="https://pkg.go.dev/net/http">net/http</a>, almost all of them are a repeat of content stolen from <a href="https://go.dev/doc/articles/wiki/">Writing Web Applications</a>, stolen because wording was damn near word for word and examples but there was no attribution of source (these so-called authors were blocked damn fast). <a href="https://go.dev/doc/articles/wiki/">Writing Web Applications</a> is a good start, but that is as far as it goes. </p> <p>It does not cover: how to write practical and robust tests with <a href="https://pkg.go.dev/net/http/httptest@go1.25.6">httptest</a> and <a href="https://pkg.go.dev/golang.org/x/net/html">html</a>, how to handle <a href="https://pkg.go.dev/github.com/gorilla/sessions">sessions</a>, how to implement encoding and subsequently compression with <a href="https://pkg.go.dev/compress/gzip">compress/gzip</a> and <a href="https://pkg.go.dev/github.com/andybalholm/brotli">brotli</a>, how to implement Cache-Control headers and ETags to bust the cache, how to implement an HTTP Response cache with 304 support, ... The implementation of these items are not well documented, at least insofar as I could find.</p> <p>So I went to an A.I. and asked it to write me a web server in Go using <a href="https://pkg.go.dev/net/http">net/http</a>. I then went through it with a fine tooth comb and asked it why it did &#39;x&#39; or why didn&#39;t it do &#39;y&#39; or isn&#39;t &#39;z&#39; a security issue ... After I got through my critique, I would take the resulting code and ask different A.I.&#39;s to review the code. They would find issues, some true some false. I then continued my pattern of investigation which often took me back to Go&#39;s excellent documentation and sometimes back to the <a href="https://pkg.go.dev/net/http">net/http</a> source code.</p> <p>I continued this pattern for each piece of added functionality. I learned incrementally as I progressed. I had working software at each step that I could test whether manually or by writing tests in Go. I learned that most of the examples that I found of testing web server components in Go were, err how can I say it nicely, fragile. Lots of <code>strings.Contain</code> calls against body text which is a shame <a href="https://pkg.go.dev/golang.org/x/net/html">html</a> contains a wonderful parser which allows for the creation of robust and accurate tests.</p> <p>In the end, I have a web server that is very fast and very memory efficient to serve my photo gallery very fast while minimizing network bandwidth and built upon web standards instead of some hacky custom protocol. Could I have gotten to the same point without using A.I.? Yes, I absolutely could have. I have learned more difficult things in the past; however, I could not have done it as quickly and to the same depth of understanding.</p> <p>By no means do I think I am an expert after creating this one app. But when I compare my creation to that of other Go web servers to which I have access, I see holes in their implementation that leave security vulnerabilities that be exploited, fragile implementations that will behave inconsistently or fail, or servers with poor performance.</p> <p>In closing, A.I. is not a quick fix for everything or anything as far as that goes. It can be a good tool to help use learn not just one to aid an implementation.</p> <p>lbe</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/LearnedByError"> /u/LearnedByError </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1qmy3vq/how_do_i_learn/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1qmy3vq/how_do_i_learn/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1qlv86l/floating_point_formatting_russ_cox_blog_series/" target="_blank">Floating Point Formatting - Russ Cox Blog Series</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/silenttwins"> /u/silenttwins </a> <br/> <span><a href="https://research.swtch.com/fp-all">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1qlv86l/floating_point_formatting_russ_cox_blog_series/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1qmwna7/feeling_of_go/" target="_blank">Feeling of Go</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I am trying to write a TCP client-server program and this is my function to handle connection.</p> <p>What I am trying to achieve?<br/> - Read and Write from and to connection async, if one fails both should exit<br/> - Return error to parent</p> <p>Why the POST?<br/> - I want to understand if this much of code is really required for such a simple task<br/> - Need an opinion on how to identify it&#39;s less or more^</p> <pre><code>func HandleConnection(ctx context.Context, conn net.Conn) error { defer conn.Close() childContext, cancel := context.WithCancel(ctx) defer cancel() wg := sync.WaitGroup{} errChan := make(chan error, 2) wg.Add(2) //reader go func() { defer wg.Done() if err := readBytes(childContext, conn); err != nil { cancel() errChan &lt;- err } }() //writer go func() { defer wg.Done() if err := writeBytes(childContext, conn); err != nil { cancel() errChan &lt;- err } }() wg.Wait() //catch error select { case err := &lt;-errChan: return err default: return nil } }` </code></pre> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Waste-Present-4670"> /u/Waste-Present-4670 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1qmwna7/feeling_of_go/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1qmwna7/feeling_of_go/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1qluisk/is_go_so_much_fast_or_it_is_my_machine/" target="_blank">Is Go so much fast or it is my machine</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi, recently I build single node key value store as a personal learning project.</p> <p>I used golang for it and allowed RESP support so it will be easy to interact with the server. For now I&#39;m supporting only GET, SET and DEL operations. The keys and values can only be strings (ints will be treated as redis) and I&#39;ve allowed max size of 1000 characters.</p> <p>Since it&#39;s heavily inspired around Redis, I tested my server using redis-bechmark with GET and SET operations. I&#39;ve allowed max 12000 concurrent client connections and also there is cleaner that runs every 40 seconds in the background to clean up maps. I&#39;ve used 32 maps to store the actual data.</p> <p>Using redis benchmark I&#39;ve given 10K concurrent clients and 1M requests<br/> I&#39;m getting SET at 143K RPS, p50 is 36ms and GET at 144K RPS, p50 is 35ms</p> <p>I&#39;m doing this on my 24 gb, m4 pro macbook pro with golang-alpine image in vs code devcontainer</p> <p>I didn&#39;t expected it to be that fast. as per gemini redis gives around 100K-120K RPS with ~1-3ms latency under same load.</p> <p>does it is context switching that make my application too slow compared to real redis? still it&#39;s very fast for me.</p> <p>here is code for reference: <a href="https://github.com/shubham-chemate/go-single-node-kv-store">https://github.com/shubham-chemate/go-single-node-kv-store</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Shot-Calligrapher-99"> /u/Shot-Calligrapher-99 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1qluisk/is_go_so_much_fast_or_it_is_my_machine/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1qluisk/is_go_so_much_fast_or_it_is_my_machine/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1qmvega/go_gitlab_private_packages_library/" target="_blank">GO & Gitlab : Private Packages / Library</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hello Community,<br/> Im building , custom go package , that will help me write less code across my projects .we use Gitlab (For companys) and every action, require password , </p> <p>So when i push Code in Gitlab , Tag it with Version , and when i want to import it from go project , i cant get the pkg, i got 403 </p> <p>So Any Idea abt this ?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/optimus_prime955"> /u/optimus_prime955 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1qmvega/go_gitlab_private_packages_library/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1qmvega/go_gitlab_private_packages_library/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1qllypt/has_anyone_been_able_to_display_small_images_with/" target="_blank">Has anyone been able to display small images with good quality in a TUI?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi, I have been working lately on a e-Book management TUI, similar to apps like calibre-web, Kavita... but for the terminal and, right now, I am stuck with the quality of the covers. </p> <p>Code: <a href="https://github.com/Yerrincar/Kindria/blob/main/internal/tui/model.go">https://github.com/Yerrincar/Kindria/blob/main/internal/tui/model.go</a></p> <p>Image of the current library view: <a href="https://imgur.com/a/DWLGdWO">https://imgur.com/a/DWLGdWO</a></p> <p>Main packages that I am using right now:<br/> -go-termimg (<a href="https://github.com/blacktop/go-termimg">https://github.com/blacktop/go-termimg</a>)<br/> -imaging (<a href="https://github.com/disintegration/imaging">https://github.com/disintegration/imaging</a>)<br/> -bubbletea (<a href="https://github.com/charmbracelet/bubbletea">https://github.com/charmbracelet/bubbletea</a>)</p> <p>My main objective right now is to display the books&#39; covers in a grid view in each widget, but after many changes, I am not achieving a good quality image without the blur and softness that they have right now.</p> <p>I have tried to change the parameters of both packages, used diferent tools that they offer like Sharpen, Blur, AdjustSigmoid... tried to change the size of the cell/widget, tried to get the actual pixel of a cell in my terminal with the unix package and used it in the targetPixel vars, tried manually pixels set up and not dynamic like the one I am using right now, and some others attempts I have tried that I have probably forget by now.</p> <p>The only way I have achieved a better quality cover is setting up the pixels to 400x600 (almost all the covers have an original shape of 1200x1800 (2:3)), but, obviously the cover was so big that it was not a good option for my objective. </p> <p>Does anyone has been able to display small/medium sized images in the terminal with good quality? Is it possible? I am going in the wrong direction trying to solve this problem?</p> <p>Thanks for the help!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/YerayR14"> /u/YerayR14 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1qllypt/has_anyone_been_able_to_display_small_images_with/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1qllypt/has_anyone_been_able_to_display_small_images_with/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1qmtxt3/pdf_made_easy_gopdfsuit_v400_is_here_digital/" target="_blank">PDF Made Easy: Gopdfsuit v4.0.0 is Here (Digital Signatures, PDF/A-4, and More!)</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hello <a href="/r/golang">r/golang</a>!<br/> Thanks for the support you showed on the last post &lt;3 <a href="https://www.reddit.com/r/golang/comments/1pw9pqs/gopdfsuit_v300_ive_been_building_this_opensource/">Gopdfsuit V3</a></p> <p><strong>Gopdfsuit</strong> past <strong>300+ stars</strong> on GitHub! Your support keeps this MIT-licensed project alive and kicking. A massive shoutout to our new contributors, <a href="https://github.com/ThorOdinson246"><strong>https://github.com/ThorOdinson246</strong></a> and <a href="https://github.com**/rangaroo">https://github.com**/rangaroo</a>**, for helping us reach this milestone.</p> <p>We just dropped <strong>v4.0.0</strong>, and it’s a massive leap forward. Here is the high-level breakdown of what’s new:</p> <h1>PDF Core &amp; Advanced Features</h1> <ul> <li><strong>Font Subsetting:</strong> Smaller PDF sizes by only including used characters.</li> <li><strong>Digital Signatures:</strong> Full PKCS#7 support for secure, professional documents.</li> <li><strong>Navigation:</strong> Added Bookmarks, Outlines, and internal/external Hyperlinks.</li> <li><strong>New Tools:</strong> Added PDF Splitting (with ZIP export) and enhanced text rendering.</li> </ul> <h1>Revamped Editor &amp; UI</h1> <ul> <li><strong>Total Redesign:</strong> A complete website revamp with a modular, faster React-based editor.</li> <li><strong>Better Controls:</strong> Drag-and-drop elements, blue-outline cell selection, and color presets.</li> <li><strong>UX Wins:</strong> Simplified Google Auth flow and &quot;Copied&quot; visual feedback.</li> </ul> <h1>Compliance &amp; Accessibility</h1> <ul> <li><strong>Archival Ready:</strong> Integrated XMP metadata and sRGB profiles for <strong>PDF/A-4</strong> compliance.</li> <li><strong>Accessible:</strong> Implemented <strong>PDF/UA-2</strong> support (Structure Trees) for screen readers.</li> <li><strong>Pro-Grade Fixes:</strong> Resolved color rendering discrepancies between Acrobat and Chrome.</li> </ul> <h1>Infrastructure &amp; Docs</h1> <ul> <li><strong>GCP Migration:</strong> Now running on App Engine for better performance and scaling.</li> <li><strong>Automated CI/CD:</strong> Hardened GitHub Actions for seamless deployments.</li> <li><strong>Better Resources:</strong> New sample data (Legal, Financial, Books) and a <code>gopdf-client</code> example.</li> </ul> <p><strong>Love the progress?</strong><br/> <a href="https://github.com/chinmay-sawant/gopdfsuit">Star the repo on GitHub</a> to help keep the momentum going! It really help us keep working on the project &lt;3</p> <p>Release Note - <a href="https://github.com/chinmay-sawant/gopdfsuit/releases/tag/v4.0.0">https://github.com/chinmay-sawant/gopdfsuit/releases/tag/v4.0.0</a></p> <p>Comparison with other software - <a href="https://chinmay-sawant.github.io/gopdfsuit/#/comparison">https://chinmay-sawant.github.io/gopdfsuit/#/comparison</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/chinmay06"> /u/chinmay06 </a> <br/> <span><a href="https://chinmay-sawant.github.io/gopdfsuit">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1qmtxt3/pdf_made_easy_gopdfsuit_v400_is_here_digital/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1qlh62u/why_are_nested_modules_bad/" target="_blank">Why are nested modules bad?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>tldr; I received a PR to split my module into nested modules. AFAICT, this is generally advised against. Why? And is there a respected/authoritative guide I can refer to.</p> <p>I can immediately tell there would be versioning confusion; but other relevant reasons why?</p> <p>The PR does address a valid problem, for which a different solution was planned. So I&#39;m more inclined to have a constructive discussion than dismissing it outright.</p> <hr/> <p><strong>The Problem</strong></p> <p>The problem is, Gost-DOM, my headless browser with a build-in script engine has a dependency to V8, a huge dependency. A script engine is <em>optional</em>. A plugin-interface has evolved as well as a pure Go alternative: sobek (a fork of Goja with ESM support)</p> <p>So users of Gost-DOM will receive a dependency to both V8 AND sobek in their own <code>go.mod</code> file.</p> <p>AFAIK, this shouldn&#39;t affect build times, merely download, as Go doesn&#39;t compile packages you don&#39;t actually use. Right?</p> <p><strong>The Planned Solution</strong></p> <p>Once, the API/JS plugin interface has stabilised, I intend to split this into multiple separate root modules/git repos with independent versioning.</p> <p>I.e., instead of</p> <ul> <li><code>github.com/gost-dom/browser</code> (go.mod file)</li> <li><code>github.com/gost-dom/browser/scripting/v8engine</code></li> <li><code>github.com/gost-dom/browser/scripting/sobekengine</code></li> </ul> <p>I would have:</p> <ul> <li><code>github.com/gost-dom/browser</code></li> <li><code>github.com/gost-dom/v8engine</code></li> <li><code>github.com/gost-dom/sobekengine</code></li> </ul> <p>Right now, working on <code>Worker</code> support does reveal shortcomings in the current design. Having everything in one code repository/module makes it significantly easier to work with.</p> <p>Note: there are already two nested modules in the repo, but they are tools in <code>internal/</code> package scope.</p> <p>I created <code>go.mod</code> files here, exactly for that reason, to shield client code of Gost-DOM from dependencies irrelevant for them. E.g., code generator libraries used for auto generating much of the JavaScript bindings.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/stroiman"> /u/stroiman </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1qlh62u/why_are_nested_modules_bad/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1qlh62u/why_are_nested_modules_bad/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1qmsnc3/go_htmx_templ_page_not_rendering_server_runs_but/" target="_blank">Go + HTMX + templ page not rendering (server runs but browser keeps loading)</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I’m facing a problem and it’s giving me a real headache.</p> <p>I’m building a web app using Go, HTML, CSS, HTMX, and .templ.</p> <p>I’m intentionally avoiding JavaScript.</p> <p>The issue is: when I run my main.go, the server starts, but when I open the browser, the page never loads / nothing is rendered. It just keeps loading.</p> <p>I’ve tried many things, but none of them worked. Has anyone faced this issue before?</p> <p>Any idea what could be wrong or how to debug this properly?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/DifficultNews5991"> /u/DifficultNews5991 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1qmsnc3/go_htmx_templ_page_not_rendering_server_runs_but/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1qmsnc3/go_htmx_templ_page_not_rendering_server_runs_but/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1qmgrut/generating_text_with_go_based_on_hugging_face/" target="_blank">Generating text with Go based on Hugging Face models</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I am looking for tips about what tools use to generate text based on models available on Hugging Face (non english from university), target machine to run app will be ARM (MacBook) and model using localy (load, generate result and finish, no creating local server). One option is us LM Studio and using API connect to it, but I would like create bundle - all in one app - executable + model file in home directory without running anything in LM Studio. I know I can use Python for the job, but I would do all things in Go.</p> <p>On Hugging Face I see .safesensor files and JSON, but for example Hugot LLM use ONNX file format. I am confusing how work with stuff using Go.</p> <p>Is it possible achieve my goal in pure Go?</p> <p><strong>Edit</strong></p> <p><strong>I tried find doc for Hugot, but it is very limited.</strong> Working with ONNX file is not problem as this kind of file are available, but is it not possible another option in pure Go in context text generation? Directly working with safersensors file is possible? For example in Python is safesensor <strong>dedicated library</strong> for this task. As states in readme of Hugot library itself was tested and used on <strong>AMD64</strong> (Linux).</p> <p>I hope anyone can share more insight in subject, especially available options to work with generating text in Go.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/pepiks"> /u/pepiks </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1qmgrut/generating_text_with_go_based_on_hugging_face/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1qmgrut/generating_text_with_go_based_on_hugging_face/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1qmg1zw/beginner_needs_help_with_a_test_function/" target="_blank">Beginner needs help with a test function</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;m a beginner to programming who is learning Go and the basics of coding with &quot;For the Deeper Love of Go&quot;</p> <p>I&#39;ve an issue with a test function. I have been through documentation (as much as a novice can) and searched online, I&#39;ve rewritten the function, and even did a direct copy and paste from John Arundel&#39;s source code on GitHub. </p> <p>No matter what I try the test fails as for some reason want and got return reverse versions of slice required.</p> <p>This is the test function:</p> <pre><code>func TestGetAllBooks_ReturnsAllBooks(t *testing.T) { t.Parallel() want := []books.Book{ { Title: &quot;Count Belisarius&quot;, Author: &quot;Peter Graves&quot;, Copies: 15, ID: &quot;a1&quot;, }, { Title: &quot;Dune&quot;, Author: &quot;Frank Herbert&quot;, Copies: 10, ID: &quot;a2&quot;, }, } got := books.GetAllBooks() slices.SortFunc(got, func(a, b books.Book) int { return cmp.Compare(a.Author, b.Author) }) if !slices.Equal(want, got) { t.Fatalf(&quot;want %#v, got %#v&quot;, want, got) } } </code></pre> <p>This is the GetAllBooks function:</p> <pre><code>func GetAllBooks() []Book { return slices.Collect(maps.Values(catalog)) } </code></pre> <p>This is the result of the test function:</p> <p>=== RUN TestGetAllBooks_ReturnsAllBooks</p> <p>=== PAUSE TestGetAllBooks_ReturnsAllBooks</p> <p>=== CONT TestGetAllBooks_ReturnsAllBooks</p> <p>books_test.go:31: want []books.Book{books.Book{Title:&quot;Count Belisarius&quot;, Author:&quot;Peter Graves&quot;, Copies:15, ID:&quot;a1&quot;}, books.Book{Title:&quot;Dune&quot;, Author:&quot;Frank Herbert&quot;, Copies:10, ID:&quot;a2&quot;}}, got []books.Book{books.Book{Title:&quot;Dune&quot;, Author:&quot;Frank Herbert&quot;, Copies:10, ID:&quot;a2&quot;}, books.Book{Title:&quot;Count Belisarius&quot;, Author:&quot;Peter Graves&quot;, Copies:15, ID:&quot;a1&quot;}}</p> <p>--- FAIL: TestGetAllBooks_ReturnsAllBooks (0.00s)</p> <p>FAIL </p> <p>I&#39;m sure it&#39;s something quite simple but I&#39;m baffled. </p> <p>Any advice will be greatly appreciated.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/This_University_547"> /u/This_University_547 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1qmg1zw/beginner_needs_help_with_a_test_function/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1qmg1zw/beginner_needs_help_with_a_test_function/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1qmg0gs/improve_ai_context_use_your_local_go_module_cache/" target="_blank">Improve AI Context: Use Your Local Go Module Cache</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>One of Go&#39;s best features is that all your dependencies live locally in <code>$GOMODCACHE</code>. I built a super simple MCP server to help AI agents actually read that code instead of guessing from outdated training data.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/ivan-pidikseev"> /u/ivan-pidikseev </a> <br/> <span><a href="https://ivan-pidikseev.dev/posts/golang-mcp-local-context/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1qmg0gs/improve_ai_context_use_your_local_go_module_cache/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1qmfjzh/you_prolly_dont_need_a_mocking_lib_in_go/" target="_blank">you prolly don't need a mocking lib in go</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>another tired ol&#39; take against mocking libraries in go, but aleast this has a few good examples on what to do instead</p> <p>i still find it strange that go testing review doc says not to use mocks w/o a single example on what to do instead. ik brevity and stuff and stdlib have examples but still</p> <p><a href="https://rednafi.com/go/mocking-libraries-bleh/">https://rednafi.com/go/mocking-libraries-bleh/</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Ok_Analysis_4910"> /u/Ok_Analysis_4910 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1qmfjzh/you_prolly_dont_need_a_mocking_lib_in_go/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1qmfjzh/you_prolly_dont_need_a_mocking_lib_in_go/">[comments]</a></span></div>
+          </li>
+  
+        </ul>
+  
+        <h3 class="subreddit">r/rust</h3>
+        <ul class="item-list">
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1qn40xa/what_is_the_most_efficient_way_to_learn_rust/" target="_blank">What is the most efficient way to learn rust?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi guys, I am new to rust programming, know the basics of bash, python, html, css, stuffs. C bothered me for a long time whenever I tried learning it. Suddenly, overnight I changed my primary language to rust. The documentation is so great. The biggest advantage. But I aldo need a way to interact apart from rustlings. Any suggestions? </p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Alternative_Bet4173"> /u/Alternative_Bet4173 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qn40xa/what_is_the_most_efficient_way_to_learn_rust/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qn40xa/what_is_the_most_efficient_way_to_learn_rust/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1qn2zzq/media_egor_2d_crossplatform_graphics_engine/" target="_blank">[Media] Egor - 2D cross-platform graphics engine</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>(Screen shakes. The gif is from one of the demos) It&#39;s been awhile (since v0.2.0?) and this is only the second time I&#39;ve shared this. Egor is on version 0.8.0 now and becoming something pretty capable</p> <p>My original goal was to write an MORPG, not an engine.. Trying different languages and frameworks just never felt great and I ran into hurdles that stopped me from making my game. My last attempt was in Rust with macroquad. I ended up with compilation issues, didn&#39;t care for the global context, fake async and some other things. I found myself rewriting it&#39;s crates like macroquad-tiled anyway, since they were not capable for multiplayer games</p> <p>All of that and a lot more just eventually led me to want to start writing my own engine. But one that compiled anywhere I wanted and was stupid easy to use. Ofc I chose wgpu. Since a lot of the concepts are fairly reusable, I ended up wanting to make egor more of an application framework. Something like Tauri but without a webview and JS stack. It&#39;s primarily optimized for games (especially currently) but capable of a lot more, like an editor I&#39;ve wrote with it</p> <p>Egor is made of reusable crates (egor_render and egor_app), a 2D renderer (wgpu), window/input (winit), text/fonts, a camera, optional ui (egui) and hot reloading (subsecond) and more. You could use the renderer and/or app crates individually to build your own engine or use the main crate to get a cross platform, easy to use, slightly opionated <em>engine</em></p> <p>I&#39;ve probably said more than enough.. I&#39;d love to get any feedback, contributions, whatever keeps it moving. If it interest you:</p> <ul> <li><a href="https://github.com/wick3dr0se/egor">https://github.com/wick3dr0se/egor</a></li> <li><a href="https://github.com/opensource-force/dyrah">https://github.com/opensource-force/dyrah</a> (morpg made with egor)</li> </ul> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/wick3dr0se"> /u/wick3dr0se </a> <br/> <span><a href="https://i.redd.it/mmbhq9a0rlfg1.gif">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qn2zzq/media_egor_2d_crossplatform_graphics_engine/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1qn2aev/zerobrew_is_a_rustbased_520x_faster_dropin/" target="_blank">zerobrew is a Rust-based, 5-20x faster drop-in Homebrew alternative</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/lucasgelfond"> /u/lucasgelfond </a> <br/> <span><a href="https://github.com/lucasgelfond/zerobrew">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qn2aev/zerobrew_is_a_rustbased_520x_faster_dropin/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1qmwm7d/media_announcing_oxicord_a_discord_tui_built_with/" target="_blank">[Media] Announcing Oxicord: A Discord TUI built with Ratatui & Image support</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi everyone.</p> <p>I am releasing the first public version of <strong>Oxicord</strong>, a Discord TUI client written in Rust.</p> <p>It is heavily inspired by the project <a href="https://github.com/ayn2op/discordo">Discordo</a>, but I rewrote it from scratch to leverage the Rust ecosystem and apply a cleaner architecture.</p> <p><strong>Feature Highlights:</strong></p> <ul> <li><strong>Visuals</strong>: Supports Sixel, Kitty, and iTerm2 image protocols via ratatui-image.</li> <li><strong>Markdown</strong>: Full markdown support, including syntax highlighting.</li> <li><strong>File Explorer</strong>: Built-in file explorer to browse and paste attachments.</li> <li><strong>Performance</strong>: Uses a custom async event loop to minimize idle CPU usage.</li> </ul> <p><strong>Architecture</strong>: I used a Clean Architecture approach (Domain/Infra separation) to make the codebase easier to maintain and test compared to typical monolithic TUIs.</p> <p><strong>Repository</strong>: <a href="https://github.com/linuxmobile/oxicord">https://github.com/linuxmobile/oxicord</a> <strong>Try it (Nix)</strong>: nix run github:linuxmobile/oxicord</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/ElRastaOk"> /u/ElRastaOk </a> <br/> <span><a href="https://i.redd.it/6lt95v5lekfg1.gif">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qmwm7d/media_announcing_oxicord_a_discord_tui_built_with/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1qmvrm3/media_made_a_reduxinspired_framework_for_ratatui/" target="_blank">[Media] Made a Redux-inspired framework for Ratatui</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;ve been working on a library called tui-dispatch for a little while now over some weekends. It started as the internal architecture for a Redis TUI I was building, but I found the pattern useful enough to extract into its own crate.</p> <p>Added a debug layer so that’s simple to explore the state and actions ran while app’s running (kinda like redux devtools) and a lot of other useful primitives.</p> <p>Aaand some macros to reduce boilerplate.</p> <p>The whole thing is WIP ofc, but here are some links:</p> <p>GitHub: <a href="https://github.com/dmk/tui-dispatch">https://github.com/dmk/tui-dispatch</a></p> <p>Docs: <a href="https://dmk.github.io/tui-dispatch">https://dmk.github.io/tui-dispatch</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/TheoryOk4287"> /u/TheoryOk4287 </a> <br/> <span><a href="https://i.redd.it/qf9mmbszakfg1.jpeg">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qmvrm3/media_made_a_reduxinspired_framework_for_ratatui/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1qmu3m6/things_i_miss_in_rust/" target="_blank">Things I miss in Rust</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Since most of my previous work was in C++ and C#, I sometimes catch myself missing certain OO features, especially:</p> <ul> <li>function overloading</li> <li>inheritance (<em>not even gonna try</em> 😁)</li> </ul> <p>One thing that comes up a lot for me is constructors. I’d love to be able to define multiple <code>new</code> functions with different parameters, something like:</p> <pre><code>pub fn new(...) pub fn new(..., extra_property: T) </code></pre> <p>Right now this usually turns into patterns like <code>new</code> + <code>with_extra_property</code> etc., which work but feel a bit more verbose.</p> <p>Is there a fundamental reason why function overloading isn’t possible (or desirable) in Rust? Is it mostly a design philosophy or are there technical constraints? And is this something that’s ever been seriously considered for the language, or is it firmly off the table?</p> <p>Curious to hear how others think about this, especially folks who came from C++/C# as well.</p> <p>EDIT:<br/> Conclusion: Builders it is.<br/> P.S. Thanks everyone for the insight!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/OneWilling1"> /u/OneWilling1 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qmu3m6/things_i_miss_in_rust/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qmu3m6/things_i_miss_in_rust/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1qmqpbz/stabilizing_the_if_let_guard_feature/" target="_blank">Stabilizing the `if let guard` feature</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hey folks!</p> <p>I&#39;ve written a blog post about the <code>if let guard</code> feature I&#39;ve been working on stabilizing. It covers:</p> <ul> <li>What it is and why it&#39;s useful</li> <li>Its history and interactions</li> <li>The drop-order bugs we found</li> </ul> <p>(And for those who&#39;ve been following my journey - there&#39;s a small note at the end about the next big step in my life <sup><sup>)</sup></sup></p> <p>I also want to say a huge thank you here. Thank you for the support, and a special thanks to those who got genuinely interested, reached out, asked questions, and even started contributing themselves. Seeing that is the best part</p> <p><a href="https://kivooeo.github.io/blog/if-let-guard/">https://kivooeo.github.io/blog/if-let-guard/</a></p> <p>Also, I want to check with you: would there be interest in a future, very detailed post about how to start contributing? I&#39;m thinking of taking a random issue and walking through the entire process: how I think, where I get stuck, where I look for answers, and how I finally fix it — with all the messy details</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Kivooeo1"> /u/Kivooeo1 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qmqpbz/stabilizing_the_if_let_guard_feature/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qmqpbz/stabilizing_the_if_let_guard_feature/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1qmqk8y/otot_open_tab_over_there_a_zoxideinspired_cli_for/" target="_blank">otot ("open tab over there") - a zoxide-inspired CLI for opening browser tabs while you're at your terminal</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/idiomattic-gh"> /u/idiomattic-gh </a> <br/> <span><a href="https://github.com/idiomattic/otot">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qmqk8y/otot_open_tab_over_there_a_zoxideinspired_cli_for/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1qmqg2p/ironcalc_rust_spreadsheet_engine_v071_released/" target="_blank">IronCalc: Rust spreadsheet engine v0.7.1 released</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi all,</p> <p>We just realeased a new version of our open source spreadsheet engine writen in Rust. It&#39;s growing a lot and I would be happy to have more collaborators.<br/> The main thing in this release is internazionalization, but a lot of work is still needed before having a full fledged product. </p> <p>I <em>think</em> it is a really nice project to learn Rust :) and it has a lot of potential.</p> <p>This is the GitHub:</p> <p><a href="https://github.com/ironcalc/IronCalc">https://github.com/ironcalc/IronCalc</a></p> <p>This is a proof of concept:</p> <p><a href="https://app.ironcalc.com/">https://app.ironcalc.com/</a></p> <p>Feedback, new ideas, discussions welcome.</p> <p>As of now it is a side project, but we might go full time soon!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/nicolas_hatcher"> /u/nicolas_hatcher </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qmqg2p/ironcalc_rust_spreadsheet_engine_v071_released/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qmqg2p/ironcalc_rust_spreadsheet_engine_v071_released/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1qmp6vp/minarrow_apache_arrow_memory_layout_for_rust_that/" target="_blank">Minarrow: Apache Arrow memory layout for Rust that compiles in < 2s</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;ve been working on a <a href="https://github.com/pbower/minarrow">columnar data library </a>that prioritises fast compilation and direct typed access over feature completeness.</p> <p><strong>Why another Arrow library?</strong></p> <p>Arrow-rs is excellent but compiles in 3-5 minutes and requires downcasting everywhere. I wanted something that:</p> <ul> <li>Compiles in &lt;1.5s clean, &lt;0.15s incremental</li> <li>Gives direct typed access without dynamic dispatch <em>(i.e.,, as_any().downcast_ref())</em></li> <li>Still interoperates with Arrow via the C Data Interface</li> <li>Simple as fast - no ecosystem baggage</li> </ul> <p><strong>Design choices that might interest you:</strong></p> <ul> <li>Dual-enum dispatch instead of trait objects: Array -&gt; NumericArray -&gt; IntegerArray&lt;T&gt;. Uses ergonomic macros to avoid the boilerplate.</li> <li>Compiler inlines everything, benchmarks show ~88ns vs arrow-rs ~147ns for 1000-element access. </li> <li>Buffer abstraction with Vec64&lt;T&gt; (64-byte aligned) for SIMD and SharedBuffer for zero-copy borrows with copy-on-write semantics</li> <li>MemFd support for cross-process zero-copy on Linux</li> <li>Uses portable_simd for arithmetic kernels <em>(via the partner</em> <strong><em>simd-kernels</em></strong> <em>crate)</em></li> <li>Parquet and IPC support including memory mapped reads (<em>via the sibling</em> <strong><em>lightstream</em></strong> <em>crate)</em> </li> </ul> <p><strong>Trade-offs:</strong></p> <p>- No nested types (structs, lists, unions) - focusing on flat columnar data</p> <p>- Requires nightly for portable_simd and allocator_api</p> <p>- Less battle-tested than arrow-rs</p> <p>If you work with high-performance data systems programming and have any feedback, or other related use cases, I&#39;d love to hear it.</p> <p>Thanks,</p> <p>Pete</p> <p><em>Disclaimer: I am not affiliated with Apache Arrow. However, this library implements the public &quot;Arrow&quot; memory layout which agrees on a binary representation across common buffer types. This supports cross-language zero-copy data sharing. For example, sharing data between Rust and Python without paying a significant performance penalty. For anyone who is not familiar with it, it is a key backing / foundational technology behind popular Rust data libraries such as &#39;Polars&#39; and &#39;Apache Data Fusion&#39;.</em> </p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/peterxsyd"> /u/peterxsyd </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qmp6vp/minarrow_apache_arrow_memory_layout_for_rust_that/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qmp6vp/minarrow_apache_arrow_memory_layout_for_rust_that/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1qmnawg/media_pixel_retro_quiz_website_for_refreshing_key/" target="_blank">[Media] Pixel retro quiz website for refreshing key Rust concepts</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I built a small Rust quiz platform over the weekend to refresh my knowledge of core Rust concepts and turned it into a pixel retro website called Cratery. It is still early but the idea is a quest based quiz where you go through different realms focused on things like ownership lifetimes traits and concurrency, answer questions and track your progress. I&#39;m pretty much inspired by classic pixel UIs. Right now it has questions from various topics and progress is saved locally. I mainly want feedback at this stage on question difficulty clarity and overall vibe since I plan to keep improving it over time.</p> <p>Website: <a href="https://cratery.rustu.dev/">cratery.rustu.dev</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/capitanturkiye"> /u/capitanturkiye </a> <br/> <span><a href="https://i.redd.it/jtr8jeg6sifg1.png">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qmnawg/media_pixel_retro_quiz_website_for_refreshing_key/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1qmm2ac/difference_methods_for_vector_and_vecdeque/" target="_blank">Difference methods for Vector and VecDeque</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Why aren&#39;t the similarities between <em>Vec&lt;T&gt;</em> and <em>VecDeque&lt;T&gt;</em> 1:1 ...</p> <p>i.e why does <em>Vec&lt;T&gt;</em> have <em>dedup</em> where as <em>VecDeque&lt;T&gt;</em> has <em>BinarySearch</em>?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Aggravating_Water765"> /u/Aggravating_Water765 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qmm2ac/difference_methods_for_vector_and_vecdeque/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qmm2ac/difference_methods_for_vector_and_vecdeque/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1qmjnv7/introducing_vortex_an_extremely_fast_pure_io/" target="_blank">Introducing vortex, an extremely fast, pure io_uring based BitTorrent library and TUI built from the ground up to maximize performance on modern Linux kernels and hardware.</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/EaseMinimum8738"> /u/EaseMinimum8738 </a> <br/> <span><a href="https://github.com/Nehliin/vortex">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qmjnv7/introducing_vortex_an_extremely_fast_pure_io/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1qmigwt/hlist_as_internal_representation_for_tuples_in/" target="_blank">HList as internal representation for tuples in Rust</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>A small experiment whether maybe tuples in Rust could be represented by <a href="https://docs.rs/frunk/latest/frunk/index.html">`frunk`</a>&#39;s HCons and HNil </p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/frondeus"> /u/frondeus </a> <br/> <span><a href="https://gist.github.com/frondeus/790a1a0b90e9c5838032325be1d8ace6">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qmigwt/hlist_as_internal_representation_for_tuples_in/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1qmh645/how_to_flatpak_a_rust_application/" target="_blank">How to flatpak a Rust application</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I made a game with Bevy and want to distribute it on flathub. Unfortunately any resources on the topic seem to be both scarce and outdated. Would greatly appreciate someone in the know walking me through it. My distro is Arch with KDE.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/LunaticDancer"> /u/LunaticDancer </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qmh645/how_to_flatpak_a_rust_application/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qmh645/how_to_flatpak_a_rust_application/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1qmerin/a_live_wallpaper_engine_in_rust_for_windows_and/" target="_blank">A live wallpaper engine in rust for windows and linux (tauri rust and front end ts vite)</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p><a href="https://github.com/laxenta/WallpaperEngine">https://github.com/laxenta/WallpaperEngine</a></p> <p><a href="https://preview.redd.it/qqwppjnlxgfg1.png?width=1920&amp;format=png&amp;auto=webp&amp;s=723a110248f13d2e704e8bd675a3637af1cfc8f3">https://preview.redd.it/qqwppjnlxgfg1.png?width=1920&amp;format=png&amp;auto=webp&amp;s=723a110248f13d2e704e8bd675a3637af1cfc8f3</a></p> <p>Well i am currently Finishing the cross platform <strong>Live Wallpaper app</strong> (its 4mb too XD), It works in uh Win 10/11 &amp; Linux and is made In Tauri rust. Offering Insanely good Performance like <em>~2-8 percent</em> GPU usage, <strong>Autoscraped</strong> Live wallpapers in app, supports auto start and stuff, its great for using less resources<br/> if someone may check it out i will be happy, please make sure to suggest improvements! i need issues to fix!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/That_Sale6314"> /u/That_Sale6314 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qmerin/a_live_wallpaper_engine_in_rust_for_windows_and/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qmerin/a_live_wallpaper_engine_in_rust_for_windows_and/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1qmeqb4/i_want_named_arguments_in_rust_mom_we_have_named/" target="_blank">I want named arguments in Rust. Mom: We have named arguments in Rust at home:</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Did you know that Rust has named arguments? At least you can imitate them on nightly!</p> <p>This:</p> <pre><code>let opts = #[kwargs] takes_options { display: false, debug: 2, }; </code></pre> <p>The type <code>Options</code> is inferred, and we don&#39;t have to import it.</p> <p>Is the same as this:</p> <pre><code>let opts = takes_options(Options { display: false, debug: 2, }); </code></pre> <p>With this <code>fn</code> and <code>struct</code>:</p> <pre><code>fn takes_options(opts: Options) -&gt; Options { opts } struct Options { display: bool, debug: u32, } </code></pre> <p>This is accomplished by defining the <code>kwargs</code> macro as follows:</p> <pre><code>macro_rules! kwargs { attr() ($fn:ident $tt:tt) =&gt; {$fn({ type InferredType = impl ?Sized; if false { panic!() as InferredType } else { InferredType $tt } })} } </code></pre> <p>The following is required:</p> <ul> <li><code>RUSTFLAGS=&quot;-Znext-solver=globally&quot;</code> because the current trait solver can&#39;t deal with this code</li> <li><code>#![feature(type_alias_impl_trait)]</code> to allow <code>type Type = impl Trait;</code></li> <li><code>#![feature(stmt_expr_attributes)]</code> and <code>#![feature(proc_macro_hygiene)]</code> to apply attribute macros on expressions</li> </ul> <p>Full code:</p> <pre><code>#![feature(type_alias_impl_trait)] #![feature(stmt_expr_attributes)] #![feature(proc_macro_hygiene)] #![feature(macro_attr)] // this one is optional, allows writing attribute macros with macro_rules! macro_rules! kwargs { attr() ($fn:ident $tt:tt) =&gt; {$fn({ type InferredType = impl ?Sized; if false { panic!() as InferredType } else { InferredType $tt } })} } fn takes_options(opts: Options) -&gt; Options { opts } #[derive(Debug, PartialEq)] struct Options { display: bool, debug: u32, } fn main() { let a = #[kwargs] takes_options { display: false, debug: 2, }; let b = takes_options(Options { display: false, debug: 2, }); assert_eq!(a, b); } </code></pre> <h1>Even more cursed</h1> <p>What if <code>#![kwargs]</code> was an attribute macro that you apply to the entire crate, and it automatically transformed any struct literal with a lowercase path?? <a href="https://github.com/rust-lang/rust/issues/54726"><code>#![feature(custom_inner_attributes)]</code></a></p> <pre><code>#![kwargs] fn main() { let a = takes_options { display: false, debug: 2, }; // the above is automatically transformed into this by #![kwargs]: let a = takes_options(Options { display: false, debug: 2, }); // because the struct literal is all lowercase. } </code></pre> <h1>Don&#39;t do it</h1> <p>This is only for fun! Don&#39;t actually use this :)</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/nik-rev"> /u/nik-rev </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qmeqb4/i_want_named_arguments_in_rust_mom_we_have_named/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qmeqb4/i_want_named_arguments_in_rust_mom_we_have_named/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1qmepgr/i_built_cpx_a_modern_faster_rust_based/" target="_blank">I built cpx - a modern, faster rust based replacement for cp (up to 5x faster)</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>cpx: <a href="https://github.com/11happy/cpx">https://github.com/11happy/cpx</a> , with cpx here’s what copying actually looks like:</p> <p><a href="https://i.redd.it/jfree48opgfg1.gif">https://i.redd.it/jfree48opgfg1.gif</a></p> <p>Features:</p> <ul> <li>Faster</li> <li>Beautiful progress bars (customizable)</li> <li>Resume interrupted transfers (checksum safe)</li> <li>Exclude patterns (files, directories, glob patterns)</li> <li>Flexible configuration for defaults and parallelism</li> <li>Graceful Interupt handling with resume hints</li> </ul> <p>benchmarks: <a href="https://github.com/11happy/cpx/blob/main/docs/benchmarks.md">https://github.com/11happy/cpx/blob/main/docs/benchmarks.md</a>, edit: benchmarks now include rsync &amp; xcp as well.</p> <p>crates.io: <a href="https://crates.io/crates/cpx">https://crates.io/crates/cpx</a></p> <p>I took inspiration from modern CLI tools like bat, fd, ripgrep. Would love to hear feedback.</p> <p>Thank you</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/PurpleReview3241"> /u/PurpleReview3241 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qmepgr/i_built_cpx_a_modern_faster_rust_based/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qmepgr/i_built_cpx_a_modern_faster_rust_based/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1qmcwpj/wrote_a_cli_tool_to_generate_udev_rules_because/" target="_blank">Wrote a CLI tool to generate udev rules because I'm learning Rust (and hate writing them manually)</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi all.</p> <p>I&#39;m a university student learning robotics, and I&#39;ve been using Arch Linux (and Ubuntu) for years.</p> <p>Writing udev rules for my devices (STM32, Arduino, cameras, etc.) to get persistent symlinks has always been a pain for me.</p> <p>Since I&#39;m learning Rust, I decided to write a small CLI tool called **`udever`** to automate this.</p> <p>It lets you interactively select a USB device, easily create a symlink, and automatically reloads the rules for you.</p> <p>It&#39;s built with `clap` and is still **experimental**. My code might not be idiomatic yet.</p> <p>I mainly built this for my own convenience, but I gathered a little courage to share it, hoping it might help someone else.</p> <p>* **Repo:** <a href="https://github.com/lazytatzv/udever">https://github.com/lazytatzv/udever</a></p> <p>* **Crates.io:** <a href="https://crates.io/crates/udever">https://crates.io/crates/udever</a></p> <p>And.. I&#39;m from Japan (so, as you might guess, I&#39;m not very good at English lol..), so sorry for any mistakes!</p> <p>If you hate writing rules by hand too, maybe give it a try.I know this might be quite niche, though.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Affectionate-Type610"> /u/Affectionate-Type610 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qmcwpj/wrote_a_cli_tool_to_generate_udev_rules_because/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qmcwpj/wrote_a_cli_tool_to_generate_udev_rules_because/">[comments]</a></span></div>
           </li>
   
         </ul>
@@ -2221,17 +460,54 @@ We&rsquo;re really excited about this work and want to hear from you!</p>
         <ul class="item-list">
   
           <li>
-            <a href="https://www.reddit.com/r/rust_gamedev/comments/1qm02wi/the_impatient_programmers_guide_to_bevy_and_rust/" target="_blank">The Impatient Programmer’s Guide to Bevy and Rust: Chapter 6 - Let There Be Particles</a>
-            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/rust_gamedev/comments/1qm02wi/the_impatient_programmers_guide_to_bevy_and_rust/">  </a> </td><td> <!-- SC_OFF --><div class="md"><p><a href="https://aibodh.com/posts/bevy-rust-game-development-chapter-6/">Tutorial Link</a></p> <p><strong>Chapter 6 - Let There Be Particles</strong></p> <p>Continuing my Bevy + Rust tutorial series. Learn to build a particle system to create stunning visual effects. Implement custom shaders, additive blending, and bring magic into your game.</p> <p><strong>By the end of this chapter, you’ll learn:</strong></p> <ul> <li>How to spawn and update thousands of particles efficiently</li> <li>Add variance for organic, natural looking effects</li> <li>Custom shaders with additive blending for that magical glow</li> <li>Building a flexible system that’s easy to extend</li> <li>Give your player magical powers</li> </ul> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/febinjohnjames"> /u/febinjohnjames </a> <br/> <span><a href="https://v.redd.it/m3j7fcatbdfg1">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust_gamedev/comments/1qm02wi/the_impatient_programmers_guide_to_bevy_and_rust/">[comments]</a></span> </td></tr></table></div>
+            <a href="https://www.reddit.com/r/rust_gamedev/comments/1qn38am/egor_a_dead_simple_gamecapable_2d_graphics_engine/" target="_blank">Egor - A dead simple, game-capable, 2D graphics engine</a>
+            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/rust_gamedev/comments/1qn38am/egor_a_dead_simple_gamecapable_2d_graphics_engine/">  </a> </td><td> &#32; submitted by &#32; <a href="https://www.reddit.com/user/wick3dr0se"> /u/wick3dr0se </a> <br/> <span><a href="https://i.redd.it/mmbhq9a0rlfg1.gif">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust_gamedev/comments/1qn38am/egor_a_dead_simple_gamecapable_2d_graphics_engine/">[comments]</a></span> </td></tr></table></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust_gamedev/comments/1qljmtv/opengl_graphics_engine_in_rust/" target="_blank">OpenGL - Graphics Engine in | RUST |</a>
-            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/rust_gamedev/comments/1qljmtv/opengl_graphics_engine_in_rust/">  </a> </td><td> &#32; submitted by &#32; <a href="https://www.reddit.com/user/PuzzleheadedTower523"> /u/PuzzleheadedTower523 </a> <br/> <span><a href="/r/opengl/comments/1qljmk8/opengl_graphics_engine_in_rust/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust_gamedev/comments/1qljmtv/opengl_graphics_engine_in_rust/">[comments]</a></span> </td></tr></table></div>
+            <a href="https://www.reddit.com/r/rust_gamedev/comments/1qmp1ut/dfsph_simulation_losing_volumeheight_over_time/" target="_blank">DFSPH Simulation losing volume/height over time (Vertical Compression)</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/pakamaka345"> /u/pakamaka345 </a> <br/> <span><a href="/r/computergraphics/comments/1qmp0jz/dfsph_simulation_losing_volumeheight_over_time/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust_gamedev/comments/1qmp1ut/dfsph_simulation_losing_volumeheight_over_time/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust_gamedev/comments/1qmffi7/i_built_a_roulette_game_in_rust_without_using_any/" target="_blank">🦀 I built a roulette game in Rust — without using any game engine</a>
+            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/rust_gamedev/comments/1qmffi7/i_built_a_roulette_game_in_rust_without_using_any/">  </a> </td><td> <!-- SC_OFF --><div class="md"><p>This is a roulette game I built <strong>from the ground up in Rust and Typescript</strong>,<br/> without relying on any existing game engine.</p> <p>Core mechanics, rendering, and logic are all custom.<br/> feedback and ideas are welcome!</p> <p><a href="https://youtu.be/Y_9eJvlgUMo?si=5avq54nmlaW3bnyS">https://youtu.be/Y_9eJvlgUMo?si=5avq54nmlaW3bnyS</a><br/> <a href="https://roulette.piyushxcoder.in/">https://roulette.piyushxcoder.in/</a><br/> <a href="https://github.com/PiyushXCoder/roulette">https://github.com/PiyushXCoder/roulette</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/PiyushXCoder"> /u/PiyushXCoder </a> <br/> <span><a href="https://v.redd.it/dvl88h5a0hfg1">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust_gamedev/comments/1qmffi7/i_built_a_roulette_game_in_rust_without_using_any/">[comments]</a></span> </td></tr></table></div>
           </li>
   
         </ul>
   
+      </div>
+  
+      <div class="card">
+        <h2>Movie Trailers</h2>
+        <ul class="item-list">
+  
+          <li>
+            <a href="http://www.filmjabber.com/movie-trailers/the-mummy-2026.html" target="_blank">The Mummy Movie Trailer</a>
+            
+          </li>
+  
+          <li>
+            <a href="http://www.filmjabber.com/movie-trailers/pillion.html" target="_blank">Pillion Movie Trailer</a>
+            
+          </li>
+  
+          <li>
+            <a href="http://www.filmjabber.com/movie-trailers/the-bride-frankenstein.html" target="_blank">The Bride Movie Trailer</a>
+            
+          </li>
+  
+          <li>
+            <a href="http://www.filmjabber.com/movie-trailers/still-hope.html" target="_blank">Still Hope Movie Trailer</a>
+            
+          </li>
+  
+          <li>
+            <a href="http://www.filmjabber.com/movie-trailers/the-death-of-robin-hood.html" target="_blank">The Death of Robin Hood Movie Trailer</a>
+            
+          </li>
+  
+        </ul>
       </div>
   
     </div>
