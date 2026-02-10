@@ -240,8 +240,8 @@
   
       <div class="card">
         <h2>Huginn Daily</h2>
-        <p class="header-p">Monday, February 9, 2026</p>
-        <p class="header-p">9cc94ffd-18f0-422f-9f2c-9a1cb7663a1f</p>
+        <p class="header-p">Tuesday, February 10, 2026</p>
+        <p class="header-p">216656ce-66a4-4c67-8a98-0f23887c51a6</p>
       </div>
   
       <div class="card">
@@ -253,11 +253,11 @@
           </tr>
           <tr>
             <th>Temperature Range</th>
-            <td>11°C to 19°C (53°F to 66°F)</td>
+            <td>12°C to 17°C (54°F to 63°F)</td>
           </tr>
           <tr>
             <th>Feels Like</th>
-            <td>Low: 47°F | High: 64°F</td>
+            <td>Low: 50°F | High: 62°F</td>
           </tr>
           <tr>
             <th>Humidity</th>
@@ -265,837 +265,37 @@
           </tr>
           <tr>
             <th>Wind</th>
-            <td>16 km/h (10 mph), Direction: 274°</td>
+            <td>18 km/h (11 mph), Direction: 256°</td>
           </tr>
           <tr>
             <th>Precipitation</th>
-            <td>Probability: 0%, Type: No precipitation expected</td>
+            <td>Probability: 98%, Type: No precipitation expected</td>
           </tr>
           <tr>
             <th>Sunrise / Sunset</th>
-            <td>🌅 06:39 AM / 🌇 05:24 PM</td>
+            <td>🌅 06:38 AM / 🌇 05:25 PM</td>
           </tr>
           <tr>
             <th>Moon Phase</th>
-            <td>Last Quarter (75%)</td>
+            <td>Waning Crescent (78%)</td>
           </tr>
           <tr>
             <th>Cloud Cover</th>
-            <td>48%</td>
+            <td>64%</td>
           </tr>
           <tr>
             <th>Pressure</th>
-            <td>1010.24 hPa</td>
+            <td>1010.04 hPa</td>
           </tr>
           <tr>
             <th>Dew Point</th>
-            <td>52.13°F</td>
+            <td>52.72°F</td>
           </tr>
           <tr>
             <th>Visibility</th>
-            <td>5.93 miles</td>
+            <td>5.81 miles</td>
           </tr>
         </table>
-      </div>
-  
-      <div class="card">
-        <h2>Golang</h2>
-        <ul class="item-list">
-  
-          <li>
-            <a href="https://go.dev/blog/container-aware-gomaxprocs" target="_blank">Container-aware GOMAXPROCS</a>
-            <div class="item-content">
-<div id="blog"><div id="content">
-  <div id="content">
-
-    <div class="Article" data-slug="/blog/container-aware-gomaxprocs">
-    
-    <h1 class="small"><a href="/blog/">The Go Blog</a></h1>
-    
-
-    <h1>Container-aware GOMAXPROCS</h1>
-      
-      <p class="author">
-      Michael Pratt and Carlos Amedee<br>
-      20 August 2025
-      </p>
-      
-      <div class='markdown'>
-<p>Go 1.25 includes new container-aware <code>GOMAXPROCS</code> defaults, providing more sensible default behavior for many container workloads, avoiding throttling that can impact tail latency, and improving Go&rsquo;s out-of-the-box production-readiness.
-In this post, we will dive into how Go schedules goroutines, how that scheduling interacts with container-level CPU controls, and how Go can perform better with awareness of container CPU controls.</p>
-<h2 id="gomaxprocs"><code>GOMAXPROCS</code></h2>
-<p>One of Go&rsquo;s strengths is its built-in and easy-to-use concurrency via goroutines.
-From a semantic perspective, goroutines appear very similar to operating system threads, enabling us to write simple, blocking code.
-On the other hand, goroutines are more lightweight than operating system threads, making it much cheaper to create and destroy them on the fly.</p>
-<p>While a Go implementation could map each goroutine to a dedicated operating system thread, Go keeps goroutines lightweight with a runtime scheduler that makes threads fungible.
-Any Go-managed thread can run any goroutine, so creating a new goroutine doesn&rsquo;t require creating a new thread, and waking a goroutine doesn&rsquo;t necessarily require waking another thread.</p>
-<p>That said, along with a scheduler comes scheduling questions.
-For example, exactly how many threads should we use to run goroutines?
-If 1,000 goroutines are runnable, should we schedule them on 1,000 different threads?</p>
-<p>This is where <a href="/pkg/runtime#GOMAXPROCS"><code>GOMAXPROCS</code></a> comes in.
-Semantically, <code>GOMAXPROCS</code> tells the Go runtime the &ldquo;available parallelism&rdquo; that Go should use.
-In more concrete terms, <code>GOMAXPROCS</code> is the maximum number of threads to use for running goroutines at once.</p>
-<p>So, if <code>GOMAXPROCS=8</code> and there are 1,000 runnable goroutines, Go will use 8 threads to run 8 goroutines at a time.
-Often, goroutines run for a very short time and then block, at which point Go will switch to running another goroutine on that same thread.
-Go will also preempt goroutines that don&rsquo;t block on their own, ensuring all goroutines get a chance to run.</p>
-<p>From Go 1.5 through Go 1.24, <code>GOMAXPROCS</code> defaulted to the total number of CPU cores on the machine.
-Note that in this post, &ldquo;core&rdquo; more precisely means &ldquo;logical CPU.&rdquo;
-For example, a machine with 4 physical CPUs with hyperthreading has 8 logical CPUs.</p>
-<p>This typically makes a good default for &ldquo;available parallelism&rdquo; because it naturally matches the available parallelism of the hardware.
-That is, if there are 8 cores and Go runs more than 8 threads at a time, the operating system will have to multiplex these threads onto the 8 cores, much like how Go multiplexes goroutines onto threads.
-This extra layer of scheduling is not always a problem, but it is unnecessary overhead.</p>
-<h2 id="container-orchestration">Container Orchestration</h2>
-<p>Another of Go&rsquo;s core strengths is the convenience of deploying applications via a container, and managing the number of cores Go uses is especially important when deploying an application within a container orchestration platform.
-Container orchestration platforms like <a href="https://kubernetes.io/" rel="noreferrer" target="_blank">Kubernetes</a> take a set of machine resources and schedule containers within the available resources based on requested resources.
-Packing as many containers as possible within a cluster&rsquo;s resources requires the platform to be able to predict the resource usage of each scheduled container.
-We want Go to adhere to the resource utilization constraints that the container orchestration platform sets.</p>
-<p>Let&rsquo;s explore the effects of the <code>GOMAXPROCS</code> setting in the context of Kubernetes, as an example.
-Platforms like Kubernetes provide a mechanism to limit the resources consumed by a container.
-Kubernetes has the concept of CPU resource limits, which signal to the underlying operating system how many core resources a specific container or set of containers will be allocated.
-Setting a CPU limit translates to the creation of a Linux <a href="https://docs.kernel.org/admin-guide/cgroup-v2.html#cpu" rel="noreferrer" target="_blank">control group</a> CPU bandwidth limit.</p>
-<p>Before Go 1.25, Go was unaware of CPU limits set by orchestration platforms.
-Instead, it would set <code>GOMAXPROCS</code> to the number of cores on the machine it was deployed to.
-If there was a CPU limit in place, the application may try to use far more CPU than allowed by the limit.
-To prevent an application from exceeding its limit, the Linux kernel will <a href="https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#how-pods-with-resource-limits-are-run" rel="noreferrer" target="_blank">throttle</a> the application.</p>
-<p>Throttling is a blunt mechanism for restricting containers that would otherwise exceed their CPU limit: it completely pauses application execution for the remainder of the throttling period.
-The throttling period is typically 100ms, so throttling can cause substantial tail latency impact compared to the softer scheduling multiplexing effects of a lower <code>GOMAXPROCS</code> setting.
-Even if the application never has much parallelism, tasks performed by the Go runtime—such as garbage collection—can still cause CPU spikes that trigger throttling.</p>
-<h2 id="new-default">New default</h2>
-<p>We want Go to provide efficient and reliable defaults when possible, so in Go 1.25, we have made <code>GOMAXPROCS</code> take into account its container environment by default.
-If a Go process is running inside a container with a CPU limit, <code>GOMAXPROCS</code> will default to the CPU limit if it is less than the core count.</p>
-<p>Container orchestration systems may adjust container CPU limits on the fly, so Go 1.25 will also periodically check the CPU limit and adjust <code>GOMAXPROCS</code> automatically if it changes.</p>
-<p>Both of these defaults only apply if <code>GOMAXPROCS</code> is otherwise unspecified.
-Setting the <code>GOMAXPROCS</code> environment variable or calling <code>runtime.GOMAXPROCS</code> continues to behave as before.
-The <a href="/pkg/runtime#GOMAXPROCS"><code>runtime.GOMAXPROCS</code></a> documentation covers the details of the new behavior.</p>
-<h2 id="slightly-different-models">Slightly different models</h2>
-<p>Both <code>GOMAXPROCS</code> and a container CPU limit place a limit on the maximum amount of CPU the process can use, but their models are subtly different.</p>
-<p><code>GOMAXPROCS</code> is a parallelism limit.
-If <code>GOMAXPROCS=8</code> Go will never run more than 8 goroutines at a time.</p>
-<p>By contrast, CPU limits are a throughput limit.
-That is, they limit the total CPU time used in some period of wall time.
-The default period is 100ms.
-So an &ldquo;8 CPU limit&rdquo; is actually a limit of 800ms of CPU time every 100ms of wall time.</p>
-<p>This limit could be filled by running 8 threads continuously for the entire 100ms, which is equivalent to <code>GOMAXPROCS=8</code>.
-On the other hand, the limit could also be filled by running 16 threads for 50ms each, with each thread being idle or blocked for the other 50ms.</p>
-<p>In other words, a CPU limit doesn&rsquo;t limit the total number of CPUs the container can run on.
-It only limits total CPU time.</p>
-<p>Most applications have fairly consistent CPU usage across 100ms periods, so the new <code>GOMAXPROCS</code> default is a pretty good match to the CPU limit, and certainly better than the total core count!
-However, it is worth noting that particularly spiky workloads may see a latency increase from this change due to <code>GOMAXPROCS</code> preventing short-lived spikes of additional threads beyond the CPU limit average.</p>
-<p>In addition, since CPU limits are a throughput limit, they can have a fractional component (e.g., 2.5 CPU).
-On the other hand, <code>GOMAXPROCS</code> must be a positive integer.
-Thus, Go must round the limit to a valid <code>GOMAXPROCS</code> value.
-Go always rounds up to enable use of the full CPU limit.</p>
-<h2 id="cpu-requests">CPU Requests</h2>
-<p>Go&rsquo;s new <code>GOMAXPROCS</code> default is based on the container&rsquo;s CPU limit, but container orchestration systems also provide a &ldquo;CPU request&rdquo; control.
-While the CPU limit specifies the maximum CPU a container may use, the CPU request specifies the minimum CPU guaranteed to be available to the container at all times.</p>
-<p>It is common to create containers with a CPU request but no CPU limit, as this allows containers to utilize machine CPU resources beyond the CPU request that would otherwise be idle due to lack of load from other containers.
-Unfortunately, this means that Go cannot set <code>GOMAXPROCS</code> based on the CPU request, which would prevent utilization of additional idle resources.</p>
-<p>Containers with a CPU request are still <a href="https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#how-pods-with-resource-limits-are-run" rel="noreferrer" target="_blank">constrained</a> when exceeding their request if the machine is busy.
-The weight-based constraint of exceeding requests is &ldquo;softer&rdquo; than the hard period-based throttling of CPU limits, but CPU spikes from high <code>GOMAXPROCS</code> can still have an adverse impact on application behavior.</p>
-<h2 id="should-i-set-a-cpu-limit">Should I set a CPU limit?</h2>
-<p>We have learned about the problems caused by having <code>GOMAXPROCS</code> too high, and that setting a container CPU limit allows Go to automatically set an appropriate <code>GOMAXPROCS</code>, so an obvious next step is to wonder whether all containers should set a CPU limit.</p>
-<p>While that may be good advice to automatically get a reasonable <code>GOMAXPROCS</code> defaults, there are many other factors to consider when deciding whether to set a CPU limit, such as prioritizing utilization of idle resources by avoiding limits vs prioritizing predictable latency by setting limits.</p>
-<p>The worst behaviors from a mismatch between <code>GOMAXPROCS</code> and effective CPU limits occur when <code>GOMAXPROCS</code> is significantly higher than the effective CPU limit.
-For example, a small container receiving 2 CPUs running on a 128 core machine.
-These are the cases where it is most valuable to consider setting an explicit CPU limit, or, alternatively, explicitly setting <code>GOMAXPROCS</code>.</p>
-<h2 id="conclusion">Conclusion</h2>
-<p>Go 1.25 provides more sensible default behavior for many container workloads by setting <code>GOMAXPROCS</code> based on container CPU limits.
-Doing so avoids throttling that can impact tail latency, improves efficiency, and generally tries to ensure Go is production-ready out-of-the-box.
-You can get the new defaults simply by setting the Go version to 1.25.0 or higher in your <code>go.mod</code>.</p>
-<p>Thanks to everyone in the community that contributed to the <a href="/issue/33803">long</a> <a href="/issue/73193">discussions</a> that made this a reality, and in particular to feedback from the maintainers of <a href="https://pkg.go.dev/go.uber.org/automaxprocs" rel="noreferrer" target="_blank"><code>go.uber.org/automaxprocs</code></a> from Uber, which has long provided similar behavior to its users.</p>
-</div>
-
-    </div>
-
-    
-    <div class="Article prevnext">
-    
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-        <p>
-        
-          
-            <b>Next article: </b><a href="/blog/testing-time">Testing Time (and other asynchronicities)</a><br>
-          
-        
-        
-          
-            <b>Previous article: </b><a href="/blog/go1.25">Go 1.25 is released</a><br>
-          
-        
-        <b><a href="/blog/all">Blog Index</a></b>
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-    </div>
-    
-
-  </div>
-</div>
-
-<script src="/js/play.js"></script>
-
-</div>
-          </li>
-  
-        </ul>
       </div>
   
       <div class="card">
@@ -1105,88 +305,123 @@ You can get the new defaults simply by setting the Go version to 1.25.0 or highe
         <ul class="item-list">
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1qzr30e/pyelevate_visual_terminal_tool_rust_to_safely/" target="_blank">🛠️ PyElevate — Visual Terminal Tool (Rust) to Safely Upgrade Python Dependencies</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hello everyone 👋</p> <p>I built a tool called PyElevate — a Rust + Ratatui terminal application designed to help developers upgrade Python dependencies from a requirements.txt file through a clean, interactive interface.</p> <p>🔗 Repository: <a href="https://github.com/pro-grammer-SD/pyelevate">https://github.com/pro-grammer-SD/pyelevate</a></p> <p>What it does</p> <p>Instead of manually checking PyPI or running bulk upgrade commands without visibility, PyElevate provides a structured terminal UI (TUI) where you can:</p> <p>View Package | Current Version | Latest Version | Update Type</p> <p>See color-coded update levels (patch / minor / major)</p> <p>Navigate using arrow keys</p> <p>Select specific packages to upgrade</p> <p>Make controlled upgrade decisions rather than updating everything at once</p> <p>It is conceptually inspired by the VS Code Dependi extension, but implemented as a fast, cross-platform terminal tool written in Rust.</p> <hr/> <p>Tech Stack</p> <p>🦀 Rust</p> <p>🖥️ Ratatui (terminal UI framework)</p> <p>⚡ Tokio async runtime</p> <p>🌐 Reqwest for PyPI API communication</p> <p>🔢 Semver for version comparison logic</p> <hr/> <p>On the use of LLMs (full transparency)</p> <p>An LLM was used to assist with portions of the initial structure and some logic generation. However, the project involved substantial manual engineering work, including:</p> <p>Refactoring significant sections of the codebase</p> <p>Improving project structure and modularity</p> <p>Fixing logical and behavioral issues</p> <p>Manual testing of application behavior</p> <p>Adding smaller custom features and adjustments directly</p> <p>The LLM functioned more as a development aid, while the overall architecture, refinement, and final quality control were handled manually.</p> <hr/> <p>Motivation</p> <p>The goal behind PyElevate was to:</p> <p>Build a practical, real-world Rust project</p> <p>Create a genuinely useful developer tool</p> <p>Gain deeper experience with Ratatui, async programming, and API integration</p> <p>Provide a modern alternative to traditional dependency upgrade workflows</p> <hr/> <p>I would greatly appreciate feedback on:</p> <p>TUI/UX design decisions</p> <p>Code structure and organization</p> <p>Better approaches for dependency resolution or conflict handling</p> <p>General Rust best practices that could improve the project</p> <p>Constructive feedback is very welcome — I’m building this as a learning experience as well as a tool. 🚀</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Klutzy_Bird_7802"> /u/Klutzy_Bird_7802 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qzr30e/pyelevate_visual_terminal_tool_rust_to_safely/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qzr30e/pyelevate_visual_terminal_tool_rust_to_safely/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r0oty4/release_symbanafis_v080_highperformance_symbolic/" target="_blank">[Release] SymbAnaFis v0.8.0 - High-Performance Symbolic Math in Rust</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;m excited to share the <strong>v0.8.0</strong> release of <strong>SymbAnaFis</strong>, a high-performance symbolic mathematics engine built from the ground up in Rust. While currently focused on differentiation and evaluation, a foundation that I hope will become a full Computer Algebra System (CAS).</p> <h1>What&#39;s New in v0.8.0, some changes (Since v0.4.0 my last post):</h1> <p><strong>Common Subexpression Elimination (CSE)</strong> - Automatic detection and caching of duplicate subexpressions in bytecode:</p> <ul> <li>Faster compilation</li> <li>Faster evaluation for expressions with repeated terms</li> <li>Zero-cost in release builds via unsafe stack primitives</li> </ul> <p><strong>Stack Optimizations</strong></p> <ul> <li>MaybeUninit arrays, raw pointer arithmetic</li> </ul> <p><strong>Critical Fixes</strong></p> <ul> <li>Fixed empty column handling in <code>evaluate_parallel</code></li> <li>Fixed <code>par_bridge()</code> not preserving result order</li> </ul> <p><strong>Modular Evaluator</strong> - Split 3,287-line monolith into 7 focused modules:</p> <ul> <li><code>compiler.rs</code> - Bytecode compilation with CSE</li> <li><code>execution.rs</code> - Scalar evaluation hot path</li> <li><code>simd.rs</code> - SIMD batch evaluation</li> <li><code>stack.rs</code> - Unsafe stack primitives with safety docs</li> </ul> <p><strong>ExprView API</strong> - Stable pattern matching for external tools</p> <h1>The Architecture: Why It&#39;s Fast</h1> <h1>1. The Foundation: N-ary AST &amp; Structural Hashing</h1> <p><strong>Flat N-ary Nodes</strong>: Instead of deep binary trees, we use <code>Sum([x, y, z])</code> not <code>Add(Add(x, y), z)</code>. This avoids recursion limits and enables O(N) operations.</p> <p><strong>Structural Hashing</strong>: Every expression has a 64-bit ID computed from its structure, enabling <strong>O(1) equality checks</strong> without recursive comparison.</p> <p><strong>Opportunistic Sharing</strong>: Subexpressions are shared via <code>Arc&lt;Expr&gt;</code> when operations naturally reuse them (e.g., during differentiation, the product rule generates <code>f&#39;·g + f·g&#39;</code> where <code>f</code> and <code>g</code> are the same Arc). We don&#39;t globally deduplicate—sharing is explicit or emergent from symbolic operations.</p> <h1>2. The Engine: Compiled Bytecode VM + SIMD</h1> <p><strong>Tree → Stack Machine</strong>: We don&#39;t traverse the AST during evaluation (well you can if you want, useful for symbolic substitutions). Expressions are compiled to bytecode once, then executed repeatedly.</p> <p><strong>SIMD Hot-Path (f64x4)</strong>: Our evaluator vectorizes operations, processing <strong>4 values simultaneously</strong> on the CPU. This enables the 500k–1M particle simulations in our benchmarks.</p> <h1>3. Simplification: ~120 Rules (Easily Extensible) in 4-Phase Pipeline</h1> <p><strong>Multi-pass Convergence</strong>: The engine iterates until expressions reach a stable state (no further simplifications possible).</p> <p><strong>Priority Pipeline</strong>: Rules are ordered by phase for maximum efficiency:</p> <table><thead> <tr> <th align="left">Phase</th> <th align="left">Priority</th> <th align="left">Purpose</th> <th align="left">Example</th> </tr> </thead><tbody> <tr> <td align="left"><strong>Expand</strong></td> <td align="left">85-95</td> <td align="left">Distribute, flatten</td> <td align="left"><code>(x+1)(x-1)</code> → <code>x² - 1</code></td> </tr> <tr> <td align="left"><strong>Cancel</strong></td> <td align="left">70-84</td> <td align="left">Identities</td> <td align="left"><code>x⁰→1</code>, <code>x/x→1</code></td> </tr> <tr> <td align="left"><strong>Consolidate</strong></td> <td align="left">40-69</td> <td align="left">Combine terms</td> <td align="left"><code>2x + 3x → 5x</code></td> </tr> <tr> <td align="left"><strong>Canonicalize</strong></td> <td align="left">1-39</td> <td align="left">Sort, normalize</td> <td align="left">Consistent ordering</td> </tr> </tbody></table> <h1>4. Ecosystem &amp; Portability</h1> <p><strong>Python Bindings (PyO3)</strong>: Exposes Rust performance to the Python/Data Science world with near-zero overhead.</p> <p><strong>WebAssembly Ready</strong>: Pure Rust implementation allows compilation to WASM for browser/edge deployment.</p> <p><strong>Isolated Contexts</strong>: Multiple symbol registries and function namespaces that don&#39;t collide—essential for plugins and sandboxing.</p> <h1>The Benchmarks (SA v0.8.0 vs SY v1.3.0)</h1> <p><strong>Test System</strong>: AMD Ryzen AI 7 350 (8C/16T @ 5.04 GHz), 32GB RAM, EndeavourOS</p> <table><thead> <tr> <th align="left">Operation</th> <th align="left">Avg Speedup (SA vs SY)</th> <th align="left">Range</th> <th align="left">Notes</th> </tr> </thead><tbody> <tr> <td align="left"><strong>Parsing</strong></td> <td align="left"><strong>1.43×</strong></td> <td align="left">1.26×–1.57×</td> <td align="left">Pratt parser + implicit multiplication</td> </tr> <tr> <td align="left"><strong>Differentiation</strong></td> <td align="left"><strong>1.35×</strong></td> <td align="left">1.00×–2.00×</td> <td align="left">Chain rule, product rule optimized</td> </tr> <tr> <td align="left"><strong>Compilation</strong></td> <td align="left"><strong>4.3×</strong></td> <td align="left">2.6×–22.0×</td> <td align="left"><strong>Bytecode generation blazing fast</strong></td> </tr> <tr> <td align="left"><strong>Evaluation (1k pts)</strong></td> <td align="left"><strong>1.21×</strong></td> <td align="left">0.91×–1.60×</td> <td align="left">Competitive, SIMD-optimized</td> </tr> <tr> <td align="left"><strong>Full Pipeline (No Simp)</strong></td> <td align="left"><strong>1.82×</strong></td> <td align="left">1.66×–2.43×</td> <td align="left">SA wins on all test cases</td> </tr> <tr> <td align="left"><strong>Full Pipeline (With Simp)</strong></td> <td align="left">0.60×</td> <td align="left">0.41×–1.15×</td> <td align="left">SY faster; SA does deeper simplification</td> </tr> </tbody></table> <p><a href="https://github.com/CokieMiner/SymbAnaFis/blob/main/benches/BENCHMARK_RESULTS.md">Full benchmarks</a>. </p> <p><strong>Note on Simplification</strong>: SymbAnaFis performs <strong>deep AST restructuring</strong> with 120+ rules (multi-pass convergence) this can help on bigger expression. Symbolica and our no simplify version does light term collection. This trade-off gives more human-readable output at the cost of upfront time. Simplification is optional (but opt out).</p> <h1>Visual Benchmarks: Simulations (vs SymEngine and Sympy)</h1> <p>The repository includes <strong>quad-view dashboards</strong> comparing performance:</p> <table><thead> <tr> <th align="left">Simulation</th> <th align="left">Particles</th> <th align="left">What It Tests</th> </tr> </thead><tbody> <tr> <td align="left"><a href="https://imgur.com/a/lof4j4W">Aizawa Attractor</a></td> <td align="left">500k</td> <td align="left">Symbolic field evaluation throughput</td> </tr> <tr> <td align="left"><a href="https://imgur.com/a/nVj8jMG">Clifford Map</a></td> <td align="left">1M</td> <td align="left">Discrete map iteration speed</td> </tr> <tr> <td align="left"><a href="https://imgur.com/a/duVtehO">Double Pendulum Matrix</a></td> <td align="left">50k</td> <td align="left">Symbolic Jacobian stability</td> </tr> <tr> <td align="left"><a href="https://imgur.com/a/8Lb99lX">Gradient Descent Avalanche</a></td> <td align="left">500K</td> <td align="left">Compiled surface descent</td> </tr> </tbody></table> <blockquote> <p><strong>Note</strong>: Compilation time is included in runtime measurements for SymbAnaFis (lazy compilation). Run scripts in <code>examples/</code> for detailed preparation time breakdown, also due to my engine having native parallelism the comparison is a bit unfair.</p> </blockquote> <h1>What Can You Build With It?</h1> <h1>1. High-Speed Simulations</h1> <p>Build ODE/PDE solvers evaluating <strong>millions of points per second</strong> with compiled symbolic expressions.</p> <h1>2. Automatic Differentiation</h1> <p>Calculate exact <strong>Gradients</strong>, <strong>Hessians</strong>, and <strong>Jacobians</strong> for ML/optimization backends—no finite differences needed.</p> <h1>3. Physics Lab Tools</h1> <p>Automate <strong>uncertainty propagation</strong> for experimental data following international standards (GUM/JCGM).</p> <h1>4. Custom DSLs</h1> <p>Use the <code>ExprView</code> API to convert expressions to your own formats (LaTeX, Typst, custom notation).</p> <h1>The Path to v1.0 (Roadmap)</h1> <p>My vision for SymbAnaFis is to eventually reach parity with industry giants like <strong>Mathematica</strong> or <strong>GiNaC</strong>, focusing strictly on the symbolic manipulation layer (keeping numerical methods in separate crates).</p> <p><strong>This is a career-long ambition.</strong> I am not expecting to finish a full CAS in a few months; instead, I am committed to building this lib step-by-step, ensuring every module is robust, high-performance, and mathematically &quot;closed&quot; (any output can be input again into any part of the system, and we get a meaningful output if possible).</p> <h1>Long-Term Milestones</h1> <ul> <li><strong>Symbolic Solver &amp; Differential Equations</strong>: A unified interface to solve ODEs, PDEs, DAEs, etc. symbolically by detecting patterns and applying Lie Group symmetries (also still need to research this deeper).</li> <li><strong>The Risch Algorithm</strong>: A robust implementation of symbolic integration. This is the &quot;boss fight&quot; of symbolic math, requiring a solid foundation in differential algebra.</li> <li><strong>100% Mathematical Coverage</strong>: Native support for Hypergeometric functions, Meijer G, and Elliptic integrals, ensuring the motor never hits a &quot;dead end.&quot;</li> <li><strong>Differential Algebra Engine</strong>: Moving beyond static expressions to handle relational algebra (e.g., discovering the form of an unknown function from its differential relationships).</li> <li><strong>JIT Compilation (Cranelift)</strong>: A native backend for scenarios requiring massive-scale throughput (&gt;1M evaluations per second).</li> </ul> <blockquote> <p>Development Status: This release covers everything I needed for my current Physics course, for now. From here on, development will slow down as a result. As always, innovation comes from need, and I also have more smaller projects that probably will make me continue the development of this.</p> </blockquote> <h1>Try It Out</h1> <p><strong>GitHub</strong>: <a href="https://github.com/CokieMiner/SymbAnaFis">CokieMiner/SymbAnaFis</a><br/> <strong>Crates.io</strong>: <code>cargo add symb_anafis</code><br/> <strong>PyPI</strong>: <code>pip install symb-anafis</code></p> <h1>Acknowledgments</h1> <ul> <li><strong>SymPy</strong> for first contact and showing me this was even possible</li> <li><strong>Symbolica</strong> for being a pain to compile on Windows and having an API I didn&#39;t like—which drove me to create this—and for giving me a baseline performance metric to compare against</li> <li><strong>Claude, Gemini, and DeepSeek</strong> for helping me when stuck on decisions, helping me with CS knowledge and the Rust language(I&#39;m a physics student) and writing boilerplate</li> <li>The pain of <strong>manual uncertainty propagation in spreadsheets</strong> (what I used in my Labs 1 course)—love you SciDAVis, but not for uncertainties</li> <li><strong>Rust community</strong> for making high-performance symbolic math feasible</li> </ul> <p><strong>Feedback welcome!</strong> Open an issue or discussion on GitHub.</p> <h1>License - Apache-2.0</h1> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/CokieMiner"> /u/CokieMiner </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r0oty4/release_symbanafis_v080_highperformance_symbolic/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r0oty4/release_symbanafis_v080_highperformance_symbolic/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1qzo8u5/cant_migrate_to_db_with_seaorm/" target="_blank">Can't migrate to db with seaORM</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;ve been playing around with Tauri a bit, and I&#39;ve finally figured out the classes to map to the database.</p> <p>When I run sea-orm-cli migrate up I get an OS error (4551) saying that An application control policy has blocked the file.</p> <p>Complete error log: error: failed to run custom build command for proc-macro2-diagnostics v0.10.1</p> <p>Caused by:</p> <p>could not execute process D:\Coding\Progetti-web-based\gestione_appartamenti\gestione_appartamenti\src-tauri\migration\target\debug\build\proc-macro2-diagnostics-dd40565779344fac\build-script-build (never executed)</p> <p>Caused by:</p> <p>application control policy has blocked the file. (os error 4551).</p> <p>I have already tried disabling Windows Defender on the project folder, on the c/user/myuser/.rustup folder but it didn&#39;t work. Even cargo clean and cargo build didn&#39;t solve the problem.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/elecim91"> /u/elecim91 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qzo8u5/cant_migrate_to_db_with_seaorm/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qzo8u5/cant_migrate_to_db_with_seaorm/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r0ohb5/hiring/" target="_blank">Hiring</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p><em>Sorry to pop in here like those annoying inmail LinkedIn recruiters ..</em></p> <p><em>I am a hiring manager for a very special team (really kind and capable folks ) and I want to do right by them. It has been hard to find a candidate, I am getting spammed by resumes that does not match any of our criteri, we don’t do AI filtering and it is overwhelming but I still go through each one we just haven’t had luck</em> </p> <p><em>I am hiring for a senior and a mid level software engineer who are well rounded and have experience in distributed systems (cloud ) and system level programing (this is okay if you haven’t had a chance to do )</em></p> <p><em>big plus if you understand TCP/IP and have some networking domain knowledge.</em><br/> <em>if you hit like I can share the job posting and the company name with you - we are out of Austin Texas (position is technically hybrid but exception can be made )</em> </p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Several_Success_8768"> /u/Several_Success_8768 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r0ohb5/hiring/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r0ohb5/hiring/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1qzm518/which_rust_library_would_be_good_for_making_a/" target="_blank">Which rust library would be good for making a drawing program?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;ve been interested in making a drawing or an animation program recently and I played around with egui with poor results lol. I just wanted to know if people think it&#39;s worth getting better and learning egui more, or if there&#39;s a better library for what I&#39;m trying to do.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Early-Cockroach4879"> /u/Early-Cockroach4879 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qzm518/which_rust_library_would_be_good_for_making_a/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qzm518/which_rust_library_would_be_good_for_making_a/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r0o2ul/new_here/" target="_blank">New here</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>hello I am new here, I just wanted to ask, if I do need to learn c/c++ before jump to rust?. I have experience using c++ but that was 5 years ago honestly I forgot some of it. yesterday I learn about stack and heap kinda confusing to me hehehe....</p> <p>If I don&#39;t need to learn c/c++ and it is ok to start learn rust. Then can you share your roadmap?. Thank you seniors 😊</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Secretor_Aliode"> /u/Secretor_Aliode </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r0o2ul/new_here/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r0o2ul/new_here/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1qzkmnr/docrawl_fast_documentation_site_crawler_that/" target="_blank">docrawl - fast documentation site crawler that outputs clean markdown (for RAG pipelines, LLM context, etc)</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/mr_dudo"> /u/mr_dudo </a> <br/> <span><a href="https://youtu.be/aEBA0nFWaPE">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qzkmnr/docrawl_fast_documentation_site_crawler_that/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r0l92h/need_a_mentor_for_building_my_project_its_a/" target="_blank">Need a mentor for building my project. It's a network Tethering app that shares android connection with Linux.</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hey Rustaceans!</p> <p>I&#39;m an entry-level programmer working on my first real project: an open-source tool to share Android phone&#39;s mobile network (with active VPN) to a Linux machine via USB tethering. The aim is to bypass carrier tether restrictions and also pass the phone&#39;s VPN similar to PDAnet+ but free, open-source, and Linux-focused (PDAnet+ is Windows-only and closed-source).</p> <p>I&#39;d love some guidance on the architecture: How does Android USB tethering work under the hood? Best ways to handle VPN passthrough without carrier detection? Any relevant Rust crates for USB, ADB, or Linux networking integration? Tips on potential pitfalls?</p> <p>If you&#39;re into systems programming, embedded networking, or Rust on Android/Linux, I&#39;d really appreciate mentorship or advice.</p> <p>Thanks! 🚀</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/noctural9"> /u/noctural9 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r0l92h/need_a_mentor_for_building_my_project_its_a/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r0l92h/need_a_mentor_for_building_my_project_its_a/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1qzjjeg/how_common_is_tdd_testfirst_in_realworld_rust/" target="_blank">How common is TDD (test-first) in real-world Rust projects?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I’m curious about the role of test-driven development (writing tests before implementation) in the Rust ecosystem.</p> <p>Coming from a JVM background, I’m used to TDD as a design tool, especially for async and concurrent code. In Rust, I see much more emphasis on:</p> <pre><code>• type-driven development, • property-based testing, • fuzzing, • post-factum unit tests. </code></pre> <p>My questions:</p> <pre><code>• Do teams actually practice test-first / TDD in production Rust code? • If yes, in which domains (backend systems, infra, libraries, embedded, etc.)? • Or is TDD generally seen as redundant given Rust’s type system and compiler guarantees? </code></pre> <p>I’m not asking whether tests are written (obviously they are), but whether TDD as a workflow is common or intentionally avoided in Rust.</p> <p>Interested in real-world experiences rather than theory.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Strong-Cantaloupe152"> /u/Strong-Cantaloupe152 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qzjjeg/how_common_is_tdd_testfirst_in_realworld_rust/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qzjjeg/how_common_is_tdd_testfirst_in_realworld_rust/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r0jr6r/wordchipper_my_nextgen_llm_tokenizer_looking_for/" target="_blank">wordchipper - my next-gen LLM tokenizer; looking for LTR release help</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;m pretty dedicated to the idea that rust + GPU accelerated tensor stacks; is the best option for high performance computing going forward, and I&#39;ve been doing a lot of support work to try and push things like `burn` to be able to stand independently of `python`.</p> <p>To this end, I&#39;ve been building a rust-native HPC tokenizer stack for LLMs. It is speed-competitive with `tiktoken-rs`; on a fully tested modular core, providing flexible tools for training, manipulating, saving, loading, and running BPE tokenizers.</p> <p>I&#39;ve put about 400-500 hours into this so far; I&#39;ve tried <em>hard</em> to make this a &quot;good public rust crate&quot; for as many users as I can anticipate; but I need more use perspectives. I need users, kicking the tires. I&#39;m going for a rock-solid LTS 1.0, with python, C++, and JNI bindings; and a nice pre-built tokenizer binary for training from various sources and generating pre-tokenized datafiles.</p> <p>I&#39;ve worked hard to make the interfaces regular, documented, with consistent names and semantics. I&#39;ve put a lot of effort into refactoring to make this as approachable as possible; but it&#39;s a Zeno&#39;s Paradox of second-guessing how others will see it.</p> <p>This codebase is *deeply* committed to modularity and testing; and leverages compiler inline folding specialization and pre-sized append buffers aggressively. I don&#39;t think it can realistically be made faster without manual thread routing (planned) or deep regex research and possibly building replacement boundary scanners.</p> <p>It loads and runs the public OpenAI tokenizers (except for the weird GPT-2 &quot;data gym&quot; format release; but that&#39;s coming) at or faster than `tiktoken` under parallelism using `rayon`.</p> <pre><code> % cargo run --release -p sample-timer -- --dataset-dir ~/datasets Compiling sample-timer v0.0.0 (/Users/crutcher/git/wordchipper/examples/sample-timer) Finished `release` profile [optimized] target(s) in 1.16s Running `target/release/sample-timer --dataset-dir /Users/crutcher/datasets` Model: &quot;oa:o200k_harmony&quot; - shards: [0, 1, 2, 3] - batch_size: 512 Samples Summary: - num batches: 208 - avg bytes/sample: 4777 - avg bytes/token: 4.8 Encoder Times: - wordchipper - batch: 31.0ms - sample: 60.5µs - bps: 75.31 MiB/s - tiktoken - batch: 30.5ms - sample: 59.6µs - bps: 76.39 MiB/s Decoder Times: - wordchipper - batch: 2.0ms - sample: 3.9µs - bps: 1.14 GiB/s - tiktoken - batch: 1.8ms - sample: 3.5µs - bps: 1.29 GiB/s </code></pre> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/crutcher"> /u/crutcher </a> <br/> <span><a href="https://docs.rs/wordchipper/latest/wordchipper/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r0jr6r/wordchipper_my_nextgen_llm_tokenizer_looking_for/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1qzgypr/aws_lambda_with_rust_and_closure_syntax/" target="_blank">AWS Lambda with Rust and Closure Syntax</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi folks, since AWS announced Rust in Lambda is now Generally Available (<a href="https://aws.amazon.com/about-aws/whats-new/2025/11/aws-lambda-rust/">https://aws.amazon.com/about-aws/whats-new/2025/11/aws-lambda-rust/</a>) I&#39;ve been playing around with it and I came across a few syntactic intricacies that I don&#39;t yet fully understand.</p> <p>First, the simplest possible Rust Lambda</p> <pre><code>use aws_config::{BehaviorVersion, Region, SdkConfig, load_defaults}; use lambda_runtime::{Error, LambdaEvent, run, service_fn}; use serde_json::Value; use std::env; #[tokio::main] async fn main() -&gt; Result&lt;(), Error&gt; { let test_env_var = env::var(&quot;TEST_ENV_VAR&quot;).expect(&quot;TEST_ENV_VAR must be set&quot;); let config = load_defaults(BehaviorVersion::latest()).await; run(service_fn(|_: LambdaEvent&lt;Value&gt;| async { Ok::&lt;String, Error&gt;(format!( &quot;TEST_ENV_VAR: {}, Region: {}&quot;, test_env_var, config .region() .unwrap_or(&amp;Region::new(&quot;No region set&quot;)) .as_ref() )) })) .await } </code></pre> <p>the idea being that the Lambda uses an inline closure. But, it&#39;s a bit ugly that I have to specify the return type as part of the <code>Ok</code>, so moving the actual Lambda into its own function:</p> <pre><code>async fn handle( test_env_var: &amp;str, config: &amp;SdkConfig, _: LambdaEvent&lt;Value&gt;, ) -&gt; Result&lt;String, Error&gt; { Ok(format!( &quot;TEST_ENV_VAR: {}, Region: {}&quot;, test_env_var, config .region() .unwrap_or(&amp;Region::new(&quot;No region set&quot;)) .as_ref())) } </code></pre> <p>whereas main only contains</p> <pre><code>let test_env_var = env::var(&quot;TEST_ENV_VAR&quot;).expect(&quot;TEST_ENV_VAR must be set&quot;); let config = load_defaults(BehaviorVersion::latest()).await; run(service_fn(|lambda_event: LambdaEvent&lt;Value&gt;| { handle(&amp;test_env_var, &amp;config, lambda_event) })) .await </code></pre> <p>anymore. Good, but now the values loaded during the init phase are part of the parameter list and using more values would expand that list and create more noise, so now moving that logic into a struct</p> <pre><code>struct Handler&lt;&#39;a&gt; { test_env_var: &amp;&#39;a str, config: &amp;&#39;a SdkConfig, } impl&lt;&#39;a&gt; Handler&lt;&#39;a&gt; { async fn handle(&amp;self, _: LambdaEvent&lt;Value&gt;) -&gt; Result&lt;String, Error&gt; { Ok(format!( &quot;TEST_ENV_VAR: {}, Region: {}&quot;, self.test_env_var, self.config .region() .unwrap_or(&amp;Region::new(&quot;No region set&quot;)) .as_ref())) } } </code></pre> <p>and thus main will now contain</p> <pre><code>let test_env_var = env::var(&quot;TEST_ENV_VAR&quot;).expect(&quot;TEST_ENV_VAR must be set&quot;); let config = load_defaults(BehaviorVersion::latest()).await; let handler = Handler { test_env_var: test_env_var.as_str(), config: &amp;config, }; run(service_fn(|lambda_event: LambdaEvent&lt;Value&gt;| { handler.handle(lambda_event) })) .await </code></pre> <p>not too bad, but calling the handler could even be prettier now, instead of explicitly containing a closure it would be nice to directly use it, a bit like</p> <pre><code>run(service_fn(handler)).await </code></pre> <p>but for this my understanding is that <code>Handler</code> would need to implement <code>FnMut(LambdaEvent&lt;_&gt;)</code> but I can&#39;t say I know how to do that after trying (I also need to use the nightly cargo build is what I understand as the <code>Fn</code> Traits aren&#39;t stable yet?) - does anyone have any pointers and/or what would be your preferred method?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/smutje187"> /u/smutje187 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qzgypr/aws_lambda_with_rust_and_closure_syntax/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qzgypr/aws_lambda_with_rust_and_closure_syntax/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r0huop/design_choice_question_should_distributed_gateway/" target="_blank">Design choice question: should distributed gateway nodes access datastore directly or only through an internal API?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>[UPDATED]</p> <p>Context:<br/> I’m building a horizontally scaled proxy/gateway system in Rust. Each node is shipped as a binary and should be installable on new servers with minimal config. Nodes need shared state like sessions, user creds, quotas, and proxy pool data.</p> <p>My current proposal is: each node talks only to a central internal API using a node key. That API handles all reads/writes to Redis/DB. This gives me tighter control over node onboarding, revocation, and limits blast radius if a node is ever compromised. It also avoids putting Datastore credentials on every node.</p> <p>An alternative design (suggested by an LLM during architecture exploration) is letting every node connect directly to Redis for hot-path data (sessions, quotas, counters) and use it as the shared state layer, skipping the API hop.</p> <p>I’m trying to decide which pattern is more appropriate in practice for systems like gateways/proxies/workers: direct Datastore access from each node, or API-mediated access only.</p> <p>Would like get your feedback about this to help me plan a road-map for next phase</p> <h1>[UPDATE — more context about the system]</h1> <p>To clarify the use case: this system is not a typical CRUD microservice setup. It’s a high-throughput proxy forwarder/gateway.</p> <p>The goal is to normalize access to multiple upstream proxy providers that all have different auth formats, query parameters, and routing rules. I’m building a proxy forwarder with an internal query engine that accepts one unified request format from clients, then selects a proxy from a pool and applies the correct provider-specific configuration before forwarding the request.</p> <p>This will sit in front of internal production services that generate large request volumes, so we expect high RPS and long-lived connections. Because of that, a single node won’t be enough [more of a network limitation per server] -- we plan to run multiple proxy nodes behind a Load Balancer.</p> <p>Each node is mostly data-plane work: authenticate user, pick proxy, check/update quota, forward traffic. The shared datastore is mainly for fast-changing runtime state like sessions and quota counters, not complex relational business data.</p> <p>So the architectural question is specifically about <strong>hot-path shared state access in a distributed gateway</strong>, not general multi-service DB sharing for business logic.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/GoldenSword-"> /u/GoldenSword- </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r0huop/design_choice_question_should_distributed_gateway/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r0huop/design_choice_question_should_distributed_gateway/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1qzfb1o/dicetest_040_and_diceprop_030_released/" target="_blank">dicetest 0.4.0 and diceprop 0.3.0 released</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p><a href="https://github.com/jakoschiko/dicetest">dicetest</a> is a library for property based testing, similar to quickcheck and proptest. I have some opinions which features are more or less important and implemented dicetest based on that. E.g. I don&#39;t care about shrinking, but I prefer it when generators can be defined easily with a custom distribution.</p> <p><a href="https://github.com/jakoschiko/diceprop">diceprop</a> is a library for testing mathematical properties. It&#39;s fun to use when doing stuff like implementing custom numeric types.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/cookie_absorber"> /u/cookie_absorber </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qzfb1o/dicetest_040_and_diceprop_030_released/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qzfb1o/dicetest_040_and_diceprop_030_released/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r0fd1y/fyrox_game_engine_100_release_candidate_2/" target="_blank">Fyrox Game Engine 1.0.0 - Release Candidate 2</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>This is the second intermediate release intended for beta testing before releasing the stable 1.0. The list of changes in this release is quite large, it is mostly focused on bugfixes and quality-of-life improvements, but there&#39;s a new functionality as well. In general, this release stabilizes the API, addresses long-standing issues.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/_v1al_"> /u/_v1al_ </a> <br/> <span><a href="https://fyrox.rs/blog/post/fyrox-game-engine-1-0-0-rc-2/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r0fd1y/fyrox_game_engine_100_release_candidate_2/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1qzesl0/how_do_you_manage_multiple_versions_of_the_same/" target="_blank">How do you manage multiple versions of the same config?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Lately I&#39;ve been developing some small cli tools, and I ran into this problem a couple times:</p> <p>I need different configs:</p> <ul> <li>real</li> <li>testing</li> <li>minimal</li> <li>experimental</li> </ul> <p>Editing files back and forward was annoying, so I built a tiny CLI called <strong>robe</strong>.</p> <p>It lets me save and switch configs instantly:</p> <pre><code>robe add tmux/testing robe use tmux/minimal </code></pre> <p>That&#39;s basically it.</p> <p>Sharing in case you&#39;ve felt this pain too.</p> <p>repo: <a href="https://github.com/sawsent/robe">https://github.com/sawsent/robe</a><br/> crate: <a href="https://crates.io/crates/robe">https://crates.io/crates/robe</a></p> <p>Would love feedback or ideas to take it to v0.1.0.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Terrible-Section-953"> /u/Terrible-Section-953 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qzesl0/how_do_you_manage_multiple_versions_of_the_same/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qzesl0/how_do_you_manage_multiple_versions_of_the_same/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r0e8ay/looking_for_feedback_on_wavewall_my_tiling/" target="_blank">Looking for feedback on wavewall, my tiling wallpaper generator!</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>(written on new reddit)</p> <p>Hey all! I just release 0.4 of wavewall, and I finally feel like it has enough merit to show to others. This being the rust subreddit, I&#39;d mostly appreciate if anyone sees something obvious that I&#39;m not doing well/am going about the wrong way.</p> <p>I&#39;ll mention that no part of this has been written by AI. I&#39;ll abstain from saying my views on the technology, but whether you personally love it or hate it, stating the usage seems relevant.</p> <p>Please ask any questions you may have, even if its just something like a part of the docs you found confusing! I&#39;ve tried to make them as comprehensive as I can but I&#39;d to love to improve them further if possible.</p> <p>Thanks!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/rohrsben"> /u/rohrsben </a> <br/> <span><a href="https://www.github.com/rohrsben/wavewall">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r0e8ay/looking_for_feedback_on_wavewall_my_tiling/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1qzecxn/white_shoe_johnny_robot/" target="_blank">White Shoe Johnny Robot</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/zdeeb"> /u/zdeeb </a> <br/> <span><a href="/r/robotics/comments/1qzebcp/white_shoe_johnny_robot/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qzecxn/white_shoe_johnny_robot/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r0e4mu/this_month_in_redox_january_2026/" target="_blank">This Month in Redox - January 2026</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>This month was huge: Self-hosting Milestone, Capabilities security, Development in Redox, Functional SSH, Better Boot Debugging, Redox on VPS, web browser demo, FOSDEM 2026, and many more:</p> <p><a href="https://www.redox-os.org/news/this-month-260131/">https://www.redox-os.org/news/this-month-260131/</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/ribbon_45"> /u/ribbon_45 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r0e4mu/this_month_in_redox_january_2026/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r0e4mu/this_month_in_redox_january_2026/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1qzea3b/a_terminal_recreation_of_the_2048_game_in_rust/" target="_blank">A terminal recreation of the 2048 game in Rust!</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I created a clone of the famous 2048 game in Rust as a way to lean <a href="https://crates.io/crates/ratatui"><code>ratatui</code></a>, <a href="https://crates.io/crates/tokio">tokio</a>, and <a href="https://crates.io/crates/crossterm">crossterm</a>. It was a fun project, learned a lot (especially through the many answers to questions I asked right here in this Reddit).</p> <p>I&#39;m proud of the result and wanted to share it.</p> <p>The game runs in the Terminal and supports Mac, Linux, and Windows.</p> <p>It has a pretty clean UI, tracks score, and when the game is over.</p> <p>I used <code>tokio</code> (even though it&#39;s overkill for a turn-based game) to handle input events and send them over a channel to an event handler.</p> <p>The game has a pretty clean separation with a separate module for the board and game. All the UI and input handling logic is in the main module.</p> <p>I have a few additional ideas for the game such as some visual feedback from keypresses which I&#39;ll be adding this weekend.</p> <p>The game is fully playable now and is a fun little game when you need a short break from real work!</p> <p>If you haven&#39;t heard of 2048, here&#39;s a link to an <a href="https://www.2048.org/">online version</a> of the game and the <a href="https://en.wikipedia.org/wiki/2048_(video_game">wiki</a>).</p> <p><strong>AI NOTE</strong>: The only AI that was used while I was writing this game was for unit test generation. The rest of the logic itself I wrote exclusively.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/freddiehaddad"> /u/freddiehaddad </a> <br/> <span><a href="https://github.com/freddiehaddad/2048">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qzea3b/a_terminal_recreation_of_the_2048_game_in_rust/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r0ctbs/wwid_a_cli_for_attaching_notes_to_project_files/" target="_blank">wwid: a CLI for attaching notes to project files (my first non-trivial Rust project, seeking constructive feedback from real humans)</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p><strong>TL;DR:</strong> I built a CLI tool for attaching notes to project files; I&#39;m proud of it, but it&#39;s also my first real Rust project and I would really appreciate feedback &amp; critique on the code quality from real developers instead of relying on AI.</p> <h2>preamble</h2> <p>I&#39;m not usually one to self-promote, and I&#39;m allergic to the &quot;I was doing X, so I built <strong>Y</strong>&quot; types of posts. Yes, I <em>am</em> proud of what I&#39;ve built, but my reason for posting here <em>is to ask for feedback from real people</em>.</p> <p>This is my first (non-trivial) Rust project. LLMs are helpful sometimes (I used one to generate <em>some</em> unit tests, the occasional &quot;please help me understand this compiler error&quot; prompt, etc.), but the code is all hand-written.</p> <p>With that said, I&#39;m incredibly wary of internalizing bad patterns, which AI is notorious for doing and I know I&#39;m especially vulnerable to as a novice. Thus, while I do hope some of you find this interesting or useful, I would be <em>especially</em> grateful for feedback on the architecture &amp; overall &quot;Rustiness&quot; of the code.</p> <p>I understand that providing feedback is something that takes time and effort. So even if you just take a brief look, I&#39;ll <em>really</em> appreciate it, and I certainly don&#39;t feel entitled to anyone&#39;s time.</p> <p><strong>The rest of the post describes the tool and its scope. Source code linked at the end.</strong></p> <h2>rest of the post</h2> <p><code>wwid</code> (<em>what was I doing?</em>) is intentionally simple: it maps <em>notes</em> to <em>paths</em>. It makes no further assumptions, and does not attempt to manage your workflow for you. The simplicity is what makes it powerful. Notes stay contextual, portable, flexible, and as ephemeral or durable as your workflow demands.</p> <p>More precisely, <code>wwid</code> associates <em>externally stored text files</em> with <em>relative paths inside projects</em>. As such, you can tether notes directly to their context without polluting the source tree, while they&#39;re available in <code>~/.local/share/wwid</code> to sync with tools like <a href="https://syncthing.net/">SyncThing</a>.</p> <p>Some usage examples:</p> <p>```bash</p> <h1>open the &#39;root note&#39; for this project</h1> <p>wwid</p> <h1>attach a note to a file</h1> <p>wwid note src/main.rs</p> <h1>list notes</h1> <p>wwid ls</p> <h1>clean orphaned notes</h1> <h1>notes whose &quot;owners&quot; no longer exist</h1> <p>wwid prune --force ```</p> <hr/> <p>If you&#39;re interested, see the <a href="https://codeberg.org/ficd/wwid">repository on Codeberg</a>. <code>wwid</code> is 0BSD licensed, available on <a href="https://crates.io/crates/wwid">crates.io</a>, and there is a <a href="https://codeberg.org/ficd/wwid/releases">static Linux binary</a>.</p> <p>As mentioned at the start, I would be very grateful for some constructive criticism. I&#39;d like to get feedback from real developers, not a glorified autocomlete.</p> <p>Thanks for reading!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/prodleni"> /u/prodleni </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r0ctbs/wwid_a_cli_for_attaching_notes_to_project_files/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r0ctbs/wwid_a_cli_for_attaching_notes_to_project_files/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1qzdr12/syrillian_rust_game_engine_with_a_focus_on/" target="_blank">Syrillian Rust Game Engine with a focus on simplicity</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Good morning dear Rust community,</p> <p>I&#39;d like to present the current stage of my actively developing Rust game engine &quot;Syrillian&quot;, which I&#39;ve been haggling with for the past 2 years. It has received <em>hundreds</em> of hours of our free time and is <strong>open source</strong>, licensed under <strong>MIT</strong>; made to be free-for-all.</p> <p>As the first contributors started to settle in, this project has become more than just my personal project. In fact, I&#39;m very happy to be able to share this passion with more people, and work towards making my own games with it, as well as seeing others do so. Seeing the first stable release nearing, some time this year, is honestly <em>very</em> exciting.</p> <p>But so much to that, I think code talks best. Have a look how behavior is defined in Syrillian, by building components:</p> <p>```rust</p> <h1>[derive(Debug, Reflect)]</h1> <h1>[reflect_all]</h1> <p>pub struct GravityComponent { pub acceleration_per_sec: f32, pub velocity: f32, pub max_acceleration: f32, }</p> <p>impl Default for GravityComponent { fn default() -&gt; Self { GravityComponent { acceleration_per_sec: 9.80665, velocity: 0.0, max_acceleration: 100.0, } } }</p> <p>impl Component for GravityComponent { fn update(&amp;mut self, world: &amp;mut World) { let delta_time = world.delta_time().as_secs_f32();</p> <pre><code> self.velocity = (self.velocity - self.acceleration_per_sec * delta_time) .clamp(-self.max_acceleration, self.max_acceleration); self.parent() .transform .translate(Vec3::new(0.0, self.velocity, 0.0)); } </code></pre> <p>} ```</p> <p>This is how a gravity component is made from scratch. That is all that&#39;s needed. Type Reflections (Reflect macro) are not necessary, but will allow you to persist the component in a future scene format, or do any other dynamic field reflection you might wish for, right now.</p> <p>You can then add it to the world by making, or using an existing object, and simply adding the component.</p> <p>```rust // App macro is optional, but will bootstrap a basic entrypoint with tracing / logging, etc.. for convenience</p> <h1>[derive(Debug, Default, SyrillianApp)]</h1> <p>struct MyApp;</p> <p>impl AppState for MyApp { fn init(&amp;mut self, world: &amp;mut World) -&gt; Result&lt;(), Box&lt;dyn Error&gt;&gt; { let camera = world.new_camera(); let mut cube = world.spawn(&amp;CubePrefab::default());</p> <pre><code> // here you can use your gravity component cube.add_component::&lt;GravityComponent&gt;(); // or you just use the real physics, provided for you by syrillian OOTB :) cube.add_component::&lt;Collider3D&gt;(); cube.add_component::&lt;RigidBodyComponent&gt;(); } </code></pre> <p>} ```</p> <p>That&#39;s all that&#39;s needed for project bootstrap, windowing, render and world + physics runtime.</p> <p>The project is here hosted here, where you can contribute, report any issues and ask for help:</p> <p><a href="https://github.com/Syrillian/syrillian">https://github.com/Syrillian/syrillian</a></p> <p>I would appreciate your support. Even a quick 🌟 on the repo would be amazing so I&#39;m aware of interest.</p> <p>The engine is also built to integrate a visual editor in the future.</p> <p>Thanks for your time and have lots of fun building! :)</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/IKekschenI"> /u/IKekschenI </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qzdr12/syrillian_rust_game_engine_with_a_focus_on/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qzdr12/syrillian_rust_game_engine_with_a_focus_on/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r0bdu3/schemers_r6rs_rust_for_the_rust_ecosystem/" target="_blank">Scheme-rs: R6RS Rust for the Rust ecosystem</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;m very pleased to announce the first version of scheme-rs, an implementation of R6RS scheme design to be embedded in Rust. It&#39;s similar to Guile, but presents a completely safe Rust API.</p> <p>I&#39;ve been working on this project for quite some time now and I&#39;m very pleased to finally release the first version for general consumption. I hope you enjoy!</p> <p>There are already a few embedded schemes available for Rust, most prominently steel, so I will get ahead of the most commonly asked question: &quot;how is this different from steel?&quot; Great question! Mostly it&#39;s different in that scheme-rs intends to implement the R6RS standard. Although it doesn&#39;t completely, it mostly does, and steel is a different dialect with different goals of implementation. Also, scheme-rs is purely JIT compiled. It doesn&#39;t have a VM or anything like that. </p> <p>Anyway, hope you like this! No AI was used to make this, not that I have anything against that but that seems to be a hot button issue here these days. </p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/maplant"> /u/maplant </a> <br/> <span><a href="https://scheme-rs.org">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r0bdu3/schemers_r6rs_rust_for_the_rust_ecosystem/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1qzccts/flux_search_monitor_and_nuke_processes_with_ease/" target="_blank">flux - search, monitor, and nuke processes with ease, with system resource tracking</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Got tired of juggling top, grep, and kill -9 every time I wanted to identify what was eating my resources or kill a process. So I built flux - a clean and easy-to-use TUI that lets you search, monitor, and nuke processes with ease, with system resource tracking.</p> <p>Features:</p> <ul> <li><strong>Real-time Resource Monitoring</strong>: Track CPU and memory usage, live</li> <li><strong>Port Discovery</strong>: Identify which processes are listening on specific ports</li> <li><strong>Batch Actions</strong>: Select multiple processes with <code>Space</code> or use <code>--nuke</code> to batch-kill by filter</li> <li><strong>Easy Navigation</strong>: Move around effortlessly with <code>j/k</code> or arrow keys</li> <li><strong>Smart UI</strong>: Context-aware coloring for high resource usage</li> </ul> <p>Made in Rust.</p> <p>GitHub: <a href="https://github.com/VG-dev1/flux">https://github.com/VG-dev1/flux</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Apart-Television4396"> /u/Apart-Television4396 </a> <br/> <span><a href="https://i.redd.it/cicugik5laig1.png">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qzccts/flux_search_monitor_and_nuke_processes_with_ease/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r09o51/vidformer_a_video_rendering_accelerator_for_data/" target="_blank">Vidformer — a video rendering accelerator for data visualization</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hey <a href="/r/rust">r/rust</a>! Long-time Rust user, first-time poster. Wanted to share <strong>Vidformer</strong>, a project I&#39;m building as part of my PhD.</p> <p>Vidformer is a rendering accelerator for video query results. Alternatively, it can be seen as a code-based video editor for data visualization.</p> <p>The idea is that users or LLMs write Python/OpenCV scripts to annotate or edit videos, and Vidformer makes playback start in under a second — even for hours of footage.</p> <p>A Python API shim converts Python code into a declarative spec (<code>import cv2</code> -&gt; <code>import vidformer.cv2 as cv2</code>), which is sent to a server (written in Rust). The server is where the heavy lifting happens: A specialized rendering engine optimizes and parallelizes rendering across cores and/or GPUs. Then, short segments are exposed via a Video on Demand protocol and are only rendered when requested.</p> <p>Vidformer has a lot of low-level FFmpeg and OpenCV code, video file I/O remapping, and an API with a full user permissions system. I don&#39;t believe it would have been possible to write in any other language but Rust. Either it would be too slow to work, or too hard to debug the memory and thread issues from C FFI.</p> <p>Repo: <a href="https://github.com/ixlab/vidformer">https://github.com/ixlab/vidformer</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/dominikWin"> /u/dominikWin </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r09o51/vidformer_a_video_rendering_accelerator_for_data/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r09o51/vidformer_a_video_rendering_accelerator_for_data/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1qzb2y9/im_working_on_a_user_friendly_automation_tool/" target="_blank">I'm working on a user friendly automation tool with rust</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>So i have been working on a project called autopilot-rs for a while now. It is written in the Rust language and is used for automation.</p> <p>Features of autopilot-rs:</p> <ol> <li>Performing a set of tasks when conditions are met.</li> <li>Periodically checking conditions (Check Interval) or running once at startup.</li> <li>A Jobfile structure that can be created both via CLI and manually.</li> <li>A functional CLI for managing jobs.</li> <li>Simple and easy-to-use interface.</li> <li>A wide range of ready-made conditions for various scenarios.</li> <li>Lightweight and very fast.</li> <li>Cross-platform compatibility.</li> <li>Error handling.</li> <li>Memory-safe.</li> <li>Most importantly, it is open source.</li> <li>And more...</li> </ol> <p>You might ask, what is the use of this program? Below are a few scenarios where autopilot-rs proves useful:</p> <ol> <li>Daily routines – automating repetitive tasks you need to do every morning when using your system.</li> <li>Updating the system when you connect to Wi-Fi.</li> <li>Closing unnecessary programs when system resources are overburdened.</li> <li>Taking automatic backups when connected to Wi-Fi or according to a specific schedule.</li> <li>And more...</li> </ol> <p>GitHub: <a href="https://github.com/streamtechteam/auto_pilot_rs">https://github.com/streamtechteam/auto_pilot_rs</a></p> <p>YouTube Video: <a href="https://youtu.be/pRkjfip1s5M">https://youtu.be/pRkjfip1s5M</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Limp_Replacement_596"> /u/Limp_Replacement_596 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qzb2y9/im_working_on_a_user_friendly_automation_tool/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qzb2y9/im_working_on_a_user_friendly_automation_tool/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r080cb/github_issue_roulette/" target="_blank">Github Issue Roulette</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I made a cli tool to fetch github issues, filter them by label and spit out a single one randomly. </p> <p>I saw myself skipping complicated issues when there where smaller ones i could do instead, so the <em>heavyer</em> ones got delayed or even forgotten.<br/> This tool returns a single issue that i HAVE to fix/edit/close.<br/> The tool does not enforce any of that, but it seemingly increases my productivity. </p> <p>Here is the <a href="https://github.com/JonasFocke01/github_issue_roulette">link to the tool</a> </p> <p>Antidisclaimer: I wrote the tool 8-9 months ago, but i do not remember me using any AI for this. Have a good day</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Jonrrrs"> /u/Jonrrrs </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r080cb/github_issue_roulette/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r080cb/github_issue_roulette/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1qzb232/skelform_2d_skeletal_animator_wgpu_egui/" target="_blank">SkelForm - 2D Skeletal Animator (wgpu + egui)</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>SkelForm is a 2D skeletal animator, mainly designed with ease of implementation in mind for games.</p> <p>Official site: <a href="https://skelform.org/">https://skelform.org/</a></p> <p>Stack: winit + wgpu + egui</p> <p>Native downloads are available, but also a <a href="https://skelform.org/editor/">web version</a> built with <a href="https://trunk-rs.github.io/trunk/">Trunk</a>. Due to constant issues with WebGPU, the web version is forced onto WebGL2.</p> <p>The project was built on <a href="https://github.com/matthewjberger/wgpu-example">matthewjberger&#39;s</a> template.</p> <p>Notable crates and their use cases:</p> <p>- <a href="https://crates.io/crates/psd">psd</a> - The editor supports parsing Photoshop files thanks to this. It&#39;s vendored for a custom optimization regarding flattening layers, and also to fix a bug relating to the visibility flag.</p> <p>- <a href="https://crates.io/crates/spade">spade</a> - Delaunay triangulation for meshes.</p> <p>- <a href="https://crates.io/crates/max_rects">max_rects</a> - Texture packer for atlases. I&#39;ve tried a couple few packers and this seemed to be the most consistent, though it can still occasionally produce wonky ones. Might just be me misuing it.</p> <p>- <a href="https://github.com/tauri-apps/global-hotkey">global-hotkey</a> - The only way I knew to intercept system-level shortcuts like Cmd-W and Cmd-Q on Mac. Without this, the program would automatically exit without having any sort of unsaved warning.</p> <p>This project is still in its early stages, so there&#39;ll absolutely be some breaking bugs and/or crashes in the editor. All feedback is welcome!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Retropaintt"> /u/Retropaintt </a> <br/> <span><a href="https://github.com/Retropaint/skelform">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qzb232/skelform_2d_skeletal_animator_wgpu_egui/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r07f5i/izwi_a_local_audio_inference_engine_written_in/" target="_blank">Izwi - A local audio inference engine written in Rust</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Been building Izwi, a fully local audio inference stack for speech workflows. No cloud APIs, no data leaving your machine.</p> <p><strong>What&#39;s inside:</strong></p> <ul> <li>Text-to-speech &amp; speech recognition (ASR)</li> <li>Voice cloning &amp; voice design</li> <li>Chat/audio-chat models</li> <li>OpenAI-compatible API (<code>/v1</code> routes)</li> <li>Apple Silicon acceleration (Metal)</li> </ul> <p><strong>Stack:</strong> Rust backend (Candle/MLX), React/Vite UI, CLI-first workflow.</p> <p>Everything runs locally. Pull models from Hugging Face, benchmark throughput, or just <code>izwi tts &quot;Hello world&quot;</code> and go.</p> <p>Apache 2.0, actively developed. Would love feedback from anyone working on local ML in Rust!</p> <p>GitHub: <a href="https://github.com/agentem-ai/izwi">https://github.com/agentem-ai/izwi</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/zinyando"> /u/zinyando </a> <br/> <span><a href="https://github.com/agentem-ai/izwi">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r07f5i/izwi_a_local_audio_inference_engine_written_in/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1qz7x41/inbq_parse_bigquery_queries_and_extract/" target="_blank">inbq: parse BigQuery queries and extract schema-aware, column-level lineage</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi, I wanted to share <strong>inbq</strong>, a library I&#39;ve been working on for parsing BigQuery queries and extracting schema-aware, column-level lineage.</p> <p>Features:</p> <ul> <li>Parse BigQuery queries into well-structured ASTs with easy-to-navigate nodes.</li> <li>Extract schema-aware, column-level lineage.</li> <li>Trace data flow through nested structs and arrays.</li> <li>Capture referenced columns and the specific query components (e.g., select, where, join) they appear in.</li> <li>Process both single and multi-statement queries with procedural language constructs.</li> <li>Built for speed and efficiency, with lightweight Python bindings that add minimal minimal overhead.</li> </ul> <p>The parser is a hand-written, top-down parser. The lineage extraction goes deep, not just stopping at the column level but extending to nested struct field access and array element access. It also accounts for both <a href="https://github.com/lpraat/inbq?tab=readme-ov-file#concepts">inputs and side inputs</a>.</p> <p>You can use inbq as a <a href="https://pypi.org/project/inbq/">Python library</a>, <a href="https://crates.io/crates/inbq">Rust crate</a>, or via its <a href="https://github.com/lpraat/inbq?tab=readme-ov-file#command-line-interface">CLI</a>.</p> <p>Feedbacks, feature requests, and contributions are welcome!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Patient_Atmosphere45"> /u/Patient_Atmosphere45 </a> <br/> <span><a href="https://github.com/lpraat/inbq">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qz7x41/inbq_parse_bigquery_queries_and_extract/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r075um/simd_accelerated_json_parser/" target="_blank">SIMD accelerated JSON parser</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Quite a while ago, I made a post of my JSON parser. Well to be fair, it was lackluster. Much time has been passed since that. And, I&#39;ve been working on improving it all that time. I forgot why I even wanted to improve the performance in the first place but to give you some background, I initially got into JSON parsing because I wanted to parse JSONC as I was messing around with config files back then. Existing crates didn&#39;t fill my niche.</p> <p>So I did what a &quot;real&quot; programmer would do. Spend hours writing code to automate something that can be done manully in less than a minute. /s</p> <p>Enough of the past, but nothing much I can share of the present either. All that I can say is life hasn&#39;t been the same since I got into JSON parsing. While trying to improve performance I read about simdjson. Obviously I tried to do what they did. But each time I failed. Heck I didn&#39;t even know about how bitwise OPs worked. All that I knew was <code>flag ^= true</code> will flip the boolean, that&#39;s all.</p> <p>I also had the misconception of LUT, I thought of it as a golden key to everything. So, I abused it everywhere thinking &quot;it will eliminate branches and improve performance&quot;, right? I was wrong, loading LUT everywhere will cause cache eviction in CPU. You will benefit from them only if they are hot and is likely to stay in cache for the total duration. I even went ahead to create a diabolical code that stored all functions in LUT lol.</p> <p>Having read about simdjson, I again had the misconception that doing branchless operations everywhere will solve everything even if it performs additional instructions significantly. So obviously I went ahead to overcomplicate things trying to do everything in branchless manner. Got depressed for a fair amount of time when I was stuck and unable to understand why It doesn&#39;t work. In the end I realized, it is as they &quot;it depends&quot;. If the code is highly predictable then branch predictors will do it better. Made me appreciate CPUs more.</p> <p>Moral of the story, whatever you do, it all depends on what you&#39;re doing. I had skill issue so I had all these misconceptions （￣︶￣）↗ . To make things clear, I&#39;m not slandering LUT, branch predictors, branchless codes etc. All of them have their own use cases and its upto you on how to use them and properly as well.</p> <p>I&#39;ve learnt many things in this journey, my words aren&#39;t enough to describe it all. It wouldn&#39;t have been possible without the people who were generous enough to share their findings/codes for free in the internet. I will forever be grateful to them!</p> <p>Anyways, here is the repository <a href="https://github.com/cyruspyre/flexon">GitHub - cyruspyre/flexon: SIMD accelerated JSON parser</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/cyruspyre"> /u/cyruspyre </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r075um/simd_accelerated_json_parser/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r075um/simd_accelerated_json_parser/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1qz6rlm/presenting_structom_expressive_data_exchange/" target="_blank">Presenting Structom: expressive data exchange format designed for universal applications.</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>hello all, i would like to present a new project i have created called structom (StructuredAtoms).</p> <p>it is all in one data format that can be used for any application, from human readible configuration files to serialized binary blobs.</p> <p>it supports schema and schemaless data, both in text and binary format.</p> <p>in addition to the general data type (numbers, strings, bools), it support rich types like datetime, duration, uuid, bigint...</p> <p>moreover, it supports tagged unions, and user defined metadata for more expressiveness.</p> <p>it also excel in serialization, with LEB128 ints, sized ints from u8 to i64, and tagged fields for backward / forward compatibility.</p> <p>object notation example:</p> <pre><code>enum E { A, B, C } { a: true, b: 1_234.5, c: @pattern(&quot;alpha&quot;) &quot;abc&quot;, d: [1, 2, 3], e: inst &quot;2026-2-8&quot;, f: dur &quot;10m 5s&quot;, g: E.A, } </code></pre> <p>if you find it interesting, dont hesitate to give your feedback.</p> <p>thanks.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/ali_compute_unit"> /u/ali_compute_unit </a> <br/> <span><a href="https://github.com/aliibrahim123/structom">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qz6rlm/presenting_structom_expressive_data_exchange/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r04fum/i_built_a_vimlike_mind_map_editor_with_tauri_rust/" target="_blank">I built a Vim-like mind map editor with Tauri (Rust + React)</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p><a href="https://i.redd.it/gh1ivcyl2hig1.gif">https://i.redd.it/gh1ivcyl2hig1.gif</a></p> <p>I’m an individual developer, not a professional product builder.</p> <p>I built this mainly as a personal tool and experiment, and I personally like how it turned out.</p> <p>It’s a keyboard-first mind map editor inspired by Vim’s Normal/Insert modes,</p> <p>focused on writing and organizing thoughts as fast as possible.</p> <p>I’m curious if this kind of workflow resonates with anyone else.</p> <p>I also had to deal with IME + Enter key handling for Japanese input,</p> <p>which turned out to be more interesting than I expected.</p> <p>GitHub:</p> <p><a href="https://github.com/KASAHARA-Kyohei/vikokoro">https://github.com/KASAHARA-Kyohei/vikokoro</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Last_State6853"> /u/Last_State6853 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r04fum/i_built_a_vimlike_mind_map_editor_with_tauri_rust/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r04fum/i_built_a_vimlike_mind_map_editor_with_tauri_rust/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1qytjl0/which_process_is_blocking_this_port/" target="_blank">"Which process is blocking this port?!"</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I built my first TUI to answer a simple question: &quot;Which process is blocking this port?&quot; It happens to me all the time during development. A random process is blocking a process I would like to use right now. portwitch helps to quickly find the process blocking the port and allows you to quickly kill it.</p> <p>Check it out if you think that this would be useful to you! I&#39;m always happy to hear about suggestions and feedback :)</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/haselkern"> /u/haselkern </a> <br/> <span><a href="https://github.com/haselkern/portwitch">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qytjl0/which_process_is_blocking_this_port/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r01xjk/hitboxfn_functionlevel_memoization_for_async_rust/" target="_blank">hitbox-fn: function-level memoization for async Rust</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hey <a href="/r/rust">r/rust</a>!</p> <p>Some time ago we shared Hitbox — an async caching framework for Rust. As part of the 0.2.2 release, we&#39;re introducing a new crate: hitbox-fn, which brings function-level memoization.</p> <p>The idea is simple — annotate any async function with <code>#[cached]</code> and it just works:</p> <p>```rust use hitbox_fn::prelude::*;</p> <h1>[derive(KeyExtract)]</h1> <p>struct UserId(#[key_extract(name = &quot;user_id&quot;)] u64);</p> <h1>[derive(Clone, Serialize, Deserialize, CacheableResponse)]</h1> <p>struct UserProfile { id: u64, name: String }</p> <h1>[cached(skip(db))]</h1> <p>async fn get_user(id: UserId, db: DbPool) -&gt; Result&lt;UserProfile, MyError&gt; { db.query_user(id.0).await // expensive I/O }</p> <p>// call it like a normal function — caching is transparent let user = get_user(UserId(42), db).cache(&amp;cache).await?; ```</p> <p><strong>Why we built this.</strong> Hitbox started as a caching platform with Tower as the first supported integration. That works great when your upstream is an HTTP service, but sometimes you need to cache results from arbitrary async operations — database queries, gRPC calls, file reads. hitbox-fn solves this: you can wrap any async function, regardless of the protocol or client it uses.</p> <p><strong>What hitbox-fn adds:</strong> - Automatic cache key generation from function arguments via <code>#[derive(KeyExtract)]</code> - <code>#[key_extract(skip)]</code> to exclude parameters like DB connections or request IDs from the key - <code>#[cacheable_response(skip)]</code> to exclude sensitive fields (tokens, sessions) from cached data - Full compile-time safety via typestate builders</p> <p><strong>It works with any backend that Hitbox supports and inherits all the advanced features automatically:</strong> - Pluggable backends (in-memory via Moka, Redis, or your own) - Stale-while-revalidate, dogpile prevention, multi-layer caching (L1/L2) - TTL policies and background offload revalidation</p> <p>GitHub: <a href="https://github.com/hit-box/hitbox">https://github.com/hit-box/hitbox</a></p> <p>We&#39;d love to hear your feedback — especially if you&#39;ve run into pain points with caching in Rust that this doesn&#39;t address.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/singulared"> /u/singulared </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r01xjk/hitboxfn_functionlevel_memoization_for_async_rust/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r01xjk/hitboxfn_functionlevel_memoization_for_async_rust/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1r00wdf/wrapping_trait_implems_in_an_enum_kept_appearing/" target="_blank">Wrapping trait implems in an enum kept appearing in code base so I blogged about it. Are there other such useful patterns that are not much advertised?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>This pattern kept appearing in the codebase where I want to support multiple signing schemes and multiple forges (github, gitlab). This is not a new invention but I&#39;ve not seen it mentioned much. It&#39;s working so well I wanted to <a href="https://www.asfaload.com/blog/rust-trait-enum/">blog about it</a>.</p> <p>Are there other such not-much-advertised patterns you use often?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/EarlyPresentation186"> /u/EarlyPresentation186 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r00wdf/wrapping_trait_implems_in_an_enum_kept_appearing/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r00wdf/wrapping_trait_implems_in_an_enum_kept_appearing/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1r00jsi/algorithmically_finding_the_longest_line_of_sight/" target="_blank">Algorithmically Finding the Longest Line of Sight on Earth</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>We&#39;re Tom and Ryan and we teamed up to build an algorithm with Rust and SIMD to exhaustively search for the longest line of sight on the planet. We can confirm that a previously speculated view between Pik Dankova in Kyrgyzstan and the Hindu Kush in China is indeed the longest, at 530km.</p> <p>We go into all the details at <a href="https://alltheviews.world">https://alltheviews.world</a></p> <p>And there&#39;s an interactive map with over 1 billion longest lines, covering the whole world at <a href="https://map.alltheviews.world">https://map.alltheviews.world</a> Just click on any point and it&#39;ll load its longest line of sight.</p> <p>The compute run itself took 100s of AMD Turin cores, 100s of GBs of RAM, a few TBs of disk and 2 days of constant runtime on multiple machines.</p> <p>If you are interested in the technical details, Ryan and I have written extensively about the algorithm and pipeline that got us here:</p> <ul> <li>Tom&#39;s blog post: <a href="https://tombh.co.uk/longest-line-of-sight">https://tombh.co.uk/longest-line-of-sight</a></li> <li>Ryan&#39;s technical breakdown: <a href="https://ryan.berge.rs/posts/total-viewshed-algorithm">https://ryan.berge.rs/posts/total-viewshed-algorithm</a></li> </ul> <p>This was a labor of love and we hope it inspires you both technically and naturally, to get you out seeing some of these vast views for yourselves!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/tombh"> /u/tombh </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r00jsi/algorithmically_finding_the_longest_line_of_sight/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r00jsi/algorithmically_finding_the_longest_line_of_sight/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1qzxx11/hyperloglockless_040_extremely_fast_hyperloglog/" target="_blank">hyperloglockless 0.4.0: Extremely Fast HyperLogLog and HyperLogLog++ Implementations</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;ve published version 0.4.0 of <a href="https://github.com/tomtomwombat/hyperloglockless">https://github.com/tomtomwombat/hyperloglockless</a>, my attempt at writing a fast cardinality estimator. It includes performance optimizations and a <a href="https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/40671.pdf">HyperLogLog++</a> implementation.</p> <p>hyperloglockless has O(1) cardinality queries while keeping high insert throughput. It has predictable performance, and excels when there are many cardinality queries and when there are less than 65K inserts.</p> <p>hyperloglockless now includes a HyperLogLog++ variant! It works by first using &quot;sparse&quot; mode: a dynamically sized, compressed collection of HLL registers. When the memory of the sparse mode reaches the same as classic HLL, it switches automatically. hyperloglockless&#39;s HLL++ implementation is ~5x faster and ~100x more accurate (in sparse mode) than existing HLL++ implementations. It achieves this by eliminating unnecessary hashing, using faster hash encoding, branch avoidance, and smarter memory management.</p> <p>There&#39;s more memory, speed, and accuracy benchmark results at <a href="https://github.com/tomtomwombat/hyperloglockless">https://github.com/tomtomwombat/hyperloglockless</a> . Feedback and suggestions are welcome!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/tomtomwombat"> /u/tomtomwombat </a> <br/> <span><a href="https://i.redd.it/bvao1wj13fig1.png">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qzxx11/hyperloglockless_040_extremely_fast_hyperloglog/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1qzxhrz/rustanalyzer_changelog_314/" target="_blank">rust-analyzer changelog #314</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/WellMakeItSomehow"> /u/WellMakeItSomehow </a> <br/> <span><a href="https://rust-analyzer.github.io/thisweek/2026/02/09/changelog-314.html">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qzxhrz/rustanalyzer_changelog_314/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1qzwrp9/whats_everyone_working_on_this_week_62026/" target="_blank">What's everyone working on this week (6/2026)?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>New week, new Rust! What are you folks up to? Answer here or over at <a href="https://users.rust-lang.org/t/whats-everyone-working-on-this-week-6-2026/138164?u=llogiq">rust-users</a>!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/llogiq"> /u/llogiq </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qzwrp9/whats_everyone_working_on_this_week_62026/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qzwrp9/whats_everyone_working_on_this_week_62026/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1qzwpav/hey_rustaceans_got_a_question_ask_here_62026/" target="_blank">Hey Rustaceans! Got a question? Ask here (6/2026)!</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Mystified about strings? Borrow checker has you in a headlock? Seek help here! There are no stupid questions, only docs that haven&#39;t been written yet. Please note that if you include code examples to e.g. show a compiler error or surprising result, linking a <a href="https://play.rust-lang.org/">playground</a> with the code will improve your chances of getting help quickly.</p> <p>If you have a <a href="http://stackoverflow.com/">StackOverflow</a> account, consider asking it there instead! StackOverflow shows up much higher in search results, so ahaving your question there also helps future Rust users (be sure to give it <a href="http://stackoverflow.com/questions/tagged/rust">the &quot;Rust&quot; tag</a> for maximum visibility). Note that this site is very interested in question quality. I&#39;ve been asked to read a RFC I authored once. If you want your code reviewed or review other&#39;s code, there&#39;s a <a href="https://codereview.stackexchange.com/questions/tagged/rust">codereview stackexchange</a>, too. If you need to test your code, maybe <a href="https://play.rust-lang.org">the Rust playground</a> is for you.</p> <p>Here are some other venues where help may be found:</p> <p><a href="https://www.reddit.com/r/learnrust">/r/learnrust</a> is a subreddit to share your questions and epiphanies learning Rust programming.</p> <p>The official Rust user forums: <a href="https://users.rust-lang.org/">https://users.rust-lang.org/</a>.</p> <p>The official Rust Programming Language Discord: <a href="https://discord.gg/rust-lang">https://discord.gg/rust-lang</a></p> <p>The unofficial Rust community Discord: <a href="https://bit.ly/rust-community">https://bit.ly/rust-community</a></p> <p>Also check out <a href="https://reddit.com/r/rust/comments/1qto4ii/hey_rustaceans_got_an_easy_question_ask_here/">last week&#39;s thread</a> with many good questions and answers. And if you believe your question to be either very complex or worthy of larger dissemination, feel free to create a text post.</p> <p>Also if you want to be mentored by experienced Rustaceans, tell us the area of expertise that you seek. Finally, if you are looking for Rust jobs, the most recent thread is <a href="https://www.reddit.com/r/rust/comments/1qkkqi9/official_rrust_whos_hiring_thread_for_jobseekers/">here</a>.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/llogiq"> /u/llogiq </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qzwpav/hey_rustaceans_got_a_question_ask_here_62026/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qzwpav/hey_rustaceans_got_a_question_ask_here_62026/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1qzvkwf/workspace_feature_permutations_hell/" target="_blank">Workspace feature permutations hell</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>We have a large workspace with ~100 crates and ~1,200 dependencies.</p> <p>When I work on some low-level crate - it&#39;s just too long to run <code>cargo nextest -- test_of_interest</code> and wait for all crates to re-compile, so I mostly run <code>cargo test -p some-crate</code> to narrow it down.</p> <p>The issue is that these commands compile dependencies with very different sets of features:</p> <ul> <li>First one will use the superset of all features unified across the whole workspace</li> <li>Second one will only use features needed by <code>some-crate</code></li> </ul> <p>While it&#39;s definitely how it should be - the feature permutations result in excessive recompilation and destroy my target dir cache. I blow through 400GiB easily and have to run <code>cargo clean</code> a few times a day.</p> <p>How do you deal with this?</p> <p>Is there such an option to compile and run tests only for a selected crate, but with dependency features that are unified across the entire workspace?</p> <p><strong>EDIT:</strong></p> <p>Thanks to @epage for pointing out an <a href="https://doc.rust-lang.org/nightly/cargo/reference/unstable.html#feature-unification">unstable cargo feature</a> that does exactly that.</p> <p>To use it add this in <code>.cargo/config.toml</code>:</p> <pre><code>[unstable] feature-unification = true [resolver] feature-unification = &quot;workspace&quot; </code></pre> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/sergiimk"> /u/sergiimk </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1qzvkwf/workspace_feature_permutations_hell/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1qzvkwf/workspace_feature_permutations_hell/">[comments]</a></span></div>
           </li>
   
         </ul>
@@ -1195,74 +430,92 @@ You can get the new defaults simply by setting the Go version to 1.25.0 or highe
         <ul class="item-list">
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1qzi080/handlingusing_cockroachdb_errors_looking_for/" target="_blank">Handling/using CockroachDB Errors – looking for criticism/feedback</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hello everyone!</p> <p>I want to try some better errors in go</p> <p>For server-side, imho, perfect errors would be</p> <p>- Easy to log with the default slog<br/> - Easy to return to the user (in HTTP, in gRPC)<br/> - Separates data we log from the data we return to the user<br/> - We can embed different information about the error (like links, domain where error originates from, stack traces/source, context data, anything else)<br/> - Minimizes boilerplate, has base errors for most of the common cases, with already mapped codes, u just take and use it with minimum friction in between<br/> - Extendable/flexible (cannot describe where exactly, but it&#39;s always better to have some more flexibility in the design, so 5 months later I won&#39;t say &quot;oh, this lib footgunned me, I needed to fork it, cuz it didn&#39;t support my specific usage scenario&quot;)<br/> - Easy integration with i18n (for user-facing errors/details/hints)<br/> - Well documented, And not just capabilities/API, but also which feature and where is recommended to use, without usecases it&#39;s easy to get lost and be not sure if u are doing a correct thing at all<br/> - Maintained</p> <p>And I got recommended CockroachDB Errors<br/> <a href="https://github.com/cockroachdb/errors">https://github.com/cockroachdb/errors</a></p> <p>It still doesn&#39;t check out on all of those points, but I&#39;ve been trying to create some helpers for myself to work with that lib, to check out some of my needs I have written above</p> <p><a href="https://github.com/4nd3r5on/errs">https://github.com/4nd3r5on/errs</a></p> <p>Could somebody please criticize me, say me if I&#39;m going in the right direction or not overall? (I might be doing a complete bullshit rn, and I have the feeling like I do)</p> <p>Maybe suggest some design improvements</p> <p>If I write it I will probably pull it as a dependency into every my project, so it&#39;s better if it&#39;s well-written</p> <p>Because I&#39;m quite lost at how I suppose to use this library overall, what&#39;s the intended way of using it</p> <p>It&#39;s not a project showcase (I&#39;m doing this module mostly for myself to use), it&#39;s rather &quot;I want an actually useful errors, but I didn&#39;t find anything that fits my criteria, so rn I need to write some code and I want help and critics, so I can improve it&quot;</p> <p>And if u guys have any modules that in your opinion better fit my criteria -- recommendations are welcome, I will happily try them out</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/No-Discussion1637"> /u/No-Discussion1637 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1qzi080/handlingusing_cockroachdb_errors_looking_for/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1qzi080/handlingusing_cockroachdb_errors_looking_for/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1r0ot6l/i_made_a_thing_goscandev/" target="_blank">I made a thing - go-scan.dev</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>goscan calculates the popularity of prominent go modules by scanning the go.mod files from popular repos. I made this for personal use, but it came out so nice I decided to polish it up and deploy.</p> <p><a href="https://go-scan.dev">https://go-scan.dev</a></p> <p>I can&#39;t post images here yet, so you will have to settle for this amazing markdown table. I put it at the bottom in case I messed up...</p> <p>Anyway, I started working on goscan because I was having trouble sorting through the various go mod choices for my TUI. I crawled all golang projects on github with &gt;10k stars and tallied up their go.mod files. When I saw the data I thought it was interesting enough to share. I know this is a frequent topic on the subreddit. Other languages have dependency tools like this but it seems to be somewhat lacking in golang for whatever reason. I make heavy use of things like npmtrends, ruby-toolbox, etc.</p> <p>Stack is <code>astro+tailwind+daisy</code>, with <code>mise</code> and <code>just</code> as always. Codex helped with the rough draft, then I spent several days polishing. I value my writing voice and I never use AI to write prose (including reddit posts).</p> <p>Feedback welcome, especially if there is any data that looks inaccurate. If there is enough interest I will turn on github issues for the repo too.</p> <table><thead> <tr> <th>Used By</th> <th>Module</th> <th>Stars</th> <th>Issues</th> <th>Updated</th> <th>Created</th> </tr> </thead><tbody> <tr> <td>63.40%</td> <td>stretchr/testify</td> <td>25,749</td> <td>374</td> <td>74 days</td> <td>2012</td> </tr> <tr> <td>43.50%</td> <td>google/uuid</td> <td>5,983</td> <td>53</td> <td>453 days</td> <td>2016</td> </tr> <tr> <td>39.00%</td> <td>spf13/cobra</td> <td>43,094</td> <td>345</td> <td>62 days</td> <td>2013</td> </tr> <tr> <td>35.00%</td> <td>protobuf</td> <td>-</td> <td>-</td> <td>-</td> <td>-</td> </tr> <tr> <td>32.90%</td> <td>prometheus/clientgolang</td> <td>5,904</td> <td>129</td> <td>9 days</td> <td>2013</td> </tr> <tr> <td>32.60%</td> <td>grpc</td> <td>-</td> <td>-</td> <td>-</td> <td>-</td> </tr> <tr> <td>32.00%</td> <td>yaml.v3</td> <td>-</td> <td>-</td> <td>-</td> <td>-</td> </tr> <tr> <td>26.90%</td> <td>google/go-cmp</td> <td>4,589</td> <td>51</td> <td>25 days</td> <td>2017</td> </tr> <tr> <td>26.00%</td> <td>pkg/errors</td> <td>8,234</td> <td>42</td> <td>1,561 days</td> <td>2015</td> </tr> <tr> <td>26.00%</td> <td>spf13/pflag</td> <td>2,699</td> <td>145</td> <td>31 days</td> <td>2013</td> </tr> <tr> <td>24.50%</td> <td>gorilla/websocket</td> <td>24,492</td> <td>68</td> <td>328 days</td> <td>2013</td> </tr> <tr> <td>23.00%</td> <td>sirupsen/logrus</td> <td>25,689</td> <td>70</td> <td>5 days</td> <td>2013</td> </tr> <tr> <td>22.40%</td> <td>fsnotify/fsnotify</td> <td>10,537</td> <td>36</td> <td>68 days</td> <td>2014</td> </tr> <tr> <td>19.90%</td> <td>google.golang.org/api</td> <td>-</td> <td>-</td> <td>-</td> <td>-</td> </tr> <tr> <td>19.60%</td> <td>fatih/color</td> <td>7,871</td> <td>31</td> <td>9 days</td> <td>2014</td> </tr> </tbody></table> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/gurgeous"> /u/gurgeous </a> <br/> <span><a href="https://go-scan.dev">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1r0ot6l/i_made_a_thing_goscandev/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1qzfgkc/understanding_the_go_compiler_the_linker/" target="_blank">Understanding the Go Compiler: The Linker</a>
-            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/golang/comments/1qzfgkc/understanding_the_go_compiler_the_linker/">  </a> </td><td> &#32; submitted by &#32; <a href="https://www.reddit.com/user/SnooWords9033"> /u/SnooWords9033 </a> <br/> <span><a href="https://internals-for-interns.com/posts/the-go-linker/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1qzfgkc/understanding_the_go_compiler_the_linker/">[comments]</a></span> </td></tr></table></div>
+            <a href="https://www.reddit.com/r/golang/comments/1r0h308/back_to_the_basics_with_the_roadhouse_pattern/" target="_blank">Back to the basics with the Roadhouse Pattern</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/RoseSec_"> /u/RoseSec_ </a> <br/> <span><a href="https://rosesecurity.dev/2026/02/09/the-roadhouse-pattern.html">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1r0h308/back_to_the_basics_with_the_roadhouse_pattern/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1qzed0z/cant_rename_symbols_or_find_references_in_vscode/" target="_blank">Can't rename symbols or find references in Vscode or Zed</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I can’t use Find All References or Rename Symbol at all in Vscode. Every time I try, it fails, and I see this popping up in the <code>gopls</code> output logs:</p> <pre><code>[Error - 6:00:03 PM] Request textDocument/references failed. Message: no identifier found Code: 0 </code></pre> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/hojoisaac"> /u/hojoisaac </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1qzed0z/cant_rename_symbols_or_find_references_in_vscode/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1qzed0z/cant_rename_symbols_or_find_references_in_vscode/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1r0gehc/distributing_go_binaries_like_sqlitescanner/" target="_blank">Distributing Go binaries like sqlite-scanner through PyPI using go-to-wheel</a>
+            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/golang/comments/1r0gehc/distributing_go_binaries_like_sqlitescanner/">  </a> </td><td> &#32; submitted by &#32; <a href="https://www.reddit.com/user/gbrayut"> /u/gbrayut </a> <br/> <span><a href="https://simonwillison.net/2026/Feb/4/distributing-go-binaries/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1r0gehc/distributing_go_binaries_like_sqlitescanner/">[comments]</a></span> </td></tr></table></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1qzdrdz/goooqo_quick_start_build_crud_rest_api_in_5/" target="_blank">GoooQo Quick Start: Build CRUD + REST API in 5 Minutes</a>
-            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/golang/comments/1qzdrdz/goooqo_quick_start_build_crud_rest_api_in_5/">  </a> </td><td> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Salt-Letter-1500"> /u/Salt-Letter-1500 </a> <br/> <span><a href="https://youtube.com/watch?v=Tv2cKbMCvBQ&amp;si=ZSBbigtbbEnbnBBQ">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1qzdrdz/goooqo_quick_start_build_crud_rest_api_in_5/">[comments]</a></span> </td></tr></table></div>
+            <a href="https://www.reddit.com/r/golang/comments/1r0ftmj/implementation_advice_for_a/" target="_blank">Implementation advice for a context/waitgroup/channel-based goroutine limiter</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I was working on a file-tree walker cli and needed some sort of way to dynamically limit the number of goroutines, so i created this <code>Gate</code> struct. So far it assembles a <code>*sync.WaitGroup</code>, <code>context.Context</code>, and <code>chan struct{}</code> and uses those to coordinate spawning and cleanup for goroutines that are supposed to share execution constraints. Most importantly, it exposes the <code>context.Context</code> methods of the underlying <code>context.Context</code>.</p> <p>I found I needed it somewhere else, so I decided to make a module for it, and added a bunch of features. Now I&#39;m wondering, would the fact it exposes the underlying <code>context.Context</code> while implementing the eponymous method be too confusing? Should i just enable access via a method named <code>Ctx</code> or <code>Context</code>? Which would you be less annoyed to use?</p> <p>Here&#39;s a go doc of the current api</p> <p>```go package gate // import &quot;github.com/kendfss/gate&quot;</p> <p>type Gate struct{ ... }</p> <p>func (g *Gate) Fork() *Gate func (g *Gate) Context() context.Context func (g *Gate) Deadline() (time.Time, bool) func (g *Gate) Done() &lt;-chan struct{} func (g *Gate) Err() error func (g *Gate) Go(fn func()) func (g *Gate) Value(key any) any func (g *Gate) Wait()</p> <p>func Background(options ...Option) *Gate</p> <p>func New(parent context.Context, options ...Option) *Gate</p> <p>func TODO(options ...Option) *Gate</p> <p>func WithAfterFunc(parent context.Context, fn func(), options ...Option) (*Gate, func() bool)</p> <p>func WithCancel(parent context.Context, options ...Option) (*Gate, context.CancelFunc)</p> <p>func WithCancelCause(parent context.Context, options ...Option) (*Gate, context.CancelCauseFunc)</p> <p>func WithDeadline(parent context.Context, deadline time.Time, options ...Option) (*Gate, context.CancelFunc)</p> <p>func WithDeadlineCause(parent context.Context, deadline time.Time, cause error, options ...Option) (*Gate, context.CancelFunc)</p> <p>func WithTimeout(parent context.Context, timeout time.Duration, options ...Option) (*Gate, context.CancelFunc)</p> <p>func WithTimeoutCause(parent context.Context, timeout time.Duration, cause error, options ...Option) (*Gate, context.CancelFunc)</p> <p>func WithoutCancel(parent context.Context, options ...Option) *Gate</p> <p>type Option func(*Gate)</p> <p>func Cap[T constraints.Integer](capacity T) Option</p> <p>func OnPanic(fn func(any)) Option</p> <p>func Value[K, V any](key K, val V) Option</p> <p>```</p> <p>If you need more info to advise, please feel free to ask.</p> <p>Any other tips/requests you have will be appreciated/considered!</p> <p>Cheers, folks!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/kendfss"> /u/kendfss </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1r0ftmj/implementation_advice_for_a/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1r0ftmj/implementation_advice_for_a/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1qzcce9/updates_to_deep_library/" target="_blank">Updates to deep library.</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>About two years ago, <a href="https://www.reddit.com/r/golang/comments/1b3wsxz/new_deep_copy_library/">I shared a deep copy library I wrote from scratch to handle things that existing libraries struggled with</a>. After working on it on and off, I’ve recently added a significant layer of functionality that goes beyond just copying data.</p> <p>The library now supports <strong>Diffing</strong> and <strong>Patching</strong> with full serialization support.</p> <p><strong>The New Features:</strong></p> <ul> <li><strong>Diff Generation:</strong> You can now compare two objects and generate a &quot;diff&quot; object that represents the structural and value differences between them.</li> <li><strong>Patching:</strong> These diffs can be applied as patches to other objects.</li> <li><strong>Serialization:</strong> The generated diffs are fully serializable. You can marshal a diff to JSON, send it over the wire, or store it, and then unmarshal it to apply it elsewhere. This is massive for synchronization protocols or audit logging.</li> <li><strong>Conditionals:</strong> The patch system includes support for conditionals. You can define logic within the patch to ensure updates are only applied if specific criteria are met (e.g., atomic-like updates based on state).</li> </ul> <p>It still retains the original goal of being a fast, correct deep copier (handling unexported fields, etc.), but now it effectively doubles as a state-synchronization tool.</p> <p>I’d love to hear your thoughts on the API ergonomics for the new diff/patch features.</p> <p><strong>Repo:</strong><a href="https://github.com/brunoga/deep">https://github.com/brunoga/deep</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/BrunoGAlbuquerque"> /u/BrunoGAlbuquerque </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1qzcce9/updates_to_deep_library/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1qzcce9/updates_to_deep_library/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1r0es31/small_projects/" target="_blank">Small Projects</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>This is the weekly thread for Small Projects.</p> <p>The point of this thread is to have looser posting standards than the main board. As such, projects are pretty much only removed from here by the mods for being completely unrelated to Go. However, Reddit often labels posts full of links as being spam, even when they are perfectly sensible things like links to projects, godocs, and an example. <a href="/r/golang">r/golang</a> mods are not the ones removing things from this thread and we will allow them as we see the removals.</p> <p>Please also avoid posts like &quot;why&quot;, &quot;we&#39;ve got a dozen of those&quot;, &quot;that looks like AI slop&quot;, etc. This the place to put any project people feel like sharing without worrying about those criteria.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/AutoModerator"> /u/AutoModerator </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1r0es31/small_projects/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1r0es31/small_projects/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1qzagxu/modular_of_over_engineering/" target="_blank">Modular of over engineering?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I have been using OPA(Open policy agent) an engine to run Policy language(Rego).</p> <p>there were two requirements, </p> <p>- create some custom builtins on top of OPA such that the language could support new functions</p> <p>- create a wrapper validator such that the client doesn&#39;t see suffocating error messages and company wise validations also could be incorporated on writing policies.</p> <p>I created two separate module, one custom builtins, one validator, validator service installs custom builtins </p> <p>Reasons:</p> <p>- builtins has nothing to do with SaaS, it can run independent and could one day be open sourced to open world as well, no company specific logiccs, </p> <p>- validator was only required for client facing applications, where internal evaluation services did not require custom validator service</p> <p>but now I have to maintain the version of all the applications, that is one tradeoff I have been dealing with. it becomes a feature more than a bug in some instances though.as while adding custom builtins I don&#39;t need to worry about validator service being compromised, if anything breaks. I can keep all my validator changes intact and drop the builtins version and we are good to go.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/out_of_nowhere__"> /u/out_of_nowhere__ </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1qzagxu/modular_of_over_engineering/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1qzagxu/modular_of_over_engineering/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1r0dc2c/godotignore_v21_nested_gitignore_support_finally/" target="_blank">go-dotignore v2.1: Nested .gitignore Support (Finally!)</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>A year ago, I shared go-dotignore v1 here. After your feedback and a complete rewrite, <strong>v2.1 is here</strong> with the most requested feature: hierarchical .gitignore matching.</p> <h2>New Feature</h2> <p>Building a file walker? Code analyzer? Monorepo tool? Now you can respect <strong>ALL .gitignore files</strong> in a repository, just like Git:</p> <p>```go // Discovers and respects .gitignore files throughout your repo matcher, _ := dotignore.NewRepositoryMatcher(&quot;/path/to/monorepo&quot;)</p> <p>// Works exactly like Git! matcher.Matches(&quot;frontend/node_modules/pkg.json&quot;) // true matcher.Matches(&quot;backend/target/Main.class&quot;) // true<br/> matcher.Matches(&quot;frontend/src/App.js&quot;) // false ```</p> <p>Child .gitignore files can even override parent patterns with negation. It’s exactly how Git works.</p> <h2>Quick Start</h2> <p><code>bash go get github.com/codeglyph/go-dotignore/v2@latest </code></p> <p>```go // Single .gitignore file matcher, _ := dotignore.NewPatternMatcherFromFile(&quot;.gitignore&quot;)</p> <p>// OR repository with nested .gitignore files (NEW!) matcher, _ := dotignore.NewRepositoryMatcher(&quot;/path/to/repo&quot;)</p> <p>ignored, _ := matcher.Matches(&quot;build/output.js&quot;) ```</p> <h2>Why v2?</h2> <p>v1 had critical bugs (root patterns broken, substring matching issues). v2 is a complete rewrite that’s:</p> <ul> <li>Full .gitignore spec compliant</li> <li>3-10x faster</li> <li>Drop-in replacement for go-gitignore (with more features)</li> <li>Production-ready</li> </ul> <h2>Read More</h2> <p>Full details, examples, and comparisons: <a href="https://github.com/linkwithjoydeep/go-dotignore/releases/tag/v2.1.0">https://github.com/linkwithjoydeep/go-dotignore/releases/tag/v2.1.0</a></p> <p>Repo: <a href="https://github.com/codeglyph/go-dotignore">https://github.com/codeglyph/go-dotignore</a></p> <hr/> <p>Feedback welcome! If you’ve been frustrated with .gitignore parsing in Go, this might solve your problems.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/toxic2soul"> /u/toxic2soul </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1r0dc2c/godotignore_v21_nested_gitignore_support_finally/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1r0dc2c/godotignore_v21_nested_gitignore_support_finally/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1qz9t9a/what_kind_of_pattern_is_app_state_percolation/" target="_blank">What Kind of Pattern is App State "Percolation"?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>When not using global variables, a common pattern one sees is what is often called &quot;app state&quot; (or its subparts) being passed down all levels until they reach the functions that need that info. Otherwise one would have to re-create app state at all levels, which can be bug prone (e.g. env changes unexpectedly while the app is running, leading to discrepant app states at multiple levels).</p> <p>What kind of pattern is this? Are there better solutions? I always load my config from env vars into app state on init, then percolate it down all the functions that need it, but sometimes it feels cumbersome. As example from another ecosystem: Elixir has special config files to solve this problem, and one can use GenServers to hold config, too.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Maleficent-Waltz1854"> /u/Maleficent-Waltz1854 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1qz9t9a/what_kind_of_pattern_is_app_state_percolation/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1qz9t9a/what_kind_of_pattern_is_app_state_percolation/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1r09rqv/github_agentic_workflows/" target="_blank">GitHub Agentic Workflows</a>
+            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/golang/comments/1r09rqv/github_agentic_workflows/">  </a> </td><td> <!-- SC_OFF --><div class="md"><p>Demonstration available here: <a href="https://github.github.com/gh-aw/setup/creating-workflows/">https://github.github.com/gh-aw/setup/creating-workflows/</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/samuelberthe"> /u/samuelberthe </a> <br/> <span><a href="https://github.com/github/gh-aw">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1r09rqv/github_agentic_workflows/">[comments]</a></span> </td></tr></table></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1qz8tnw/ending_goroutines/" target="_blank">Ending goroutines</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;m working on a problem that is embarrassingly parallel &amp; for large instances I have an embarrassingly large number of goroutines, but most of them run for only a short time then terminate. What is the best way to terminate them?</p> <p>I don&#39;t want panics &amp; just falling off the end of a function definition looks odd. That leaves return or errgroup.GoExit &amp; I&#39;ve little idea how to choose between them. Two things I would like to accomplish are not having child goroutines die if the parent exits &amp; not having stuff left on the stack when a routine terminates, or at least making the leftovers eligible for garbage collection.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Sandy_Harris"> /u/Sandy_Harris </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1qz8tnw/ending_goroutines/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1qz8tnw/ending_goroutines/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1r07on6/is_it_wise_to_build_an_adobe_lightroomsized_app/" target="_blank">Is it wise to build an Adobe Lightroom-sized app in Go?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi guys. I need your insight. I want to build an app like Adobe Lightroom (photo RAW app), and I am considering using Go (Wails). My question is will Go be able to keep up in terms of performance?</p> <p>Most of the options I see are in Rust, and I am thinking that Go can be just as good. Please am I being naive or is it the wrong tool? If not, I might have to consider QT.</p> <p>My motive is to challenge myself and perhaps in the process prove that such types of apps can be built with Go. It&#39;s not just cloud services. </p> <p>Thank you for your insights.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/neneodonkor"> /u/neneodonkor </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1r07on6/is_it_wise_to_build_an_adobe_lightroomsized_app/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1r07on6/is_it_wise_to_build_an_adobe_lightroomsized_app/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1qz8mfq/json_schema_package/" target="_blank">JSON Schema package</a>
-            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/golang/comments/1qz8mfq/json_schema_package/">  </a> </td><td> <!-- SC_OFF --><div class="md"><p>Someone using Google&#39;s new JSON schema package? Would like to hear your experiences with it. (I&#39;ve used it with the Gemini SDK and it seems to be pretty useful for structured output and tool calling.)</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/atamiri"> /u/atamiri </a> <br/> <span><a href="https://opensource.googleblog.com/2026/01/a-json-schema-package-for-go.html">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1qz8mfq/json_schema_package/">[comments]</a></span> </td></tr></table></div>
+            <a href="https://www.reddit.com/r/golang/comments/1r06u7h/ive_written_15k_lines_of_go_with_ai_and_cant/" target="_blank">I’ve written 15k lines of Go with AI and can’t write hello world by hand - but I’m confident with my codebase</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I used to work with Java and Kotlin for almost a decade. Then I switched to TypeScript for a couple of years.</p> <p>Last month, I was curious about people claiming the majority of their codebase was written by AI. I wanted to see how far I could go.</p> <p>So I started building a tool to solve my own problem. And Go seemed to be a good choice because of the ecosystem around my problem domain.</p> <p>Right now, the codebase is about 15,000 lines of code. And more than 95% of the commits were by agents (Claude/Codex).</p> <p>I like the compiler and the ecosystem. I’m usually confident working with Java and Kotlin codebases (I specialize in working with large codebases). Now that I’ve tried Go, and it’s not even been a month, I can’t even write a hello world program without AI in Golang.</p> <p>But I believe I can work with large codebases in Golang even though it’s not been a month. Which is surprising because I worked with TypeScript for over two years. I don’t have the same confidence with the language or the ecosystem.</p> <p>The point is, I’m not saying the language is easy. I’m just saying the language feels safe, and I feel at home.</p> <p>This is the project: <a href="https://github.com/LegacyCodeHQ/sanity">https://github.com/LegacyCodeHQ/sanity</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/ragunathjawahar"> /u/ragunathjawahar </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1r06u7h/ive_written_15k_lines_of_go_with_ai_and_cant/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1r06u7h/ive_written_15k_lines_of_go_with_ai_and_cant/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1qz19r9/avyos_updates/" target="_blank">Avyos updates</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hey everyone, updates on the Avyos project.</p> <p>So, last time, someone complained that I was using GNU components, so it was more like a Linux distro than an OS project. Well, jokes on you!! I removed up every non-Go component (other than the Linux kernel and Limine bootloader, of course). and best part is that it take around a second to build system image.</p> <p>It now has a pure Go, non posix compatible coreutils, a basic graphics framework with DRM/KMS, framebuffer, Wayland, and my custom display protocol, a framebuffer and evdev-backed window manager, IPv4 networking support, and an IPC service bus like dbus, but simpler and more Go-centric.</p> <p>Since it’s pure Go and I’m not aiming to make it POSIX-compatible, I’ve made changes to the root filesystem, user identity model, etc. Read docs/ for more info.</p> <p>Also, I use AI autocompletion to help me write comments, docs, and some common functions. so feel free to raise an issue or PR if any documentation is unclear.</p> <p>My future plan after makimpng it uable is to provide a containerized Linux compatibility layer and reuse components like Vulkan and codecs using purego for optional hardware acceleration, and maybe Wayland support for app containers. Not sure yet, but I’ll try.</p> <p>Also, let me know if I’m just spamming or if you like hearing more updates like this.</p> <p>Feel free to get involved and raise issues for build or runtime errors and except things to be broken and incomplete.</p> <p>Project URL <a href="https://github.com/itsmanjeet/avyos">https://github.com/itsmanjeet/avyos</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/itsmanjeet"> /u/itsmanjeet </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1qz19r9/avyos_updates/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1qz19r9/avyos_updates/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1r02c90/what_makes_go_maintainable_in_your_opinion/" target="_blank">What makes Go maintainable in your opinion?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;m planning a guide on how to write maintainable Go code and I&#39;d like to know what makes Go for you maintainable in particular in contrast to other languages? How does Go help you in terms of short development cycles and finding bugs.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/ENx5vP"> /u/ENx5vP </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1r02c90/what_makes_go_maintainable_in_your_opinion/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1r02c90/what_makes_go_maintainable_in_your_opinion/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1qyzpzy/go_okapi_v035_is_out/" target="_blank">Go Okapi v0.3.5 is out</a>
-            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/golang/comments/1qyzpzy/go_okapi_v035_is_out/">  </a> </td><td> <!-- SC_OFF --><div class="md"><p>I&#39;ve released a new version of Okapi.</p> <p>Okapi is a modern, minimalist HTTP web framework for Go inspired by FastAPI with built in OpenAPI 3, Swagger UI, Redoc, and powerful middleware. Build fast, scalable, and well documented APIs while maintaining full control over your application.</p> <p>Okapi is designed with simplicity in mind. It introduces a fresh and intuitive approach on generating OpenAPI documentation.</p> <p>With Okapi, you can enable or disable routes/groupes dynamically at runtime no need to comment out code.</p> <p>Github: <a href="https://github.com/jkaninda/okapi">https://github.com/jkaninda/okapi</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/GasPsychological8609"> /u/GasPsychological8609 </a> <br/> <span><a href="https://github.com/jkaninda/okapi">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1qyzpzy/go_okapi_v035_is_out/">[comments]</a></span> </td></tr></table></div>
+            <a href="https://www.reddit.com/r/golang/comments/1r01gq1/understanding_the_go_runtime_the_bootstrap/" target="_blank">Understanding the Go Runtime: The Bootstrap</a>
+            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/golang/comments/1r01gq1/understanding_the_go_runtime_the_bootstrap/">  </a> </td><td> &#32; submitted by &#32; <a href="https://www.reddit.com/user/SnooWords9033"> /u/SnooWords9033 </a> <br/> <span><a href="https://internals-for-interns.com/posts/understanding-go-runtime/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1r01gq1/understanding_the_go_runtime_the_bootstrap/">[comments]</a></span> </td></tr></table></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1r00g4l/bubble_tea_tui_typed_text_disappears_but/" target="_blank">Bubble Tea TUI: Typed text disappears but reappears on Arrow Up + status bar alignment issue</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi everyone, I’m new to <strong>Bubble Tea (Go)</strong> and building my first TUI. I’m stuck on a weird rendering/input bug and could really use some help.</p> <h3>Problem 1: Text disappears while typing (but isn’t actually gone)</h3> <p>I have a message/input box in my TUI. When I start typing, everything works fine at first, but after typing a few words, <strong>the text suddenly disappears from the input box</strong>.</p> <p>What’s confusing:</p> <ul> <li>The text is <strong>not deleted</strong></li> <li>If I press <strong>Arrow Up</strong>, I can suddenly see the entire text again</li> <li>Even after it “disappears,” I can keep typing, and when I press Arrow Up, <strong>all previously typed text is still there</strong></li> <li>This is <strong>not a line-wrapping issue</strong> , there is clearly enough horizontal space in the input box</li> </ul> <p>So it feels like:</p> <ul> <li>The model state still has the text</li> <li>But the view stops rendering it correctly until another key event (like Arrow Up) forces a redraw</li> </ul> <p>I’m not sure if this is related to:</p> <ul> <li>viewport height/width</li> <li>lipgloss styles</li> <li>textarea/textinput behavior</li> <li>or me misunderstanding how Bubble Tea expects updates to work</li> </ul> <h3>Problem 2: Status line won’t stick to the bottom cleanly</h3> <p>I also created a <strong>status line</strong> that I want:</p> <ul> <li>Attached to the bottom border box</li> <li>Exactly the same width as that box</li> <li>No extra padding or margin</li> </ul> <p>But no matter what I try:</p> <ul> <li>There’s always a small gap</li> <li>Or the width is slightly off</li> <li>It never feels “perfectly glued” to the bottom border</li> </ul> <p>I’ve tried adjusting:</p> <ul> <li>lipgloss width/height</li> <li>padding and margin</li> <li>vertical joins</li> </ul> <p>But I can’t get pixel-perfect alignment.</p> <h3>Extra context</h3> <ul> <li>Written in <strong>Go</strong></li> <li>Using <strong>Bubble Tea + Lip Gloss</strong></li> <li>I’m new to Bubble Tea, but I <em>can</em> build the same TUI easily in a React-based framework, so I think I’m missing some Bubble Tea concepts rather than general UI logic.</li> </ul> <p>If anyone has run into similar issues or can point out what I might be doing wrong (especially around rendering, layout, or update cycles), I’d really appreciate it</p> <p>my repo link is (just run <code>go run main.go</code> you will get context): <a href="https://github.com/aminshahid573/table">GitHub Repository Link</a></p> <p>Thanks in advance!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/aminshahid123"> /u/aminshahid123 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1r00g4l/bubble_tea_tui_typed_text_disappears_but/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1r00g4l/bubble_tea_tui_typed_text_disappears_but/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1qzz8si/runnable_tiny_library_for_orchestrating/" target="_blank">runnable: tiny library for orchestrating long-running processes with clean shutdown</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;ve been running this library in production at a large company for a few years now, powering critical services. I recently cleaned it up and wanted to share it.</p> <p>The whole thing builds on one interface:</p> <pre><code>type Runnable interface { Run(context.Context) error } </code></pre> <p>That&#39;s it. Your struct implements `Run`, shutdown is driven by context cancellation. No framework, no magic.</p> <p><em>Why not just write this yourself?</em></p> <p>You absolutely can, and for one service it&#39;s fine. But when you&#39;re building dozens of services, each with HTTP servers, job queues, scheduled tasks, health checks, you end up re-implementing the same lifecycle patterns over and over.</p> <p>This library captures those patterns as composable wrappers: <code>HTTPServer</code>, <code>Schedule</code>, <code>Restart</code>, <code>Recover</code>, <code>Signal</code>, <code>Closer</code>.</p> <p>The real value is the <code>Manager</code>. It orchestrates multiple runnables with two-tier ordered shutdown: processes are stopped first, then services. Your database connections and queues stay alive while your workers drain.</p> <pre><code>func main() { // instantiate your components... m := runnable.Manager() m.RegisterService(jobQueue) m.Register(runnable.HTTPServer(server)) m.Register( runnable.Schedule(cleanup, runnable.Every(time.Hour)), ) runnable.Run(m) } </code></pre> <p>A Manager is itself a Runnable, so you can nest them for independent shutdown ordering.</p> <p>Zero dependencies. ~1k lines of code. </p> <p>GitHub: <a href="https://github.com/pior/runnable">https://github.com/pior/runnable</a></p> <p>Feedbacks?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/pior"> /u/pior </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1qzz8si/runnable_tiny_library_for_orchestrating/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1qzz8si/runnable_tiny_library_for_orchestrating/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1qzz7sk/we_opened_source_our_pure_go_postgresql_parser_no/" target="_blank">We opened source our pure Go PostgreSQL parser (no CGO)</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>We needed to parse PostgreSQL SQL in Go in places where CGO isn’t allowed (Alpine containers, Lambda, scratch images, ARM, etc), so we wrote a pure Go parser.</p> <p>It parses SQL into a structured IR (tables, columns, joins, filters, CTEs, etc) without executing anything.</p> <p>Runs anywhere <code>go build</code> works.<br/> Most queries parse in ~70–350µs with SLL mode.</p> <p>Built on ANTLR4 (Go target) we created our own since go antlr dosnt have one for postgres, no Postgres server dependency, no CGO.</p> <p>If needed open an issue happy to fix.<br/> The rules for it is simple, no network calls, and stupid easy to run</p> <p>Repo:<br/> <a href="https://github.com/ValkDB/postgresparser">https://github.com/ValkDB/postgresparser</a></p> <p>Nothing major, we use it for about 6 months and decided to open source it<br/> Feel free to ask / request stuff</p> <p>We do use it for some internal tools we plan to open to opensource even more in the next few weeks :) </p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Eitamr"> /u/Eitamr </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1qzz7sk/we_opened_source_our_pure_go_postgresql_parser_no/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1qzz7sk/we_opened_source_our_pure_go_postgresql_parser_no/">[comments]</a></span></div>
           </li>
   
         </ul>
   
-      </div>
-  
-      <div class="card">
-        <h2>Movie Trailers</h2>
+        <h3 class="subreddit">r/rust_gamedev</h3>
         <ul class="item-list">
   
           <li>
-            <a href="http://www.filmjabber.com/movie-trailers/tow.html" target="_blank">Tow Movie Trailer</a>
-            
+            <a href="https://www.reddit.com/r/rust_gamedev/comments/1r0fgcj/fyrox_game_engine_100_release_candidate_2/" target="_blank">Fyrox Game Engine 1.0.0 - Release Candidate 2</a>
+            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/rust_gamedev/comments/1r0fgcj/fyrox_game_engine_100_release_candidate_2/">  </a> </td><td> &#32; submitted by &#32; <a href="https://www.reddit.com/user/_v1al_"> /u/_v1al_ </a> <br/> <span><a href="https://fyrox.rs/blog/post/fyrox-game-engine-1-0-0-rc-2/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust_gamedev/comments/1r0fgcj/fyrox_game_engine_100_release_candidate_2/">[comments]</a></span> </td></tr></table></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust_gamedev/comments/1r05xuz/i_built_a_realtime_sync_backend_for_a_pomodoro/" target="_blank">I built a real-time sync backend for a Pomodoro app using Rust. Looking for code review and contributors!</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hey Rustaceans! 🦀</p> <p>I&#39;ve been working on <strong>Focus Flow Cloud</strong>, an open-source focus timer that supports real-time synchronization across devices.</p> <p>I chose Rust for the backend specifically to keep the memory footprint minimal for self-hosting on low-end hardware, and for the safety guarantees.</p> <p><strong>The Project:</strong></p> <ul> <li><strong>Backend:</strong> Rust (handling websockets/sync logic).</li> <li><strong>Frontend:</strong> Flutter.</li> <li><strong>Deployment:</strong> Docker.</li> </ul> <p><strong>Why I&#39;m posting:</strong> I&#39;m a solo developer working on this in my spare time. I would love for some experienced Rust devs to take a look at my backend architecture. I&#39;m looking for:</p> <ol> <li>Feedback on my Rust patterns (am I doing things the &quot;Rust way&quot;?).</li> <li>Contributors who want to help build a fast, privacy-focused tool.</li> </ol> <p>If you are looking for a project to contribute to, or just want to roast my code, please check it out.</p> <p><strong>Repository:</strong> <a href="https://github.com/francesco-gaglione/focus_flow_cloud">https://github.com/francesco-gaglione/focus_flow_cloud</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/invictus_97K"> /u/invictus_97K </a> <br/> <span><a href="https://www.reddit.com/r/rust_gamedev/comments/1r05xuz/i_built_a_realtime_sync_backend_for_a_pomodoro/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust_gamedev/comments/1r05xuz/i_built_a_realtime_sync_backend_for_a_pomodoro/">[comments]</a></span></div>
           </li>
   
         </ul>
+  
       </div>
   
     </div>
