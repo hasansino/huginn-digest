@@ -240,8 +240,8 @@
   
       <div class="card">
         <h2>Huginn Daily</h2>
-        <p class="header-p">Monday, February 16, 2026</p>
-        <p class="header-p">ecf71acb-fa16-4655-a27f-cdcbc3c916cc</p>
+        <p class="header-p">Tuesday, February 17, 2026</p>
+        <p class="header-p">05bb09a3-d877-4c47-a9f3-9e564645247f</p>
       </div>
   
       <div class="card">
@@ -249,1571 +249,130 @@
         <table class="weather-table">
           <tr>
             <th>Summary</th>
-            <td>⛅️ Mostly cloudy starting in the evening.</td>
+            <td>⛅️ Mostly cloudy until night.</td>
           </tr>
           <tr>
             <th>Temperature Range</th>
-            <td>12°C to 21°C (53°F to 70°F)</td>
+            <td>14°C to 19°C (57°F to 66°F)</td>
           </tr>
           <tr>
             <th>Feels Like</th>
-            <td>Low: 46°F | High: 70°F</td>
+            <td>Low: 53°F | High: 66°F</td>
           </tr>
           <tr>
             <th>Humidity</th>
-            <td>69%</td>
+            <td>76%</td>
           </tr>
           <tr>
             <th>Wind</th>
-            <td>14 km/h (9 mph), Direction: 44°</td>
+            <td>18 km/h (11 mph), Direction: 250°</td>
           </tr>
           <tr>
             <th>Precipitation</th>
-            <td>Probability: 0%, Type: No precipitation expected</td>
+            <td>Probability: 100%, Type: No precipitation expected</td>
           </tr>
           <tr>
             <th>Sunrise / Sunset</th>
-            <td>🌅 06:32 AM / 🌇 05:31 PM</td>
+            <td>🌅 06:31 AM / 🌇 05:32 PM</td>
           </tr>
           <tr>
             <th>Moon Phase</th>
-            <td>Waning Crescent (97%)</td>
+            <td>Unknown (100%)</td>
           </tr>
           <tr>
             <th>Cloud Cover</th>
-            <td>65%</td>
+            <td>69%</td>
           </tr>
           <tr>
             <th>Pressure</th>
-            <td>1015.43 hPa</td>
+            <td>1011.75 hPa</td>
           </tr>
           <tr>
             <th>Dew Point</th>
-            <td>49.79°F</td>
+            <td>53.65°F</td>
           </tr>
           <tr>
             <th>Visibility</th>
-            <td>5.95 miles</td>
+            <td>6.03 miles</td>
           </tr>
         </table>
       </div>
   
       <div class="card">
-        <h2>Other</h2>
-        <ul class="item-list">
+        <h2>XKCD</h2>
   
-          <li>
-            <a href="https://selfh.st/weekly/2026-02-13/" target="_blank"> Self-Host Weekly (13 February 2026) </a>
-            <div class="item-content">
-			  Become a <a href="https://selfh.st/membership">paid subscriber</a> to access the newsletter’s full-text RSS feed or <a href="https://selfh.st">continue reading on selfh.st</a>.
-		  </div>
-          </li>
+        <div class="comic">
+          <a href="//imgs.xkcd.com/comics/snews.png" target="_blank">
+            <img src="//imgs.xkcd.com/comics/snews.png" alt="SNEWS">
+          </a>
+        </div>
   
-        </ul>
-      </div>
-  
-      <div class="card">
-        <h2>Golang</h2>
-        <ul class="item-list">
-  
-          <li>
-            <a href="https://go.dev/blog/testing-time" target="_blank">Testing Time (and other asynchronicities)</a>
-            <div class="item-content">
-<div id="blog"><div id="content">
-  <div id="content">
-
-    <div class="Article" data-slug="/blog/testing-time">
-    
-    <h1 class="small"><a href="/blog/">The Go Blog</a></h1>
-    
-
-    <h1>Testing Time (and other asynchronicities)</h1>
-      
-      <p class="author">
-      Damien Neil<br>
-      26 August 2025
-      </p>
-      
-      <div class='markdown'>
-<p>In Go 1.24, we introduced the <a href="/pkg/testing/synctest"><code>testing/synctest</code></a>
-package as an experimental package.
-This package can significantly simplify writing tests for concurrent,
-asynchronous code.
-In Go 1.25, the <code>testing/synctest</code> package has graduated from experiment
-to general availability.</p>
-<p>What follows is the blog version of my talk on
-the <a href="/pkg/testing/synctest"><code>testing/synctest</code></a> package
-at GopherCon Europe 2025 in Berlin.</p>
-<h2 id="what-is-an-asynchronous-function">What is an asynchronous function?</h2>
-<p>A synchronous function is pretty simple.
-You call it, it does something, and it returns.</p>
-<p>An asynchronous function is different.
-You call it, it returns, and then it does something.</p>
-<p>As a concrete, if somewhat artificial, example,
-the following <code>Cleanup</code> function is synchronous.
-You call it, it deletes a cache directory, and it returns.</p>
-<pre><code>func (c *Cache) Cleanup() {
-    os.RemoveAll(c.cacheDir)
-}
-</code></pre>
-<p><code>CleanupInBackground</code> is an asynchronous function.
-You call it, it returns, and the cache directory is deleted&hellip;sooner or later.</p>
-<pre><code>func (c *Cache) CleanupInBackground() {
-    go os.RemoveAll(c.cacheDir)
-}
-</code></pre>
-<p>Sometimes an asynchronous function does something in the future.
-For example, the <code>context</code> package&rsquo;s <code>WithDeadline</code> function
-returns a context which will be canceled in the future.</p>
-<pre><code>package context
-
-// WithDeadline returns a derived context
-// with a deadline no later than d.
-func WithDeadline(parent Context, d time.Time) (Context, CancelFunc)
-</code></pre>
-<p>When I talk about testing concurrent code,
-I mean testing these sorts of asynchronous operations,
-both ones which use real time and ones which do not.</p>
-<h2 id="tests">Tests</h2>
-<p>A test verifies that a system behaves as we expect.
-There&rsquo;s a lot of terminology describing types
-of test&ndash;unit tests, integration tests, and so on&ndash;but
-for our purposes here every kind of test reduces to three steps:</p>
-<ol>
-<li>Set up some initial conditions.</li>
-<li>Tell the system under test to do something.</li>
-<li>Verify the result.</li>
-</ol>
-<p>Testing a synchronous function is straightforward:</p>
-<ul>
-<li>You call the function;</li>
-<li>the function does something and returns;</li>
-<li>you verify the result.</li>
-</ul>
-<p>Testing an asynchronous function, however, is tricky:</p>
-<ul>
-<li>You call the function;</li>
-<li>it returns;</li>
-<li>you wait for it to finish doing whatever it does;</li>
-<li>you verify the result.</li>
-</ul>
-<p>If you don&rsquo;t wait for the correct amount of time,
-you may find yourself verifying the result of an operation that hasn&rsquo;t happened yet
-or has only happened partially.
-This never ends well.</p>
-<p>Testing an asynchronous function is especially tricky
-when you want to assert that something has <em>not</em> happened.
-You can verify that the thing has not happened yet,
-but how do you know with certainty that it isn&rsquo;t going to happen later?</p>
-<h2 id="an-example">An example</h2>
-<p>To make things a little more concrete,
-let&rsquo;s work with a real-world example.
-Consider the <code>context</code> package&rsquo;s <code>WithDeadline</code> function again.</p>
-<pre><code>package context
-
-// WithDeadline returns a derived context
-// with a deadline no later than d.
-func WithDeadline(parent Context, d time.Time) (Context, CancelFunc)
-</code></pre>
-<p>There are two obvious tests to write for <code>WithDeadline</code>.</p>
-<ol>
-<li>The context is <em>not</em> canceled <em>before</em> the deadline.</li>
-<li>The context <em>is</em> canceled <em>after</em> the deadline.</li>
-</ol>
-<p>Let&rsquo;s write a test.</p>
-<p>To keep the amount of code marginally less overwhelming,
-we&rsquo;ll just test the second case:
-After the deadline expires, the context is canceled.</p>
-<pre><code>func TestWithDeadlineAfterDeadline(t *testing.T) {
-    deadline := time.Now().Add(1 * time.Second)
-    ctx, _ := context.WithDeadline(t.Context(), deadline)
-
-    time.Sleep(time.Until(deadline))
-
-    if err := ctx.Err(); err != context.DeadlineExceeded {
-        t.Fatalf(&quot;context not canceled after deadline&quot;)
-    }
-}
-</code></pre>
-<p>This test is simple:</p>
-<ol>
-<li>Use <code>context.WithDeadline</code> to create a context with a deadline one second in the future.</li>
-<li>Wait until the deadline.</li>
-<li>Verify that the context is canceled.</li>
-</ol>
-<p>Unfortunately, this test obviously has a problem.
-It sleeps until the exact moment the deadline expires.
-Odds are good that the context has not been canceled yet by the time we examine it.
-At best, this test will be very flaky.</p>
-<p>Let&rsquo;s fix it.</p>
-<pre><code>time.Sleep(time.Until(deadline) + 100*time.Millisecond)
-</code></pre>
-<p>We can sleep until 100ms after the deadline.
-A hundred milliseconds is an eternity in computer terms.
-This should be fine.</p>
-<p>Unfortunately, we still have two problems.</p>
-<p>First, this test takes 1.1 seconds to execute.
-That&rsquo;s slow.
-This is a simple test.
-It should execute in milliseconds at the most.</p>
-<p>Second, this test is flaky.
-A hundred milliseconds is an eternity in computer terms,
-but on an overloaded continuous integration (CI) system
-it isn&rsquo;t unusual to see pauses much longer than that.
-This test will probably pass consistently on a developer&rsquo;s workstation,
-but I would expect occasional failures in a CI system.</p>
-<h2 id="slow-or-flaky-pick-two">Slow or flaky: Pick two</h2>
-<p>Tests that use real time are always slow or flaky.
-Usually they&rsquo;re both.
-If the test waits longer than necessary, it is slow.
-If it doesn&rsquo;t wait long enough, it is flaky.
-You can make the test more slow and less flaky,
-or less slow and more flaky,
-but you can&rsquo;t make it fast and reliable.</p>
-<p>We have a lot of tests in the <code>net/http</code> package which use this approach.
-They&rsquo;re all slow and/or flaky, which is what started me down the road
-which brings us here today.</p>
-<h2 id="write-synchronous-functions">Write synchronous functions?</h2>
-<p>The simplest way to test an asynchronous function is not to do it.
-Synchronous functions are easy to test.
-If you can transform an asynchronous function into a synchronous one,
-it will be easier to test.</p>
-<p>For example, if we consider our cache cleanup functions from earlier,
-the synchronous <code>Cleanup</code> is obviously better than
-the asynchronous <code>CleanupInBackground</code>.
-The synchronous function is easier to test,
-and the caller can easily start a new goroutine to run it in the background if needed.
-As a general rule,
-the higher up the call stack you can push your concurrency,
-the better.</p>
-<pre><code>// CleanupInBackground is hard to test.
-cache.CleanupInBackground()
-
-// Cleanup is easy to test,
-// and easy to run in the background when needed.
-go cache.Cleanup()
-</code></pre>
-<p>Unfortunately, this sort of transformation isn&rsquo;t always possible.
-For example, <code>context.WithDeadline</code> is an inherently asynchronous API.</p>
-<h2 id="instrument-code-for-testability">Instrument code for testability?</h2>
-<p>A better approach is to make our code more testable.</p>
-<p>Here&rsquo;s an example of what this might look like for our <code>WithDeadline</code> test:</p>
-<pre><code>func TestWithDeadlineAfterDeadline(t *testing.T) {
-    clock := fakeClock()
-    timeout := 1 * time.Second
-    deadline := clock.Now().Add(timeout)
-
-    ctx, _ := context.WithDeadlineClock(
-        t.Context(), deadline, clock)
-
-    clock.Advance(timeout)
-    context.WaitUntilIdle(ctx)
-    if err := ctx.Err(); err != context.DeadlineExceeded {
-        t.Fatalf(&quot;context not canceled after deadline&quot;)
-    }
-}
-</code></pre>
-<p>Instead of using real time, we use a fake time implementation.
-Using fake time avoids unnecessarily slow tests,
-because we never wait around doing nothing.
-It also helps avoid test flakiness,
-since the current time only changes when the test adjusts it.</p>
-<p>There are various fake time packages out there,
-or you can write your own.</p>
-<p>To use fake time, we need to modify our API to accept a fake clock.
-I&rsquo;ve added a <code>context.WithDeadlineClock</code> function here,
-that takes an additional clock parameter:</p>
-<pre><code>ctx, _ := context.WithDeadlineClock(
-    t.Context(), deadline, clock)
-</code></pre>
-<p>When we advance our fake clock, we have a problem.
-Advancing time is an asynchrounous operation.
-Sleeping goroutines may wake up,
-timers may send on their channels,
-and timer functions may run.
-We need to wait for that work to finish before we can test
-the expected behavior of the system.</p>
-<p>I&rsquo;ve added a <code>context.WaitUntilIdle</code> function here,
-which waits for any background work related to a context to complete:</p>
-<pre><code>clock.Advance(timeout)
-context.WaitUntilIdle(ctx)
-</code></pre>
-<p>This is a simple example, but it demonstrates
-the two fundamental principles of writing testable concurrent code:</p>
-<ol>
-<li>Use fake time (if you use time).</li>
-<li>Have some way to wait for quiescence,
-which is a fancy way of saying
-&ldquo;all background activity has stopped and the system is stable&rdquo;.</li>
-</ol>
-<p>The interesting question, of course, is how we do this.
-I&rsquo;ve glossed over the details in this example because
-there are some big downsides to this approach.</p>
-<p>It&rsquo;s hard.
-Using a fake clock isn&rsquo;t difficult,
-but identifying when background concurrent work is finished
-and it is safe to examine the state of the system is.</p>
-<p>Your code becomes less idiomatic.
-You can&rsquo;t use standard time package functions.
-You need to be very careful to keep track of everything happening
-in the background.</p>
-<p>You need to instrument not just your code,
-but any other packages you use.
-If you call any third-party concurrent code,
-you&rsquo;re probably out of luck.</p>
-<p>Worst of all, it can be just about impossible
-to retrofit this approach into an existing codebase.</p>
-<p>I attempted to apply this approach to Go&rsquo;s HTTP implementation,
-and while I had some success at doing so in places,
-the HTTP/2 server simply defeated me.
-In particular, adding instrumentation to detect quiescence
-without extensive rewriting proved infeasible,
-or at least beyond my skills.</p>
-<h2 id="horrible-runtime-hacks">Horrible runtime hacks?</h2>
-<p>What do we do if we can&rsquo;t make our code testable?</p>
-<p>What if instead of instrumenting our code,
-we had a way to observe the behavior of the uninstrumented system?</p>
-<p>A Go program consists of a set of goroutines.
-Those goroutines have states.
-We just need to wait until all the goroutines have stopped running.</p>
-<p>Unfortunately, the Go runtime doesn&rsquo;t provide any way to tell what
-those goroutines are doing. Or does it?</p>
-<p>The <code>runtime</code> package contains a function that gives us a stack trace
-for every running goroutine, as well as their states.
-This is text intended for human consumption,
-but we could parse that output.
-Could we use this to detect quiescence?</p>
-<p>Now, of course this is a terrible idea.
-There is no guarantee that the format of these stack traces will be stable over time.
-You should not do this.</p>
-<p>I did it.
-And it worked.
-In fact, it worked surprisingly well.</p>
-<p>With a simple implementation of a fake clock,
-a small amount of instrumentation to keep track of what goroutines were part of the test,
-and some horrifying abuse of <code>runtime.Stack</code>,
-I finally had a way to write fast, reliable tests for the <code>http</code> package.</p>
-<p>The underlying implementation of these tests was horrible,
-but it demonstrated that there was a useful concept here.</p>
-<h2 id="a-better-way">A better way</h2>
-<p>Go may have built-in concurrency,
-but testing programs that use that concurrency is hard.</p>
-<p>We&rsquo;re faced with an unfortunate choice:
-We can write simple, idiomatic code, but it will be impossible to test quickly and reliably;
-or we can write testable code, but it will be complicated and unidiomatic.</p>
-<p>So we asked ourselves what we can do to make this better.</p>
-<p>As we saw earlier, the two fundamental features required to write testable concurrent code are
-fake time and a way to wait for quiescence.</p>
-<p>We need a better way to to wait for quiescence.
-We should be able to ask the runtime when background goroutines have finished their work.
-We also want to be able to limit the scope of this query to a single test,
-so that unrelated tests do not interfere with each other.</p>
-<p>We also need better support for testing programs using fake time.</p>
-<p>It isn&rsquo;t hard to make a fake time implementation,
-but code which uses an implementation like this is not idiomatic.</p>
-<p>Idiomatic code will use a <code>time.Timer</code>,
-but it is not possible to create a fake <code>Timer</code>.
-We asked ourselves whether we should provide a way for tests to
-create a fake <code>Timer</code>, where the test controls when the timer fires.</p>
-<p>A testing implementation of time needs to define an entirely new version of the <code>time</code> package,
-and pass that to every function that operates on time.
-We considered whether we should define a common time interface,
-in the same way that <code>net.Conn</code> is a common interface describing a network connection.</p>
-<p>What we realized, however, is that unlike network connections,
-there is only one possible implementation of fake time.
-A fake network may want to introduce latency or errors.
-Time, in contrast, does only one thing: It moves forward.
-Tests need to control the rate at which time progresses,
-but a timer scheduled to fire ten seconds in the future
-should always fire ten (possibly fake) seconds in the future.</p>
-<p>In addition, we don&rsquo;t want to upset the entire Go ecosystem.
-Most programs today use functions in the time package.
-We want to keep those programs not only working,
-but idiomatic.</p>
-<p>This led to the conclusion that what we need is a way for a test to
-tell the time package to use a fake clock,
-in much the same way that the Go playground uses a fake clock.
-Unlike the playground,
-we need to limit the scope of that change to a single test.
-(It may not be obvious that the Go playground uses a fake clock,
-because we turn any fake delays into real delays on the front end,
-but it does.)</p>
-<h2 id="the-synctest-experiment">The <code>synctest</code> experiment</h2>
-<p>And so in Go 1.24 we introduced <a href="/pkg/testing/synctest"><code>testing/synctest</code></a>,
-a new, experimental package to simplify testing concurrent programs.
-Over the months following the release of Go 1.24
-we gathered feedback from early adopters.
-(Thank you to everyone who tried it out!)
-We made a number of changes to address problems and shortcomings.
-And now, in Go 1.25, we&rsquo;ve released the <code>testing/synctest</code> package
-as part of the standard library.</p>
-<p>It lets you run a function in what we&rsquo;re calling a &ldquo;bubble&rdquo;.
-Within the bubble, the time package uses a fake clock,
-and the <code>synctest</code> package provides a function to wait for the bubble to quiesce.</p>
-<h2 id="the-synctest-package">The <code>synctest</code> package</h2>
-<p>The <code>synctest</code> package contains just two functions.</p>
-<pre><code>package synctest
-
-// Test executes f in a new bubble.
-// Goroutines in the bubble use a fake clock.
-func Test(t *testing.T, f func(*testing.T))
-
-// Wait waits for background activity in the bubble to complete.
-func Wait()
-</code></pre>
-<p><a href="/pkg/testing/synctest#Test"><code>Test</code></a> executes a function in a new bubble.</p>
-<p><a href="/pkg/testing/synctest#Wait"><code>Wait</code></a> blocks until every goroutine in the bubble is blocked
-waiting for some other goroutine in the bubble.
-We call that state being &ldquo;durably blocked&rdquo;.</p>
-<h2 id="testing-with-synctest">Testing with synctest</h2>
-<p>Let&rsquo;s look at an example of synctest in action.</p>
-<pre><code>func TestWithDeadlineAfterDeadline(t *testing.T) {
-    synctest.Test(t, func(t *testing.T) {
-        deadline := time.Now().Add(1 * time.Second)
-        ctx, _ := context.WithDeadline(t.Context(), deadline)
-
-        time.Sleep(time.Until(deadline))
-        synctest.Wait()
-        if err := ctx.Err(); err != context.DeadlineExceeded {
-            t.Fatalf(&quot;context not canceled after deadline&quot;)
-        }
-    })
-}
-</code></pre>
-<p>This might look a little familiar.
-This is the naïve test for <code>context.WithDeadline</code> that we looked at earlier.
-The only changes are that we&rsquo;ve wrapped the test in
-a <code>synctest.Test</code> call to execute it in a bubble
-and we have added a <code>synctest.Wait</code> call.</p>
-<p>This test is fast and reliable.
-It runs almost instantaneously.
-It precisely tests the expected behavior of the system under test.
-It also requires no modification of the <code>context</code> package.</p>
-<p>Using the <code>synctest</code> package,
-we can write simple, idiomatic code
-and test it reliably.</p>
-<p>This is a very simple example, of course,
-but this is a real test of real production code.
-If <code>synctest</code> had existed when the <code>context</code> package was written,
-we would have had a much easier time writing tests for it.</p>
-<h2 id="time">Time</h2>
-<p>Time in the bubble behaves much the same as the fake time in the Go playground.
-Time starts at midnight, January 1, 2000 UTC.
-If you need to run a test at some specific point in time for some reason,
-you can just sleep until then.</p>
-<pre><code>func TestAtSpecificTime(t *testing.T) {
-   synctest.Test(t, func(t *testing.T) {
-       // 2000-01-01 00:00:00 +0000 UTC
-       t.Log(time.Now().In(time.UTC))
-
-       // This does not take 25 years.
-       time.Sleep(time.Until(
-           time.Date(2025, 1, 1, 0, 0, 0, 0, time.UTC)))
-
-       // 2025-01-01 00:00:00 +0000 UTC
-       t.Log(time.Now().In(time.UTC))
-   })
-}
-</code></pre>
-<p>Time only passes when every goroutine in the bubble has blocked.
-You can think of the bubble as simulating an infinitely fast computer:
-Any amount of computation takes no time.</p>
-<p>The following test will always print that zero seconds
-of fake time have elapsed since the start of the test,
-no matter how much real time has passed.</p>
-<pre><code>func TestExpensiveWork(t *testing.T) {
-   synctest.Test(t, func(t *testing.T) {
-       start := time.Now()
-       for range 1e7 {
-           // do expensive work
-       }
-       t.Log(time.Since(start)) // 0s
-   })
-}
-</code></pre>
-<p>In the next test, the <code>time.Sleep</code> call will return immediately,
-rather than waiting for ten real seconds.
-The test will always print that exactly ten fake seconds
-have passed since the start of the test.</p>
-<pre><code>func TestSleep(t *testing.T) {
-   synctest.Test(t, func(t *testing.T) {
-       start := time.Now()
-       time.Sleep(10 * time.Second)
-       t.Log(time.Since(start)) // 10s
-   })
-}
-</code></pre>
-<h2 id="waiting-for-quiescence">Waiting for quiescence</h2>
-<p>The <a href="/pkg/testing/synctest#Wait"><code>synctest.Wait</code></a> function
-lets us wait for background activity to complete.</p>
-<pre><code>func TestWait(t *testing.T) {
-   synctest.Test(t, func(t *testing.T) {
-       done := false
-       go func() {
-           done = true
-       }()
-
-       // Wait for the above goroutine to finish.
-       synctest.Wait()
-
-       t.Log(done) // true
-   })
-}
-</code></pre>
-<p>If we didn&rsquo;t have the <code>Wait</code> call in the above test,
-we would have a race condition:
-One goroutine modifies the <code>done</code> variable
-while another reads from it without synchronization.
-The <code>Wait</code> call provides that synchronization.</p>
-<p>You may be familiar with the <code>-race</code> test flag,
-which enables the data race detector.
-The race detector is aware of the synchronization provided by <code>Wait</code>,
-and does not complain about this test.
-If we forgot the <code>Wait</code> call, the race detector would correctly complain.</p>
-<p>The <code>synctest.Wait</code> function provides synchronization,
-but the passage of time does not.</p>
-<p>In the next example, one goroutine writes to the <code>done</code> variable
-while another sleeps for one nanosecond before reading from it.
-It should be obvious that when run with a real clock outside a synctest bubble,
-this code contains a race condition.
-Inside a synctest bubble,
-while the fake clock ensures that the goroutine completes before <code>time.Sleep</code> returns,
-the race detector will still report the data race,
-just like it would if this code were run outside a synctest bubble.</p>
-<pre><code>func TestTimeDataRace(t *testing.T) {
-   synctest.Test(t, func(t *testing.T) {
-       done := false
-       go func() {
-           done = true // write
-       }()
-
-       time.Sleep(1 * time.Nanosecond)
-
-       t.Log(done)     // read (unsynchronized)
-   })
-}
-</code></pre>
-<p>Adding a <code>Wait</code> call provides explicit synchronization and fixes the data race:</p>
-<pre><code>time.Sleep(1 * time.Nanosecond)
-synctest.Wait() // synchronize
-t.Log(done)     // read
-</code></pre>
-<h2 id="example-iocopy">Example: <code>io.Copy</code></h2>
-<p>Taking advantage of the synchronization provided by <code>synctest.Wait</code> allows us
-to write simpler tests with less explicit synchronization.</p>
-<p>For example, consider this test of <a href="/pkg/io#Copy"><code>io.Copy</code></a>.</p>
-<pre><code>func TestIOCopy(t *testing.T) {
-   synctest.Test(t, func(t *testing.T) {
-       srcReader, srcWriter := io.Pipe()
-       defer srcWriter.Close()
-
-       var dst bytes.Buffer
-       go io.Copy(&amp;dst, srcReader)
-
-       data := &quot;1234&quot;
-       srcWriter.Write([]byte(&quot;1234&quot;))
-       synctest.Wait()
-
-       if got, want := dst.String(), data; got != want {
-           t.Errorf(&quot;Copy wrote %q, want %q&quot;, got, want)
-       }
-   })
-}
-</code></pre>
-<p>The <code>io.Copy</code> function copies data from an <code>io.Reader</code> to an <code>io.Writer</code>.
-You might not immediately think of <code>io.Copy</code> as a concurrent function,
-since it blocks until the copy has completed.
-However, providing data to <code>io.Copy</code>&rsquo;s reader is an asynchronous operation:</p>
-<ul>
-<li><code>Copy</code> calls the reader&rsquo;s <code>Read</code> method;</li>
-<li><code>Read</code> returns some data;</li>
-<li>and the data is written to the writer at a later time.</li>
-</ul>
-<p>In this test, we are verifying that <code>io.Copy</code> writes new data to the writer
-without waiting to fill its buffer.</p>
-<p>Looking at the test step by step,
-we first create an <code>io.Pipe</code> to serve as the source <code>io.Copy</code> reads from:</p>
-<pre><code>srcReader, srcWriter := io.Pipe()
-defer srcWriter.Close()
-</code></pre>
-<p>We call <code>io.Copy</code> in a new goroutine,
-copying from the read end of the pipe into a <code>bytes.Buffer</code>:</p>
-<pre><code>var dst bytes.Buffer
-go io.Copy(&amp;dst, srcReader)
-</code></pre>
-<p>We write to the other end of the pipe,
-and wait for <code>io.Copy</code> to handle the data:</p>
-<pre><code>data := &quot;1234&quot;
-srcWriter.Write([]byte(&quot;1234&quot;))
-synctest.Wait()
-</code></pre>
-<p>Finally, we verify that the destination buffer contains the desired data:</p>
-<pre><code>if got, want := dst.String(), data; got != want {
-    t.Errorf(&quot;Copy wrote %q, want %q&quot;, got, want)
-}
-</code></pre>
-<p>We don&rsquo;t need to add a mutex or other synchronization around the destination buffer,
-because <code>synctest.Wait</code> ensures that it is never accessed concurrently.</p>
-<p>This test demonstrates a few important points.</p>
-<p>Even synchronous functions like <code>io.Copy</code>,
-which do not perform additional background work after they return,
-may exhibit asynchronous behaviors.</p>
-<p>Using <code>synctest.Wait</code>, we can test those behaviors.</p>
-<p>Note also that this test does not work with time.
-Many asynchronous systems involve time, but not all.</p>
-<h2 id="bubble-exit">Bubble exit</h2>
-<p>The <code>synctest.Test</code> function waits for all goroutines in the bubble to exit
-before returning.
-Time stops advancing after the root goroutine (the goroutine started by <code>Test</code>) returns.</p>
-<p>In the next example, <code>Test</code> waits for the background goroutine to run and exit
-before it returns:</p>
-<pre><code>func TestWaitForGoroutine(t *testing.T) {
-    synctest.Test(t, func(t *testing.T) {
-        go func() {
-            // This runs before synctest.Test returns.
-        }()
-    })
-}
-</code></pre>
-<p>In this example, we schedule a <code>time.AfterFunc</code> for a time in the future.
-The bubble&rsquo;s root goroutine returns before that time is reached,
-so the <code>AfterFunc</code> never runs:</p>
-<pre><code>func TestDoNotWaitForTimer(t *testing.T) {
-    synctest.Test(t, func(t *testing.T) {
-        time.AfterFunc(1 * time.Nanosecond, func() {
-            // This never runs.
-        })
-    })
-}
-</code></pre>
-<p>In the next example, we start a goroutine that sleeps.
-The root goroutine returns and time stops advancing.
-The bubble is now deadlocked,
-because <code>Test</code> is waiting for all goroutines in the bubble to finish
-but the sleeping goroutine is waiting for time to advance.</p>
-<pre><code>func TestDeadlock(t *testing.T) {
-    synctest.Test(t, func(t *testing.T) {
-        go func() {
-            // This sleep never returns and the test deadlocks.
-            time.Sleep(1 * time.Nanosecond)
-        }()
-    })
-}
-</code></pre>
-<h2 id="deadlocks">Deadlocks</h2>
-<p>The <code>synctest</code> package panics when a bubble is deadlocked
-due to every goroutine in the bubble being durably blocked on
-another goroutine in the bubble.</p>
-<pre><code>--- FAIL: Test (0.00s)
---- FAIL: TestDeadlock (0.00s)
-panic: deadlock: main bubble goroutine has exited but blocked goroutines remain [recovered, repanicked]
-
-goroutine 7 [running]:
-(stacks elided for clarity)
-
-goroutine 10 [sleep (durable), synctest bubble 1]:
-time.Sleep(0x1)
-    /Users/dneil/src/go/src/runtime/time.go:361 +0x130
-_.TestDeadlock.func1.1()
-    /tmp/s/main_test.go:13 +0x20
-created by _.TestDeadlock.func1 in goroutine 9
-    /tmp/s/main_test.go:11 +0x24
-FAIL    _   0.173s
-FAIL
-</code></pre>
-<p>The runtime will print stack traces for every goroutine in the deadlocked bubble.</p>
-<p>When printing the status of a bubbled goroutine,
-the runtime indicates when the goroutine is durably blocked.
-You can see that the sleeping goroutine in this test is durably blocked.</p>
-<h2 id="durable-blocking">Durable blocking</h2>
-<p>&ldquo;Durably blocking&rdquo; is a core concept in synctest.</p>
-<p>A goroutine is durably blocked when it is not only blocked,
-but when it can only be unblocked by another goroutine in the same bubble.</p>
-<p>When every goroutine in a bubble is durably blocked:</p>
-<ol>
-<li><code>synctest.Wait</code> returns.</li>
-<li>If there is no <code>synctest.Wait</code> call in progress,
-fake time advances instantly to the next point that will wake a goroutine.</li>
-<li>If there is no goroutine that can be woken by advancing time,
-the bubble is deadlocked and the test fails.</li>
-</ol>
-<p>It is important for us to make a distinction between a goroutine which is merely blocked
-and one which is <em>durably</em> blocked.
-We don&rsquo;t want to declare a deadlock when a goroutine is temporarily blocked on
-some event arising outside its bubble.</p>
-<p>Let&rsquo;s look at some ways in which a goroutine can block non-durably.</p>
-<h3 id="not-durably-blocking-io-files-pipes-network-connections-etc">Not durably blocking: I/O (files, pipes, network connections, etc.)</h3>
-<p>The most important limitation is that I/O is not durably blocking,
-including network I/O.
-A goroutine reading from a network connection may be blocked,
-but it will be unblocked by data arriving on that connection.</p>
-<p>This is obviously true for a connection to some network service,
-but it is also true for a loopback connection,
-even when the reader and writer are both in the same bubble.</p>
-<p>When we write data to a network socket,
-even a loopback socket,
-the data is passed to the kernel for delivery.
-There is a period of time between the write system call returning
-and the kernel notifying the other side of the connection that data is available.
-The Go runtime cannot distinguish between a goroutine blocked waiting for
-data that is already in the kernel&rsquo;s buffers
-and one blocked waiting for data that will not arrive.</p>
-<p>This means that tests of networked programs using synctest
-usually cannot use real network connections.
-Instead, they should use an in-memory fake.</p>
-<p>I&rsquo;m not going to go over the process of creating a fake network here,
-but the <code>synctest</code> package documentation contains
-<a href="/pkg/testing/synctest#hdr-Example__HTTP_100_Continue">a complete worked example</a>
-of testing an HTTP client and server communicating over a fake network.</p>
-<h3 id="not-durably-blocking-syscalls-cgo-calls-anything-that-isnt-go">Not durably blocking: syscalls, cgo calls, anything that isn&rsquo;t Go</h3>
-<p>Syscalls and cgo calls are not durably blocking.
-We can only reason about the state of goroutines executing Go code.</p>
-<h3 id="not-durably-blocking-mutexes">Not durably blocking: Mutexes</h3>
-<p>Perhaps surprisingly, mutexes are not durably blocking.
-This is a decision born of practicality:
-Mutexes are often used to guard global state,
-so a bubbled goroutine will often need to acquire a mutex held outside its bubble.
-Mutexes are highly performance-sensitive,
-so adding additional instrumentation to them
-risks slowing down non-test programs.</p>
-<p>We can test programs that use mutexes with synctest,
-but the fake clock will not advance while a goroutine is blocked on mutex acquisition.
-This hasn&rsquo;t posed a problem in any case we&rsquo;ve encountered,
-but it is something to be aware of.</p>
-<h3 id="durably-blocking-timesleep">Durably blocking: <code>time.Sleep</code></h3>
-<p>So what is durably blocking?</p>
-<p><code>time.Sleep</code> is obviously durable,
-since time can only advance when every goroutine in the bubble is durably blocked.</p>
-<h3 id="durably-blocking-send-or-receive-on-channels-created-in-the-same-bubble">Durably blocking: send or receive on channels created in the same bubble</h3>
-<p>Channel operations on channels created within the same bubble are durable.</p>
-<p>We make a distinction between bubbled channels (created in a bubble)
-and unbubbled channels (created outside any bubble).
-This means that a function using a global channel for synchronization,
-for example to control access to a globally cached resource,
-can be safely called from within a bubble.</p>
-<p>Trying to operate on a bubbled channel from outside its bubble is an error.</p>
-<h3 id="durably-blocking-syncwaitgroup-belonging-to-the-same-bubble">Durably blocking: <code>sync.WaitGroup</code> belonging to the same bubble</h3>
-<p>We also associate <code>sync.WaitGroup</code>s with bubbles.</p>
-<p><code>WaitGroup</code> doesn&rsquo;t have a constructor,
-so we make the association with the bubble implicitly on the first call to <code>Go</code> or <code>Add</code>.</p>
-<p>As with channels,
-waiting on a <code>WaitGroup</code> belonging to the same bubble is durably blocking,
-and waiting on one from outside the bubble is not.
-Calling <code>Go</code> or <code>Add</code> on a <code>WaitGroup</code> belonging to a different bubble is an error.</p>
-<h3 id="durably-blocking-synccondwait">Durably blocking: <code>sync.Cond.Wait</code></h3>
-<p>Waiting on a <code>sync.Cond</code> is always durably blocking.
-Waking up a goroutine waiting on a <code>Cond</code> in a different bubble is an error.</p>
-<h3 id="durably-blocking-select">Durably blocking: <code>select{}</code></h3>
-<p>Finally, an empty select is durably blocking.
-(A select with cases is durably blocking if all the operations in it are so.)</p>
-<p>That&rsquo;s the complete list of durably blocking operations.
-It isn&rsquo;t very long,
-but it&rsquo;s enough to handle almost all real-world programs.</p>
-<p>The rule is that a goroutine is durably blocked when it is blocked,
-and we can guarantee that it can only be unblocked
-by another goroutine in its bubble.</p>
-<p>In cases where it is possible to attempt to wake a bubbled goroutine from outside its bubble,
-we panic.
-For example, it is an error to operate on a bubbled channel from outside its bubble.</p>
-<h2 id="changes-from-124-to-125">Changes from 1.24 to 1.25</h2>
-<p>We released an experimental version of the <code>synctest</code> package in Go 1.24.
-To ensure that early adopters were aware of the experimental status of the package,
-you needed to set a GOEXPERIMENT flag to make the package visible.</p>
-<p>The feedback we received from those early adopters was invaluable,
-both in demonstrating that the package is useful
-and in uncovering areas where the API needed work.</p>
-<p>These are some of the changes made between the experimental version
-and the version released in Go 1.25.</p>
-<h3 id="replaced-run-with-test">Replaced Run with Test</h3>
-<p>The original version of the API created a bubble with a <code>Run</code> function:</p>
-<pre><code>// Run executes f in a new bubble.
-func Run(f func())
-</code></pre>
-<p>It became clear that we needed a way to create a <code>*testing.T</code>
-that is scoped to a bubble.
-For example, <code>t.Cleanup</code> should run cleanup functions in the same bubble
-they are registered in, not after the bubble exits.
-We renamed <code>Run</code> to <code>Test</code> and made it create a <code>T</code> scoped to the lifetime
-of the new bubble.</p>
-<h3 id="time-stops-when-a-bubbles-root-goroutine-returns">Time stops when a bubble&rsquo;s root goroutine returns</h3>
-<p>We originally continued to advance time within a bubble for so long as
-the bubble contained any goroutines waiting for future events.
-This turned out to be very confusing when a long-lived goroutine never returned,
-such as a goroutine reading forever from a <code>time.Ticker</code>.
-We now stop advancing time when a bubble&rsquo;s root goroutine returns.
-If the bubble is blocked waiting for time to advance,
-this results in a deadlock and a panic which can be analyzed.</p>
-<h3 id="removed-cases-where-durable-wasnt">Removed cases where &ldquo;durable&rdquo; wasn&rsquo;t</h3>
-<p>We cleaned up the definition of &ldquo;durably blocking&rdquo;.
-The original implementation had cases where a durably blocked goroutine could
-be unblocked from outside the bubble.
-For example, channels recorded whether they were created in a bubble,
-but not which in which bubble they were created,
-so one bubble could unblock a channel in a different bubble.
-The current implementation contains no cases we know of
-where a durably blocked goroutine can be unblocked from outside its bubble.</p>
-<h3 id="better-stack-traces">Better stack traces</h3>
-<p>We made improvements to the information printed in stack traces.
-When a bubble deadlocks, we by default now only print stacks for the goroutines in that bubble.
-Stack traces also clearly indicate which goroutines in a bubble are durably blocked.</p>
-<h3 id="randomized-events-happening-at-the-same-time">Randomized events happening at the same time</h3>
-<p>We made improvements to the randomization of events happening at the same time.
-Originally, timers scheduled to fire at the same instant
-would always do so in the order they were created.
-This ordering is now randomized.</p>
-<h2 id="future-work">Future work</h2>
-<p>We&rsquo;re pretty happy with the synctest package at the moment.</p>
-<p>Aside from the inevitable bug fixes,
-we don&rsquo;t currently expect any major changes to it in the future.
-Of course, with wider adoption it is always possible that we&rsquo;ll discover something
-that needs doing.</p>
-<p>One possible area of work is to improve the detection of durably blocked goroutines.
-It would be nice if we could make mutex operations durably blocking,
-with a restriction that a mutex acquired in a bubble must be released
-from within the same bubble.</p>
-<p>Testing networked code with synctest requires a fake network.
-The <code>net.Pipe</code> function can create a fake <code>net.Conn</code>,
-but there is currently no standard library function that creates
-a fake <code>net.Listener</code> or <code>net.PacketConn</code>.
-In addition, the <code>net.Conn</code> returned by <code>net.Pipe</code> is synchronous&ndash;every write blocks
-until a read consumes the data&ndash;which is not representative of real network behavior.
-Perhaps we should add a good fake implementations of common network interfaces
-to the standard library.</p>
-<h2 id="conclusion">Conclusion</h2>
-<p>That&rsquo;s the <code>synctest</code> package.</p>
-<p>I can&rsquo;t say that it makes testing concurrent code simple,
-because concurrency is never simple.
-What it does is let you write the simplest possible concurrent code,
-using idiomatic Go,
-and the standard time package,
-and then write fast, reliable tests for it.</p>
-<p>I hope you find it useful.</p>
-</div>
-
-    </div>
-
-    
-    <div class="Article prevnext">
-    
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-        <p>
-        
-          
-            <b>Next article: </b><a href="/blog/jsonv2-exp">A new experimental Go API for JSON</a><br>
-          
-        
-        
-          
-            <b>Previous article: </b><a href="/blog/container-aware-gomaxprocs">Container-aware GOMAXPROCS</a><br>
-          
-        
-        <b><a href="/blog/all">Blog Index</a></b>
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-    </div>
-    
-
-  </div>
-</div>
-
-<script src="/js/play.js"></script>
-
-</div>
-          </li>
-  
-        </ul>
       </div>
   
       <div class="card">
         <h2>Reddit</h2>
   
-        <h3 class="subreddit">r/golang</h3>
+        <h3 class="subreddit">r/gamedev</h3>
         <ul class="item-list">
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1r5zbic/gos_cryptography_packages_were_audited_the_results/" target="_blank">Go's Cryptography Packages Were Audited: The Results</a>
-            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/golang/comments/1r5zbic/gos_cryptography_packages_were_audited_the_results/">  </a> </td><td> &#32; submitted by &#32; <a href="https://www.reddit.com/user/gamerdevguy"> /u/gamerdevguy </a> <br/> <span><a href="https://hackernoon.com/gos-cryptography-packages-were-audited-the-results">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1r5zbic/gos_cryptography_packages_were_audited_the_results/">[comments]</a></span> </td></tr></table></div>
+            <a href="https://www.reddit.com/r/gamedev/comments/1r6uy67/how_does_a_game_like_roblox_work/" target="_blank">How does a game like Roblox work?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi,</p> <p>I am a indie dev (In Roblox and in C++) and I dont even know if this is the right subreddit to post on but ive wondering how a game like Roblox works. I am pretty experienced with Roblox as Ive been playing since 2018 so I kinda know how the platform works (Servers, Clients, etc). But how does it work behind the scenes? I googled it and it said something about TCP and UDP or something.</p> <p>Ive been wanting to code something like Roblox (As a fun little hobby and probally not gonna release it) though I want to learn about how the servers could work. Could something like Cloudfair tunnels work?</p> <p>If anyone could help that would be great or even just tell me which subreddit I should post on.</p> <p>Thanks!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Puppyrjcw"> /u/Puppyrjcw </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1r6uy67/how_does_a_game_like_roblox_work/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1r6uy67/how_does_a_game_like_roblox_work/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1r5lzmy/whats_the_best_way_to_control_chrome_from_go/" target="_blank">What's the best way to control Chrome from Go?</a>
-            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/golang/comments/1r5lzmy/whats_the_best_way_to_control_chrome_from_go/">  </a> </td><td> <!-- SC_OFF --><div class="md"><p>I built a small HTTP server (~1100 LOC) that wraps chromedp to give AI agents browser control. It works, but I&#39;m wondering if I&#39;m using the right tool for the job.</p> <p>Currently using:</p> <p>• <strong>chromedp</strong> for CDP communication</p> <p>• Raw DOM.resolveNode / Runtime.callFunctionOn for element interaction</p> <p>• Accessibility.getFullAXTree for the a11y tree (main interface — cheaper than screenshots for AI)</p> <p>• Single sync.Mutex per tab context</p> <p>Things that feel clunky:</p> <p>• chromedp&#39;s context-per-tab model — managing lifecycles gets messy</p> <p>• No built-in way to get the accessibility tree (had to use raw CDP calls)</p> <p>• Stealth flags keep getting deprecated by Chrome</p> <p><strong>Is chromedp still the best option?</strong> I&#39;ve looked at:</p> <p>• Raw CDP via <a href="http://github.com/mafredri/cdp">github.com/mafredri/cdp</a> — more control, more work</p> <p>• Rod (go-rod/rod) — supposedly simpler API?</p> <p>• Calling Playwright via subprocess — feels wrong from Go</p> <p>• Direct WebSocket to Chrome DevTools — maximum control but maintaining it yourself</p> <p>Anyone using something different? Or is chromedp + raw CDP the way to go?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Fit_Audience_7470"> /u/Fit_Audience_7470 </a> <br/> <span><a href="http://github.com/pinchtab/pinchtab">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1r5lzmy/whats_the_best_way_to_control_chrome_from_go/">[comments]</a></span> </td></tr></table></div>
+            <a href="https://www.reddit.com/r/gamedev/comments/1r6tx4s/is_a_time_limit_a_bad_way_to_contentlimit_a_demo/" target="_blank">Is a time limit a bad way to content-limit a demo for a game without linear levels? And what are some examples of games using this demo technique (except for Minecraft which I already know about)?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;m making a game where the gameplay loop is dependent on the synergy between each enemy, gun, and powerup, and restricting any of these factors would give people playing a demo an inaccurate depiction of what playing my game is actually like. Furthermore, everything occurs on one, large map.</p> <p>Because there are no traditional &quot;levels&quot; (the game is kinda rogue-likey, where you survive as many days as you can and death is permanent) i cant just cut out the first few, most polished levels and make them my demo.</p> <p>thus, the best option seems to just apply a time limit, so players can experience everything the game has to offer, but only in a short burst.</p> <p>Assuming my game is enjoyable enough to want to play for longer than the demo allows, would this content-limiting technique be acceptable? Or would it piss players off, make them feel like they&#39;ve &quot;seen enough&quot;, or end in some other unforseen outcome?</p> <p>If so, what other ways are there to content-limit a demo for a non-linear game?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Venison-County-Dev"> /u/Venison-County-Dev </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1r6tx4s/is_a_time_limit_a_bad_way_to_contentlimit_a_demo/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1r6tx4s/is_a_time_limit_a_bad_way_to_contentlimit_a_demo/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1r5c00m/lunar_a_selfhosted_golanglua_faas_for_personal_use/" target="_blank">Lunar: a self-hosted Golang+Lua FaaS for personal use.</a>
-            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/golang/comments/1r5c00m/lunar_a_selfhosted_golanglua_faas_for_personal_use/">  </a> </td><td> <!-- SC_OFF --><div class="md"><p>Last holidays, I wanted to automate a few things and ended up creating Lunar, which is a lightweight faas platform, sqlite backed, and single binary deployment, where functions are written in Lua. </p> <p>Let me know what you think, and feel free to contribute to the project; you can find a few ideas listed in the contributions file.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/claudemiro"> /u/claudemiro </a> <br/> <span><a href="https://github.com/dimiro1/lunar">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1r5c00m/lunar_a_selfhosted_golanglua_faas_for_personal_use/">[comments]</a></span> </td></tr></table></div>
+            <a href="https://www.reddit.com/r/gamedev/comments/1r6twjo/for_anyone_using_unreal_engine_we_posted_a_guide/" target="_blank">For anyone using Unreal Engine, we posted a guide on fixing the "Unreal Engine Look" we have all had to deal with</a>
+            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/gamedev/comments/1r6twjo/for_anyone_using_unreal_engine_we_posted_a_guide/">  </a> </td><td> <!-- SC_OFF --><div class="md"><p>In this video we break down the drawbacks of Unreal&#39;s default ACES tonemapper, and how to install AgX as a superior alternative</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Typical-Interest-543"> /u/Typical-Interest-543 </a> <br/> <span><a href="https://www.youtube.com/watch?v=ciCRiQmwTrs">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1r6twjo/for_anyone_using_unreal_engine_we_posted_a_guide/">[comments]</a></span> </td></tr></table></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1r59r3c/you_like_typing_and_you_are_a_fan_terminal_you/" target="_blank">You like typing and you are a fan terminal ? You will love this ? The new version of COUIK is out with new UI and new features</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>New features:</p> <p>- You get a little chart at the end to see how you did over time<br/> - Logo configuration<br/> - A new minimalist UI<br/> - Command palette guide (CTRL + P)<br/> - Config display</p> <p>repo &amp; install guide : <a href="https://github.com/Fadilix/couik">https://github.com/Fadilix/couik</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/TemporaryStrong6968"> /u/TemporaryStrong6968 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1r59r3c/you_like_typing_and_you_are_a_fan_terminal_you/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1r59r3c/you_like_typing_and_you_are_a_fan_terminal_you/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/gamedev/comments/1r6q69s/how_to_sell_game_to_chinese_some_of_my_opinions/" target="_blank">How to sell game to chinese, some of my opinions</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><blockquote> <p>I write the core context by myself, and with help of gemini I turned them into better (hope it is) english.</p> </blockquote> <p>Here are some insights and tips regarding the Chinese market based on my observations as a local Chinese. If you are targeting Chinese players, keep these points in mind.</p> <p><strong>1. prioritize chinese localization</strong></p> <p>Ideally, launch your game with full Chinese localization. If resources are tight and you cannot manage full in-game translation at launch, at the very least, ensure your Steam store page and all announcements are translated. This shows respect and interest in the market.</p> <p>The market is big, Simplified Chinese is by far the second biggest language on Steam. <em>edited because Rocknroller658 reminds me of this, what a simple reason, the market IS there!</em></p> <p><strong>2. the &quot;no chinese, bad review&quot; phenomenon</strong></p> <p>Be prepared for negative reviews simply stating &quot;We need Chinese.&quot; This is especially common if your game supports EFIGS (English, French, Italian, German, Spanish) but omits Chinese. Ironically, players are often more forgiving if the game supports English only. seeing support for many other languages but excluding Chinese can feel like a deliberate slight to them.</p> <p><strong>3. managing expectations on workload</strong></p> <p>Many players on Chinese social media do not fully grasp the technical difficulty non-CJK developers face when implementing Chinese characters and font systems. They might perceive it as a simple text swap, unaware of the coding challenges involved. Patience is key when explaining this, but actions speak louder than words.</p> <p><strong>4. quality games earn community translations</strong></p> <p>If your game is truly excellent, the community will step up. Players will create unauthorized Chinese patches regardless of the difficulty or niche status of the game. We have seen this happen with extremely complex games like Dwarf Fortress and niche indie titles like Zaku Zaku Actors. Focus on making a great game first.</p> <p><strong>5. effective social media presence</strong></p> <p>If you have the bandwidth to manage a Chinese community, you need to be where they are. Do not just rely on Western platforms. Join Chinese social media channels tailored to your target demographic. For example, if video content is a major part of your marketing, Bilibili is essential, not YouTube. Try to communicate in Chinese, even if using translation tools, as it bridges the gap significantly.</p> <p><strong>6. cultural sensitivities to navigate</strong></p> <p>Understanding cultural nuances is crucial to avoid backlash.</p> <p>what works: Acknowledging Chinese New Year is generally well-received and appreciated.</p> <p>what to avoid: Steer clear of sensitive political or cultural topics. For instance, references to controversial historical sites like Yasukuni Shrine are deal-breakers. Also, be mindful of terminology; using &quot;Lunar New Year&quot; instead of &quot;Chinese New Year&quot; can sometimes trigger heated debates depending on the context. Tread carefully during interactions.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Sucaiking"> /u/Sucaiking </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1r6q69s/how_to_sell_game_to_chinese_some_of_my_opinions/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1r6q69s/how_to_sell_game_to_chinese_some_of_my_opinions/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1r59qbo/why_i_am_getting_this_problem_when_i_try_to/" target="_blank">Why I am getting this problem when i try to install go 1.26??</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p><strong>&quot;This installation package could not be opened. Contact the application vendor to verify that this is a valid Windows Installer package.&quot;</strong></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/infinity1009"> /u/infinity1009 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1r59qbo/why_i_am_getting_this_problem_when_i_try_to/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1r59qbo/why_i_am_getting_this_problem_when_i_try_to/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/gamedev/comments/1r6k20y/we_just_released_a_documentary_about_my_6_year/" target="_blank">We just released a documentary about my 6 year journey building the indie game BIG HOPS.</a>
+            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/gamedev/comments/1r6k20y/we_just_released_a_documentary_about_my_6_year/">  </a> </td><td> &#32; submitted by &#32; <a href="https://www.reddit.com/user/cjacobwade"> /u/cjacobwade </a> <br/> <span><a href="https://www.youtube.com/watch?v=Vtee39McAtY">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1r6k20y/we_just_released_a_documentary_about_my_6_year/">[comments]</a></span> </td></tr></table></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/gamedev/comments/1r6jowi/is_there_any_catch_to_game_assets_bought_through/" target="_blank">Is there any catch to Game Assets bought through Humble Bundles?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I saw a a very good deal for a humble bundle asset pack. But I&#39;ve never bought anything from humble bundles. Is there any catch to the humble bundle assets and their licenses. Or are they safe to invest?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/azwadkm22"> /u/azwadkm22 </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1r6jowi/is_there_any_catch_to_game_assets_bought_through/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1r6jowi/is_there_any_catch_to_game_assets_bought_through/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/gamedev/comments/1r6j5xl/for_2d_artist_collaborators_out_there/" target="_blank">For 2D artist collaborators out there</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>what attracts you to join (rev share) an existing project where you&#39;ll lead the artistic design (mood board, art style, etc)?</p> <p>do you have preference in the project length, or simply a duration of how long you think you can stay with the project?</p> <p>do you guys see the game filled with placeholders, and maybe provide your own take to a snippet of a game?</p> <p>i have an idea on how it should look like but I don&#39;t know how I&#39;ll execute it..</p> <p>Im in a position in my project development where im ready to seek aid from an artist who can make it look good but i dont want to simply post it out there without knowing what i should be showing to them.</p> <p>so here i am, asking your inputs, tyvm</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Revolutionary-Skin97"> /u/Revolutionary-Skin97 </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1r6j5xl/for_2d_artist_collaborators_out_there/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1r6j5xl/for_2d_artist_collaborators_out_there/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/gamedev/comments/1r6g7xd/how_do_you_systematically_debug_pixelart/" target="_blank">How do you systematically debug pixel-art jitter/misalignment across camera zoom levels?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;m trying to remove jitter in a 2D pixel-art scene when the camera pans and zooms.</p> <p>Current checklist: - integer camera positions where possible - snap sprites to pixel grid in world space - disable texture filtering + mipmaps for pixel assets - keep consistent PPU/scaling ratios</p> <p>Where I still get issues: - subpixel movement on diagonal motion - tiny shimmer when zoom is between integer factors</p> <p>For those who solved this in production, what&#39;s your debugging flow and the first 2-3 metrics/visualizations you check?</p> <p>If useful, I can share my findings after I test suggestions.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/masterblinker"> /u/masterblinker </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1r6g7xd/how_do_you_systematically_debug_pixelart/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1r6g7xd/how_do_you_systematically_debug_pixelart/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/gamedev/comments/1r6dd34/is_anyone_else_here_over_25_making_a_game_using/" target="_blank">Is anyone else here over 25, making a game using Godot, and in the early stages of learning game development overall?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I know a lot of people start making games earlier on in life, but I’m almost 40 and only got started about a year ago. I never had a job doing this or anything else in tech, and I also taught myself to code starting about 5 years ago.</p> <p>I’m thrilled that I did it, but honestly I want to connect with other people that are in a similar spot. Adults, likely with full time jobs and responsibilities, maybe having started a family, and game development is a dream, passion, or hobby.</p> <p>I posted about this in the Godot subreddit a few days ago and ended up creating a discord server that’s now got over 200 people in it. If Godot is your primary, and you are over 25, feel free to join us. We’re doing a game jam in March. Nobody is required to contribute, but I did set it up so that it’s easy to figure out where to go to get tips. So far it’s been a really positive experience.</p> <p>Here’s the link to it if you’re interested: <a href="https://discord.gg/FZgu5mChY">https://discord.gg/FZgu5mChY</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Sudden_Doughnut_8741"> /u/Sudden_Doughnut_8741 </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1r6dd34/is_anyone_else_here_over_25_making_a_game_using/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1r6dd34/is_anyone_else_here_over_25_making_a_game_using/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/gamedev/comments/1r6brck/what_are_your_takes_on_this_meme_is_this_good_or/" target="_blank">What are your takes on this meme? Is this good or bad design?</a>
+            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/gamedev/comments/1r6brck/what_are_your_takes_on_this_meme_is_this_good_or/">  </a> </td><td> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Super_Inevitable776"> /u/Super_Inevitable776 </a> <br/> <span><a href="https://files.catbox.moe/q7gsx0.png">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1r6brck/what_are_your_takes_on_this_meme_is_this_good_or/">[comments]</a></span> </td></tr></table></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/gamedev/comments/1r6bly4/does_being_a_successful_solo_dev_help_you_get/" target="_blank">Does being a successful solo dev help you get hired in the future?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hypothetically if you were to become a successful solo dev. Would that be helpful on a resume to get hired?</p> <p>Edit: What if I wanted to lead a project or any other senior role? Would companies be hesitant about that? And by success I mean at least 1 million dollar revenue.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/PolymathLogic"> /u/PolymathLogic </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1r6bly4/does_being_a_successful_solo_dev_help_you_get/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1r6bly4/does_being_a_successful_solo_dev_help_you_get/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/gamedev/comments/1r699n6/im_making_a_game/" target="_blank">Im making a game</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi everyone, i dont know if anyone will see this post but i wanna say that im making my first game and im trying my best, i pinned one screen of my first scene in game, wish me luck :)<br/> <a href="https://imgur.com/a/LiUdzjE">IMG</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/FlenzyFL"> /u/FlenzyFL </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1r699n6/im_making_a_game/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1r699n6/im_making_a_game/">[comments]</a></span></div>
           </li>
   
         </ul>
@@ -1822,113 +381,168 @@ and then write fast, reliable tests for it.</p>
         <ul class="item-list">
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1r5yykx/i_built_a_zerolatency_evm_indexer_in_rust_71k/" target="_blank">i built a zero-latency evm indexer in rust (71k tx/sec throughput)</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>hey guys. not sure if this is the right place to share, but heres something I&#39;ve been working on for a while</p> <p>basically ive been working on my own reth exex, called shadow index. heres a short glimpse of it</p> <p>its a zero-latency evm indexer (reth exex + clickhouse)</p> <p>current status * core pipeline complete. * 37/37 tests passing (unit + integration). * dockerized + prometheus metrics wired up.</p> <p>performance (dummy data stress test) * throughput: 7,159 blocks/sec | 71,592 txs/sec. * latency: 4.08ms median | 6.30ms max (block received to db flush). * context: standard rpcs take 50-500ms just to return data over the network. this writes to disk in 4ms.</p> <p>architecture flexes * zero rpc overhead: runs entirely in-process with the reth node. memory-to-memory. * native reorg handling: built on clickhouse CollapsingMergeTree. automatically cancels reverted blocks (sign = -1) without messy state rollbacks. * state diffs: extracts exact storage slot changes directly from evm BundleState. * bulletproof: custom circuit breaker, exponential backoff, and atomic cursor persistence (never loses its place on restart).</p> <p>what&#39;s underway * api layer: spinning up a highly concurrent read-only rest api via axum for frontend consumption. * ci: wiring up github actions. * the live test: deploying a 24-hour live sync on sepolia to prove out memory stability and network reorgs.</p> <p>id love any suggestions or reviews based on just this piece of text and the benchmarks :)</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/the-bit2swaz"> /u/the-bit2swaz </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r5yykx/i_built_a_zerolatency_evm_indexer_in_rust_71k/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r5yykx/i_built_a_zerolatency_evm_indexer_in_rust_71k/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r6rvqa/test_your_postgresql_database_like_a_sorcerer/" target="_blank">Test your PostgreSQL database like a sorcerer (using Rust built tool Spawn)</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/Winsaucerer"> /u/Winsaucerer </a> <br/> <span><a href="https://docs.spawn.dev/blog/regression-tests/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r6rvqa/test_your_postgresql_database_like_a_sorcerer/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1r5yu52/composable_configuration_idea_for_apps_and/" target="_blank">Composable configuration idea for apps and libraries</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;d like to share with you a new config crate <a href="https://github.com/kamu-data/setty"><code>setty</code></a>.</p> <p>I wrote it after 4 years of trying all major options like <code>config</code>, <code>figment</code>, <code>confique</code>, and still struggling with configs in our complex CLI app and across many production services (k8s).</p> <p>It solves a few basic problems like:</p> <ul> <li>Hiding multiple libraries (<code>serde</code>, <code>schemars</code>, <code>validator</code>, <code>better_default</code>) behind one macro</li> <li>Merging values from multiple files and env vars <em>(enums make this not so trivial)</em></li> <li>Generating nice markdown docs and JSONSchema for Helm charts</li> <li>CLI Completions</li> <li>Deprecation warnings etc.</li> </ul> <p>But the most interesting design aspect is - it <strong>externalizes your config style preferences into crate features</strong>.</p> <p>This means you can use <code>setty</code> in libraries to define reusable config DTOs, then directly embed those types into your application config, without libraries having to know anything about whether application wants <code>camelCase</code> or <code>kebab-case</code>, what enum representation it prefers, whether to derive <code>JsonSchema</code> or not, etc. - all these decisions are made in the app&#39;s <code>Cargo.toml</code> and propagate down to the libraries via feature additivity.</p> <p>Readme has a simple example, and here&#39;s one from <a href="https://github.com/kamu-data/kamu-cli/blob/6cec24db756cabac38928aec049f03ac5feccb39/src/app/cli/src/services/config/models.rs">prod app</a>.</p> <p>Your feedback is welcome!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/sergiimk"> /u/sergiimk </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r5yu52/composable_configuration_idea_for_apps_and/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r5yu52/composable_configuration_idea_for_apps_and/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r6qq02/i_built_a_custom_2d_ecs_game_engine_in_rust_wgpu/" target="_blank">I built a custom 2D ECS Game Engine in Rust & wGPU that compiles to WASM. (Live Demo + Source)</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>It has been a wild ride so far!</p> <p>&quot;Journey&quot; is my long-term R&amp;D project to understand modern rendering pipelines and system architecture constraints. I intend to keep developing this indefinitely as a playground for graphics programming.</p> <p>The hardest technical hurdles so far were (but not limited to) were inverting control to avoid thread blocking, handling high-DPI/Retina scaling manually in wGPU, and fighting the borrow checker to build a System Runner that allows mutable component access without runtime panics.</p> <p><strong>Blog</strong> - <a href="https://ujjwalvivek.com/blog/proj_0004_rust_game_engine.md">https://ujjwalvivek.com/blog/proj_0004_rust_game_engine.md</a></p> <p><strong>Live Demo</strong>: <a href="https://journey.ujjwalvivek.com">https://journey.ujjwalvivek.com</a> </p> <p><strong>Source Code</strong>: <a href="https://github.com/ujjwalvivek/journey">https://github.com/ujjwalvivek/journey</a></p> <p>I am actively looking for others to hop on and work on this! If you&#39;ve been wanting to learn wGPU, experiment with ECS architecture, or just fix my terrible shaders, I&#39;d love to review your PRs.</p> <p>Happy to answer questions about the Rust -&gt; WASM pipeline or wGPU witchcraft!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/VicksTurtle"> /u/VicksTurtle </a> <br/> <span><a href="https://i.redd.it/uv99mf584yjg1.gif">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r6qq02/i_built_a_custom_2d_ecs_game_engine_in_rust_wgpu/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1r5wycd/simple_grammar_checker_with_iced_and_harper/" target="_blank">Simple Grammar Checker with Iced and Harper</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Disclaimer: I used AI to facilitate the process, as I don&#39;t have much time to do side projects, and I really wanted to do this.</p> <p>I work 5 to 6 days at week as a developer, constantly changing code, adding features, well, the usual. I&#39;m always opening PRs, and as a good professional that I&#39;m trying to be, I try to sound good in a description, try to be concise, and so on.</p> <p>From 0 to 50 times a day I go to ChatGPT and say something like:</p> <p><code>fix grammar of this: &lt;Enter PR description&gt;</code> </p> <p>I usually don&#39;t commit many mistakes while typing but I type fast and I can easily eat an apostrophe, a comma, something.</p> <p>So using ChatGPT for this all the time is inefficient, it might not be that slow, but it&#39;s slower compared to this. So on my free time I created Aella (A random Greek name I liked), a simple app that checks grammar offline (Only English at the moment), fast, and you just keep your tone. For me it lets me keep my ideas over a paragraph.</p> <p>For instance, I type my PR description, copy it to clipboard then in a terminal <code>echo &quot;$pbpaste&quot; | aella check | pbcopy</code>, done. Or I can use the Awesome Icy Desktop App.</p> <p>The project is 100% Rust, it is a beta/alpha some of that, many bugs might arise (I hope not), and many features are yet to be added, many things that the CLI has, can be added to the desktop too. Mainly the idea was to build only a Desktop App, but the CLI is power!</p> <p><a href="https://preview.redd.it/ia75h2o7mrjg1.jpg?width=1624&amp;format=pjpg&amp;auto=webp&amp;s=cc170e7a5fd323b08a109c3e19672221cad194b1">https://preview.redd.it/ia75h2o7mrjg1.jpg?width=1624&amp;format=pjpg&amp;auto=webp&amp;s=cc170e7a5fd323b08a109c3e19672221cad194b1</a></p> <p><a href="https://github.com/ARKye03/aella">https://github.com/ARKye03/aella</a></p> <p>I just wanted to share this project, so if anyone finds it interesting, can use or whatever, I think it is kinda cute. I usually don&#39;t post other projects of mine.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/ARKyal03"> /u/ARKyal03 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r5wycd/simple_grammar_checker_with_iced_and_harper/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r5wycd/simple_grammar_checker_with_iced_and_harper/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r6prnx/what_would_your_tech_stack_be_for_a_new/" target="_blank">What would your tech stack be for a new greenfield Rust web service (REST/gRPC)?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Let&#39;s say, you&#39;re asked to start a new web service at a company, and it will be a first service written in Rust. Eventually you&#39;ll need the usual components, like integrations with 3rd services (e.g., authentication and authorization), maybe gRPC or just REST, a PostgreSQL, Kafka, Redis, metrics/logs/observability (e.g., OpenTelemetry), and so on.</p> <p>What would your 2026 tech stack look like? Will it be something like <code>Axum</code> + <code>tonic</code> + <code>SQLx</code> + <code>Anyhow</code>?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Hixon11"> /u/Hixon11 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r6prnx/what_would_your_tech_stack_be_for_a_new/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r6prnx/what_would_your_tech_stack_be_for_a_new/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1r5r1u6/can_message_passing_be_implemented_with_less_code/" target="_blank">Can message passing be implemented with less code in C++?</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/pietrom16"> /u/pietrom16 </a> <br/> <span><a href="/r/cpp_questions/comments/1r5qztl/can_message_passing_be_implemented_with_less_code/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r5r1u6/can_message_passing_be_implemented_with_less_code/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r6pan5/finplan_i_built_a_tui_app_to_help_plan_for/" target="_blank">FinPlan - I built a TUI app to help plan for retirement using Monte Carlo Simulations</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p><a href="https://github.com/jgrazian/finplan">https://github.com/jgrazian/finplan</a></p> <p>I&#39;ve been working on <a href="https://github.com/jgrazian/finplan">FinPlan</a>, a Monte Carlo retirement planning simulator that runs entirely in the terminal. It models multiple account types (401k, Roth, brokerage, real estate), tax-aware withdrawals, RSU vesting, and inflation-adjusted events, then runs thousands of simulations to estimate the probability your plan succeeds.</p> <p>Everything runs locally — no accounts, no cloud, no data leaves your machine.</p> <p>- Interactive TUI with vim-style keybindings (built with <a href="https://ratatui.rs/">ratatui</a>)</p> <p>- Event system with date/age triggers, recurring income/expenses, balance thresholds, almost a mini compiler/language in itself. Most but not all functionality exposed in GUI.</p> <p>- Return modeling with fixed, normal, or lognormal distributions (includes S&amp;P 500 historical presets)</p> <p>- Scenarios saved locally to ~/.finplan/scenarios/</p> <p>--</p> <p>Other web apps like this exist already however I was generally put off by the price of some of these tools. FinPlan is my attempt to get to 80% of the functionality but for ~free (only a few months of work in my free time :P).</p> <p>Full disclosure: Parts of the project were LLM-assisted but I hand-wrote and tested the overwhelming majority of the core engine myself.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Nattybr0h"> /u/Nattybr0h </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r6pan5/finplan_i_built_a_tui_app_to_help_plan_for/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r6pan5/finplan_i_built_a_tui_app_to_help_plan_for/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1r5quld/minimalistic_zed_flavor/" target="_blank">Minimalistic Zed Flavor</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/Tux-Lector"> /u/Tux-Lector </a> <br/> <span><a href="/r/ZedEditor/comments/1r2zs5z/minimalistic_zed_flavor/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r5quld/minimalistic_zed_flavor/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r6nl7o/kutamun_improved_spatial_navigation_library/" target="_blank">Kutamun - Improved Spatial Navigation Library</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Sorry to start another self-promotion so soon after the previous one, but, I&#39;d built a successor to Iced Spatial Navigation that is now decoupled from any UI framework and any pre-existing logic, letting you define everything you need to in order to tailor it to your project.<br/> Here&#39;s where you can find it:<br/> <a href="https://crates.io/crates/kutamun">https://crates.io/crates/kutamun</a><br/> <a href="https://github.com/JaydonXOneGitHub/Kutamun">https://github.com/JaydonXOneGitHub/Kutamun</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Adept-Letterhead-122"> /u/Adept-Letterhead-122 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r6nl7o/kutamun_improved_spatial_navigation_library/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r6nl7o/kutamun_improved_spatial_navigation_library/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1r5pfcs/best_library_for_secret_sharing/" target="_blank">Best library for secret sharing?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hey,</p> <p>I&#39;ve noticed that there are a few Rust libraries for Shamir Secret Sharing (SSS) and some of its variants.</p> <p>Some are pretty old, some are newer, none of them seem especially popular or under active development. I just wanted to know if anyone here has experience with any of the libraries and whether he/she recommends it. I need to use SSS in a personal project, and I wonder if I should use any of these or implement it from scratch.</p> <p>A related question, would be if SSS (and related schemes like VSS or TSS) would fit within RustCrypto? If so, I might be interested in contributing to this.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/ruggedcatfish"> /u/ruggedcatfish </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r5pfcs/best_library_for_secret_sharing/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r5pfcs/best_library_for_secret_sharing/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r6l7fk/tokio_should_parking_lot_feature_be_enabled/" target="_blank">tokio: should parking_lot feature be enabled?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I recently noticed tokio has an optional <code>parking_lot</code> feature that swaps the concurrency primitives used internally to parking_lot. Has anyone used this and seen any change in performance? Curious if anyone has production experiences with the feature enabled.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Leshow"> /u/Leshow </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r6l7fk/tokio_should_parking_lot_feature_be_enabled/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r6l7fk/tokio_should_parking_lot_feature_be_enabled/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1r5owrc/advanced_graphing_in_the_terminal_termplt/" target="_blank">Advanced Graphing in the Terminal: termplt</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p><a href="https://preview.redd.it/5sx5hrkrvpjg1.png?width=2126&amp;format=png&amp;auto=webp&amp;s=d355b4fd9a51fc3103bdc5fe521c99dfb3d394d3">https://preview.redd.it/5sx5hrkrvpjg1.png?width=2126&amp;format=png&amp;auto=webp&amp;s=d355b4fd9a51fc3103bdc5fe521c99dfb3d394d3</a></p> <p>Finally published a project I&#39;ve been working on for a while to provide more sophisticated graphing support directly in the terminal.</p> <p>Currently only runs on Linux and MacOS (requires `nix` crate) and requires a terminal that supports the <a href="https://sw.kovidgoyal.net/kitty/graphics-protocol/">Kitty Graphics Protocol</a> (Kitty, WezTerm, Ghostty, etc.). Screenshot was captured on MacOS in WezTerm.</p> <p>GitHub: <a href="https://github.com/EdCarney/termplt">https://github.com/EdCarney/termplt</a></p> <p>Crate: <a href="https://crates.io/crates/termplt">https://crates.io/crates/termplt</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/NullRefEd"> /u/NullRefEd </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r5owrc/advanced_graphing_in_the_terminal_termplt/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r5owrc/advanced_graphing_in_the_terminal_termplt/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r6kpux/im_a_beginning_at_rust_looking_to_learning_to/" target="_blank">Im a beginning at rust looking to learning to make lexer</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hello I&#39;m new to programming in Rust and I&#39;m interested in getting into building lexers/tokenizers (and possibly the full compiler pipeline later on). Does anyone know of any good learning paths or roadmaps? I&#39;d also love some recommended resources I&#39;m a reader, so books or audiobooks are more than welcome. </p> <p>Sorry if this is a lot to ask, but are there any small, realistic beginner projects that could help me get a solid understanding of what I&#39;m getting into? For context, I know the basics of programming and I&#39;m currently learning Rust fundamentals. I just really love the idea of eventually designing my own language.</p> <p>Thanks in advance!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/thecoommeenntt"> /u/thecoommeenntt </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r6kpux/im_a_beginning_at_rust_looking_to_learning_to/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r6kpux/im_a_beginning_at_rust_looking_to_learning_to/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1r5m0rz/i_made_a_package_manager_for_github/" target="_blank">I made a package manager for Github</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Updating apps from github releases is manual and somewhat annoying, so I made an app that does it for you!<br/> It can download assets from Github/Gitlab as well as discovering links from websites directly (e.g. <a href="https://ziglang.org/download/">https://ziglang.org/download/</a>) </p> <p>I feel that its feature complete enough for a more public release. I hope its as useful to you as it is for me.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/what486"> /u/what486 </a> <br/> <span><a href="https://github.com/what386/upstream-rs">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r5m0rz/i_made_a_package_manager_for_github/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r6kpdc/built_logslash_a_rust_pre_ingestion_log_firewall/" target="_blank">Built LogSlash a Rust pre ingestion log firewall to reduce observability costs</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Built LogSlash, a Rust based log filtering proxy designed to suppress duplicate noise before logs reach observability platforms.</p> <p>Goal: Reduce log ingestion volume and observability costs without losing critical signals.</p> <p>Key features:</p> <p>Normalize fingerprint logs Sliding-window deduplication ERROR/WARN always preserved Prometheus metrics endpoint Docker support</p> <p>Would appreciate feedback from DevOps / infra engineers. GitHub: <a href="https://github.com/adnanbasil10/LogSlash">https://github.com/adnanbasil10/LogSlash</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/AdnanBasil"> /u/AdnanBasil </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r6kpdc/built_logslash_a_rust_pre_ingestion_log_firewall/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r6kpdc/built_logslash_a_rust_pre_ingestion_log_firewall/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1r5lqer/why_does_clippy_encourage_stringpusha_over/" target="_blank">Why does clippy encourage `String::push('a')` over `String::push_str(''a")`?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>One thing that has always been annoying me is clippy telling me to use <code>String::push(c: char)</code> instead of <code>String::push_str(s: &amp;str)</code> to append a single character <code>&amp;&#39;static str</code>. To me this makes no sense. Why should my program decode a utf-8 codepoint from a 32 bit char instead of just copying over 1-4 bytes from a slice? </p> <p>I did some benchmarks and found <code>push_str</code> to be 5-10% faster for appending a single byte string. </p> <p>Not that this matters much but I find clippy here unnecessarily opinionated with no benefit to the program.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/MediumInsect7058"> /u/MediumInsect7058 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r5lqer/why_does_clippy_encourage_stringpusha_over/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r5lqer/why_does_clippy_encourage_stringpusha_over/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r6gz0z/one_of_the_most_annoying_programming_challenges/" target="_blank">One of the most annoying programming challenges I've ever faced</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>In today&#39;s <a href="https://sniffnet.net/news/process-identification/">blog post</a> I went through the challenges and implementation details behind supporting process identification in Sniffnet (a Rust-based network monitoring app).</p> <p>If implementing this feature seems like a no-brainer to you, <em>well</em>… it turned out to be a much more complex task than I could imagine, and this is the reason why <a href="https://github.com/GyulyVGC/sniffnet/issues/170">the related GitHub issue</a> has been open for almost 3 years now.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/GyulyVGC"> /u/GyulyVGC </a> <br/> <span><a href="https://sniffnet.net/news/process-identification/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r6gz0z/one_of_the_most_annoying_programming_challenges/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1r5ku44/the_next_chromeedge_releases_will_credit_the_150/" target="_blank">The next Chrome/Edge releases will credit the ~150 Rust crates they use</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/fintelia"> /u/fintelia </a> <br/> <span><a href="https://chromium-review.googlesource.com/c/chromium/src/+/7514149">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r5ku44/the_next_chromeedge_releases_will_credit_the_150/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r6gjlk/teleop_040_attach_to_and_teleoperate_local_rust/" target="_blank">Teleop 0.4.0 — Attach to and teleoperate local Rust processes via RPC</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I just released <a href="https://crates.io/crates/teleop/0.4.0">teleop 0.4.0</a>, a crate I built from scratch to attach to running Rust processes and interact with them through RPC.</p> <p>It is inspired by Java&#39;s Attach API which powers the Java Console and other remote management tools.</p> <p>Teleop lets you connect to a local process by PID, establish a communication channel (a UNIX socket), and interact with it using Cap&#39;n Proto RPC. The target process registers services (e.g. a state inspector), and clients can invoke them at runtime.</p> <p>Think of it as a lightweight way to add runtime introspection or remote control to your Rust applications. Without HTTP servers, without REST, just a local socket and efficient RPC.</p> <p>This version is the first not to be restricted to Unix systems: it also works on MacOS (with native kqueue file system access) and Windows. Each platform is provided with one or more options for attachment and communication, sensible defaults are also provided depending on OS and enabled features.</p> <ul> <li>Crates.io: <a href="https://crates.io/crates/teleop">https://crates.io/crates/teleop</a></li> <li>Docs: <a href="https://docs.rs/teleop">https://docs.rs/teleop</a></li> <li>GitHub: <a href="https://github.com/arnodb/teleop">https://github.com/arnodb/teleop</a></li> <li>Examples: <a href="https://github.com/arnodb/teleop/blob/main/examples/server.rs">https://github.com/arnodb/teleop/blob/main/examples/server.rs</a> / <a href="https://github.com/arnodb/teleop/blob/main/examples/client.rs">https://github.com/arnodb/teleop/blob/main/examples/client.rs</a></li> </ul> <p>It is already used in <a href="https://github.com/arnodb/quirky_binder">Quirky Binder</a> for inspecting data processing state at runtime, with <a href="https://github.com/arnodb/quirky_binder_console">Quirky Binder Console</a> that renders live SVG visualizations.</p> <p>Happy to hear feedback, questions, or suggestions!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/arnodb1"> /u/arnodb1 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r6gjlk/teleop_040_attach_to_and_teleoperate_local_rust/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r6gjlk/teleop_040_attach_to_and_teleoperate_local_rust/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1r5h362/2d_collision_system_that_can_work_in_parallel/" target="_blank">2d collision system that can work in parallel</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hello all,</p> <p>I&#39;m building a game server for an rts like game.</p> <p>I&#39;m using bevy_ecs and got to the point where I need some kind of collision. I just need entities not to step on each other so some kind of collision framework that uses a quad or any kind of spatial partition system under the hood.</p> <p>I started integrating bevy_rapier2d but the way I have it setup is I have several zones and they are completely independent from each other so I calculate the tick of each zone in tokyo tasks. And bevy_rapier2d integrates into Bevy App system that is not Send so I cannot have a different App for each zone.</p> <p>Now I moved to base rapied_2d and it seems like it could work but the full tick loop is a bit awkward:</p> <p>- Run the ecs logic</p> <p>- Sync all the entities position into the physics system (the colliders and rigidbodies)</p> <p>- Tick the physics world</p> <p>- Sync back all the positions from the physics system to the ecs system</p> <p>Anybody has done anything similar?</p> <p>Any suggestions are welcome</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/PlateFox"> /u/PlateFox </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r5h362/2d_collision_system_that_can_work_in_parallel/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r5h362/2d_collision_system_that_can_work_in_parallel/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r6g4uy/rustweek_2026_speakers_announced/" target="_blank">RustWeek 2026 Speakers Announced</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/m-ou-se"> /u/m-ou-se </a> <br/> <span><a href="https://2026.rustweek.org/blog/2026-02-13-speakers-announced/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r6g4uy/rustweek_2026_speakers_announced/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1r5ecfy/bluedb_building_a_buffer_pool_in_rust/" target="_blank">BlueDB - Building a Buffer pool in Rust</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p><a href="https://preview.redd.it/jlt0l6grvnjg1.png?width=822&amp;format=png&amp;auto=webp&amp;s=cb82b4d586a616377f0008e713fd57e3ce154865">https://preview.redd.it/jlt0l6grvnjg1.png?width=822&amp;format=png&amp;auto=webp&amp;s=cb82b4d586a616377f0008e713fd57e3ce154865</a></p> <p>Hello, would like to share awesome thing I was working on</p> <p>I have built a buffer pool in Rust, the goal of my work is to build a complete RDBMS in rust, this is the first building block that will be wrapped by a storage engine soon</p> <p>I have seen multiple eviction algorithms, but started to think what about instead of implementing an algorithm as the book says, why not just think about the most logical one for my case now ? and finally I found myself implementing a N-Chances clock algorithm</p> <p>my logic is so simple, the evictor is telling each page the following &quot;Hey page, I warn you that if you aren&#39;t used for X loops sequentially, I will evict you&quot;</p> <p>regarding locking, imagine the buffer pool is telling the transaction &quot;Hey txn, take this guard of the page (acquire), once you are done return it back (release)&quot;</p> <p>finally, I am thinking about what to build over this buf pool, one of the ideas that blow my mind is to expose it as a server, where a transaction processing client will communicate with the buffer server, it is very interesting idea to implement funny complex things !</p> <p>btw, rust is very amazing lang to write complex software, very happy to have discovered it !</p> <p>Gtihub repo: <a href="https://github.com/ahmed-kamal2004/bluedb">https://github.com/ahmed-kamal2004/bluedb</a></p> <p>Would love to see your stars!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/GainRemarkable1339"> /u/GainRemarkable1339 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r5ecfy/bluedb_building_a_buffer_pool_in_rust/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r5ecfy/bluedb_building_a_buffer_pool_in_rust/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r6fb5m/i_build_a_ebpf_network_traffic_analyzer_in_rust/" target="_blank">I build a eBPF network traffic analyzer in Rust (Aya)</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I’ve wanted to build a simple network traffic analyzer for Docker/Kubernetes for a long time, something as lightweight as possible. I decided to do it in Rust, and after a few smilier projects I finally made this with help of aya.</p> <p>It’s designed to run node-wide in Kubernetes as a sidecarless DaemonSet (one pod per node). It attaches a TC classifier at ingress and exports live stats plus historical data with minimal overhead. My main goals were low overhead and simple deployment, and I think I’ve hit those pretty well.</p> <p>It’s in the similar to Cilium and Pixie, just with far fewer features and a much smaller footprint. Here’s what I measured on Ubuntu 24.04 (aarch64), kernel 6.x, 2 vCPU / 2 GB RAM VM: userspace RSS ~33 MB, eBPF program 784 B xlated / 576 B JIT, ring buffer 256 KB, and no stable memory growth observed.</p> <p>Feedback is very welcome. I’m still fairly new to Rust and brand new to Aya, so I’m sure there are lots of things I can improve on: API design, eBPF best practices,rust code, anything really. Also full transparency: I used Opus 4.6 to help me with kernel logic and chase down build errors, which was a lifesaver because I don’t know kernels that well yet.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/MamaDavita"> /u/MamaDavita </a> <br/> <span><a href="https://github.com/DavidHavoc/ayaFlow">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r6fb5m/i_build_a_ebpf_network_traffic_analyzer_in_rust/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1r5cpml/i_built_tokiofsm_proc_macro_for_compiletime/" target="_blank">I built tokio-fsm: proc macro for compile-time validated async state machines</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Tired of writing the same event loop + channel + timeout boilerplate for every stateful async workflow. tokio-fsm discovers states/events from your code and validates transitions at compile time. I am inspired by the work I found myself doing recently and thought there is a gap, plus I love compile-time macros.</p> <p>```rust</p> <h1>[fsm(initial = Idle)]</h1> <p>impl Connection { type Context = ConnectionCtx; type Error = std::io::Error;</p> <pre><code>#[on(state = Idle, event = Connect)] async fn start(&amp;mut self) -&gt; Transition&lt;Connecting&gt; { Transition::to(Connecting) } #[on(state = Connecting, event = Success)] #[state_timeout(duration = &quot;30s&quot;)] async fn connected(&amp;mut self) -&gt; Transition&lt;Active&gt; { Transition::to(Active) } </code></pre> <p>} ```</p> <p>Invalid transitions = compile errors. Unreachable states = compile errors. Built-in timeouts, channels, background tasks.</p> <p><strong>Realistic example:</strong> <a href="https://github.com/abhishekshree/tokio-fsm/tree/main/examples/axum_fsm">Axum order processing</a> showing multi-instance FSM management via HTTP.</p> <ul> <li>Crates: <a href="https://crates.io/crates/tokio-fsm">https://crates.io/crates/tokio-fsm</a></li> <li>Docs: <a href="https://docs.rs/tokio-fsm">https://docs.rs/tokio-fsm</a></li> <li>Repo: <a href="https://github.com/abhishekshree/tokio-fsm">https://github.com/abhishekshree/tokio-fsm</a></li> </ul> <p><strong>Looking for feedback on:</strong></p> <ul> <li>API ergonomics (does <code>#[on(state = X, event = Y)]</code> feel natural?)</li> <li>Missing features for real-world usage</li> <li>Documentation gaps</li> </ul> <p>Issues/PRs welcome. Still learning Rust ecosystem best practices.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/shree_ee"> /u/shree_ee </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r5cpml/i_built_tokiofsm_proc_macro_for_compiletime/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r5cpml/i_built_tokiofsm_proc_macro_for_compiletime/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r6f3b9/rust_debugging_basic_profiling_tips/" target="_blank">Rust debugging / basic profiling tips</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Howdy; I put together an overview of some debugging and basic profiling tips I found useful as I&#39;ve been picking up rust.</p> <p>Here is the repo with some fiddle code to experiment with: <a href="https://github.com/matthewhaynesonline/rust-debugging-notes">https://github.com/matthewhaynesonline/rust-debugging-notes</a> and the companion video guide: <a href="https://youtu.be/gXbNs0dhvB0">https://youtu.be/gXbNs0dhvB0</a></p> <p>In particular, I found cargo instruments (<a href="https://github.com/cmyr/cargo-instruments">https://github.com/cmyr/cargo-instruments</a>) super helpful (if you&#39;re on Mac).</p> <p>I also ran into a weird one where LLDB would crash when trying to troubleshoot some ML model code with candle (maybe to do with the tensor size in memory?) and had to resort to print debugging for that, so if anyone has any ideas would love to hear them.</p> <p>Anyway, hoping this is helpful!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/matthewhaynesonline"> /u/matthewhaynesonline </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r6f3b9/rust_debugging_basic_profiling_tips/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r6f3b9/rust_debugging_basic_profiling_tips/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1r5ccar/media_rsiv_a_scriptable_vimlike_image_viewer_a/" target="_blank">[Media] rsiv: A scriptable, vim-like image viewer (a rewrite & extension of nsxiv) built with winit and pixels.</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hey <a href="/r/rust">r/rust</a>! 🦀</p> <p>This is my first &quot;real&quot; rust project and I&#39;ve just hit a point where this project feels polished enough to share.</p> <p><code>rsiv</code> aims to be a modern rewrite of <a href="https://codeberg.org/nsxiv/nsxiv">nsxiv</a> , bringing native Wayland support and standard configuration. But it also extends the original feature set most notably with live, fuzzy-matched filtering. You can see an example of this in the bottom right of the screenshot!</p> <p><strong>GitHub:</strong> <a href="https://github.com/miniaoumiae/rsiv">https://github.com/miniaoumiae/rsiv</a></p> <p>I&#39;d love to hear your feedback, bug reports, or any critiques on the code structure!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Brilliant-Bit-8724"> /u/Brilliant-Bit-8724 </a> <br/> <span><a href="https://i.redd.it/3hjdbbd68njg1.png">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r5ccar/media_rsiv_a_scriptable_vimlike_image_viewer_a/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r6btor/i_made_an_async_api_client_for_cyberdrop_and_bunkr/" target="_blank">I made an async api client for cyberdrop and bunkr</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I made an api client for cyberdrop and bunkr. I was in need of such crate because I am working on some uploader tool.</p> <p>Features incude: - Uploading large and small files - Creating and editing albums - Listing uploaded files - token or username/pass based authentication - account creation (cyberdrop only)</p> <p>Example: ```rust use cyberdrop_client::CyberdropClient; use std::path::Path;</p> <h1>[tokio::main]</h1> <p>async fn main() -&gt; Result&lt;(), cyberdrop_client::CyberdropError&gt; { let client = CyberdropClient::builder().build()?; let token = client.login(&quot;username&quot;, &quot;password&quot;).await?;</p> <pre><code>let authed = client.with_auth_token(token.into_string()); let albums = authed.list_albums().await?; println!(&quot;albums: {}&quot;, albums.albums.len()); let album_id = authed .create_album(&quot;my uploads&quot;, Some(&quot;created by cyberdrop-client&quot;)) .await?; let uploaded = authed .upload_file(Path::new(&quot;path/to/file.jpg&quot;), Some(album_id)) .await?; println!(&quot;uploaded {} -&gt; {}&quot;, uploaded.name, uploaded.url); Ok(()) </code></pre> <p>} ```</p> <p>Bunkr example: <code>rust let client = CyberdropClient::builder() .base_url(&quot;https://dash.bunkr.cr&quot;)? .auth_token(&quot;your_auth_token_here&quot;) .timeout(std::time::Duration::from_secs(500)) .build()?; </code></p> <p>Here is a link to the repo: <a href="https://github.com/11philip22/cyberdrop-rs">https://github.com/11philip22/cyberdrop-rs</a></p> <p>Would really love some feedback on user ergonomics and design patterns used in general. So check it out if you have the chance and gimme a star if this is useful for you :)</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/woldhack"> /u/woldhack </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r6btor/i_made_an_async_api_client_for_cyberdrop_and_bunkr/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r6btor/i_made_an_async_api_client_for_cyberdrop_and_bunkr/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1r5bqhy/salvo_vs_axum_why_is_axum_so_much_more_popular/" target="_blank">Salvo vs Axum — why is Axum so much more popular?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I’ve been playing with both Salvo and Axum lately, and something I can’t wrap my head around is why Axum is so much more popular.</p> <p>From a developer experience point of view, Salvo feels surprisingly complete. A lot of the things I usually need are already there, and I don’t have to think too much about adding extra crates for common backend tasks. With Axum, I often end up assembling the stack myself, which isn’t bad, just different.</p> <p>I can’t really figure out why Axum gets so much more attention while Salvo barely comes up in discussions. From what I’ve seen so far, Salvo feels pretty capable and well thought out. Maybe I’m missing something, maybe not.</p> <p>What do you all think about this?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Sensitive-Raccoon155"> /u/Sensitive-Raccoon155 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r5bqhy/salvo_vs_axum_why_is_axum_so_much_more_popular/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r5bqhy/salvo_vs_axum_why_is_axum_so_much_more_popular/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r69ki1/i_got_tired_of_managing_env_files_so_i_built/" target="_blank">I got tired of managing .env files, so I built envelope</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Howdy!</p> <p>I’ve always found managing .env files to be a bit of a mess.</p> <p>I built <a href="https://github.com/mattrighetti/envelope">envelope</a> to act as a bit of a Swiss Army knife for your environment variables. It’s a CLI tool that moves your variables into a local SQLite database, giving you a set of tools that you just don&#39;t get with plain text.</p> <p>What would previously be .env.local, .env.staging, .env.prod etc. would now all be contained in envelope, each [local|staging|prod] is an &quot;environment&quot; .</p> <p>To give you some examples of what you can actually do with it, you can instantly see which environment is active in your current shell. If you nuke a connection string or an API key, you can just step back through the history of that variable or roll back the change entirely since everything is versioned. It makes sharing configurations secure as you can encrypt the entire database with a password, so you can pass the file around without leaving secrets in plain text. It also lets you inject variables into a subprocess so they only exist for that specific command, which keeps your shell clean and prevents secrets from leaking into your terminal history. The README contains more examples with the provided commands!</p> <p>I personally prefer this explicit approach over tools like direnv that rely on shell hooks and &quot;magic&quot; loading. Hope you find this useful and looking forward to feedback or feature requests if you have any!</p> <p>Github: <a href="https://github.com/mattrighetti/envelope">https://github.com/mattrighetti/envelope</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/MattRighetti"> /u/MattRighetti </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r69ki1/i_got_tired_of_managing_env_files_so_i_built/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r69ki1/i_got_tired_of_managing_env_files_so_i_built/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1r5bneg/custom_discriminant_for_enum_types/" target="_blank">Custom discriminant for enum types?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;m building a high performance merkle tree for a research paper. I&#39;m using the arena approach, i.e.: I allocate a very big array and then each node use a <code>type ArenaID = (u8, u16)</code> as pointer. To simplify I have 3 main types of nodes: - Real node - Sentinel node: contains metadata for up to 16 sibling nodes (hash, guardian offset, ...) - Guardian node: contains metadata for up to 16 sibling sentinel nodes (parent, height, sentinels offsets, ... to treat it as a skip list)</p> <p>Now all 3 type of nodes are represented as <code>type NodeUnion = [u8, 16]</code> (more or less), with the actual type encoded in the first <code>u8</code>.</p> <p>I would like now to write a generic function which takes a generic <code>NodeUnion</code> and changes its behaviour according to the actual node type.</p> <p>My questions are: - Could I use an <code>enum</code> but with a custom discriminant, to guarantee packed representation (no more than 128 bits) while reusing Rust idioms? - Should I use the <code>union</code> type instead maybe? Never used those, didn&#39;t know Rust had them, I always used enums before - Should I do a manual casts with <code>as</code> or <code>into</code>? But then I would not use the Rust compiler guarantees in terms of exhaustive matching - Is there another smarter/more idiomatic approach?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/servermeta_net"> /u/servermeta_net </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r5bneg/custom_discriminant_for_enum_types/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r5bneg/custom_discriminant_for_enum_types/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r68uj4/a_deep_dive_into_optimizing_the_timing_wheel/" target="_blank">A deep dive into optimizing the Timing Wheel (Thanks to u/matthieum for the memory layout tip!)</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hey everyone, I wrote a detailed write-up on the optimization journey for the sharded-timing-wheel project I shared last week.</p> <p>It covers the samply profiling, the assembly analysis of the L1 cache misses, and the NonZeroU32 refactor that led to the 1,700x speedup.</p> <p><a href="https://ankurrathore.net.in/posts/timing-wheel-optimization/">Link to Blog</a></p> <p>Thanks again to the community for the rigorous code review.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/AnkurR7"> /u/AnkurR7 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r68uj4/a_deep_dive_into_optimizing_the_timing_wheel/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r68uj4/a_deep_dive_into_optimizing_the_timing_wheel/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1r5b96n/builder_pattern_for_large_structs/" target="_blank">Builder pattern for large structs</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Edit: Thanks you all for replying , i have found 2 main way one of which i will be implementing this ,</p> <p>Method 1 : using bon crate as said by one of the comments</p> <p>Method 2 : Using a seperate struct which will contain config and then apply builder pattern on that struct rather than on whole struct ,, Like : MyStruct::new(MyStructComfig::new().set_this().set_that());</p> <p>The End ,, No need to reply now</p> <p>i have seen the builder pattern commonly used in rust and what it does is , basically take whole struct by value and return by value ,,</p> <p>I want to use this method in my code by but the thing is that struct is large (almost 7000bytes , it&#39;s a combination of various other structs) and so if i use builder pattern here it will cause huge performance loss , is there any alternative to it?? </p> <p>I want less boiler plate for user side.</p> <p>i want to achieve something like this </p> <p>Details::new()</p> <p>.set_name(&quot;My name&quot;)</p> <p>.set_address(&quot;Some address&quot;)</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/AioliCheap2578"> /u/AioliCheap2578 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r5b96n/builder_pattern_for_large_structs/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r5b96n/builder_pattern_for_large_structs/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r66qbs/how_to_minimise_manual_mapping_code_with_sqlx/" target="_blank">How to minimise manual mapping code with sqlx when using both compile time checked queries and FromRow on the same struct?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;m using sqlx with SQLite and I&#39;m running into a problem with data types that don&#39;t match with SQLite column types, where I&#39;d like to use the compile time checking features, but also have to use dynamic queries. As an example, say I have the following struct:</p> <pre><code>#[derive(FromRow)] pub struct Row { pub id: i64, pub test_bool: bool, // Stored as an SQLite INTEGER pub date: String, } </code></pre> <p>And I have functions like:</p> <pre><code>fn get(before: Option&lt;String&gt;, after: Option&lt;String&gt;) -&gt; Result&lt;Vec&lt;Row&gt;&gt;; fn get_by_id(id: i64) -&gt; Result&lt;Option&lt;Row&gt;&gt;; </code></pre> <p>Because <code>get</code> uses a dynamic query I can&#39;t use the compile time checked queries, but I can use <code>query_as()</code> to map the result to a <code>Row</code> because <a href="https://docs.rs/sqlx/latest/sqlx/trait.Decode.html#impl-Decode%3C&#x27;r,+Sqlite%3E-for-bool"><code>bool</code> implementents <code>Decode</code></a>, so I don&#39;t need to do any manual mapping of the result. Conversely, <code>get_by_id</code> is not dynamic so I can use the compile time queries, but I can&#39;t use <code>query_as!()</code> because that uses <code>Into</code> for type conversion, rather than <code>Decode</code>, and there is no <code>impl From&lt;i64&gt; for bool</code>. I&#39;ve come up with a few options for implementing these two patterns but none of them seem completely satisfactory.</p> <ol> <li>Just use <code>query!</code> with <code>map</code>/<code>try_map</code>. This works, but it means I have to manually map each struct field, which gets quite tedious and error prone for results with many columns.</li> <li>Have two separate structs, one for the row as it&#39;s represented in the database (using <code>i64</code> for all integers, bools etc.), and one that better respresents the domain model. Then have mapping code using <code>From</code>/<code>TryFrom</code> to convert between them. This can be simplified using things like <code>derive_more</code>, but still requires keeping two very similar structs in sync.</li> <li>Use newtypes for column types. e.g. <code>#[derive(Encode, Decode, From, Into)] pub struct MyBool(bool);</code> with manual implementations of <code>impl From&lt;i64&gt; for MyBool</code>. Again, quite a lot of boilerplate but potentially lends itself to a more Rust-like way of doing things by reducing reliance on primitives.</li> <li><a href="https://docs.rs/sqlx/latest/sqlx/macro.query.html#force-a-differentcustom-type">Force a different output type</a>. This may be the best way, but you do lose a bit of type safety, e.g. if I accidentally created <code>test_bool</code> with type TEXT, the conversion would fail at runtime.</li> <li>Something else that I&#39;ve missed?</li> </ol> <p>I know the answer is probably to wait for sqlx to use <a href="https://github.com/launchbadge/sqlx/issues/514">FromRow for <code>query_as!</code></a>, but I&#39;m curious how others approach this in the meantime?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/joshwd36"> /u/joshwd36 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r66qbs/how_to_minimise_manual_mapping_code_with_sqlx/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r66qbs/how_to_minimise_manual_mapping_code_with_sqlx/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1r5as50/compile_time_usize_check/" target="_blank">Compile time usize check</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>We can create a value check on usize at compile time within a trait using something like:</p> <pre><code>const CHECK: () = assert!(usize_a &gt; usize_b); </code></pre> <p>Or</p> <pre><code>const CHECK: usize = (usize_a - usize_b - 1) </code></pre> <p>The former is a regular assert while the latter will underflow usize. Both these techniques work at compile time but require that CHECK appears somewhere in the code path.</p> <p>Is there a way to convert this to a type comparison (please don&#39;t just suggest the typenum crate) so that it doesn&#39;t need to apear in the code path and can be checked at the trait/type definition instead?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/aPieceOfYourBrain"> /u/aPieceOfYourBrain </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r5as50/compile_time_usize_check/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r5as50/compile_time_usize_check/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r66994/sparkconnect_a_spark_connect_client_for_rust/" target="_blank">spark-connect: A Spark Connect client for Rust</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi!</p> <p>I’d like to share a crate that I’ve been working on: <code>spark-connect</code>.</p> <p><strong>It is a fully asynchronous Rust client for interacting with a remote Spark Connect server.</strong></p> <p>Similar efforts exist in the community (shoutout to <a href="https://crates.io/crates/spark-connect-rs">spark-connect-rs</a> which provided plenty of inspiration), but I often found existing solutions were bloated or <em>explicitly marked as experimental</em>.</p> <p>So I&#39;m trying to work from the ground up to build something that is actively maintained and can actually be used in production.</p> <p>I&#39;ve tested 0.2.0 amply, and am very satisfied with where it&#39;s at.</p> <p><strong>If you could take a look (and ideally give the repo a star ^^) I&#39;d greatly appreciate it!</strong></p> <p>I already have some things I want to implement for 0.3, but if you have any suggestions, please let me know!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/franciscoabsampaio"> /u/franciscoabsampaio </a> <br/> <span><a href="https://www.franciscoabsampaio.com/blog/2026/spark-connect/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r66994/sparkconnect_a_spark_connect_client_for_rust/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1r5aluk/i_made_a_noise_generator_tui/" target="_blank">I made a noise generator TUI</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I’ve been wanting a TUI for something like this for a long time. I wasn&#39;t sure why one didn&#39;t exist yet, so I made it myself.</p> <p>I tried to keep it minimal, but it can also download more sounds directly using yt-dlp. I think it is pretty much feature-complete now, though I would like to add more default sounds in the future.</p> <p>here is a link to the repo</p> <p><a href="https://github.com/AnonMiraj/Tanin">https://github.com/AnonMiraj/Tanin</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Aggressive-Smell-432"> /u/Aggressive-Smell-432 </a> <br/> <span><a href="https://i.redd.it/x70z01qdpmjg1.png">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r5aluk/i_made_a_noise_generator_tui/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r642lw/rustanalyzer_changelog_315/" target="_blank">rust-analyzer changelog #315</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/WellMakeItSomehow"> /u/WellMakeItSomehow </a> <br/> <span><a href="https://rust-analyzer.github.io/thisweek/2026/02/16/changelog-315.html">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r642lw/rustanalyzer_changelog_315/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1r552pe/silverfirnano_a_rust_no_std_webassembly/" target="_blank">Silverfir-nano: a Rust no_std WebAssembly interpreter hitting ~67% of single-pass JIT</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p><a href="https://preview.redd.it/ieypshtkumjg1.png?width=1320&amp;format=png&amp;auto=webp&amp;s=e4dca07378e779c44b131b72b271a52ae3faf22a">https://preview.redd.it/ieypshtkumjg1.png?width=1320&amp;format=png&amp;auto=webp&amp;s=e4dca07378e779c44b131b72b271a52ae3faf22a</a></p> <p>I’ve been building Silverfir-nano, a WebAssembly 2.0 interpreter focused on speed + tiny footprint.</p> <p>It lands at roughly:</p> <ul> <li>67% of a single-pass JIT (Wasmtime Winch)</li> <li>43% of a full-power Cranelift JIT (Wasmer Cranelift)</li> </ul> <p><del>while keeping the minimal footprint at ~200kb and no-std.</del> // see below</p> <p><a href="https://github.com/mbbill/Silverfir-nano">https://github.com/mbbill/Silverfir-nano</a></p> <p>Edit1: regarding the 200kb size, copy-pasting reply below.</p> <p>&gt;you are going to run ahead of time and then generate more optimized handlers based on that</p> <p>Not exactly, fusion is mostly based on compiler-generated instruction patterns and workload type, not on one specific app binary. Today, across most real programs, compiler output patterns are very similar, and the built-in fusion set was derived from many different apps, not a single target. That is why the default/built-in fusion already captures about ~90% of the benefit for general code. You can push it a bit further in niche cases, but most users do not need per-app fusion.</p> <p>On the benchmark/build question: the headline numbers are from the fusion-enabled configuration, not the ultra-minimal ~200KB build. The ~200KB profile is for maximum size reduction (for example embedded-style constraints), and you should expect roughly ~40% lower performance there (still quite fast tbh, basically wasm3 level).</p> <p>Fusion itself is a size/perf knob with diminishing returns: the full fusion set is about ~500KB, but adding only ~100KB can already recover roughly ~80% of the full-fusion performance. The ~1.1MB full binary also includes std due to the WASI support, so if you do not need WASI you can save several hundred KB more.</p> <p>So number shouldn&#39;t be 200KB but 700KB for maximum performance. thanks for pointing out.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/mbbill"> /u/mbbill </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r552pe/silverfirnano_a_rust_no_std_webassembly/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r552pe/silverfirnano_a_rust_no_std_webassembly/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r63svr/whats_everyone_working_on_this_week_72026/" target="_blank">What's everyone working on this week (7/2026)</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>New week, new Rust! What are you folks up to? Answer here or over at <a href="https://users.rust-lang.org/t/whats-everyone-working-on-this-week-7-2026/138317?u=llogiq">rust-users</a>!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/llogiq"> /u/llogiq </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r63svr/whats_everyone_working_on_this_week_72026/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r63svr/whats_everyone_working_on_this_week_72026/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1r63rzp/hey_rustaceans_got_a_question_ask_here_72026/" target="_blank">Hey Rustaceans! Got a question? Ask here (7/2026)!</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Mystified about strings? Borrow checker has you in a headlock? Seek help here! There are no stupid questions, only docs that haven&#39;t been written yet. Please note that if you include code examples to e.g. show a compiler error or surprising result, linking a <a href="https://play.rust-lang.org/">playground</a> with the code will improve your chances of getting help quickly.</p> <p>If you have a <a href="http://stackoverflow.com/">StackOverflow</a> account, consider asking it there instead! StackOverflow shows up much higher in search results, so ahaving your question there also helps future Rust users (be sure to give it <a href="http://stackoverflow.com/questions/tagged/rust">the &quot;Rust&quot; tag</a> for maximum visibility). Note that this site is very interested in question quality. I&#39;ve been asked to read a RFC I authored once. If you want your code reviewed or review other&#39;s code, there&#39;s a <a href="https://codereview.stackexchange.com/questions/tagged/rust">codereview stackexchange</a>, too. If you need to test your code, maybe <a href="https://play.rust-lang.org">the Rust playground</a> is for you.</p> <p>Here are some other venues where help may be found:</p> <p><a href="https://www.reddit.com/r/learnrust">/r/learnrust</a> is a subreddit to share your questions and epiphanies learning Rust programming.</p> <p>The official Rust user forums: <a href="https://users.rust-lang.org/">https://users.rust-lang.org/</a>.</p> <p>The official Rust Programming Language Discord: <a href="https://discord.gg/rust-lang">https://discord.gg/rust-lang</a></p> <p>The unofficial Rust community Discord: <a href="https://bit.ly/rust-community">https://bit.ly/rust-community</a></p> <p>Also check out <a href="https://reddit.com/r/rust/comments//1qzwpav/hey_rustaceans_got_an_easy_question_ask_here/">last week&#39;s thread</a> with many good questions and answers. And if you believe your question to be either very complex or worthy of larger dissemination, feel free to create a text post.</p> <p>Also if you want to be mentored by experienced Rustaceans, tell us the area of expertise that you seek. Finally, if you are looking for Rust jobs, the most recent thread is <a href="https://www.reddit.com/r/rust/comments/1qkkqi9/official_rrust_whos_hiring_thread_for_jobseekers/">here</a>.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/llogiq"> /u/llogiq </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r63rzp/hey_rustaceans_got_a_question_ask_here_72026/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r63rzp/hey_rustaceans_got_a_question_ask_here_72026/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1r601u4/shipping_my_rust_cli_to_windows_lessons_learned/" target="_blank">Shipping My Rust CLI to Windows: Lessons Learned (feat. Windows 98 and APE Bonus)</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/IvanIsCoding"> /u/IvanIsCoding </a> <br/> <span><a href="https://ivaniscoding.github.io/posts/rustpackaging4/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r601u4/shipping_my_rust_cli_to_windows_lessons_learned/">[comments]</a></span></div>
           </li>
   
         </ul>
   
-        <h3 class="subreddit">r/rust_gamedev</h3>
+        <h3 class="subreddit">r/golang</h3>
         <ul class="item-list">
   
           <li>
-            <a href="https://www.reddit.com/r/rust_gamedev/comments/1r5cgwb/ferroliquid_a_rust_2d_liquid_simulation_ported/" target="_blank">FerroLiquid: A Rust 2D Liquid Simulation (ported from LiquidSketch)</a>
-            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/rust_gamedev/comments/1r5cgwb/ferroliquid_a_rust_2d_liquid_simulation_ported/">  </a> </td><td> <!-- SC_OFF --><div class="md"><p>Hey!</p> <p>About 10 years ago I developed a fluid simulation game for iOS called LiqudSketch (free on <a href="https://apps.apple.com/us/app/liquidsketch/id544717096">iOS Appstore</a>, <a href="https://play.google.com/store/apps/details?id=net.tobiasneukom.liquidsketch">Android Appstore</a>). A while ago I got the urge to start experimenting with fluid dynamics again. I ported the original C++ code to Rust and spent some time experimented with different forces, trying to make demos that looks interesting.</p> <p><a href="https://github.com/tneukom/ferroliquid/">FerroLiquid on GitHub</a></p> <p><a href="https://tneukom.github.io/ferroliquid/">Run in Browser!</a></p> <p>Features:</p> <ul> <li>FLIP fluid simulation with conjugate gradient pressure solver</li> <li>Liquid surface rendering and color advection with OpenGL</li> <li>Integrated debugging visualizers for particle and grid velocities, pressures, ...</li> <li>Placeable widgets for inflows and forces</li> <li>Runs in the browser using WASM</li> </ul> <p>Some notes on what made me switch from C++ to Rust for my personal projects, though I still program C++ at work and enjoy it:</p> <ul> <li>The language itself is (sum types, match, traits, ...) and memory safety are great, but that would not have been enough to make me switch.</li> <li>Iterators: This is the one thing that annoyed me the most and came up quite often when writing C++. Imho iterators/ranges in C++ are hard to use and reason about. I never felt comfortable about memory safety when returning complex ranges. Iterators in Rust on the other hand are easy to use and powerful.</li> <li>Cargo is great! Setting up a project couldn&#39;t be simpler, trying out different libraries is quick. In C++ I try to limit myself to header only libraries, though vcpkg helps.</li> <li>Egui + eframe is fantastic for creative coding on Desktop and Browser. Often the WASM version works right away without any changes.</li> <li>cargo fmt, having a default style everyone uses stops me from thinking about it.</li> </ul> <p>Some negatives:</p> <ul> <li>The VC++ debugger is better than RustRover with LLDB (on Windows). The Rust debugger often skips breakpoints, doesn&#39;t show all local variables, cannot visualize certain data structures well.</li> <li>There doesn&#39;t seem to be an equivalent of Eigen (expression templates) for Rust.</li> </ul> <p>Note: No LLM written code, though it answered a lot of questions.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Resch1024"> /u/Resch1024 </a> <br/> <span><a href="https://v.redd.it/yoq949806njg1">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust_gamedev/comments/1r5cgwb/ferroliquid_a_rust_2d_liquid_simulation_ported/">[comments]</a></span> </td></tr></table></div>
+            <a href="https://www.reddit.com/r/golang/comments/1r6qpek/a_problemnot_programming_related_exactly/" target="_blank">A problem......not programming related exactly</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>So recently I&#39;ve had this problem of not able to write code like I ask chatgpt to explain me this piece of code and uhh after it explains I do get it but when it&#39;s time to code I don&#39;t know what to write and again I ask chatgpt to write it for me anyone facing the same problem but this problem is not only till go it&#39;s also for rust and python </p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/PerformanceBulky9245"> /u/PerformanceBulky9245 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1r6qpek/a_problemnot_programming_related_exactly/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1r6qpek/a_problemnot_programming_related_exactly/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1r6ljo3/handling_routes_with_reverse_proxy_to_not_break/" target="_blank">Handling routes with reverse proxy to not break links inside app for serving CSS, JS and other static folder data</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I have problem with serving CSS / JS and similar files with <code>net/http</code>. I use VM which has friendly name <code>myhosting.lan</code>. Using Caddy Server reverse proxy on port 80 I have Go app which generate menu. Using reverse proxy I start adding others apps. So for example I have apps likes that:</p> <p>myhosting.lan/documents - one app</p> <p>myhosting.lan/smarthome - second app</p> <p>and go on. Problem is - normally in HTML template I use static folder like /static/css, but root from / is change to myhosting.lan/documents/static/css. For Caddy server Caddyfile is like that:</p> <p><code>:80 {</code></p> <p><code>#apps routes</code></p> <p><code>reverse_proxy documents* localhost:8081</code></p> <p><code>reverse_proxy smarthome* localhost:8082</code></p> <p><code># handling default menu app</code> </p> <p><code>reverse_proxy localhost:8080</code></p> <p><code>}</code></p> <p>Inside HTML I have something like:</p> <p><code>&lt;link rel=&quot;stylesheet&quot; href=&quot;/static/css/bootstrap.min.css&quot;&gt;</code><br/> <code>&lt;link rel=&quot;stylesheet&quot; href=&quot;/static/css/dark-icons.css&quot;&gt;</code> </p> <p>Problem is obvious. When I run app from myhosting.lan:8081 or myhosting.lan:8082 it will be work fine, but when it is used reverse_proxy it will be broken. To handle static files I use:</p> <p><code>mux := http.NewServeMux()</code><br/> <code>files := http.FileServer(http.Dir(&quot;./public&quot;))</code><br/> <code>mux.HandleFunc(&quot;/&quot;, index)</code><br/> <code>mux.Handle(&quot;/static/&quot;, http.StripPrefix(&quot;/static/&quot;, files))</code></p> <p>I use public/static folder structure. I am looking for idea how resolve this issue using only net/http. For flask (python) was url_for, but I don&#39;t see similar funcionality in pure Go.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/pepiks"> /u/pepiks </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1r6ljo3/handling_routes_with_reverse_proxy_to_not_break/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1r6ljo3/handling_routes_with_reverse_proxy_to_not_break/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1r6l43z/dev_i_make_a_free_opensource_casting_app_called/" target="_blank">[Dev] I make a free, open-source casting app called Go2TV. v2.1.0 is out!</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hey everyone,</p> <p>I’m the developer behind go2tv. It’s a lightweight desktop app that casts your local media files straight to your TV, so you don&#39;t have to set up a whole media server just to play a video. I&#39;ve been working on it as a passion project for the last 5 years, so it&#39;s totally free, open-source.</p> <p>I just dropped version 2.1.0 with better and more reliable Chromecast support. I also added a built-in RTMP server, so if you have FFmpeg installed, you can live stream directly from OBS to your Chromecast devices.</p> <p>You can grab a copy from here <a href="https://go2tv.app/">https://go2tv.app/</a> or just compile it yourself from github.</p> <p>Thanks,<br/> Alex</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/One_Mention_2457"> /u/One_Mention_2457 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1r6l43z/dev_i_make_a_free_opensource_casting_app_called/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1r6l43z/dev_i_make_a_free_opensource_casting_app_called/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1r6l2ct/is_the_documentation_website_pkggodev_bugged/" target="_blank">Is the documentation website (pkg.go.dev) bugged?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>The website at pkg.go.dev seems to <em>really</em> want to me to look at the examples rather than the function documentation... is it just me?</p> <p>For example: 1. Go <a href="https://pkg.go.dev/os">https://pkg.go.dev/os</a> 2. Click on &quot;Functions&quot; on the left menu ==&gt; &quot;Examples&quot; opens up (but the main pane scrolls to the right anchor) 3. Click on &quot;Functions&quot; again ==&gt; this time it works 4. Click on &quot;Chdir(dir)&quot; ==&gt; the menu, again, goes to &quot;Examples&quot;</p> <p>I tried with firefox and also chromium..</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/giorgiga"> /u/giorgiga </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1r6l2ct/is_the_documentation_website_pkggodev_bugged/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1r6l2ct/is_the_documentation_website_pkggodev_bugged/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1r6k75d/small_projects/" target="_blank">Small Projects</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>This is the weekly thread for Small Projects.</p> <p>The point of this thread is to have looser posting standards than the main board. As such, projects are pretty much only removed from here by the mods for being completely unrelated to Go. However, Reddit often labels posts full of links as being spam, even when they are perfectly sensible things like links to projects, godocs, and an example. <a href="/r/golang">r/golang</a> mods are not the ones removing things from this thread and we will allow them as we see the removals.</p> <p>Please also avoid posts like &quot;why&quot;, &quot;we&#39;ve got a dozen of those&quot;, &quot;that looks like AI slop&quot;, etc. This the place to put any project people feel like sharing without worrying about those criteria.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/AutoModerator"> /u/AutoModerator </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1r6k75d/small_projects/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1r6k75d/small_projects/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1r6huig/i_revived_my_abandoned_protobuf_schema_registry/" target="_blank">I revived my abandoned protobuf schema registry after 2 years. Thanks to AI</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Copy-pasting <code>.proto</code> files between repos is basically the &quot;it works on my machine&quot; of distributed systems. Everything compiles fine, but then runtime drift silently drops fields and breaks things in production.</p> <p>I originally built <a href="https://github.com/pbufio/pbuf-registry"><strong>pbuf-registry</strong></a> to fix this. It’s a self-hosted protobuf module registry (think <code>go mod</code> but for protos) with immutable semver tags and per-module RBAC. But honestly, the project died in late 2023 because I changed jobs and the problem wasn&#39;t <em>my</em> problem anymore.</p> <p>Fast forward to December 2025. I found the repo again. Two years of dust, outdated dependencies, and half-finished features. The amount of work needed was enough to make me want to close the tab immediately and forget about the project for a couple of more years. But I decided to try something different: treat AI like a small engineering team and see if it could handle the grunt work.</p> <p><strong>It actually worked surprisingly well.</strong> The AI helped smoothly modernize the registry by updating golang version and libraries to be up-to-date. It wrote the Postgres migrations and the boilerplate for the new ACL system. It even slapped together a functional Vue UI in no time. Basically, it did the boring-but-necessary stuff I would have procrastinated on for years.</p> <p><strong>What it couldn&#39;t do:</strong> The actual engineering. The architecture, the design for schema drift detection, and the product logic were still all me. But because the friction of the chores was gone, I was able focus purely on the interesting parts. Eight weeks later (working at a totally relaxed pace), I’ve got four real releases out, drift detection is live, and RBAC is shipped.</p> <p>To be clear, the registry is still in the early stages. No massive star count or production adoption yet. But it’s straightforward and it works: push versioned proto files, then pin and vendor them with a single command across your other repos.</p> <p>I’m curious about two things:</p> <ol> <li>Is proto dependency chaos actually a pain point for your team, or have you solved it another way?</li> <li>Has anyone else used AI to &quot;un-abandon&quot; a side project? Did it actually help you ship, or did you hit a wall?</li> </ol> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/aatarasoff"> /u/aatarasoff </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1r6huig/i_revived_my_abandoned_protobuf_schema_registry/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1r6huig/i_revived_my_abandoned_protobuf_schema_registry/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1r695dv/is_connectrpc_slept_on/" target="_blank">Is ConnectRPC slept on??</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;ve recently started exploring the protobuf and gRPC stuff as I thought this is the optimal way to do service-to-service communication. I came across ConnectRPC and the buf ecosystem and it seems like this is the best way for type-safe communication even between browser and the backend.</p> <p>If you&#39;ve used this before or have any opinions, would you suggest using this for all API communication including frontend (browser) to backend? Is there a catch?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/khald0r"> /u/khald0r </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1r695dv/is_connectrpc_slept_on/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1r695dv/is_connectrpc_slept_on/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1r68nrx/promoting_packages/" target="_blank">Promoting packages</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hello everyone,</p> <p>I’d like some advice. How do you usually promote your Go projects?</p> <p>Recently I built an embedded database called <a href="https://github.com/vinicius-lino-figueiredo/gedb">gedb</a>, but I’m having a hard time getting it in front of people. So far, mostly close friends and coworkers have checked out the repository.</p> <p>How do you usually share or promote your projects?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/IfErrNotNilReturnErr"> /u/IfErrNotNilReturnErr </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1r68nrx/promoting_packages/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1r68nrx/promoting_packages/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1r61ua0/best_static_code_analysis_setup_for_go/" target="_blank">Best static code analysis setup for Go?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi all,</p> <p>I’m working on a Go project and trying to build a reasonably solid static analysis (SAST) setup. Currently, I’m running everything via Docker from a Makefile and aggregating reports into a directory.</p> <p>Right now I’m using:</p> <ul> <li>gosec</li> <li>govulncheck</li> <li>semgrep</li> <li>golangci-lint</li> </ul> <p>Here’s my current Makefile setup:</p> <pre><code>PWD := $(dir $(abspath $(firstword $(MAKEFILE_LIST)))) PWD := $(dir $(abspath $(firstword $(MAKEFILE_LIST)))) REPORT_DIR := test/reports/sast .PHONY: sast-gosec sast-govulncheck sast-semgrep sast-golangci-lint sast test .IGNORE: sast-gosec sast-govulncheck sast-semgrep sast-golangci-lint sast-gosec: mkdir -p $(REPORT_DIR) docker run --rm -it -v &quot;$(PWD)&quot;:/workspace -w /workspace securego/gosec:2.22.11 -out $(REPORT_DIR)/gosec.txt ./... echo &quot;SAST gosec completed&quot; sast-govulncheck: mkdir -p $(REPORT_DIR) docker run --rm -v &quot;$(PWD)&quot;:/app -w /app golang:1.25.7 go mod download &amp;&amp; go install golang.org/x/vuln/cmd/govulnchecklatest &amp;&amp; govulncheck ./... &gt;$(REPORT_DIR)/govulncheck.txt echo &quot;SAST govulncheck completed&quot; sast-semgrep: mkdir -p $(REPORT_DIR) docker run --rm -v &quot;$(PWD)&quot;:/src -w /src semgrep/semgrep semgrep --config=auto --text &gt; $(REPORT_DIR)/semgrep.txt echo &quot;SAST semgrep completed&quot; sast-golangci-lint: mkdir -p $(REPORT_DIR) docker run --rm -v &quot;$(PWD)&quot;:/app -w /app golangci/golangci-lint:latest \ golangci-lint run &gt; $(REPORT_DIR)/golangci-lint.txt echo &quot;SAST golangci-lint completed&quot; sast: sast-gosec sast-govulncheck sast-semgrep sast-golangci-lint echo &quot;SAST completed&quot; </code></pre> <ol> <li>Am I overdoing it by running all four tools?</li> <li>Is there a more idiomatic / standard setup in the Go ecosystem?</li> <li>Should I rely more heavily on golangci-lint and reduce tool duplication?</li> <li>Any must-have tools I’m missing?</li> </ol> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/ServeConfident8373"> /u/ServeConfident8373 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1r61ua0/best_static_code_analysis_setup_for_go/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1r61ua0/best_static_code_analysis_setup_for_go/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1r5oza8/issue_moderncorgsqlite_reprepares_statements/" target="_blank">Issue: modernc.org/sqlite re-prepares statements</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I have been using the CGO free <a href="https://pkg.go.dev/modernc.org/sqlite">modernc.org/sqlite</a> driver in a side project for the past couple of months. In general, I have been happy with it. It has been reliable and sufficiently performant. I recently added a very large test dataset and found that I had a specific performance issue with it when performing parallel reads on multiple goroutines against a simple table with ~6 millon rows in it. This is something I routinely do with <a href="https://pkg.go.dev/mattn/go-sqlite3">mattn/go-sqlite3</a>. While I didn&#39;t expect the same performance from both, what I saw was at least an order of magnitude worse.</p> <p>I profiled the code running the same prepared stmt many times in parallel goroutines and found:</p> <pre><code> flat flat% sum% cum cum% 0.04s 0.019% 82.13% 137.03s 64.26% modernc.org/sqlite/lib._sqlite3Reprepare </code></pre> <p>The majority of the work being performed in the profile was spent re-preparing the already prepared statements.</p> <p>I subsequently found an issue - <a href="https://gitlab.com/cznic/sqlite/-/issues?sort=created_date&amp;state=opened&amp;search=prepared&amp;first_page_size=20&amp;show=eyJpaWQiOiIyMzYiLCJmdWxsX3BhdGgiOiJjem5pYy9zcWxpdGUiLCJpZCI6MTc3OTgwMjkzfQ%3D%3D">Optimize prepared statements?</a> reporting this same behavior.</p> <p>I researched and could not find any workarounds. I attempted a few on my on. None worked.</p> <p>I knew from past experiences that I could use mattn/go-sqlite3, but I wanted a non-CGO solution. I used kimi-cli with Kimi K2.5 to write <a href="https://github.com/lbe/sqlite-read-benchmark">sqlite-read-benchmark</a> to test the exact pattern with some of the most popular Go SQLite drivers. The results, shown at the end of this post, were consistent with my earlier observations on modernc.org/sqlite. I received a pleasant surprise that <a href="https://pkg.go.dev/ncruces/go-sqlite3">ncruces/go-sqlite3</a> was over 5 times faster and second only to <a href="https://pkg.go.dev/crawshaw.io/sqlite">crawshaw.io/sqlite</a> which about 10 times faster.</p> <p>I do not have much experience with WASM and have previously not attempted to use <a href="https://pkg.go.dev/ncruces/go-sqlite3">ncruces/go-sqlite3</a> because of that. The replacement was fairly smooth, some syntax differences for the DSN string and then some differences in integration and E2E testing having to do with startup times. Nothing major. I was again pleasantly surprised when my application step that previously took 33 minutes was reduced to 1 minute.</p> <p>I wanted to share this experience with others who may be similarly hesitant to give <a href="https://pkg.go.dev/ncruces/go-sqlite3">ncruces/go-sqlite3</a> a try. </p> <p><a href="/u/ncruces">u/ncruces</a>, <strong>Thank You</strong> for your contributions!</p> <p>lbe</p> <p>Benchmark Results</p> <pre><code>SQLite Driver Benchmark Suite ============================== Database: benchmark.db Reads: 100000 Goroutines: 22 === mattn/go-sqlite3 === Running raw benchmark... raw (22 goroutines): 100000 reads in 4.198395945s = 23819 reads/sec Running prepared benchmark... prepared (22 goroutines): 100000 reads in 2.319155183s = 43119 reads/sec ✓ mattn/go-sqlite3 completed === modernc.org/sqlite === Running raw benchmark... raw (22 goroutines): 100000 reads in 4.37563765s = 22854 reads/sec Running prepared benchmark... prepared (22 goroutines): 100000 reads in 4.154677353s = 24069 reads/sec ✓ modernc.org/sqlite completed === github.com/ncruces/go-sqlite3 === Running raw benchmark... raw (22 goroutines): 100000 reads in 713.712971ms = 140112 reads/sec Running prepared benchmark... prepared (22 goroutines): 100000 reads in 626.007348ms = 159743 reads/sec ✓ github.com/ncruces/go-sqlite3 completed === crawshaw.io/sqlite === Running raw benchmark... raw (22 goroutines): 100000 reads in 3.376629975s = 29615 reads/sec Running prepared benchmark... prepared (22 goroutines): 100000 reads in 403.347256ms = 247925 reads/sec ✓ crawshaw.io/sqlite completed === zombiezen.com/go/sqlite === Running raw benchmark... raw (22 goroutines): 100000 reads in 14.656310718s = 6823 reads/sec Running prepared benchmark... prepared (22 goroutines): 100000 reads in 2.482263816s = 40286 reads/sec ✓ zombiezen.com/go/sqlite completed === github.com/glebarez/sqlite === Running raw benchmark... raw (22 goroutines): 100000 reads in 4.924050485s = 20308 reads/sec Running prepared benchmark... prepared (22 goroutines): 100000 reads in 6.02162578s = 16607 reads/sec ✓ github.com/glebarez/sqlite completed ============================== Benchmark complete! </code></pre> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/LearnedByError"> /u/LearnedByError </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1r5oza8/issue_moderncorgsqlite_reprepares_statements/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1r5oza8/issue_moderncorgsqlite_reprepares_statements/">[comments]</a></span></div>
           </li>
   
         </ul>
