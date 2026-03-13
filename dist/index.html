@@ -240,8 +240,8 @@
   
       <div class="card">
         <h2>Huginn Daily</h2>
-        <p class="header-p">Thursday, March 12, 2026</p>
-        <p class="header-p">837827a0-949c-413b-a161-43d7d8cc1288</p>
+        <p class="header-p">Friday, March 13, 2026</p>
+        <p class="header-p">fb80ee58-4f80-4387-8239-13d4bd5e8358</p>
       </div>
   
       <div class="card">
@@ -249,1129 +249,53 @@
         <table class="weather-table">
           <tr>
             <th>Summary</th>
-            <td>⛅️ Clear until afternoon, returning overnight.</td>
+            <td>⛅️ Partly cloudy from afternoon until night.</td>
           </tr>
           <tr>
             <th>Temperature Range</th>
-            <td>11°C to 21°C (51°F to 69°F)</td>
+            <td>10°C to 20°C (49°F to 68°F)</td>
           </tr>
           <tr>
             <th>Feels Like</th>
-            <td>Low: 43°F | High: 68°F</td>
+            <td>Low: 42°F | High: 68°F</td>
           </tr>
           <tr>
             <th>Humidity</th>
-            <td>46%</td>
+            <td>52%</td>
           </tr>
           <tr>
             <th>Wind</th>
-            <td>14 km/h (9 mph), Direction: 306°</td>
+            <td>13 km/h (8 mph), Direction: 161°</td>
           </tr>
           <tr>
             <th>Precipitation</th>
-            <td>Probability: 14.000000000000002%, Type: No precipitation expected</td>
+            <td>Probability: 12%, Type: No precipitation expected</td>
           </tr>
           <tr>
             <th>Sunrise / Sunset</th>
-            <td>🌅 06:03 AM / 🌇 05:52 PM</td>
+            <td>🌅 06:01 AM / 🌇 05:53 PM</td>
           </tr>
           <tr>
             <th>Moon Phase</th>
-            <td>Waning Crescent (78%)</td>
+            <td>Waning Crescent (82%)</td>
           </tr>
           <tr>
             <th>Cloud Cover</th>
-            <td>12%</td>
+            <td>33%</td>
           </tr>
           <tr>
             <th>Pressure</th>
-            <td>1018.15 hPa</td>
+            <td>1015.17 hPa</td>
           </tr>
           <tr>
             <th>Dew Point</th>
-            <td>37.92°F</td>
+            <td>40.4°F</td>
           </tr>
           <tr>
             <th>Visibility</th>
-            <td>5.89 miles</td>
+            <td>5.52 miles</td>
           </tr>
         </table>
-      </div>
-  
-      <div class="card">
-        <h2>XKCD</h2>
-  
-        <div class="comic">
-          <a href="//imgs.xkcd.com/comics/subduction_retrieval.png" target="_blank">
-            <img src="//imgs.xkcd.com/comics/subduction_retrieval.png" alt="Subduction Retrieval">
-          </a>
-        </div>
-  
-      </div>
-  
-      <div class="card">
-        <h2>Golang</h2>
-        <ul class="item-list">
-  
-          <li>
-            <a href="https://go.dev/blog/inliner" target="_blank">//go:fix inline and the source-level inliner</a>
-            <div class="item-content">
-<div id="blog"><div id="content">
-  <div id="content">
-
-    <div class="Article" data-slug="/blog/inliner">
-    
-    <h1 class="small"><a href="/blog/">The Go Blog</a></h1>
-    
-
-    <h1>//go:fix inline and the source-level inliner</h1>
-      
-      <p class="author">
-      Alan Donovan<br>
-      10 March 2026
-      </p>
-      
-      <div class='markdown'>
-<style>
-.beforeafter {
-  justify-content: center;
-  display: grid;
-  gap: 1em;
-  margin: 1em;
-  grid-template-columns: minmax(min-content, 1fr) auto minmax(min-content, 1fr);
-  font-size: 180%;
-  @media screen and (max-width: 57.7rem) {
-    grid-template-columns: 1fr;
-  }
-}
-#content .beforeafter pre {
-  margin: 0em; /* Handled by grid gap */
-}
-.beforeafter-context {
-  grid-column: 1 / -1;
-}
-#content .beforeafter > pre:nth-of-type(1) { background: var(--color-diff-old); }
-#content .beforeafter > pre:nth-of-type(2) { background: var(--color-diff-new); }
-.beforeafter-arrow {
-  place-self: center;
-  /* Undo unnecessary grid gap. */
-  margin: -0.5em;
-}
-.beforeafter-arrow::before {
-  content: "⟶";
-  @media screen and (max-width: 57.7rem) {
-    content: "⇓";
-  }
-}
-</style>
-<p>Go 1.26 contains an all-new implementation of the <code>go fix</code> subcommand,
-designed to help you keep your Go code up-to-date and modern. For an
-introduction, start by reading our <a href="gofix">recent post</a> on the topic.
-In this post, we’ll look at one particular feature, the source-level
-inliner.</p>
-<p>While <code>go fix</code> has several bespoke modernizers for specific new
-language and library features,
-the source-level inliner is the first fruit of our efforts to provide
-“<a href="gofix#self-service">self-service</a>” modernizers and analyzers.
-It enables any package author to express simple API migrations and
-updates in a straightforward and safe way.
-We’ll first explain what the source-level inliner is and how you can use it,
-then we’ll dive into some aspects of the problem and the technology behind it.</p>
-<h2 id="source-level-inlining">Source-level inlining</h2>
-<p>In 2023, we built an <a href="https://pkg.go.dev/golang.org/x/tools/internal/refactor/inline" rel="noreferrer" target="_blank">algorithm</a> for source-level inlining of function calls in Go. To “inline” a call means to replace the call by a copy of the body of the called function, substituting arguments for parameters. We call it “source-level” inlining because it durably modifies the source code. By contrast, the inlining algorithm found in a typical compiler, including Go’s, applies a similar transformation, but to the compiler’s ephemeral <a href="https://en.wikipedia.org/wiki/Intermediate_representation" rel="noreferrer" target="_blank">intermediate representation</a>, to generate more efficient code.</p>
-<p>If you’ve ever invoked <a href="/gopls/">gopls</a>’ &ldquo;<a href="/gopls/features/transformation#refactorinlinecall-inline-call-to-function">Inline call</a>&rdquo; interactive refactoring, you’ve used the source-level inliner. (In VS Code, this code action can be found on the “Source Action…” menu.) The before-and-after screenshots below show the effect of inlining the call to <code>sum</code> from the function named <code>six</code>.</p>
-<center>
-
-
-</center>
-<p>The inliner is a crucial building block for a number of source transformation tools. For example, gopls uses it for the “Change signature” and “Remove unused parameter” refactorings because, as we’ll see below, it takes care of many subtle correctness issues that arise when refactoring function calls.</p>
-<p>This same inliner is also one of the analyzers in the all-new <code>go fix</code> command.
-In <code>go fix</code>, it enables self-service API migration and upgrades using a new <code>//go:fix inline</code> directive comment.
-Let&rsquo;s take a look at a few examples of how this works and what it can be used for.</p>
-<h3 id="example-renaming-ioutilreadfile">Example: renaming <code>ioutil.ReadFile</code></h3>
-<p>In Go 1.16, the <code>ioutil.ReadFile</code> function, which reads the content of a file, was deprecated in favor of the new <code>os.ReadFile</code> function. In effect, the function was renamed, though of course Go’s <a href="/doc/go1compat">compatibility promise</a> prevents us from ever removing the old name.</p>
-<pre><code class="language-go">package ioutil
-
-import &quot;os&quot;
-
-// ReadFile reads the file named by filename…
-// Deprecated: As of Go 1.16, this function simply calls [os.ReadFile].
-func ReadFile(filename string) ([]byte, error) {
-    return os.ReadFile(filename)
-}
-</code></pre>
-<p>Ideally, we would like to change every Go program in the world to stop using <code>ioutil.ReadFile</code> and to call <code>os.ReadFile</code> instead. The inliner can help us do that. First we annotate the old function with <code>//go:fix inline</code>. This comment tells the tool that any time it sees a call to this function, it should inline the call.</p>
-<pre><code class="language-go">package ioutil
-
-import &quot;os&quot;
-
-// ReadFile reads the file named by filename…
-// Deprecated: As of Go 1.16, this function simply calls [os.ReadFile].
-//go:fix inline
-func ReadFile(filename string) ([]byte, error) {
-    return os.ReadFile(filename)
-}
-</code></pre>
-<p>When we run <code>go fix</code> on a file containing a call to <code>ioutil.ReadFile</code>, it applies the replacement:</p>
-<pre><code>$ go fix -diff ./...
--import &quot;io/ioutil&quot;
-+import &quot;os&quot;
-
--   data, err := ioutil.ReadFile(&quot;hello.txt&quot;)
-+   data, err := os.ReadFile(&quot;hello.txt&quot;)
-</code></pre>
-<p>The call has been inlined, in effect replacing a call to one function by a call to another.</p>
-<p>Because the inliner replaces a function call by a copy of the body of
-the called function, not by some arbitrary expression, in principle
-the transformation should not change the program’s behavior
-(barring code that inspects the call stack, of course).
-This differs from other tools that allow for arbitrary rewrites,
-such as <code>gofmt -r</code>, which are very powerful but need to be watched closely.</p>
-<p>For many years now, our Google colleagues on the teams supporting
-Java, Kotlin, and C++ have been using source-level inliner tools like this.
-To date, these tools have eliminated millions of calls to deprecated
-functions in Google’s code base.
-Users simply add the directives, and wait.
-During the night, robots quietly prepare, test, and submit batches of
-code changes across a monorepo of billions of lines of code.
-If all goes well, by the morning the old code is no longer in use and can be
-safely deleted.
-Go’s inliner is a relative newcomer, but it has already been used to
-prepare more than 18,000 changelists to Google’s monorepo.</p>
-<h3 id="example-fixing-api-design-flaws">Example: fixing API design flaws</h3>
-<p>With a little creativity, a variety of migrations can be expressed as inlinings.
-Consider this hypothetical <code>oldmath</code> package:</p>
-<pre><code class="language-go">// Package oldmath is the bad old math package.
-package oldmath
-
-// Sub returns x - y.
-func Sub(y, x int) int
-
-// Inf returns positive infinity.
-func Inf() float64
-
-// Neg returns -x.
-func Neg(x int) int
-</code></pre>
-<p>It has several design flaws: the <code>Sub</code> function declares its parameters in the wrong order; the <code>Inf</code> function implicitly prefers one of the two infinities; and the <code>Neg</code> function is redundant with <code>Sub</code>. Fortunately we have a <code>newmath</code> package that avoids these mistakes, and we’d like to get users to switch to it. The first step is to implement the old API in terms of the new package and to deprecate the old functions. Then we add inliner directives:</p>
-<pre><code>// Package oldmath is the bad old math package.
-package oldmath
-
-import &quot;newmath&quot;
-
-// Sub returns x - y.
-// Deprecated: the parameter order is confusing.
-//go:fix inline
-func Sub(y, x int) int {
-    return newmath.Sub(x, y)
-}
-
-// Inf returns positive infinity.
-// Deprecated: there are two infinite values; be explicit.
-//go:fix inline
-func Inf() float64 {
-    return newmath.Inf(+1)
-}
-
-// Neg returns -x.
-// Deprecated: this function is unnecessary.
-//go:fix inline
-func Neg(x int) int {
-    return newmath.Sub(0, x)
-}
-</code></pre>
-<p>Now, when users of <code>oldmath</code> run the <code>go fix</code> command on their code, it will replace all calls to the old functions by their new counterparts. By the way, gopls has included <code>inline</code> in its analyzer suite for some time, so if your editor uses gopls, the moment you add the <code>//go:fix inline</code> directives you should start seeing a diagnostic at each call site, such as “call of <code>oldmath.Sub</code> should be inlined”, along with a suggested fix that inlines that particular call.</p>
-<p>For example, this old code:</p>
-<pre><code>import &quot;oldmath&quot;
-
-var nine = oldmath.Sub(1, 10) // diagnostic: &quot;call to oldmath.Sub should be inlined&quot;
-</code></pre>
-<p>will be transformed to:</p>
-<pre><code>import &quot;newmath&quot;
-
-var nine = newmath.Sub(10, 1)
-</code></pre>
-<p>Observe that after the fix, the arguments to <code>Sub</code> are in the logical order. This is progress! If you’re in luck, the inliner will succeed at removing every call to the functions in <code>oldmath</code>, perhaps allowing you to delete it as a dependency.</p>
-<p>The <code>inline</code> analyzer works on types and constants too. If our <code>oldmath</code> package had originally declared a data type for rational numbers and a constant for π, we could use the following forwarding declarations to migrate them to the <code>newmath</code> package while preserving the behavior of existing code:</p>
-<pre><code>package oldmath
-
-//go:fix inline
-type Rational = newmath.Rational
-
-//go:fix inline
-const Pi = newmath.Pi
-</code></pre>
-<p>Each time the <code>inline</code> analyzer encounters a reference to <code>oldmath.Rational</code> or <code>oldmath.Pi</code>, it will update them to refer instead to <code>newmath</code>.</p>
-<h2 id="under-the-hood-of-the-inliner">Under the hood of the inliner</h2>
-<p>At a glance, source inlining seems straightforward: just replace the
-call with the body of the callee function, introduce variables for the
-function parameters, and bind the call arguments to those variables.
-But handling all of the complexities and corner cases correctly
-while producing acceptable results is no small technical challenge:
-the inliner is about 7,000 lines of dense, compiler-like logic.
-Let’s look at six aspects of the problem that make it so tricky.</p>
-<h3 id="1-parameter-elimination">1. Parameter elimination</h3>
-<p>One of the inliner’s most important tasks is to attempt to replace each occurrence of a parameter in the callee by its corresponding argument from the call. In the simplest case, the argument is a trivial literal such as <code>0</code> or <code>&quot;&quot;</code>, so the replacement is straightforward and the parameter can be eliminated.</p>
-<div class="beforeafter">
-<div class="beforeafter-context"><pre>
-//go:fix inline
-func show(prefix, item string) {
-    fmt.Println(prefix, item)
-}
-</pre></div>
-<pre>
-show("", "hello")
-</pre>
-<div class="beforeafter-arrow"></div>
-<pre>
-fmt.Println("", "hello")
-</pre>
-</div>
-<p>For less trivial literals such as <code>404</code> or <code>&quot;go.dev&quot;</code>, the replacement is equally straightforward, so long as the parameter appears in the callee at most once. But if it appears multiple times, it would be bad style to sprinkle copies of these magic values throughout the code as it would obscure the relationship between them; a later change to only one of them might create an inconsistency.</p>
-<p>In such cases the inliner must tread carefully and emit a more conservative result. Whenever one or more parameters cannot be completely substituted for any reason, the inliner inserts an explicit “parameter binding” declaration:</p>
-<div class="beforeafter">
-<div class="beforeafter-context"><pre>
-//go:fix inline
-func printPair(before, x, y, after string) {
-    fmt.Println(before, x, after)
-    fmt.Println(before, y, after)
-}
-</pre></div>
-<pre>
-printPair("[", "one", "two", "]")
-</pre>
-<div class="beforeafter-arrow"></div>
-<pre>
-// a “parameter binding” declaration
-var before, after = "[", "]"
-fmt.Println(before, "one", after)
-fmt.Println(before, "two", after)
-</pre>
-</div>
-<h3 id="2-side-effects">2. Side effects</h3>
-<p>In Go, as in all imperative programming languages, calling a function may have the side effect of updating variables, which in turn may affect the behavior of other functions. Consider the call to <code>add</code> below:</p>
-<pre><code class="language-go">func add(x, y int) int { return y + x }
-
-z = add(f(), g())
-</code></pre>
-<p>A trivial inlining of the call would replace <code>x</code> with <code>f()</code> and <code>y</code> with <code>g()</code>, with this result:</p>
-<pre><code>z = g() + f()
-</code></pre>
-<p>But this result is incorrect because evaluation of <code>g()</code> now occurs before <code>f()</code>; if the two functions have side effects, those effects will now be observed in a different order and may affect the result of the expression. Of course, it is bad form to write code that relies on effect ordering among call arguments, but that doesn’t mean people don’t do it, and our tools have to get it right.</p>
-<p>So, the inliner must attempt to prove that <code>f()</code> and <code>g()</code> do not have side effects on each other. On success, it can safely proceed with the result above. Otherwise, it must fall back to an explicit parameter binding:</p>
-<pre><code>var x = f()
-z = g() + x
-</code></pre>
-<p>When considering side effects, it’s not only the argument expressions that matter. Also significant is the order in which parameters are evaluated relative to other code in the callee. Consider this call to <code>add2</code>:</p>
-<pre><code class="language-go">//go:fix inline
-func add2(x, y int) int {
-    return x + other() + y
-}
-
-add2(f(), g())
-</code></pre>
-<p>This time, parameters <code>x</code> and <code>y</code> are used in the same order they are declared, so the substitution <code>f() + other() + g()</code> won’t change the order of effects of <code>f()</code> and <code>g()</code>—but it will change the order of any effects of <code>other()</code> and <code>g()</code>. Furthermore, if the function body uses a parameter within a loop, substitution might change the cardinality of effects.</p>
-<p>The inliner uses a novel <a href="https://cs.opensource.google/go/x/tools/+/refs/tags/v0.42.0:internal/refactor/inline/inline.go;l=1978;drc=e3a69ffcdbb984f50100e76ebca6ff53cf88de9c" rel="noreferrer" target="_blank">hazard analysis</a> to model the order of effects in each callee function. Nonetheless, its ability to construct the necessary safety proofs is quite limited. For example, if the calls <code>f()</code> and <code>g()</code> are simple accessors, it would be perfectly safe to call them in either order. Indeed, an optimizing compiler might use its knowledge of the internals of <code>f</code> and <code>g</code> to safely reorder the two calls. But unlike a compiler, which generates object code that reflects the source at a specific moment, the purpose of the inliner is to make permanent changes to the source, so it can’t take advantage of ephemeral details. As an extreme example, consider this <code>start</code> function:</p>
-<pre><code>func start() { /* TODO: implement */ }
-</code></pre>
-<p>An optimizing compiler is free to delete each call to <code>start()</code> because it has no effects today, but the inliner is not, because it may become important tomorrow.</p>
-<!-- There's a bit of a contradiction here since the hazard analysis uses implementation details du jour. -->
-<p>In short, the inliner may produce results that—to the informed eye of a project maintainer—are clearly too conservative. In such cases, the fixed code would benefit stylistically from a little manual cleanup.</p>
-<h3 id="3-fallible-constant-expressions">3. “Fallible” constant expressions</h3>
-<p>You might imagine (as I once did) that it would always be safe to replace a parameter variable by a constant argument of the same type. Surprisingly, this turns out not to be the case, because some checks previously done at run time would now happen—and fail—at compile time. Consider this call to the <code>index</code> function:</p>
-<pre><code>//go:fix inline
-func index(s string, i int) byte {
-    return s[i]
-}
-
-index(&quot;&quot;, 0)
-</code></pre>
-<p>A naive inliner might replace <code>s</code> with <code>&quot;&quot;</code> and <code>i</code> with <code>0</code>, resulting in <code>&quot;&quot;[0]</code>, but this is not actually a legal Go expression because this particular index is out of bounds for this particular string. Because the expression <code>&quot;&quot;[0]</code> is composed of constants, it is evaluated at compile time, and a program that contains it will not even build. By contrast, the original program would fail only if execution reaches this call to <code>index</code>, which presumably in a working program it does not.</p>
-<p>Consequently, the inliner must keep track of all expressions and their operands that might become constant during parameter substitution, triggering additional compile-time checks. It builds a <a href="https://cs.opensource.google/go/x/tools/+/master:internal/refactor/inline/falcon.go;l=43;drc=1aca71e85510ecc45dddbc335b30b64298c2a31e" rel="noreferrer" target="_blank">constraint system</a> and attempts to solve it. Each unsatisfied constraint is resolved by adding an explicit binding for the constrained parameters.</p>
-<!--
-  The fundamental reason for falcon is that we can’t type-check the result
-  since in a “separate analysis” system we don’t have type information
-  for all dependencies. See hidden comment within section
-  [gofix#synergistic-fixes](gofix#synergistic-fixes).
--->
-<h3 id="4-shadowing">4. Shadowing</h3>
-<p>Typical argument expressions contain one or more identifiers that refer to symbols (variables, functions, and so on) in the caller’s file. The inliner must make sure that each name in the argument expression would refer to the same symbol after parameter substitution; in other words, none of the caller’s names is <em>shadowed</em> in the callee. If this fails, the inliner must again insert parameter bindings, as in this example:</p>
-<div class="beforeafter">
-<div class="beforeafter-context"><pre>
-//go:fix inline
-func f(val string) {
-    x := 123
-    fmt.Println(val, x)
-}
-</pre></div>
-<pre>
-x := "hello"
-f(x)
-</pre>
-<div class="beforeafter-arrow"></div>
-<pre>
-x := "hello"
-{
-    // another “parameter binding” declaration
-    // to read the caller's x before shadowing it
-    var val string = x
-    x := 123
-    fmt.Println(val, x)
-}
-</pre>
-</div>
-<p>Conversely, the inliner must also check that each name in the <em>callee</em> function body would refer to the same thing when it is spliced into the call site. In other words, none of the callee’s names is shadowed or missing in the caller. For missing names, the inliner may need to insert additional imports.</p>
-<h3 id="5-unused-variables">5. Unused variables</h3>
-<p>When an argument expression has no effects and its corresponding parameter is never used, the expression may be eliminated. However, if the expression contains the last reference to a local variable at the caller, this may cause a compile error because the variable is now unused.</p>
-<div class="beforeafter">
-<div class="beforeafter-context"><pre>
-//go:fix inline
-func f(_ int) { print("hello") }
-</pre></div>
-<pre>
-x := 42
-f(x)
-</pre>
-<div class="beforeafter-arrow"></div>
-<pre>
-x := 42 // error: unused variable: x
-print("hello")
-</pre>
-</div>
-<p>So the inliner must account for references to local variables and avoid removing the last one. (Of course it is still possible that two different inliner fixes each remove the <em>second</em>-to-last reference to a variable, so the two fixes are valid in isolation but not together; see the discussion of <a href="gofix#merging-fixes-and-conflicts">semantic conflicts</a> in the previous post. Unfortunately manual cleanup is inevitably required in this case.)</p>
-<h3 id="6-defer">6. Defer</h3>
-<p>In some cases, it is simply impossible to inline away the call.
-Consider a call to a function that uses a <code>defer</code> statement:
-if we were to eliminate the call, the deferred function would execute
-when the <em>caller</em> function returns, which is too late.
-All we can safely do when the callee uses <code>defer</code> is to
-put the body of the callee in a function literal and immediately call it.
-This function literal, <code>func() { … }()</code>, delimits the lifetime of the
-<code>defer</code> statement, as in this example:</p>
-<div class="beforeafter">
-<div class="beforeafter-context"><pre>
-//go:fix inline
-func callee() {
-    defer f()
-    …
-}
-</pre></div>
-<pre>
-callee()
-</pre>
-<div class="beforeafter-arrow"></div>
-<pre>
-func() {
-    defer f()
-    …
-}()
-</pre>
-</div>
-<p>If you invoke the inliner in gopls, you’ll see that it makes the change shown above and introduces the function literal. This result may be appropriate in an interactive setting, since you are likely to immediately tweak the code (or undo the fix) as you prefer, but it is rarely desirable in a batch tool, so as a matter of policy the analyzer in <code>go fix</code> refuses to inline such “literalized” calls.</p>
-<h3 id="an-optimizing-compiler-for-tidiness">An optimizing compiler for “tidiness”</h3>
-<p>We’ve now seen half a dozen examples of how the inliner handles tricky semantic edge cases correctly.
-(Many thanks to Rob Findley, Jonathan Amsterdam, and Olena Synenka for insights, discussions, reviews, features, and fixes.)
-By putting all of the smarts into the inliner, users can simply apply an “Inline call” refactoring in their IDE or add a <code>//go:fix inline</code> directive to their own functions and be confident that the resulting code transformations can be applied with only the most cursory review.</p>
-<p>Although we have made good progress toward that goal, we have not yet fully attained it, and it is likely that we never will. Consider a compiler. A sound compiler produces correct output for any input and never miscompiles your code; this is the fundamental expectation that every user should have of their compiler. An <em>optimizing</em> compiler produces code carefully chosen for speed without compromising on safety. Similarly, an inliner is a bit like an optimizing compiler whose goal is not speed but <em>tidiness</em>: inlining a call must never change the behavior of your program, and ideally it produces code that is maximally neat and tidy. Unfortunately, an optimizing compiler is <a href="https://en.wikipedia.org/wiki/Rice%27s_theorem" rel="noreferrer" target="_blank">provably</a> never done: showing that two different programs are equivalent is an undecidable problem, and there will always be improvements that an expert knows are safe but the compiler cannot prove. So too with the inliner: there will always be cases where the inliner’s output is too fussy or otherwise stylistically inferior to that of a human expert, and there will always be more “tidiness optimizations” to add.</p>
-<h2 id="try-it-out">Try it out!</h2>
-<p>We hope this tour of the inliner gives you a sense of some of the challenges involved, and of our priorities and directions in providing sound, self-service code transformation tools. Please try out the inliner, either interactively in your IDE, or through <code>//go:fix inline</code> directives and the <code>go fix</code> command, and share with us your experiences and any ideas you have for further improvements or new tools.</p>
-</div>
-
-    </div>
-
-    
-    <div class="Article prevnext">
-    
-    
-      
-        <p>
-        
-        
-          
-            <b>Previous article: </b><a href="/blog/allocation-optimizations">Allocating on the Stack</a><br>
-          
-        
-        <b><a href="/blog/all">Blog Index</a></b>
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-    </div>
-    
-
-  </div>
-</div>
-
-<script src="/js/play.js"></script>
-
-</div>
-          </li>
-  
-        </ul>
       </div>
   
       <div class="card">
@@ -1381,68 +305,68 @@ By putting all of the smarts into the inliner, users can simply apply an “Inli
         <ul class="item-list">
   
           <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1rrfu8a/should_i_study_game_development_or_something/" target="_blank">Should I study Game Development or something broader like Computer Science if I want to work in games?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi everyone,</p> <p>I’m at that point where I need to decide what to study and what direction to take in life. I’m really passionate about games and I’m pretty sure I want to work in gamedev.</p> <p>I’ve already messed around a bit with tools like Blender and Unity, so I’ve at least tested the waters. I don’t enjoy programming that much, but I really like the rest of the process (art, design, building things, etc.).</p> <p>My main dilemma is this: I know I want to work in games, but I’m not sure if it’s better to study something specifically focused on game development (like a game dev degree) or go for something more general that’s related, like computer science, software engineering, digital art, etc.</p> <p>I’ve read a lot of posts where people say that studios rarely hire someone just because they have a “game development” degree, and that many people enter the industry with more general degrees instead. So now I’m not sure what the best path is.</p> <p>Another thing is that I’d probably need to move to another country eventually, since the game industry where I live is almost nonexistent and not very relevant. So I’m also unsure how studying something very specific would translate internationally.</p> <p>I know that a strong portfolio probably matters more than any diploma, but I’d still like to choose a good path.</p> <p>So what would you recommend?</p> <p>Did you study something specifically related to games, or something broader and then move into the industry later?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Sufficient_Bad_4160"> /u/Sufficient_Bad_4160 </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1rrfu8a/should_i_study_game_development_or_something/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1rrfu8a/should_i_study_game_development_or_something/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/gamedev/comments/1rsc99w/please_read_down_below_for_more_details_but/" target="_blank">Please read down below for more details, but anyway my question is when starting up a game where the npcs have a story line and are romancable and such if you can choose to be one of those npcs and romance other npcs... more details down below</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Basically im working on a mod for a game with a programmer and I want to make sure its actually possible to do, [im a artist and I am commissioning a programmer to help me,(im doing all of the art story line and writing) to helpprogram my ideas for a stardew valley mod that pretty much overwrites most of the game but builds off of the initial building blocks for a mha fantasy au mod, and I want the farmer from vanilla to be able to be one of the characters from mha instead so it will fit better, so my idea is to have it so you can choose to be one of the romancable characters when loading in and then you will be playing as them throughout the game and be able to romance other npc characters with cuteness heart events and such, but if you were to play as a new character in a different save the character you were before is now a npc and you can be able to romance them and such like any other npc but you yourself even though your playing another character that was once a npc in another save you are not a npc anymore, and while that might already be a bit hard enough which I understand but is doing I suppose the part im having trouble how to figure out is where to place npcs who are not chosen for being a main character, because some npcs will have a home and or something of the sort but if ymthey are chosen as a playable character im worried on how to deal with their empty homes afterwards as again this is a fantasy au and some of the homes like bakugous will be very much shaped to fit him unless I take another character to take up his spot, either way in a new save file if I choose let&#39;s say bakugou to be playable one or a couple characters are going to have to move around and or live somewhere else then they would in another file, and I would have to make this apply to each and every romancable character and many of them would have to bunk with another unless I want to creat new housing for them depending on who you choose in a play through or completely scrap the playable characters npc house that they had or make it someone else&#39;s home 😓😭😭😭 any tips on how to remedy this? Again base idea is your can make a romancable player your own when loading in and play as them but in a different save file if you choose someone else the character you played as in the last save file will be a npc again that will be fully romancable as well, please I really need help figuring this out </p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Background_Aide8738"> /u/Background_Aide8738 </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1rsc99w/please_read_down_below_for_more_details_but/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1rsc99w/please_read_down_below_for_more_details_but/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1rrf1me/path_of_exile_like_development/" target="_blank">Path Of Exile like development</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Anybody knows how GGG might be managing their game, development wise? I mean like how the data structures go, how are mods and a billion other RNG mechanics implemented? How do they even go through the codebase to keep adding new content that are interlaced with the old mechanics, removing some of them and completely revamping others every other 3 months?</p> <p>I know they are worth multi-million dollars, backed by tencent, probably have hundreds of employees (many of them might be the OG ones still), but the depth in this game is huge. Anyway, we&#39;re witnessing that they are able to manage it well. They should have some kind of a recipe for it right?</p> <p>I&#39;m not a programmer, so I&#39;m not even sure what or how to ask this question, but I&#39;d really like to figure out how they do it since I love playing this game and would actually want to develop something similar (without the crazy depth of course, lol)</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/thirtyfiveoo"> /u/thirtyfiveoo </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1rrf1me/path_of_exile_like_development/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1rrf1me/path_of_exile_like_development/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/gamedev/comments/1rsbxsd/i_interviewed_chris_zukowski_how_to_market_a_game/" target="_blank">I interviewed Chris Zukowski (How To Market a Game) in-person at GDC! Thought his answers may be helpful.</a>
+            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/gamedev/comments/1rsbxsd/i_interviewed_chris_zukowski_how_to_market_a_game/">  </a> </td><td> <!-- SC_OFF --><div class="md"><p>Hey all - I do audio interviews at gaming events. I sat down with Chris Zukowski to break-down indie game marketing - and I purposefully asked questions I have not seen him answer previously. Hopefully it provides some unique insight!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Kojimmy"> /u/Kojimmy </a> <br/> <span><a href="https://youtu.be/M3uQrwcJaMQ?si=e5bTmdp13CpQzwd9">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1rsbxsd/i_interviewed_chris_zukowski_how_to_market_a_game/">[comments]</a></span> </td></tr></table></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1rre5yf/boox_shoot_feedback/" target="_blank">Boox Shoot Feedback!</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p><a href="https://booxshoot.com/">https://booxshoot.com</a></p> <p>Would love feedback on a project I&#39;m working on, you can hit l in game to see stats, interested if you experience any network issues/extrapolated frames.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/BooxOD"> /u/BooxOD </a> <br/> <span><a href="https://booxshoot.com">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1rre5yf/boox_shoot_feedback/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/gamedev/comments/1rsbirq/menuheavy_games_dear_lord_looking_for_resources/" target="_blank">Menu-heavy games . . . dear lord . . . looking for resources.</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Its just a rectangle overlaying the screen, right? </p> <p>*How complicated could it be, RIGHT??*</p> <p>Ive been making platformers for a few months. Tried to make text-heavy rpg like pokemon. Was quickly humbled.</p> <p>Does anyone have some good resources for learning about this sort of thing? Especially if it’s explained in Javascript or Python, but any guide would be helpful as long as its beginner friendly. And to be clear, I mean implementing menus and old school rpg-syle game systems from scratch, not using an engine.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/bird_feeder_bird"> /u/bird_feeder_bird </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1rsbirq/menuheavy_games_dear_lord_looking_for_resources/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1rsbirq/menuheavy_games_dear_lord_looking_for_resources/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1rre2ra/card_game_question/" target="_blank">Card Game question</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi I&#39;m relatively new to making stuff, but I started working on a card game and was wondering if anyone knows of a good way to make a prototype. Also if anyone knows a good site / company that can print custom cards for when the project is ready.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/MagicDungeonMaster00"> /u/MagicDungeonMaster00 </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1rre2ra/card_game_question/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1rre2ra/card_game_question/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/gamedev/comments/1rs9oy9/playtest_feedback_is_extremely_polarized_some/" target="_blank">Playtest feedback is extremely polarized: some play for hours, others quit in 2 minutes. What am I doing wrong?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hey guys,</p> <p>I’ve been working on a top-down roguelike farming game. I recently got some friends and family to playtest it, but the feedback is really confusing me.</p> <p>It&#39;s completely polarized: half of them got super into it and played for hours, while the other half said it was boring and literally closed the game in under 2 minutes.</p> <p>I know friends and family aren&#39;t the best playtesters, but seeing half of them drop off that fast is making me seriously doubt my design. I honestly can&#39;t tell what&#39;s driving them away so quickly.</p> <p>If anyone has a moment to check it out, I&#39;d really appreciate some brutal honesty. What is making people quit in the first 2 minutes? Is my onboarding just terrible?</p> <p><strong>Playable demo: [</strong><a href="https://max0621.itch.io/max-farm">https://max0621.itch.io/max-farm</a><strong>]</strong></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Mammoth-Key-474"> /u/Mammoth-Key-474 </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1rs9oy9/playtest_feedback_is_extremely_polarized_some/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1rs9oy9/playtest_feedback_is_extremely_polarized_some/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1rrb1w1/next_gen_xbox_project_helix_hightlights/" target="_blank">Next Gen Xbox - Project Helix Hightlights</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>UPDATE 10.27am PT: Alpha versions of Project Helix will be sent to developers in 2027, Ronald confirms. Microsoft is pivoting to &quot;future of play&quot; and player behaviors, he adds. &quot;The days of people defining themselves as (console/PC/mobile gamer) don&#39;t really exist anymore.&quot; Ronald is thinking about how to develop tools where players are going to play across multiple devices.</p> <p>UPDATE 10.24am PT: Now onto the juicy stuff... Project Helix! Ronald reiterates that the next-gen Xbox plays Xbox console games and PC games. We even have early Project Helix features:</p> <p><strong>Plays Your Xbox Console &amp; PC Games</strong></p> <p>Powered By Custom AMD SOC</p> <p>Codesigned for Next Generation of DirectX</p> <p>Next Gen Raytracing Performance &amp; capabilities</p> <p>GPU Directed Work Graph Execution</p> <p><strong>AMD FSR Next + Project Helix</strong></p> <p>Built for Next Generation of Neural Rendering</p> <p>Next Generation ML Upscaling</p> <p>New ML Multiframe Generation</p> <p>Next Gen Ray Regeneration for RT and Path Tracing</p> <p><strong>Deep Texture Compression</strong></p> <p>Neural Texture Compression</p> <p>DirectStorage + Zstd</p> <p>Project Helix is &quot;an order of magnitude improvement&quot; on ray tracing performance, Ronald adds.</p> <p><a href="https://youtu.be/58HHlpgkMY8?t=171">https://youtu.be/58HHlpgkMY8?t=171</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/HarvestMana"> /u/HarvestMana </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1rrb1w1/next_gen_xbox_project_helix_hightlights/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1rrb1w1/next_gen_xbox_project_helix_hightlights/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/gamedev/comments/1rs7jfc/gonna_try_a_new_way_to_choose_my_next_project_or/" target="_blank">Gonna try a new way to choose my next project or tasks: Learning Goals</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>TL;DR Summary: <strong>Focus on what you want to learn from the project.</strong></p> <p>Recently I heard some advice not related to game dev that made me change the way I think about my projects. I&#39;ve been thinking it over a lot and I&#39;m going to try a new way to choose what I should focus on next.</p> <p>Thought I&#39;d share to see what people think as I am just starting with this thought process.</p> <p><strong>Target Audience</strong></p> <p>How many of you:</p> <ul> <li>Are not beginners</li> <li>Not currently dedicated to a single project</li> <li>Get indecisive on what to work on</li> </ul> <p>That has totally been me for a while.</p> <p>This may sound like advice for beginners, but I think it will apply to everyone, especially those &quot;in the middle&quot; who are bouncing around between different projects or ideas.</p> <p><strong>The Problem: Flip Flopping Projects</strong></p> <p>Maybe it&#39;s not the only problem but it is definitely a major one.</p> <p>Normally I would be thinking “what would be a good game?” while thinking about the different game ideas I&#39;ve had or genres I&#39;m interested in.</p> <p>Problem is that if/when...</p> <ul> <li>It starts turning out not like I expected/imagined</li> <li>Run into major issues</li> <li>Scope creep</li> <li>Better game idea comes along</li> </ul> <p>...it actually makes sense to quit to switch to a new project. Since my decision was based on making the best game I could think of and now there is a better idea.</p> <p>What did I learn from the work I put in following this pattern?</p> <p>Not much if I&#39;m just setting up basic features for the nth time and abandoning the project before I end up sharing.</p> <p><strong>What are you looking to learn from this project?</strong></p> <p>So what I&#39;m going to try to do is focus on what I need to learn and choose a project I think will accomplish that.</p> <ul> <li>First time making certain mechanics? Make a small game with that mechanic</li> <li>Unique mechanic? Make a prototype</li> <li>Want to add a mini-game in your larger game? Make it in a free game on itch first</li> <li>First time making a game in a genre? Maybe do a game jam and use that genre</li> <li>Want to try blending genres? Make something and see how player&#39;s react to it</li> </ul> <p>It seems so simple and obvious when I write it out but, like I said, I&#39;m usually too focused on the end goal or the &quot;big game.&quot;</p> <p>Another big realization I had:</p> <p>Once you get past being a beginner game dev, a lot of what you want to be focused on is how players react...</p> <p><strong>Player Reactions</strong></p> <p>When I started out I went through tutorials to learn, like: &quot;I did a tutorial on setting up controls and now I know how to implement controls.&quot;</p> <p>Not too long ago I released a small game which got a lot of feedback on controls/player movement - default keys, movement speed, collisions, and more.</p> <p>Though I&#39;ve setup basic controls and movement countless times now, it was actually getting player reactions is what actually helped me to learn and improve.</p> <p>Realizing that my expectations did not match player expectations on something as basic as controls made me think about how far off I could get on much more complicated aspects like unique mechanics or genre mixing attempts.</p> <p>So it&#39;s not just important that you make something to learn but that you actually put it out there to learn if it is good, or if it invokes the reaction you were looking for.</p> <p><strong>Prototyping / Game Jams / Demos / Small Free Games</strong></p> <p>And for everyone screaming “you are literally bagelsplaining what a prototype is” — I’ve def worked with people that lose track of what goals their prototype was supposed to accomplish. But yes, I basically am.</p> <p>BUT also, it can be applied to more than prototyping. If you want to learn something it doesn’t have to be just in a prototype.</p> <ul> <li>Game Jams - get instant feedback since people are in the mindset to leave comments and also open to experimental ideas, like genre blending or unusual mechanics</li> <li>Demos - if you are working on a commercial game you def want your demo to hook the player to wishlist and such, but maybe near the end of the demo it might be safe to introduce that feature you aren&#39;t sure how players will respond to?</li> <li>Small Free Games - like on itch and see how people respond in the comments</li> </ul> <p>With Prototypes, Small games, and Game Jams - I think my point is to not lose focus of what aspects I want to get the players reactions on and learn from - as sometimes I just get lost thinking about what would make it better or what I could add to it.</p> <p><strong>Final Thoughts</strong></p> <p>This isn’t a motivation hack but if I focus on what I want to get out of the project I think it will help to keep moving forward with less second-guessing.</p> <p>I thought I would share because of how often I see posts about getting discouraged, wanting to give up, lack of motivation, realizing their game might suck, etc.</p> <p>We all know a devs first game is rarely a hit and usually a flop - that’s a given - and you are probably going to have to work on a lot of different projects before finding success - the point is to learn from each one.</p> <p>Everything you learn is value added to the rest of your game dev career.</p> <p>Is anyone else thinking this way, too? Am I silly for taking like 10 years to realize this?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/LouBagel"> /u/LouBagel </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1rs7jfc/gonna_try_a_new_way_to_choose_my_next_project_or/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1rs7jfc/gonna_try_a_new_way_to_choose_my_next_project_or/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1rr9k0s/realtime_multiplayer_3d_voxel_game_that_runs/" target="_blank">Real-time multiplayer 3D voxel game that runs inside a Reddit post (Three.js + Devvit) — stress-testing whether this architecture can scale to my full game vision</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;m a solo dev building a real-time multiplayer 3D voxel game that runs entirely inside a Reddit post with no install required. I&#39;m at an interesting development stage: the foundation is working, and before I commit to building the full game vision on top of it I want people who understand what they&#39;re looking at to help me find where the architecture breaks.</p> <p><strong>What&#39;s Actually Built Right Now</strong></p> <p>Basic Minecraft-like block placement and removal in a shared persistent world, plus a trains and rails system. First-person 3D, shared world, all players see each other&#39;s block placements in real time, and trains run on player-laid track. That&#39;s the current scope — deliberately small, deliberately stable. Payments aren&#39;t working yet so, <strong>EVERYTHING IN THE SHOP IS FREE!</strong></p> <p><strong>What I&#39;m Planning to Build On Top of It</strong></p> <p>This is the part I want to pressure-test before I commit. The full vision is two cooperative roles sharing one persistent world:</p> <ul> <li><strong>Industrialists</strong> — Satisfactory-style factory automation. Miners, conveyors, smelters, assemblers, power grids, a full tiered recipe chain from raw ore to quantum processors</li> <li><strong>City Builders</strong> — Cities: Skylines-style city management. Zoning, road networks, utility grids (power and water), population simulation, happiness mechanics, city income economy</li> </ul> <p>Neither role is self-sufficient. Industrialists produce materials that City Builders consume. City Builder populations generate the Voxelcoin economy that funds Industrialists. The trains-and-rails system already built becomes the logistics backbone connecting factory districts to city zones.</p> <p>The question I&#39;m trying to answer right now: <strong>can this architecture actually support that vision, or am I going to hit a wall 6 months from now?</strong></p> <p><strong>The Stack</strong></p> <p>This runs on Reddit&#39;s Devvit platform — a system that lets you embed a full webview inside a Reddit custom post. No install for players, no infrastructure costs for me. The architecture is:</p> <ul> <li><strong>Renderer:</strong> Three.js — custom greedy-meshed voxel chunks, baked ambient occlusion, UV atlas textures, first-person controller with AABB collision</li> <li><strong>Language:</strong> TypeScript (strict), bundled with Vite into a single JS file loaded in the Devvit webview</li> <li><strong>Multiplayer:</strong> Devvit Realtime API — a Redis pub/sub system. The webview sends block placements and player positions to Devvit server-side functions via <code>postMessage</code>. The server validates, writes to Redis, then broadcasts updates to all subscribers on a shared channel</li> <li><strong>Persistence:</strong> Devvit Redis KV — every modified voxel is a key. Chunk deltas, player state, train positions, economy — all Redis</li> <li><strong>Backend logic:</strong> Devvit server-side TypeScript functions — block validation, energy costs, train simulation, economy drip</li> <li><strong>Scheduled jobs:</strong> Devvit Scheduler API — cron-style server jobs for train ticks, energy regen, daily quest resets</li> </ul> <p>No dedicated game server. Reddit&#39;s platform is the backend.</p> <p><strong>What&#39;s Working</strong></p> <p>The core loop is solid. First-person navigation (flying + walking), block placement and removal, water and grass animations, atmospheric fog, basic lighting. All players share one persistent world — every block placed by any player persists in Redis. Player positions broadcast at ~200ms intervals and interpolate smoothly on other clients. Trains run on player-laid rail track. Tested with up to 3 concurrent players without issues.</p> <p><strong>The Architectural Unknowns I Need to Resolve</strong></p> <p>This is the honest reason for this post. Before I build the factory and city simulation layers, I need to know whether the foundation can hold them. Here&#39;s where I have genuine uncertainty:</p> <p><strong>1. Devvit Realtime at scale</strong></p> <p>Currently all players share a single <code>world:presence</code> pub/sub channel. At 3 players broadcasting positions every 200ms that&#39;s fine. The factory vision adds factory state events, city income events, power grid updates, and train positions — all broadcasting on top of player presence. I don&#39;t have solid documentation on Devvit Realtime&#39;s rate limits or max concurrent subscribers per channel. At 30+ players with all those event types firing, does it throttle? Drop messages silently? Hard-error? I&#39;m planning geographic chunk-based channel sharding but I want to know if I&#39;m even in the right ballpark. Has anyone shipped a Devvit Realtime app at meaningful player counts?</p> <p><strong>2. Redis throughput under factory simulation</strong></p> <p>The factory vision means storing every machine, every conveyor segment, and every city zone as individual Redis hashes. A mid-game player setup could be 50-100 machines and 200+ conveyor segments. My planned Scheduler job runs every 5 seconds and needs to read all active factory entities, process recipes, update buffers, and write back. At 10 concurrent players all running factories that&#39;s potentially thousands of Redis reads and writes every 5 seconds through Devvit&#39;s KV layer. I can&#39;t find Devvit&#39;s Redis throughput ceiling anywhere in the docs and I&#39;m not confident I won&#39;t hit it once the factory layer is live.</p> <p><strong>3. The discrete simulation problem</strong></p> <p>This is the one that keeps me up at night. Because I&#39;m on a 5-second Devvit Scheduler tick rather than a real game loop, any simulation I build is fundamentally discrete. The trains system already illustrates this in miniature — train positions are authoritative server state updated on each tick, with client-side interpolation filling the gaps visually. That works for trains. But factory conveyors moving items, city traffic flowing on road segments, power grid state propagating across a network — these all want to feel continuous and responsive, but the server only knows the truth every 5 seconds. My plan is client-side interpolation with server reconciliation, but I&#39;m genuinely uncertain how jarring the corrections will be at 5-second intervals when the factory gets complex. Has anyone solved authoritative slow-tick servers with smooth client-side simulation cleanly?</p> <p><strong>4. Three.js mobile performance</strong></p> <p>A significant portion of Reddit&#39;s traffic is mobile. The renderer runs well on desktop but I haven&#39;t validated it on mid-range Android hardware inside the Reddit app&#39;s WebView. The risks I know about: greedy mesh generation blocking the main thread on chunk load, draw call count with multiple chunks loaded simultaneously, texture filtering on lower-end GPUs. I have a low/high quality toggle but haven&#39;t tested it on real hardware at all.</p> <p><strong>5. Chunk concurrency under simultaneous writes</strong></p> <p>When multiple players place blocks in the same chunk simultaneously, there&#39;s a potential race between chunk load reads and concurrent HSET writes. I&#39;m using last-write-wins Redis semantics currently. I don&#39;t know if Devvit&#39;s server-side function execution model guarantees atomic execution per function instance or whether two simultaneous placements can produce a dirty read. Small problem today with 3 players. Potentially a real problem with 30.</p> <p><strong>What I&#39;m Actually Asking For</strong></p> <p>I want developers — especially anyone with distributed systems, multiplayer, or Devvit experience — to come play the current build and tell me where they think the architecture breaks before I build the next layer on top of it. Specifically:</p> <ul> <li>Anyone who&#39;s built on Devvit and knows the undocumented rate limits</li> <li>Anyone with distributed systems experience who wants to poke at the concurrency model</li> <li>Anyone willing to test on mobile Android and report Three.js performance in the Reddit WebView</li> <li>Anyone who wants to think through whether the 5-second tick model can support a Satisfactory-level factory simulation at all</li> </ul> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/opal-emporium"> /u/opal-emporium </a> <br/> <span><a href="https://www.reddit.com/r/Voxelhood/comments/1rqv75o/voxelhood_build_together/?utm_source=share&amp;utm_medium=web3x&amp;utm_name=web3xcss&amp;utm_term=1&amp;utm_content=share_button">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1rr9k0s/realtime_multiplayer_3d_voxel_game_that_runs/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/gamedev/comments/1rs5cox/i_decided_to_quit_game_developement_what_should_i/" target="_blank">I decided to quit game developement, what should i do with my steam page?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>After about 5–6 months of learning game development and working on my own game, I finally finished a demo version. However, I recently decided to quit game development for now.</p> <p>There are several reasons, but the biggest one is that game development requires a huge amount of time and energy. Honestly, game developers are really strong and dedicated people.</p> <p>I decided it would be better to focus on my studies instead. I&#39;m studying cyber security, and this is my final year before graduation, so I want to put all my time and effort into that.</p> <p>So my question is: what is the best way to handle my Steam page?</p> <p>I already paid the Steam fee, uploaded the demo build, and completed the store page. It was approved, and technically I can release it. But since I decided to stop for now, I&#39;m not sure what to do.</p> <p>Should I release the demo as a free full game, or just keep the page unpublished for the future? Part of me feels like I might come back to game development someday, so I don&#39;t want to waste the opportunity.</p> <p>What do you guys think?</p> <p>Note: my english is not good so i write the post with AI help, I apologise.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/100_BOSSES"> /u/100_BOSSES </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1rs5cox/i_decided_to_quit_game_developement_what_should_i/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1rs5cox/i_decided_to_quit_game_developement_what_should_i/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1rr83tu/game_devs_what_actually_worked_for_marketing_your/" target="_blank">Game devs: what actually worked for marketing your first game?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I’ve been working on my game for a while now, and lately I feel like I’ve hit a wall — both in development and marketing, but mainly with marketing.</p> <p>Building the game feels straightforward compared to trying to get people to actually see it.</p> <p>I’ve been trying different things; - posting on social media - sharing dev updates - testing different types of posts</p> <p>In the beginning it was going well, my views was steady climbing, my steam page had good ctr but it doesn&#39;t convert to wishlist</p> <p>I know marketing is supposed to be a huge part of indie development, but honestly it’s the part I feel the most lost in and it makes me feel kinda burnt out.</p> <p>For other devs who’ve been through this:</p> <p>What helped you break out of that “no visibility” phase? And if this applies to you, how do you handle burnout from the lack of recognition or feeling like the effort you put in doesn&#39;t give you the result you want?</p> <p>Would really love to hear other experiences.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Redacted-Interactive"> /u/Redacted-Interactive </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1rr83tu/game_devs_what_actually_worked_for_marketing_your/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1rr83tu/game_devs_what_actually_worked_for_marketing_your/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/gamedev/comments/1rs4ogd/sometimes_the_simplest_solutions_hide_in_plain/" target="_blank">Sometimes the simplest solutions hide in plain sight (how a linked list solved a problem I didn’t expect it to)</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I’ll try to keep it short as the problem and solution are trivial but also that’s the reason I thought I could make a post - it’s very basic. </p> <p>Today I worked on introducing status effects to my character and knew I want to keep a list of active effects. So I made a `List&lt;StatusEffect&gt;` a member of my Character class, and immediately hated the idea realising now I’d pollute the class with managing that list.</p> <p>The next *obvious* idea is writing a StatusEffect manager but I really try to come up with literally anything other than a next manager class. If possible, it’d be awesome if StatusEffects could just manage themselves especially when all I currently need is the effects to have a limited lifespan, so adding and deleting.</p> <p>And that’s when it hit me that that’s an absolutely overlooked(by me at least) aspect of linked lists. If each Status Effect holds two pointers, it can just delete itself, multiply itself or whatever while being nicely decoupled from the rest. </p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Mroz_Game"> /u/Mroz_Game </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1rs4ogd/sometimes_the_simplest_solutions_hide_in_plain/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1rs4ogd/sometimes_the_simplest_solutions_hide_in_plain/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1rr7ufk/exploration_in_tilebased_turnbased_game/" target="_blank">Exploration in tile-based, turn-based game</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I am building a game heavily inspired by Pixel Dungeon and Dwarf Fortress&#39; Adventure Mode for Android/iOS. The game started as an arena game (the player just fights battle after battle with a simple shop and levelling up system between battles) but I am now thinking of letting the players explore nearby towns and perhaps explore dungeons. Right now, movement is performed via tapping on the screen (like in Pixel Dungeon).</p> <p>I&#39;m trying to think of ways to implement this larger world. I keep thinking about it and it doesn&#39;t feel like the turn-based approach could work well but I might be overthinking it. DF&#39;s Adventure Mode was doing that anyway (although it is very far from a polished game).</p> <p>Does anyone have any thoughts on this? What would some recommendations be?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/ramessesgg"> /u/ramessesgg </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1rr7ufk/exploration_in_tilebased_turnbased_game/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1rr7ufk/exploration_in_tilebased_turnbased_game/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/gamedev/comments/1rs4394/whats_something_new_game_devs_overengineer_that/" target="_blank">What’s something new game devs over-engineer that experienced teams keep simple?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I’ve noticed something interesting while talking with different developers. New devs often try to build very complex systems early, huge architecture, overly flexible frameworks, advanced AI systems, etc. But when you talk to experienced teams, a lot of them keep things much simpler and only add complexity when the game actually needs it.</p> <p>So I’m curious from people who’ve worked on larger teams, what’s one thing you often see new devs over-engineer that experienced teams usually keep simple?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Apprehensive-Suit246"> /u/Apprehensive-Suit246 </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1rs4394/whats_something_new_game_devs_overengineer_that/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1rs4394/whats_something_new_game_devs_overengineer_that/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1rr2qv8/solo_dev_question_trying_to_improve_the_visuals/" target="_blank">Solo dev question — Trying to improve the visuals and NPC interaction in my RPG. Does the lighting and NPC interaction look suitable?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;ve been working on this project for nearly two years now, mostly alone after work, and lately I&#39;ve been trying to improve the visuals and the general feel of NPC interactions - getting the demo ready for a Next Fest later this year.</p> <p>I recorded a short clip from the current build and I&#39;d really appreciate some honest feedback.</p> <p><a href="https://youtu.be/mTvCYyt17zg">https://youtu.be/mTvCYyt17zg</a></p> <p>Mainly I&#39;m wondering:</p> <p>• does the lighting and overall visuals feel natural?<br/> • does the NPC interaction feel believable?<br/> • does the overall quality look decent for an indie RPG?</p> <p>I&#39;m still tweaking things like shadows, particles and atmosphere, so I&#39;m very open to suggestions if anything stands out as wrong. The main focus of my game is the narrative but I want the visuals to be at least decent.</p> <p>The game is called <strong>Tales of the Withered</strong> if anyone&#39;s curious, but I&#39;m mainly here for feedback and advice.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/glimmerveil89"> /u/glimmerveil89 </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1rr2qv8/solo_dev_question_trying_to_improve_the_visuals/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1rr2qv8/solo_dev_question_trying_to_improve_the_visuals/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/gamedev/comments/1rrx4qf/i_sent_my_games_trailer_to_ign_a_few_weeks_ago/" target="_blank">I sent my game’s trailer to IGN a few weeks ago and realized something</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I think with a lot of gamedev marketing advice there is this idea that comes up of &quot;up-selling&quot; (i.e. when you get traction use that to legitimize yourself when reaching out to larger press. Start small work up) which is very real and a valid strategy you should do, but I think there is a caveat to be made. </p> <p>I made the mistake on my previous two games of only reaching out to smaller press because I felt I needed to get those first before aiming higher, and ultimately just never aimed higher. I think that was a mistake.</p> <p>This time I had a little success with some shorts / reels and I still thought it was too low but decided to reach out anyway. After a few days of following up, they responded saying they would post it! </p> <p>Even though my previous 2 games didn&#39;t get that kinda traction I&#39;m realizing I probably could have gotten the trailers through by framing what traction I did have in a more generous way, or by just continuing to annoy their inbox every day lmao. They post so many videos already.</p> <p>The email itself was pretty simple cold email.</p> <ul> <li>Pitch of the game and immediately mentioning what traction I had got with YouTube shorts / Reels</li> <li>Steam page link</li> <li>Presskit and trailer download link</li> </ul> <p>Still waiting to see what the impact actually is, but I do know I am going to use this to upsell to every other press outlet I can, because of the name recognition of IGN. I really wish I had done it sooner with one of the previous games, as I could have potentially already be using that as an in. </p> <p>I&#39;ll try to report back later with how much it helped but thanks for reading, hope it encourages someone else to seize the moment, because it is all to easy to assume you wont get a response from some of these larger outlets.</p> <p>Does this make sense, has anyone ever actually regretted reaching out before they think they have earned it?</p> <p>Ill link the game / trailer in the comments, thanks for reading and let me know if you have any thoughts or questions!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/AAAAAAAAAAH_"> /u/AAAAAAAAAAH_ </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1rrx4qf/i_sent_my_games_trailer_to_ign_a_few_weeks_ago/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1rrx4qf/i_sent_my_games_trailer_to_ign_a_few_weeks_ago/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1rqyg3x/gamedev_question_how_is_the_following_system/" target="_blank">Gamedev question, how is the following system called want to research it</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hello, not a gamedev here, but I want to look this up properly.</p> <p>You may or may not have heard of the <em>gambler’s fallacy</em>, where you expect luck to somehow “accumulate” and assume that after 1000 bad rolls you’re basically due for a win.</p> <p>I assume some games actually implement a mechanic like this so players don’t get punished too harshly by bad RNG. What is this kind of system called?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Shog64"> /u/Shog64 </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1rqyg3x/gamedev_question_how_is_the_following_system/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1rqyg3x/gamedev_question_how_is_the_following_system/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/gamedev/comments/1rrswso/i_made_my_first_1500_from_my_free_mobile_game/" target="_blank">I made my first 1500$ from my free mobile game: here is what worked, and what didn't</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>My free mobile game reached <strong>$1500+ in revenue</strong> (proof at the end)! I’m very happy, however note that this happened over 1 year, so it’s still not enough to pay the bills ^^&#39;</p> <p>For fellow game devs who are curious (or confused) about how to make money from a free mobile game, here are some lessons about what brings money and what doesn’t:</p> <h1>ADS</h1> <p>Yes, my game has rewarded ads. <strong>No banners, and no interstitial (forced) ads.</strong></p> <p>Rewarded ads usually bring between <strong>$0.001 and $0.03 per completed view</strong>. Yes, it’s not a typo, it really is that low. But with volume and time, it can turn into real money.</p> <p>The difference is explained by multiple factors:</p> <ul> <li>How many ads the player has already seen that day (the first ads pay the best)</li> <li>Country of the player (USA &gt; Canada &gt; Europe &gt; Asia &gt; developing countries)</li> <li>Player habits: their device (iOS &gt; Android), consumption behavior, and whether they are a paying player</li> <li>Ad network market saturation: nobody really controls that</li> </ul> <h1>Concrete example</h1> <p>For my game, which only uses rewarded ads, I usually make <strong>between $2 and $10 per day</strong>, with <strong>100 to 500 impressions</strong>.</p> <h1>In-App Purchases (IAP)</h1> <p>Yes, my game also has some IAPs.</p> <p>While they occur much less often than ad impressions, they bring way more money and are generally a sign of good user retention (a player who pays is a player who stays).</p> <p>Basically, I get one IAP <strong>between $3 and $30 every 2-3 days</strong>. Not much, but still nice.</p> <p>Note that the stores take 15% of that money. So yes, fun fact: Apple’s greatest product is not the iPhone, it’s the App Store.</p> <p>Now that I’ve explained the basics, here is <strong>what didn&#39;t work</strong>:</p> <h1>Putting IAP prices too high</h1> <p>In an early version, I had <strong>five IAPs: $1, $9, $29, $49, $99</strong>.</p> <p>Well, the last two were received pretty badly. They brought me <strong>zero money</strong> and even some <strong>bad reviews</strong>.</p> <p>=&gt; <strong>Don’t blindly copy what other games do.</strong> Try to be coherent with your own product.</p> <h1>Putting useless ads</h1> <p>While this is not completely wrong, some rewards are too useless, so players don’t click on them.</p> <p>This isn’t fatal, but always monitor your data and remove (or rework) what isn’t working.</p> <h1>Not putting ad limits</h1> <p>In early versions of the game, I didn’t put ad-watch limits on some rewards.</p> <p>So some players were watching <strong>500 ads per day</strong> just to get infinite money.</p> <p>This is <strong><em>NOT GOOD AT ALL</em></strong>:</p> <ol> <li>After the <strong>20th ad in a single day from one user</strong>, it barely brings any money anymore</li> <li>Ad networks can detect it as <strong><em>fraudulent</em></strong> <strong>behavior</strong> and <strong>ban you from their networks</strong></li> </ol> <p>=&gt; <strong>Always put an ad limit on everything in your game.</strong></p> <h1>End of the post</h1> <p>Alright, that’s all about monetization.</p> <p>There’s still <strong>a lot more to say</strong>, but I don’t want to write an essay, so I’ll stop here.</p> <p>If anyone has questions, <strong>feel free to ask in the comments!</strong></p> <p>If you’re curious about the game itself, feel free to try it &lt;3 :</p> <p><strong>iOS:</strong><br/> <a href="https://apps.apple.com/fr/app/z-road-zombie-survival/id6584530506">https://apps.apple.com/fr/app/z-road-zombie-survival/id6584530506</a></p> <p><strong>Android:</strong><br/> <a href="https://play.google.com/store/apps/details?id=com.SkyJackInteractive.ZRoad">https://play.google.com/store/apps/details?id=com.SkyJackInteractive.ZRoad</a></p> <p><strong>Proof:</strong><br/> <a href="https://ibb.co/wZHQphmC">https://ibb.co/wZHQphmC</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Alvere_Leanes"> /u/Alvere_Leanes </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1rrswso/i_made_my_first_1500_from_my_free_mobile_game/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1rrswso/i_made_my_first_1500_from_my_free_mobile_game/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1rqv4sd/how_to_make_a_world_feel_alive_but_keeping_it/" target="_blank">How to make a world feel alive but keeping it small/medium.</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Does anyone know how can we make a small or medium sized world feel lively and big but keeping it small, i know i heard we can do it by placing a lot of interactions or activities to do, but if there is anything you have which is specific, i would appreciate it : )</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Willing_Designer_105"> /u/Willing_Designer_105 </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1rqv4sd/how_to_make_a_world_feel_alive_but_keeping_it/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1rqv4sd/how_to_make_a_world_feel_alive_but_keeping_it/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/gamedev/comments/1rrrvui/what_is_considered_too_big_for_an_indie_project/" target="_blank">What is considered too big for an indie project?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I see alot of more experienced devs always saying to be careful of things such as feature creep and scope, which rightfully so. But what is too much? The basic recommendations I see for first games are things like recreating pong or flappy bird. The project i want to make is something similar to Final Fantasy 1, which in my head sounds simpler than something like a later FF game or a survival crafting game etc. How do I know when im ready to take on a project like that?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/phoenixashes96"> /u/phoenixashes96 </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1rrrvui/what_is_considered_too_big_for_an_indie_project/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1rrrvui/what_is_considered_too_big_for_an_indie_project/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1rqtmvv/according_to_valve_5863_games_earned_over_100_000/" target="_blank">According to Valve 5863 games earned over 100 000 dollars on Steam in 2025.</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p><a href="https://i.imgur.com/JtqQuTL.jpeg">https://i.imgur.com/JtqQuTL.jpeg</a></p> <p>5,863 games earned $100k+ in 2025. And the accompanying slide which shows the growth of that statistic.</p> <p>1,500 games featured on Daily Deals. 69% of which have never been featured before.</p> <p>8.2M customers bought a Daily Deal in 2025.</p> <p>125% more players buying Daily Deals.</p> <p>66% of players view Steam in a language other than English.</p> <p>Over 50% of active Steam users in 2025 played on more than one machine highlighting the importance of Steam Cloud-support.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Signal_Nobody1792"> /u/Signal_Nobody1792 </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1rqtmvv/according_to_valve_5863_games_earned_over_100_000/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1rqtmvv/according_to_valve_5863_games_earned_over_100_000/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/gamedev/comments/1rrq9mh/40k_wishlists_steam_next_fest_our_strategy_data/" target="_blank">40K wishlists - Steam Next Fest - our strategy & data</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi! </p> <p>Once again, some data from our garage development - this time, the impact of Steam Next Fest on our game Underkeep, a classic dungeon crawler.</p> <p>Thanks to Steam Next Fest and its effect, we gained around 40,000 wishlists (including wishlists 10 days after the event; in total, our game exceeded 50,000 net wishlists).</p> <p>Strategy: We decided to release the demo a week before the start of Steam Next Fest. We promoted the release quite modestly - mainly by posting news (screenshots and short videos) on our social media channels (Facebook, X, BlueSky). Unfortunately, we were unable to release an official PR (system error), and we also decided not to contact influencers directly because we were afraid that they would not be interested in the final version - we had experienced this in the past with another game (but given the interest, it was a mistake).</p> <p>I read a lot of opinions on releasing demos before SNF. Most people didn&#39;t recommend it because the game loses its boost in the first few days of SNF and the algorithms then ignore it. The counterargument is that after SNF starts, most games quickly fade into obscurity because there are too many of them. And influencers don&#39;t have time to react.</p> <p>I&#39;ve watched several games, and both sides are right. It mainly depends on the game. If you have a game that doesn&#39;t attract much attention (especially from influencers), releasing it in advance isn&#39;t a good idea. Unfortunately, this applies to most games. Only a small percentage of games attract influencers, for whom an earlier start is more advantageous.</p> <p>We were lucky that the game caught the attention of both the public and influencers, some of whom released their videos during SNF, thereby improving our conditions on Steam. It&#39;s a shame that the most interesting influencers released their videos after SNF ended, as the impact on Steam&#39;s algorithms could have been even greater. Theoretically.</p> <p><a href="https://www.rakeingrass.com/temp/articles/underkeep_steam_next_fest.png">Graph of Underkeep wishlists</a></p> <p>The graph shows that after the demo was released, wishlists rose to about 500-600 per day. After the start of SNF, we reached about 1,800 wishlists per day, and after the algorithms stabilized, we had 2,000-3,000 wishlists per day. Our maximum of 4,780 wishlists was the day after the end of SNF, mainly thanks to YouTubers.</p> <p>Top games have completely different statistics, but considering that our game is quite retro, this is a great success for us. It was clear that some of the top games were able to reach influencers even before Steam Next Fest, and timing is a big advantage. We (a team of &quot;two and a half men&quot; :) don&#39;t have the capacity, connections, or money for that. But on the other hand, it might not help us much with this type of game, since our game targets to a relatively small group of players.</p> <p>Interestingly, our previous game, Bellfortis (an indie grand strategy game set in the Middle Ages), only received 3-4,000 wishlists during SNF. We released the demo at the beginning of Steam Next Fest.</p> <p>Thanks for reading, and see you next time :)</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Independent_Regret54"> /u/Independent_Regret54 </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1rrq9mh/40k_wishlists_steam_next_fest_our_strategy_data/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1rrq9mh/40k_wishlists_steam_next_fest_our_strategy_data/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1rqrzlk/steam_payouts_in_usd_wise_experience_from_a_nonus/" target="_blank">Steam payouts in USD + Wise (experience from a non-US dev)</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I’m an indie developer based in Europe and wanted to share my experience receiving Steam payouts in USD. When I was setting this up I couldn’t find much clear information, so maybe this helps someone else.</p> <p>The issue I ran into was that Steam pays in USD, while many local banks automatically convert incoming USD to EUR. In my experience that usually means losing some money due to the bank’s exchange rate and fees.</p> <p>So what I ended up doing was connecting my Wise Business account as the payout account for Steam. This is possible as Wise gives you actual USD bank details (account number, ABA/routing number, etc.), which means you can receive USD payments just like a US bank account.</p> <p>One thing to know beforehand: the Wise Business account has a one-time setup fee (about 55€). If you’re receiving business payments, you&#39;re expected to use the business account rather than a personal one.</p> <p>In practice this is how it works for me now:</p> <ol> <li>Steam sends the payment in USD (no fees or exchanges; I get exactly the amount mentioned in Steamworks)</li> <li>The money arrives in Wise in USD</li> <li>I can keep the USD balance or convert it to EUR whenever I want</li> </ol> <p>What I like about this setup is mainly that I’m not forced to convert immediately when the payment arrives. The exchange rates are much closer to the mid-market rate than what my bank offered, and I can choose when to convert.</p> <p>Another small thing I noticed: Wise lets you put idle balances into savings-like products that earn some interest. Interest is typically paid daily and of course taxes depend on where you live.</p> <p>Would be interesting to hear what setups others are using or if there are any pitfalls I haven’t run into yet.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Odd_Particular4116"> /u/Odd_Particular4116 </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1rqrzlk/steam_payouts_in_usd_wise_experience_from_a_nonus/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1rqrzlk/steam_payouts_in_usd_wise_experience_from_a_nonus/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/gamedev/comments/1rro997/which_programming_languages_do_you_write_your/" target="_blank">Which programming languages do you write your games in? Are you aware of methods that apply the end-user's current culture info by default?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>The most ubiquitous example I keep coming across thanks to Unity games is the string generation and case conversion methods <code>ToString</code>, <code>ToUpper</code> and <code>ToLower</code> in C#. Using any of these without arguments for internal, non-user-facing strings is the literal root cause of many bugs that are reproducible only in specific non-English locales like Turkish, Azeri, and other European locales. Turkish and Azeri are especially notorious since they lowercase &quot;<code>I</code>&quot; and uppercase &quot;<code>i</code>&quot; differently from a lot of other locales, which either use or at least respect the regular &quot;<code>I/i</code>&quot; case conversion.</p> <p>I strongly recommend using <code>ToLowerInvariant</code>, <code>ToUpperInvariant</code> and <code>ToString(CultureInfo.InvariantCulture)</code>with &quot;<code>using System.Globalization</code>&quot;. These methods always use invariant culture, which applies the alphabet, decimal, date and other formatting rules of the English language, regardless of end-user&#39;s locale, without being related to a specific geography or country. Of course, if you are dealing with user-facing Turkish text, then these invariant methods will give incorrect results; since Turkish has two separate letter pairs &quot;<code>I/ı</code>&quot; (dotless i) and &quot;<code>İ/i</code>&quot; (dotted i).</p> <p><em>TL; DR:</em> Manipulate internal, non-user-facing, non-Turkish strings in your code under Invariant Culture Info; and for user-facing, Turkish or other localized text, use string conversion methods with appropriate culture info specification.</p> <p>What other programming languages have these quirks? Have you encountered them yourselves during actual programming?</p> <hr/> <p><em>Note:</em> In addition to the potential bugs in your own game&#39;s code, most versions of Unity (the game engine itself) below 6.2 still have the bug where the &quot;<code>I</code>&quot; letter is displayed incorrectly in unrelated non-Turkish text while the game is run on a Turkish device, thus affecting many Unity games automatically. Related issue tracker link: <a href="https://issuetracker.unity3d.com/issues/the-letter-i-is-incorrectly-formatted-into-i-when-capitalised-if-the-devices-region-is-set-to-turkish-turkiye">The letter &quot;i&quot; is incorrectly formatted into “İ&quot; when capitalised if the devices Region is set to &quot;Turkish (Turkiye)&quot;</a></p> <p>Again, based on my examination, the root cause seems related to the <code>ToUpper</code> calls without argument in the SetArraySizes method of the TextMeshProUGUI module of Unity, which is also written in C#. Replacing those with <code>ToUpperInvariant</code> fixed the bug for me (the game I tried this didn&#39;t have Turkish language option for in-game text, so I didn&#39;t get regressions).</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/BoloFan05"> /u/BoloFan05 </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1rro997/which_programming_languages_do_you_write_your/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1rro997/which_programming_languages_do_you_write_your/">[comments]</a></span></div>
           </li>
   
         </ul>
@@ -1451,138 +375,103 @@ By putting all of the smarts into the inliner, users can simply apply an “Inli
         <ul class="item-list">
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1rrevby/student_seeking_feedback_on_simple_vm_personal/" target="_blank">Student seeking feedback on simple VM personal project</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p><a href="https://github.com/adambyle/alphabet/tree/language/alpha">https://github.com/adambyle/alphabet/tree/language/alpha</a></p> <p>^^ This branch has the lexer implemented for my custom assembly language.</p> <p><strong>Not slop guarantee!</strong> I know this is a big claim given the state of this sub today, but hopefully my commit history backs me up. I&#39;ve worked hard on writing almost all of the code and documentation in this project, but I haven&#39;t been afraid to recruit Claude for debugging, learning, and test-writing.</p> <p>I see this project as an important stepping stone on my path to mastery of Rust. I&#39;m particularly proud of my implementation of ASCII strings and other helpers for lexers and parsers. It definitely created one of those moments of just admiring the magic of Rust&#39;s type system. The image system I created is also a treasured feat.</p> <p>Anyway, I am interested in general thoughts on the project--only code is available right now, I know the terminal interface is checked off on the checklist, but that was built messily and then scrapped and now I have to build it back up again. But I&#39;m at least curious to hear some other (humans&#39;!) opinions on the direction of the project.</p> <p>I&#39;m especially open to anyone who wants to tear the project apart for any unidiomatic or otherwise problematic patterns.</p> <p>Thanks in advance!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/adambyle"> /u/adambyle </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1rrevby/student_seeking_feedback_on_simple_vm_personal/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1rrevby/student_seeking_feedback_on_simple_vm_personal/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1rs64il/overkill_or_smart_move_switching_my_b2b_saas/" target="_blank">Overkill or smart move? Switching my B2B SaaS (mobile-first web app) from TS/React to Rust?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi there !</p> <p>I’m working on a B2B SaaS as a one-man project — it’s a responsive web app (mobile-first, nothing native), currently in POC with TypeScript + React. I’m seriously thinking about moving to Rust for production because it feels like it could save me headaches down the line.</p> <p>Quick rundown of what the app does:</p> <p>• Dynamic forms, interactive SVGs, calendar stuff, etc.</p> <p>• REST API backed by PostgreSQL</p> <p>• Some HTTP calls to external AI APIs + JSON parsing</p> <p>• Adapter system to plug in catalogs from different suppliers (this is where Rust traits look perfect to me)</p> <p>• Eventually need to generate EDI XML files for suppliers</p> <p>• Scale is modest — maybe 1k to 5k users in the next 3 years</p> <p>• I code pretty much daily with AI help, so Rust’s steeper parts don’t scare me too much anymore</p> <p>So, what would you pick for something like this?</p> <ol> <li><p>Go full-stack Rust with Leptos or Dioxus — one language, less context switching</p></li> <li><p>Axum for the backend + keep React/TS as a SPA frontend — Rust does the heavy/safe parts, React handles the UI jungle</p></li> <li><p>Something like Loco (the Rails-ish Rust thing) + separate frontend</p></li> <li><p>Other combo I’m missing?</p></li> </ol> <p>What really pulls me toward Rust is the compiler catching dumb mistakes when there’s no team to review code — borrow checker is basically my pair programmer. And traits seem killer for those multi-supplier adapters.</p> <p>For anyone running Rust web apps in production (especially business/SaaS tools), are you still happy with it? Does the thinner frontend ecosystem (vs React) actually hurt day-to-day, or do Leptos/Dioxus + Tailwind make it workable without too much pain?</p> <p>Thanks a ton for any honest takes — super helpful for a project like this! 🙏</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Sprite_fr"> /u/Sprite_fr </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1rs64il/overkill_or_smart_move_switching_my_b2b_saas/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1rs64il/overkill_or_smart_move_switching_my_b2b_saas/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1rre8o9/this_week_in_rust_642/" target="_blank">This Week in Rust #642</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/Squeezer"> /u/Squeezer </a> <br/> <span><a href="https://this-week-in-rust.org/blog/2026/03/11/this-week-in-rust-642/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1rre8o9/this_week_in_rust_642/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1rs460h/help_how_to_take_impl_intoiterator_as_reference/" target="_blank">Help: How to take impl IntoIterator as reference?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>How can <code>take_trait</code> yield <code>&amp;impl AsRef&lt;str&gt;</code> just like <code>take_slice</code> does instead of yielding <code>impl AsRef&lt;str&gt;</code> and taking ownership of the Vec ?</p> <p>Here&#39;s the code:</p> <p>```rust fn take_trait(values: impl IntoIterator&lt;Item: AsRef&lt;str&gt;&gt;) { for v in values { println!(&quot;{}&quot;, v.as_ref()); } }</p> <p>fn take_slice(values: &amp;[impl AsRef&lt;str&gt;]) { for v in values { println!(&quot;{}&quot;, v.as_ref()); } }</p> <p>fn main() { let v = vec![&quot;aaa&quot;, &quot;bbb&quot;];</p> <pre><code>take_trait(v); take_slice(v.as_slice()); </code></pre> <p>} ```</p> <p>And here&#39;s the playground: <a href="https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2024&amp;gist=48827ab1d8f80c532fc45f976c4fa299">https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2024&amp;gist=48827ab1d8f80c532fc45f976c4fa299</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/hbacelar8"> /u/hbacelar8 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1rs460h/help_how_to_take_impl_intoiterator_as_reference/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1rs460h/help_how_to_take_impl_intoiterator_as_reference/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1rrdr8o/project_tlbx1_a_complex_dsp_application/" target="_blank">[Project] TLBX-1 - A Complex DSP Application</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I was not sure how to go about this post... Baking everything into one monolithic post or spreading it out into individual posts that this all touches on....</p> <p>I decided to go monolithic because, that&#39;s how this project started vs. where it is now....</p> <p>I made a DSP application, a fairly complex DSP application. It builds as a stand-alone application as well as VST, CLAP... It&#39;s closed source. This is a commercial application.</p> <p>BUT... I want to provide individual crates of the DSP from the application as opensource... Does this jeopardize me when it comes to releasing this application as commercial product? Can I make crates of my project open-source while keeping the sum of those crates and the &quot;glue&quot; commercial/proprietary?</p> <p>EDIT: Yes, I understand how licensing works. </p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/MMIStudios"> /u/MMIStudios </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1rrdr8o/project_tlbx1_a_complex_dsp_application/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1rrdr8o/project_tlbx1_a_complex_dsp_application/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1rs2pwz/i_rewrote_rustmqtt_a_lightweight_embeddedready/" target="_blank">I rewrote rust-mqtt: a lightweight, embedded-ready MQTT client</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p><a href="https://github.com/obabec/rust-mqtt">repo link</a></p> <p>After diving into the embedded rust ecosystem I found myself looking for an MQTT client that:</p> <ul> <li>offers the full MQTT feature set</li> <li>allows explicit protocol control</li> </ul> <p>The closest I fit was rust-mqtt as it only depends on minimal IO-traits, supports the basic protocol features well enough and is TLS ready. Unfortunately the project appeared to be mostly inactive with only some maintenance activity.</p> <p>Wanting to get involved in the Open Source community anyways, I chose to subject rust-mqtt to an extensive rewrite and got the permission from the owner. Evaluating the ways of currently exisiting as well as other similar implementations such as minimq, mqttrust or mountain-mqtt, I formulated a set of goals I wanted to achieve in the rewrite:</p> <h1>Goals / Features</h1> <ul> <li>Complete MQTTv5 feature transparency</li> <li>Cancel-safe futures</li> <li>A clear and explicit API so users can easily understand what happens underneath on the protocol level</li> <li>Type-driven API for zero to low-cost abstractions to prevent client protocol errors</li> <li>A well-structured and intuitive error API</li> <li>Environment-agnostic IO (works with alloc and no-alloc, relies only on Read/Write with even more to come :eyes:)</li> <li>MQTT&#39;s message delivery retry across different connections</li> <li>Robust packet parsing and validation following the specification&#39;s rules strictly</li> </ul> <p>Nonetheless, rust-mqtt still has limitations and I want to be transparent regarding that. More on Github. Most significant is:</p> <ul> <li>MQTTv3 is currently unsupported</li> <li>No synchronous API yet</li> <li>Cancel safety currently only applies for reading the packet header</li> <li>No ReadReady (or similar) support</li> <li>No hands-free handling of retransmissions or reconnects.</li> </ul> <p>The last point is intentional as it leaves higher-level behaviour to the caller or other libraries built on top. The first four limitations are already on the roadmap.</p> <h1>API example:</h1> <pre><code>let mut client = Client::new(&amp;mut buffer); client.connect(tcp_connection, &amp;ConnectOptions::new(), None).await.unwrap(); let topic = TopicName::new(MqttString::from_str(&quot;rust-mqtt/is/great&quot;).unwrap()).unwrap(); client.publish(&amp;PublicationOptions::new(TopicReference::Name(topic)).exactly_once(), &quot;anything&quot;.into()).await.unwrap(); while let Ok(event) = client.poll().await { ... } </code></pre> <p>If I sparked your interest, I&#39;d be happy to have you check out the repository and share your feedback and opinion in any place it reaches me!</p> <p>Repo: <a href="https://github.com/obabec/rust-mqtt">https://github.com/obabec/rust-mqtt</a></p> <p>Thank you for taking the time and reading this post! rust-mqtt is my first project of broader public interest and it&#39;s been an amazing journey so far. Going forward I&#39;d be happy to accept contributions and build upon rust-mqtt for an even greater, embedded-ready mqtt ecosystem. Cheers!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/AverageClassic2"> /u/AverageClassic2 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1rs2pwz/i_rewrote_rustmqtt_a_lightweight_embeddedready/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1rs2pwz/i_rewrote_rustmqtt_a_lightweight_embeddedready/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1rrdmck/molecular_dynamics_and_discrete_element_method/" target="_blank">Molecular Dynamics And Discrete Element Method MDDEM</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>MDDEM is a MPI (LAMMPS implementation) parallelized rust particle simulator engine for molecular dynamics and discrete element method work. </p> <p>At first, I wanted to learn about LAMMPS communication more through rewriting it into Rust. I also have had many pain points with editing LAMMPS code, and working with LAMMPS scripts, and wanted to see if a scheduler with dependency injection would work for something like this (big fan of bevy).</p> <p>Now that Claude code is good enough to debug MPI communication neighbor list problems (it still struggles a lot with these, don&#39;t we all), I have expanded the scope to hopefully be a nice starting place for anyone wanting to try and vibe code a MD or DEM simulation in rust. <strong>I would not trust this code for anything you want to publish.</strong> I also would not contribute to this code in a serious manual fashion. View it as a playground to test out LLM agents for whatever work you&#39;re doing. That being said, it&#39;s producing reasonable physics results, at about 90% the performance of LAMMPS.</p> <p>If anyone see this and has a better idea for where to post it, lemme know. (Throw away account to keep my personal reddit personal), Also, I know its a meme, but people should really consider rewriting everything in rust.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/SueHeir4"> /u/SueHeir4 </a> <br/> <span><a href="https://github.com/SueHeir/MDDEM">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1rrdmck/molecular_dynamics_and_discrete_element_method/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1rs2d4j/vite_80_is_out_and_its_full_of_rust/" target="_blank">Vite 8.0 is out. And it's full of 🦀 Rust</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>This is a huge step forward for Rust as one of the web&#39;s most popular and prominent building tool now is full packed with Rust. Vite v8 is using Rolldown a Rust written bundler. Rolldown uses Oxc – another Rust written tool to build 🪼TS and JS. To build CSS Vite 8 is using LightningCSS, one more tool written in Rust</p> <p>This is another sign of Rust adoption by web community as Vite is default everyday tool for developers across the globe. And they will use it to build the next generation of web with the help of Rust&#39;s performance and reliability</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/BankApprehensive7612"> /u/BankApprehensive7612 </a> <br/> <span><a href="https://vite.dev/blog/announcing-vite8">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1rs2d4j/vite_80_is_out_and_its_full_of_rust/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1rrcy0u/trick_for_passing_byte_array_without_copying/" target="_blank">Trick for passing byte array without copying?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I’m currently passing a Vec&lt;u8&gt; around freely and <del>closing</del> cloning it a lot. Once created, it’s not modified. I want to treat it like a scalar or struct for simplicity. </p> <p>I tried using Cow but dealing with lifetimes turned out to be really hairy.</p> <p>Is there a better way? I’d basically like it so when the parent thing is cloned the byte array is not fully copied.</p> <p>I feel like Rc might be part of the solution but can’t see exactly how.</p> <p>This may sound spoiled but I really don’t want to deal with explicit lifetimes as it and the parent data types are moved to others frequently.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Toiling-Donkey"> /u/Toiling-Donkey </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1rrcy0u/trick_for_passing_byte_array_without_copying/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1rrcy0u/trick_for_passing_byte_array_without_copying/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1rs0twe/3d_framework_for_rust/" target="_blank">3D framework for rust ?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Is there any creative coding framework available for rust that is roughly similar to OpenFrameworks ? Nannou looks interesting but appears to be mostly 2D centric. Bevy is a possibility but it’s probably much more than we need .</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Hefty-Fact5346"> /u/Hefty-Fact5346 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1rs0twe/3d_framework_for_rust/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1rs0twe/3d_framework_for_rust/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1rra6vz/i_got_tired_of_rewriting_mcp_server_boilerplate/" target="_blank">I got tired of rewriting MCP server boilerplate, so I built a config-driven framework in Rust as my first open-source contribution</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>So I&#39;ve been developing MCP servers for various clients at work and decided to reduce the boilerplate code required to spin up MCP servers. After honing it for several months of using it for work, I decided to button it up and actually open source it. This is my first open source project, so I hope someone finds it as helpful as I do. It&#39;s about 14k lines of code, 800+ tests with 95% coverage.</p> <p>What this is:</p> <ul> <li> A config-driven MCP server framework built on the official <a href="https://github.com/modelcontextprotocol/rust-sdk">rmcp SDK</a></li> <li>Define tools, auth (bearer/OAuth/JWT), prompts, resources, and HTTP behavior in YAML all WITHOUT BOILERPLATE :)</li> <li>Full extensibility for custom tools/auth/routes/completions through plugin support</li> <li>Supports both streamable HTTP and stdio transports</li> <li>Implements the full <a href="https://modelcontextprotocol.io/specification/2025-11-25">Model Context Protocol 2025-11-25 spec</a>. All MCP features can be enabled through config</li> </ul> <p>Using this framework, you can spin up an MCP server with <strong>as little as ~30 lines of yaml</strong>. It has built-in HTTP tooling, so no additional setup is needed if you just need MCP tools that call HTTP endpoints. This isn&#39;t a toolbox, so aside from the built-in HTTP tool execution, there&#39;s no built-in tooling for file systems, database connections, etc. Those need to be provided with plugins. But this framework lets you focus on just the business logic of the plugins without needing to focus on the MCP protocol plumbing.</p> <p>If you get a chance to use this, please give it a try and let me know how it goes! I&#39;d love to keep improving on this repo</p> <p><strong>Links</strong>:</p> <ul> <li><strong>GitHub</strong>: <a href="https://github.com/nullablevariant/rust-mcp-core">https://github.com/nullablevariant/rust-mcp-core</a></li> <li><strong>crates.io</strong>: <a href="https://crates.io/crates/rust-mcp-core">https://crates.io/crates/rust-mcp-core</a> </li> </ul> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/No-Zombie4713"> /u/No-Zombie4713 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1rra6vz/i_got_tired_of_rewriting_mcp_server_boilerplate/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1rra6vz/i_got_tired_of_rewriting_mcp_server_boilerplate/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1rryw0h/i_wrote_a_purerust_video_codec_that_compiles_to/" target="_blank">I wrote a pure-Rust video codec that compiles to WASM, no FFI</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi all, long time game engine nerd here. This time I wanted to give something back :) I needed video playback in a WASM game engine, every option required C FFI, so I wrote my own codec in pure Rust.</p> <p> I&#39;m actually pretty proud of this one. It beats MPEG-1 and MPEG-2 on quality, encodes faster than VP9, has a formally specified bitstream, and compiles to wasm32-unknown-unknown with zero native dependencies. All that in a<br/> weekend-project-sized codebase.</p> <p>Live demo: <a href="https://coffeecupentertainment.com/static/riv2-player/index.html?bbb.riv">here</a></p> <p>Code, Documentation and Benchmarks : <a href="https://github.com/xhighway999/riv2">here</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/xhighway999"> /u/xhighway999 </a> <br/> <span><a href="https://i.redd.it/98a6jipfqnog1.png">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1rryw0h/i_wrote_a_purerust_video_codec_that_compiles_to/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1rr9fj2/deciding_whether_to_use_stdthread_or_tokiospawn/" target="_blank">Deciding whether to use std::thread or tokio::spawn_blocking</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;ve been reading over the tokio documentation (which is really great, and I appreciate!), but I still can&#39;t decide whether I should be using <code>std::thread::Builder()::new().spawn()</code> or <code>tokio::spawn_blocking</code>.</p> <p>I have a single background job running in a loop indefinitely. Each loop iteration has a blocking evaluation that can take 10-300ms depending on the available hardware acceleration. However, it relies on another process that provides fresh data to a sync channel every ~30ms.</p> <p>So, if the model evaluates in 10ms, the loop can yield back the CPU for ~20ms while it waits for new data.</p> <p>Here are my thoughts/questions so far, please correct me if any of them are misguided:</p> <ol> <li>Blocking 10-300ms <strong>seems like a bad idea for tokio&#39;s core threads</strong>, which I&#39;m relying on to render and interact with the UI (shoutout to Tauri).</li> <li>Since the job is running indefinitely, I suppose I could use a blocking thread with <code>.thread_keep_alive(Duration::MAX)</code>, but <strong>it&#39;s not clear to me if this inadvisable for any reason</strong></li> <li>Supposing that&#39;s fine, <strong>it seems to me that the only way I could free up the CPU from within a tokio</strong> <strong><em>blocking</em></strong> <strong>thread is to call</strong> <code>std::thread::sleep</code>, <strong>but I&#39;m not sure if this will actually behave the way I would expect in, say, a std thread</strong></li> <li>Supposing that works the way it would for a std thread, <strong>is there any notable benefit to using a tokio blocking thread instead</strong>?</li> <li>Supposing there are good reasons to prefer a tokio blocking thread, <strong>are there any downsides to using a tokio blocking thread for this that I haven&#39;t considered</strong>?</li> </ol> <p>I appreciate any insight you can offer; thanks!</p> <h1></h1> <p>UPDATE:</p> <p>Someone pointed out that the documentation says:</p> <blockquote> <p>This function is intended for non-async operations that eventually finish on their own. If you want to spawn an ordinary thread, you should use <a href="https://doc.rust-lang.org/nightly/std/thread/functions/fn.spawn.html"><code>thread::spawn</code></a> instead.</p> </blockquote> <p>I stupidly misread this as &quot;If you want to spawn an ordinary thread, you should use <code>task::spawn</code> instead,&quot; which did not seem suitable to my use case. So, reading what&#39;s ACTUALLY written in the documentation (:facepalm:), it seems I should be using a std thread &lt;3</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Perfect-Junket-165"> /u/Perfect-Junket-165 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1rr9fj2/deciding_whether_to_use_stdthread_or_tokiospawn/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1rr9fj2/deciding_whether_to_use_stdthread_or_tokiospawn/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1rrxyzq/free_tokioconf_tickets_for_contributors_and_open/" target="_blank">Free TokioConf tickets for contributors and open source maintainers</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/carllerche"> /u/carllerche </a> <br/> <span><a href="https://tokio.rs/blog/2026-03-12-tokioconf-oss-tickets">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1rrxyzq/free_tokioconf_tickets_for_contributors_and_open/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1rr5lmh/introducing_dogleg_high_quality_backend_agnostic/" target="_blank">Introducing Dogleg: High Quality, Backend Agnostic, Least-Squares Minimization</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hello Scientific Rust folks,</p> <p>in happy to introduce the <code>dogleg</code> crate, which is a least-squares minimization crate which uses the famous algorithm of the same name to perform said optimization. It exposes a simple, but powerful interface to minimize a sum of squares with respect to a number of parameters.</p> <h1>Why Use It?</h1> <ul> <li><strong>High numerical quality</strong>: it&#39;s on par with the CERES implementation of the same algorithm in terms of <em>numerical results</em>, not yet speed.</li> <li><strong>Backend Agnostic</strong>: So far it works with `faer` and `nalgebra`, but other backends can be implemented. I&#39;m happy to receive contributions.</li> <li><a href="https://crates.io/crates/dogleg">Well documented</a>.</li> </ul> <p>Please note that this is the first version. I&#39;m confident in the numerical quality, but the runtime performance is something I&#39;ll optimize in the coming releases.</p> <h1>More Questions and Answers</h1> <p><strong>Q1</strong> Do you have examples?<br/> <strong>A1</strong> <a href="https://docs.rs/dogleg/latest/dogleg/#1-example">Yes</a>.</p> <p><strong>Q2</strong> Why did you stick a Big Leboswki quote into your documentation??<br/> <strong>A2</strong> Well, Dude, <a href="https://docs.rs/dogleg/latest/dogleg/">we just don&#39;t know...</a></p> <p><strong>Q3</strong> Why does it look like the <code>levenberg-marquardt</code> crate?<br/> <strong>A3</strong> <a href="https://docs.rs/dogleg/latest/dogleg/#4-almost-drop-in-compatibility-with-levenberg-marquardt">By design</a>.</p> <p><strong>Q4</strong> Is this another minimization _framework_?<br/> <strong>A4</strong> <a href="https://docs.rs/dogleg/latest/dogleg/#3-goals-and-non-goals">No!</a> This does one thing well.</p> <p><strong>Q5</strong> Did you use AI?<br/> <strong>A5</strong> <a href="https://docs.rs/dogleg/latest/dogleg/#71-generative-ai-policy">Not really</a>.</p> <p><strong>Q6</strong> Were you inspired by other software/crates/books?<br/> <strong>A6</strong> <a href="https://docs.rs/dogleg/latest/dogleg/#6-acknowledgments--references">Yes</a>, massively.</p> <p><strong>Q7</strong> Can I contribute?<br/> <strong>A7</strong> <a href="https://docs.rs/dogleg/latest/dogleg/#7-contributing">Please do</a>!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/geo-ant"> /u/geo-ant </a> <br/> <span><a href="https://crates.io/crates/dogleg">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1rr5lmh/introducing_dogleg_high_quality_backend_agnostic/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1rrxwzp/built_an_image_converter_with_rust_libvips_heic/" target="_blank">Built an image converter with Rust + libvips — HEIC, WebP, 20+ formats</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Tech stack: - Backend: Rust + Axum + libvips (one of the fastest image processing libraries) - Frontend: React + Vite + MUI - Hosting: VPS with Caddy What it does: - Converts HEIC, WebP, PNG, JPG, AVIF, TIFF, BMP, GIF and 20+ formats - Batch convert up to 10 images at once - Resize and adjust quality before converting - Files are automatically deleted after 6 hours - No signup, no watermarks, 100% free The hardest part was getting HEIC support working — had to build libheif 1.21.2 from source because the package manager version was too old. <a href="https://convertifyapp.net">https://convertifyapp.net</a> Happy to answer questions about the stack.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/UnderstandingFit2711"> /u/UnderstandingFit2711 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1rrxwzp/built_an_image_converter_with_rust_libvips_heic/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1rrxwzp/built_an_image_converter_with_rust_libvips_heic/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1rr5hc2/homogeneous_try_blocks_fcp_proposed/" target="_blank">homogeneous_try_blocks FCP proposed 🤞</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/C5H5N5O"> /u/C5H5N5O </a> <br/> <span><a href="https://github.com/rust-lang/rfcs/pull/3721#issuecomment-4041282901">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1rr5hc2/homogeneous_try_blocks_fcp_proposed/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1rrx5sz/a_wip_os_using_macho_written_in_rust/" target="_blank">A WIP OS using Mach-O written in Rust</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I spent a long time writing this project, which includes a bootloader that supports loading Mach-O images, a Dyld that supports rebase in a no_std environment, and an object-oriented kernel using a capability model. The biggest challenge was arguably the lack of a good linker. In fact, only Apple&#39;s ld64 supports statically linking binaries, and LLVM&#39;s ld64.lld doesn&#39;t work properly on Windows (I don&#39;t know if others have encountered this problem; it can&#39;t find object files on Windows, and I even moved my development environment to Linux because of it). In the end, I opted to use a modified version of bold linker. However, no matter what I did, I couldn&#39;t keep the DWARF Debug Info within the kernel image; it always gets split into a dSYM file, making debugging extremely difficult. I would be very happy if someone could tell me how to fix this.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Molyuuing"> /u/Molyuuing </a> <br/> <span><a href="https://i.redd.it/rgwchtzkfnog1.png">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1rrx5sz/a_wip_os_using_macho_written_in_rust/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1rr4oyk/ask_is_there_an_equivalent_of_djangoadmin_aka/" target="_blank">Ask: Is there an equivalent of Django-admin (aka: auto-generate html forms)</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Of the main things I miss of Django is how easy is to build around 80% of the web ui. </p> <p>Is there any crate that almost has it?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/mamcx"> /u/mamcx </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1rr4oyk/ask_is_there_an_equivalent_of_djangoadmin_aka/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1rr4oyk/ask_is_there_an_equivalent_of_djangoadmin_aka/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1rrx1bx/5x_faster_than_rust_standard_channel_mpsc/" target="_blank">5x Faster than Rust Standard Channel (MPSC)</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>The techniques used to achieve this speedup involve specialized, unsafe implementations and memory arena strategies tailored specifically for high-performance asynchronous task execution. This is not a robust, full-featured MPSC implementation, but rather an optimized channel that executes FnOnce. This is commonly implemented using MPSC over boxed closures, but memory allocation and thread contention were becoming the bottleneck.</p> <p>The implementation is not a drop-in replacement for a channel, it doesn&#39;t support auto-flushing and has many assumptions, but I believe this may be of use for some of you and may become a crate in the future.</p> <p><strong>Benchmarks</strong></p> <p>We performed several benchmarks to measure the performance differences between different ways of performing computation across threads, as well as our new communication layer in Burn. First, we isolated the channel implementation using random tasks. Then, we conducted benchmarks directly within Burn, measuring framework overhead by launching small tasks.</p> <p><a href="https://preview.redd.it/3d9fmws5bnog1.png?width=2048&amp;format=png&amp;auto=webp&amp;s=949ecc004f58a0207c234684588860655416efba">https://preview.redd.it/3d9fmws5bnog1.png?width=2048&amp;format=png&amp;auto=webp&amp;s=949ecc004f58a0207c234684588860655416efba</a></p> <p>The benchmarks reveal that a mutex remains the fastest way to perform computations with a single thread. This is expected, as it avoids data copying entirely and lacks contention when only one thread is active. When multiple threads are involved, however, it is a different story: the custom channel can be up to 10 times faster than the standard channel and roughly 2 times faster than the mutex. When measuring framework overhead with 8 threads, we can execute nearly twice as many tasks compared to using a reentrant mutex as the communication layer in Burn.</p> <p>Why was a dedicated channel slower than a lock? The answer was memory allocation. Our API relies on sending closures over a channel. In standard Rust, this usually looks like <code>Box&lt;dyn FnOnce()&gt;</code>. Because these closures often exceeded 1000 bytes, we were placing massive pressure on the allocator. With multiple threads attempting to allocate and deallocate these boxes simultaneously, the contention was worse than the original mutex lock. To solve this, we moved away from the safety of standard trait objects and embraced pointer manipulation and pre-allocated memory.</p> <p><strong>Implementation Details</strong></p> <p>First, we addressed zero-allocation task enqueuing by replacing standard boxing with a tiered Double-Buffer Arena. Small closures (≤ 48 bytes) are now inlined directly into a 64-byte Task struct, aligned to CPU cache lines to prevent false sharing, while larger closures (up to 4KB) use a pre-allocated memory arena to bypass the global allocator entirely. We only fallback to a standard Box for closures larger than 4KB, which represent a negligible fraction of our workloads.</p> <p>Second, we implemented lock-free double buffering to eliminate the contention typical of standard ring buffers. Using a Double-Buffering Swap strategy, producers write to a client buffer using atomic Acquire/Release semantics. When the runner thread is ready, it performs a single atomic swap to move the entire batch of tasks into a private server buffer, allowing the runner to execute tasks sequentially with zero interference from producers.</p> <p>Finally, we ensured recursive safety via Thread Local Storage (TLS). To handle the recursion that originally necessitated reentrant mutexes, the runner thread now uses TLS to detect if it is attempting to submit a task to itself. If it is, the task is executed immediately and eagerly rather than being enqueued, preventing deadlocks without the heavy overhead of reentrant locking.</p> <p><strong>Conclusion</strong></p> <p>Should you implement a custom channel instead of relying on the standard library? Probably not. But can you significantly outperform general implementations when you have knowledge of the objects being transferred? Absolutely.</p> <p>Full blog post: <a href="https://burn.dev/blog/faster-channel/">https://burn.dev/blog/faster-channel/</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/ksyiros"> /u/ksyiros </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1rrx1bx/5x_faster_than_rust_standard_channel_mpsc/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1rrx1bx/5x_faster_than_rust_standard_channel_mpsc/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1rr4hy6/real_time_sync_between_browser_and_ios_in_pure/" target="_blank">real time sync between browser and iOS in pure Rust</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>both clients are Dioxus and I can&#39;t get over how well the cross-platform story works now. backend/sync engine is built with Forge (<a href="https://github.com/isala404/forge">https://github.com/isala404/forge</a>), something I&#39;ve been hacking on (very alpha). Idea was to get the whole thing runs as a single binary, only thing you need is postgres. anyway just wanted to share because this makes me unreasonably happy.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/supiri_"> /u/supiri_ </a> <br/> <span><a href="https://i.redd.it/jwnb6ur61hog1.gif">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1rr4hy6/real_time_sync_between_browser_and_ios_in_pure/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1rrwdwz/seeking_feedback_on_my_fzf_alternative/" target="_blank">Seeking feedback on my fzf alternative (+ Reflections on my Rust journey)</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi all, Rust is the first thing that ever captured my attention in a healthy way: it&#39;s the only language that I enjoy reading (Every other language I&#39;ve tried, there&#39;s something about their practices, whether it&#39;s the archaic syntax and cryptic names of C, the ad-hoc-ness of python or the brevity of languages like Haskell and perl, that makes me think: Rust does this too, but properly). Also, the docstring + language support + intuitive syntax helps a lot too. A few days ago, I released my first full rust project. I know it&#39;s pretty basic, just a fzf alternative, but quoting junegunn himself, most things deal with some sort of list. So I saw a lot of utility trying to improve and making a tool like fzf more accessible, both as a tool and as a library.</p> <p>During the making, I really liked how rust was always seemed to have a answer to everything I wanted to do, from concurrency to proc-macros, and not just any answer, but a robust and elegant one. It&#39;s also not just language features: Most of the times I encountered some feature-blocker or bug, the way it got resolved was by rethinking the purpose, not the implementation -- and I appreciate that that the designs of Rust really encourage you to do that, even if it&#39;s sometimes just by ambience -- everything is just so intuitive and motivated. That&#39;s not to say I don&#39;t have nits with the language, but I think that&#39;s a post for another day.</p> <p>Anyway, I was hoping that my project might be useful to people, or even that I might get some feedback on what people like/want out of this kind of utility in general. But the reception was a bit less than I had hoped for. Nevertheless, I learned some interesting things, like the very cool <a href="https://github.com/saghen/frizbee">https://github.com/saghen/frizbee</a> implementation which I plan to add once I get around to learning it. Since then I&#39;ve also finalized some features, added some docs and fixed some bugs -- there&#39;s nothing quite like posting your tool only to realize the examples don&#39;t even work to give you a push.</p> <p>Well this post is a little different, I guess? More than just sharing my project, I wanted to request for some feedback. Do you use fzf much or not at all, if you do, what do you like most about it, do you use it much for specialized usecases like for kubernetes or git or something. Are there any (complex) examples (something involving a list of actions, which it would be useful to dynamically reload, preview and execute actions on) which might convince you to give matchmaker if it an example was given for it. If you decide to try matchmaker, do you like it or do you think it&#39;s just an unnecessary fzf clone, or do y&#39;all have any advice for getting word out.</p> <p>Without further waffling, here it is: <a href="https://github.com/Squirreljetpack/matchmaker">matchmaker</a>. If you have some spare time, I&#39;d really appreciate if you check it. I&#39;m not gonna list the selling points here -- hopefully the built-in help and README should be enough for those.</p> <p>One final note: if you&#39;re interested, you can also check out a TUI file browser that&#39;s built using matchmaker: imo it&#39;s pretty powerful without being complex. I tried yazi a long time ago, and was blown away by its power and features, but I found it a bit too much for my needs. <a href="https://github.com/Squirreljetpack/fist">f:ist</a> is my answer to that. Although I use it daily as a replacement/augmentation for fzf/zoxide/ripgrep/fd, since it&#39;s not complete yet so I&#39;m not creating any posts for just yet.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/squirreljetpack"> /u/squirreljetpack </a> <br/> <span><a href="https://i.redd.it/a3r11u1wanog1.png">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1rrwdwz/seeking_feedback_on_my_fzf_alternative/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1rr4fbw/a_collection_of_crates_for_rust_that_i_released/" target="_blank">A collection of crates for Rust that I released recently</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><h1>compio-rustls</h1> <p>Just released this. Simply put, the official <code>compio-tls</code> relies on <code>dyn</code> objects. I did not see any reason it should. So here&#39;s this crate.</p> <blockquote> <p>Crates: <a href="https://crates.io/crates/compio-rustls">compio-rustls</a> </p> <p>Git: <a href="https://github.com/loncothad/compio-rustls">github@loncothad/compio-rustls</a></p> </blockquote> <h1>xiaoyong (collection)</h1> <p>Mostly born out of lack of non-<code>Sync</code> primitives implemented for single-threaded Rust but also offers some <code>Sync</code>-friendly implementations.</p> <h1>xiaoyong-channels</h1> <p>Thread-safe impls: Bounded async MPMC; Async oneshot; Bounded async SPSC. Single-threaded impls: Bounded async MPSC.</p> <h1>xiaoyong-value</h1> <p>Thread-safe impls: AtomicOnce (Atomic-based std&#39;s Once-like impl). Single-threaded impls: Async Mutex; Async RwLock; Async RcSwap; non-async RcSwap.</p> <p>Notes:</p> <ol> <li>There&#39;s also a <code>Permanent&lt;T&gt;</code> impl for those a grand idea was a Arc/Rc simulation but it didn&#39;t really work out so it&#39;s just a typed handle to &quot;leaked&quot; data.</li> <li>RcSwap is basically an alternative to <a href="https://crates.io/crates/arc-swap">ArcSwap</a>.</li> </ol> <h1>xiaoyong-notify</h1> <p>Various notification primitives that all in the end do one thing - async notifications. I would advise to just look at the docs to see what is available and if you need anything from there.</p> <blockquote> <p>Crates: <a href="https://crates.io/crates/xiaoyong-channels">xiaoyong-channels</a>, <a href="https://crates.io/crates/xiaoyong-value">xiaoyong-value</a>, <a href="https://crates.io/crates/xiaoyong-notify">xiaoyong-notify</a> </p> <p>Git: <a href="https://github.com/loncothad/xiaoyong">github@loncothad/xiaoyong</a></p> </blockquote> <h1>nohasher</h1> <p>Just a no-op hasher for integer-ish keys.</p> <blockquote> <p>Crates: <a href="https://crates.io/crates/nohasher">nohasher</a> </p> <p>Git: <a href="https://github.com/loncothad/nohasher">github@loncothad/nohasher</a></p> </blockquote> <p>I hope that some of those would be useful to you.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/loncothad"> /u/loncothad </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1rr4fbw/a_collection_of_crates_for_rust_that_i_released/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1rr4fbw/a_collection_of_crates_for_rust_that_i_released/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1rrtk6c/announcing_rustup_1290/" target="_blank">Announcing rustup 1.29.0</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/Kobzol"> /u/Kobzol </a> <br/> <span><a href="https://blog.rust-lang.org/2026/03/12/Rustup-1.29.0/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1rrtk6c/announcing_rustup_1290/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1rr42gw/benchmarking_rust_vs_spring_boot_vs_quarkus_for/" target="_blank">Benchmarking Rust vs Spring Boot vs Quarkus for API performance</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi Rustaceans 👋</p> <p>I recently ran a benchmark comparing a simple API endpoint implemented in:</p> <p>• Rust (Axum + Tokio)</p> <p>• Spring Boot (JVM)</p> <p>• Spring Boot Native</p> <p>• Quarkus Native</p> <p>The endpoint performs a JSON response with a PostgreSQL query under load (100 concurrent connections for 60s).</p> <p>In my tests Rust delivered significantly higher throughput and lower P99 latency, but the bigger takeaway for me was understanding where the runtime overhead in JVM services actually comes from (GC pauses, framework infrastructure, etc.).</p> <p>I wrote up the full breakdown here including numbers, GC behavior, and the trade-offs between Rust and JVM stacks.</p> <p>I&#39;d really appreciate feedback from the Rust community on:</p> <p>- Whether the benchmark setup seems fair</p> <p>- Framework choices (Axum vs Actix, etc.)</p> <p>- Any obvious mistakes in the methodology</p> <p>- Real-world experiences running Rust APIs in production</p> <p>Always interested in learning how others are using Rust for backend services.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/aarkay89"> /u/aarkay89 </a> <br/> <span><a href="https://medium.com/@aarkay89/rust-vs-spring-boot-vs-quarkus-the-performance-truth-nobody-talks-about-09941b196f8e">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1rr42gw/benchmarking_rust_vs_spring_boot_vs_quarkus_for/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1rrsu00/coming_from_python_to_rust/" target="_blank">Coming from Python to Rust.</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hello guys I have started learning rust and it has already become rusty, coming from a high level language to a low level I am feeling the heat, anybody that had this shift how did you able to handle this scenario what was your way of learning, From python I learned most by doing projects but rust seems a different case there are some things that was &quot;obvious&quot; in python that are not obvious anymore.i would really appreciate any tips or resources that helped you.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/One_Pop_7316"> /u/One_Pop_7316 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1rrsu00/coming_from_python_to_rust/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1rrsu00/coming_from_python_to_rust/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1rr39wh/this_month_in_rust_osdev_february_2026/" target="_blank">This Month in Rust OSDev: February 2026</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/phil-opp"> /u/phil-opp </a> <br/> <span><a href="https://rust-osdev.com/this-month/2026-02/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1rr39wh/this_month_in_rust_osdev_february_2026/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1rrsj4k/is_there_a_language_similar_to_rust_but_with_a/" target="_blank">Is there a language similar to Rust but with a garbage collector?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi everyone,</p> <p>I’m learning Rust and I really like its performance and safety model. I know Rust doesn’t use a garbage collector and instead relies on ownership and borrowing.</p> <p>I’m curious: <strong>are there programming languages that are similar to Rust but use a garbage collector instead?</strong></p> <p>I’d like to compare the approaches and understand the trade-offs.</p> <p>Thanks!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Ok_Tension_6700"> /u/Ok_Tension_6700 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1rrsj4k/is_there_a_language_similar_to_rust_but_with_a/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1rrsj4k/is_there_a_language_similar_to_rust_but_with_a/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1rr00sd/were_planning_to_support_rust_at_nyno_opensource/" target="_blank">We're planning to support Rust at Nyno (open-source n8n alternative). Is this the best possible way for. so extensions?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi Rust Community,</p> <p>We&#39;re planning to support Rust with Nyno (Apache2 licensed GUI Workflow Builder) soon. Long story short: I am only asking about the overall Rust structure (trait + Arc + overall security).</p> <p>Things that are fixed because of our engine: Functions always return a number (status code), have a unique name, and have arguments (args = array, context = key-value object that can be mutated to communicate data beyond the status code).</p> <p>Really excited to launch. I already have the multi-process worker engine, so it&#39;s really the last moment for any key changes to be made for the long-term for us.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/EveYogaTech"> /u/EveYogaTech </a> <br/> <span><a href="https://i.redd.it/c53yo5li9gog1.png">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1rr00sd/were_planning_to_support_rust_at_nyno_opensource/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1rrsad8/is_there_a_way_to_get_information_about_the/" target="_blank">Is there a way to get information about the status of parts in a PC?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>For my ESP32 project, I need a <strong>Rust</strong> program that will run continuously in the background and send information about the GPU and memory clock, temperature, and other information to my ESP32 on the local network.</p> <p>Basically, I need a program like HWMonitor or HWinfo64, but with its own API, to retrieve all the information I can. <strong>Does anyone know of similar programs with APIs or libraries that could be used to implement this?</strong></p> <p><sup>I apologize in advance if I have somehow incorrectly described my goals or made mistakes in the implementation methods; I have only been studying programming and practicing for a very short time.</sup></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/wolfyk17"> /u/wolfyk17 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1rrsad8/is_there_a_way_to_get_information_about_the/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1rrsad8/is_there_a_way_to_get_information_about_the/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1rqxkuh/usbgadget_10_implement_usb_peripherals_in_rust_on/" target="_blank">usb-gadget 1.0: Implement USB peripherals in Rust on Linux</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hey Rustaceans!</p> <p>About two years ago I shared <strong>usb-gadget</strong> here, a library for implementing USB gadgets (peripherals) on Linux. Today it hits 1.0! 🎉</p> <p>usb-gadget lets you:</p> <ul> <li>🎛️ Configure <strong>standard USB functions</strong>: serial ports, network interfaces, HID, mass storage, printers, audio, MIDI, video, and more</li> <li>🔨 Implement <strong>fully custom USB functions</strong> in user-mode Rust via FunctionFS</li> <li>🧑‍🔧 Set up WebUSB, Microsoft OS descriptors (WinUSB), and DFU</li> </ul> <p>What&#39;s new since the original announcement:</p> <ul> <li><strong>USB gadget CLI tool</strong>: configure gadgets from TOML files without writing code</li> <li><strong>DMAbuf support</strong> for zero-copy I/O in custom functions</li> <li><strong>DFU descriptor support</strong> for firmware upgrade interfaces</li> <li>UAC1, loopback, and sourcesink gadget support</li> <li>More UVC video formats</li> <li>various bug fixes and improved error handling</li> </ul> <p>The API has been stable for a while now and is used in production, so it felt like the right time to commit to semver stability.</p> <p>Thank you to everyone who contributed along the way, through PRs, issues, bug reports, and patches from forks. This release wouldn&#39;t have been possible without the community!</p> <p>📦 <a href="https://crates.io/crates/usb-gadget">crates.io</a> · 📝 <a href="https://docs.rs/usb-gadget">Docs</a> · 💻 <a href="https://github.com/surban/usb-gadget">GitHub</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/surban"> /u/surban </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1rqxkuh/usbgadget_10_implement_usb_peripherals_in_rust_on/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1rqxkuh/usbgadget_10_implement_usb_peripherals_in_rust_on/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1rrs7jp/i_built_a_realtime_code_quality_grader_in_rust/" target="_blank">I built a real-time code quality grader in Rust — treemap visualization + 14 health metrics via tree-sitter</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p><a href="https://preview.redd.it/wn3mdnfaynog1.png?width=1494&amp;format=png&amp;auto=webp&amp;s=ede8eff4d64a59dca2dd8b54a1ae8f8b20bc0f38">https://preview.redd.it/wn3mdnfaynog1.png?width=1494&amp;format=png&amp;auto=webp&amp;s=ede8eff4d64a59dca2dd8b54a1ae8f8b20bc0f38</a></p> <p>I built sentrux — a real-time code structure visualizer and quality grader.</p> <p>What it does:</p> <p>- Scans any codebase, renders a live interactive treemap (egui/wgpu)</p> <p>- 14 quality dimensions graded A-F (coupling, cycles, cohesion, dead code, etc.)</p> <p>- Dependency edges (import, call, inheritance) as animated polylines</p> <p>- File watcher — files glow when modified, incremental rescan</p> <p>- MCP server for AI agent integration</p> <p>- 23 languages via tree-sitter</p> <p>Tech stack:</p> <p>- Pure Rust, single binary, no runtime dependencies</p> <p>- egui + wgpu for rendering</p> <p>- tree-sitter for parsing (23 languages)</p> <p>- tokei for line counting</p> <p>- notify for filesystem watching</p> <p>- Squarified treemap layout + spatial index for O(1) hit testing</p> <p>GitHub: <a href="https://github.com/sentrux/sentrux">https://github.com/sentrux/sentrux</a></p> <p>MIT licensed. Would love feedback on the architecture or the Rust patterns used. Happy to answer any questions.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/No_Possibility_8826"> /u/No_Possibility_8826 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1rrs7jp/i_built_a_realtime_code_quality_grader_in_rust/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1rrs7jp/i_built_a_realtime_code_quality_grader_in_rust/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1rqvz0w/gabagool_snapshotable_wasm_interpreter_written/" target="_blank">gabagool: Snapshotable WASM interpreter written from scratch</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi, I wrote a snapshotable wasm interpreter. You can pause a running wasm program mid-execution, serialize its entire state, and resume it exactly where it left off </p> <p>Here&#39;s a demo running Conway&#39;s game of life. You can snapshot the simulation mid-tick, fork it into a new process, and watch both diverge from the same state It passes 96% of the core test suite, with component model snapshots coming next! </p> <p>If you&#39;re curious about the direction things are heading, consider checking out <a href="https://github.com/friendlymatthew/gabagool">https://github.com/friendlymatthew/gabagool</a> ! </p> <p><a href="https://i.redd.it/1vg9ugobjfog1.gif">https://i.redd.it/1vg9ugobjfog1.gif</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/NosePersonal326"> /u/NosePersonal326 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1rqvz0w/gabagool_snapshotable_wasm_interpreter_written/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1rqvz0w/gabagool_snapshotable_wasm_interpreter_written/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1rrnxfh/jobfocused_list_of_product_companies_using_rust/" target="_blank">Job-focused list of product companies using Rust in production — 2026 (ReadyToTouch)</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi everyone! I&#39;ve been manually maintaining a list of companies that hire and use Rust in production for over a year now, updating it weekly. Writing this up again for both new and returning readers.</p> <p><strong>Why I built this</strong></p> <p>I started the project against a backdrop of layoff news and posts about how hard job searching has become. I wanted to do something now — while I still have time — to make my future job search easier. So I started building a list of companies hiring Go engineers and connecting with people at companies I&#39;d want to work at, where I&#39;d be a strong candidate based on my expertise. I added Rust later, because I&#39;ve been learning it and considering it for my own career going forward.</p> <p><strong>The list:</strong> <a href="https://readytotouch.com/rust/companies">https://readytotouch.com/rust/companies</a> — sorted by most recent job openings. Product companies and startups only — no outsourcing, outstaffing, or recruiting agencies. Nearly 300 companies in the Rust list; for comparison, the Go list has 900+.</p> <p><strong>The core idea</strong></p> <p>The point isn&#39;t to chase open positions — it&#39;s to build your career deliberately over time.</p> <p>If you have experience in certain industries and with certain cloud providers, the list has filters for exactly that: industry (MedTech, FinTech, PropTech, etc.) and cloud provider (AWS, GCP, Azure). You can immediately target companies where you&#39;d be a strong candidate — even if they have no open roles right now. Then you can add their current employees on LinkedIn with a message like: <em>&quot;Hi, I have experience with Rust and SomeTech, so I&#39;m keeping Example Company on my radar for future opportunities.&quot;</em></p> <p>Each company profile on ReadyToTouch includes a link to current employees on LinkedIn. Browsing those profiles is useful beyond just making connections — you start noticing patterns in where people came from. If a certain company keeps appearing in employees&#39; backgrounds, it might be a natural stepping stone to get there.</p> <p>The same logic applies to former employees — there&#39;s a dedicated link for that in each profile too. Patterns in where people go next can help you understand which direction to move in. And former employees are worth connecting with early — they can give you honest insight into the company before you apply.</p> <p>One more useful link in each profile: a search for employee posts on LinkedIn. This helps you find people who are active there and easier to reach.</p> <p>If you&#39;re ever choosing between two offers, knowing where employees tend to go next can simplify the decision. And if the offers are from different industries, you can check ReadyToTouch to see which industry has more companies you&#39;d actually want to work at — a small but useful data point for long-term career direction.</p> <p><strong>What&#39;s in each company profile</strong></p> <ol> <li><strong>Careers page</strong> — direct applications are reportedly more effective for some candidates than applying through LinkedIn</li> <li><strong>Glassdoor</strong> — reviews and salaries; there&#39;s also a Glassdoor rating filter in both the company list and jobs list on ReadyToTouch</li> <li><strong>Indeed / Blind</strong> — more reviews</li> <li><a href="https://Levels.fyi/"><strong>Levels.fyi</strong></a> — another salary reference</li> <li><strong>GitHub</strong> — see what Rust projects the company is actually working on</li> <li><strong>Layoffs</strong> — quick Google searches for recent layoff news by company</li> </ol> <p>Not every profile is 100% complete — some companies simply don&#39;t publish everything, and I can&#39;t always fill in the gaps manually. There&#39;s a &quot;Google it&quot; button on every profile for exactly that reason.</p> <p><strong>Alternatives</strong></p> <p>If ReadyToTouch doesn&#39;t fit your workflow, here are other resources worth knowing:</p> <ol> <li><a href="https://filtra.io/">https://filtra.io/</a></li> <li><a href="https://rustengineer.com/">https://rustengineer.com/</a></li> <li><a href="https://rustyboard.com/">https://rustyboard.com/</a></li> <li><a href="https://jobs.letsgetrusty.com/">https://jobs.letsgetrusty.com/</a></li> <li><a href="https://rustjobs.dev/">https://rustjobs.dev/</a></li> <li><a href="https://rust.careers/">https://rust.careers/</a></li> <li><a href="https://wellfound.com/role/rust-developer">https://wellfound.com/role/rust-developer</a></li> <li>LinkedIn search: <a href="https://www.linkedin.com/jobs/search/?f_TPR=r2592000&amp;geoId=92000000&amp;keywords=%22Rust%22%20AND%20%22Engineer%22&amp;location=Worldwide&amp;sortBy=DD">&quot;Rust&quot; AND &quot;Engineer&quot;</a></li> <li>LinkedIn search: <a href="https://www.linkedin.com/jobs/search/?f_TPR=r2592000&amp;geoId=92000000&amp;keywords=%22Rust%22%20AND%20%22Developer%22&amp;location=Worldwide&amp;sortBy=DD">&quot;Rust&quot; AND &quot;Developer&quot;</a></li> <li><a href="https://github.com/omarabid/rust-companies">https://github.com/omarabid/rust-companies</a></li> <li><a href="https://github.com/ImplFerris/rust-in-production">https://github.com/ImplFerris/rust-in-production</a></li> </ol> <p><strong>One more tool</strong></p> <p>If building a personal list of target companies and tracking connections is a strategy that works for you — the way it does for me — there&#39;s a separate tool for that: <a href="https://readytotouch.com/companies-and-connections">https://readytotouch.com/companies-and-connections</a></p> <p><strong>What&#39;s new</strong></p> <ul> <li>Mobile-friendly (fixed after earlier feedback — happy to show before/after in comments)</li> <li>1,500+ GitHub stars, ~7,000 visitors/month</li> <li>Open source, built with a small team</li> </ul> <p><strong>What&#39;s next</strong></p> <p>Continuing weekly updates to companies and job openings across all languages.</p> <p>The project runs at $0 revenue. If your company is actively hiring Rust engineers, there&#39;s a paid option to feature it at the top of the list for a month — reach out if interested.</p> <p><strong>Links</strong></p> <ul> <li>Companies: <a href="https://readytotouch.com/rust/companies">https://readytotouch.com/rust/companies</a></li> <li>Jobs: <a href="https://readytotouch.com/rust/jobs">https://readytotouch.com/rust/jobs</a></li> <li>Repository: <a href="https://github.com/readytotouch/readytotouch">https://github.com/readytotouch/readytotouch</a></li> </ul> <p><em>My native language is Ukrainian. I think and write in it, then translate with Claude&#39;s help and review the result — so please keep that in mind.</em></p> <p>Happy to answer questions! And I&#39;d love to hear in the comments if the list has helped anyone find a job — or even just changed how they think about job searching.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/YaroslavPodorvanov"> /u/YaroslavPodorvanov </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1rrnxfh/jobfocused_list_of_product_companies_using_rust/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1rrnxfh/jobfocused_list_of_product_companies_using_rust/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1rqvruk/handlng_rust_errors_elegantly/" target="_blank">Handlng Rust errors elegantly</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Wrote a blog post about what I wish I had known earlier about Rust&#39;s convenience features for elegant error handling. Feedback appreciated. </p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/naiquevin"> /u/naiquevin </a> <br/> <span><a href="https://www.naiquev.in/handling-rust-errors-elegantly.html">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1rqvruk/handlng_rust_errors_elegantly/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1rrmvgs/need_resources_for_building_a_debugger/" target="_blank">Need resources for building a Debugger</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi everyone,</p> <p>I am Abinash. I am interested in learning how a debugger works by building one of my own in Rust.</p> <p>So, I am looking for some resources (Docs, Blog Posts, Videos, Repo) to understand and build a debugger with UI.</p> <p>My Skills:</p> <p>- Rust - Intermediate (Actively Learning)<br/> - OS - Basic (Actively Learning)</p> <p>Setup:</p> <p>- Windows 11 (AMD Ryzen 5 7530U with Radeon Graphics (2.00 GHz, x64-based processor))<br/> - Programming on WSL (Ubuntu)</p> <p>Some resources I found:</p> <p>- <a href="https://www.timdbg.com/posts/writing-a-debugger-from-scratch-part-1/">https://www.timdbg.com/posts/writing-a-debugger-from-scratch-part-1/</a><br/> - <a href="https://www.dgtlgrove.com/t/demystifying-debuggers">https://www.dgtlgrove.com/t/demystifying-debuggers</a></p> <p>Thank you.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/TechnologySubject259"> /u/TechnologySubject259 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1rrmvgs/need_resources_for_building_a_debugger/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1rrmvgs/need_resources_for_building_a_debugger/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1rqv2gt/rsaber_040_beat_saber_prototypeclone_written_in/" target="_blank">rsaber 0.4.0: Beat Saber prototype/clone written in Rust</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>If you are a fortunate owner of Meta Quest 2/3 or PSVR2+PC adapter, check this one out: <a href="https://github.com/bandipapa/rsaber">https://github.com/bandipapa/rsaber</a></p> <p>Changes since last release:</p> <ul> <li>Added song browser</li> <li>As there are no built-in levels, they are fetched from beatsaver</li> </ul> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/bandipapa"> /u/bandipapa </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1rqv2gt/rsaber_040_beat_saber_prototypeclone_written_in/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1rqv2gt/rsaber_040_beat_saber_prototypeclone_written_in/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1rrkeyi/introduce_a_way_to_construct_range_from_start/" target="_blank">Introduce a way to construct Range from start + length</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p><a href="https://internals.rust-lang.org/t/introduce-a-way-to-construct-range-from-start-length/24073">https://internals.rust-lang.org/t/introduce-a-way-to-construct-range-from-start-length/24073</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/__s1"> /u/__s1 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1rrkeyi/introduce_a_way_to_construct_range_from_start/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1rrkeyi/introduce_a_way_to_construct_range_from_start/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1rqqclx/five_malicious_rust_crates_steal_developer_secrets/" target="_blank">Five Malicious Rust Crates Steal Developer Secrets</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/Trader-One"> /u/Trader-One </a> <br/> <span><a href="/r/SecOpsDaily/comments/1rqlrph/five_malicious_rust_crates_and_ai_bot_exploit/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1rqqclx/five_malicious_rust_crates_steal_developer_secrets/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1rqq6gx/i_built_a_perception_engine_in_rust_after_years/" target="_blank">I built a perception engine in Rust after years of C++ — here are my impressions</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;m a CS student from Brazil. For the past months I was at semester break, so I had the time to work on a project I had in mind. C++ was my first language and I have used it for many years, but Rust seemed interesting and I wanted to try it out.</p> <p>The plan itself was (not so) simple: design a system from the ground up for emergent simulations meant to represent game worlds. It sounds a bit impractical considering there aren&#39;t many games (or engines) that try to model themselves like this, but I&#39;m just a solo dev, not some studio on a budget, so I&#39;m allowed to play around.</p> <h1>My Thoughts on Rust</h1> <p>Everyone has different uses and experience levels on a programming language, but for my personal case, I&#39;ve found Rust to be actually easier than C++.</p> <p>When designing something you&#39;re often thinking in high level abstractions: &quot;I just need a function, a class, a library that does XYZ&quot;. When moving to Rust, at first I was having trouble picking up all the new syntax and libraries. However, since they fit in the same systems language niche the mental models transfer well between them.</p> <p>The ecosystem feels clean and easy to use. Crate fragmentation may slow down compilation times, but it makes it a lot easier to grab many pieces and put them together to build something new, meanwhile in C++ you&#39;re usually creating almost everything yourself.</p> <p>The market also seems more favorable. I was exploring the possibility of remote jobs, and the landscape seemed more permissive on Rust compared to the C++ alternatives. Which was another positive point for myself.</p> <h1>The Project</h1> <p>After a while you&#39;ll notice making projects and letting them sit still on your hard drive is not of much value, so I&#39;ve created a website to share some ideas. The first post was about this same engine, so feel free to read more about it in case I piqued your interest.</p> <p>This is also my first time writing my ideas like this, so any feedback is welcome.</p> <p>The Post: <a href="https://raydroplet.github.io/perception">https://raydroplet.github.io/perception</a></p> <p>The Repo: <a href="https://github.com/raydroplet/abm">https://github.com/raydroplet/abm</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/ray_droplet"> /u/ray_droplet </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1rqq6gx/i_built_a_perception_engine_in_rust_after_years/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1rqq6gx/i_built_a_perception_engine_in_rust_after_years/">[comments]</a></span></div>
-          </li>
-  
-        </ul>
-  
-        <h3 class="subreddit">r/golang</h3>
-        <ul class="item-list">
-  
-          <li>
-            <a href="https://www.reddit.com/r/golang/comments/1rr2q2k/golangdesignxhotkey_dosent_work_in_linux_mint_x11/" target="_blank">golang.design/x/hotkey dosen't work in linux mint (X11)</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>This worked sometimes upto today morning now it completly stoped working.</p> <pre><code>package main import ( &quot;log&quot; &quot;golang.design/x/hotkey&quot; &quot;golang.design/x/hotkey/mainthread&quot; ) func main() { mainthread.Init(fn) } // Not necessary when use in Fyne, Ebiten or Gio. func fn() { hk := hotkey.New([]hotkey.Modifier{hotkey.ModCtrl, hotkey.ModShift}, hotkey.KeyS) err := hk.Register() if err != nil { log.Fatalf(&quot;hotkey: failed to register hotkey: %v&quot;, err) return } log.Printf(&quot;hotkey: %v is registered\n&quot;, hk) &lt;-hk.Keydown() log.Printf(&quot;hotkey: %v is down\n&quot;, hk) &lt;-hk.Keyup() log.Printf(&quot;hotkey: %v is up\n&quot;, hk) hk.Unregister() log.Printf(&quot;hotkey: %v is unregistered\n&quot;, hk) } </code></pre> <p>This code is from an example from golang. Package stoped working when i was working on another project. No error. This is the output form the example code above.</p> <p><code>2026/03/12 00:21:00 hotkey: 115+4+1 is registered</code></p> <blockquote> <p>Edited: Is this with my machine only?</p> </blockquote> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Resident-Arrival-448"> /u/Resident-Arrival-448 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1rr2q2k/golangdesignxhotkey_dosent_work_in_linux_mint_x11/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1rr2q2k/golangdesignxhotkey_dosent_work_in_linux_mint_x11/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/golang/comments/1rr2evh/why_is_gos_regex_so_slow/" target="_blank">Why is Go's regex so slow?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I ran the <a href="https://kostya.github.io/LangArena/">LangArena benchmarks</a>. Go is fast everywhere except regex benchmarks. Here&#39;s the data:</p> <p>Go total time: 116.6 seconds</p> <p>Go without two regex tests (Etc::LogParser, Template::Regex): 78.5 seconds (just 26% slower than C++ 57.67s)</p> <p>Difference: +38 seconds from just two benchmarks.</p> <p>Compare regex performance on same tasks:</p> <table><thead> <tr> <th>Language</th> <th>Regex implementation</th> <th>Time</th> </tr> </thead><tbody> <tr> <td>Zig</td> <td>pcre</td> <td>1.338s</td> </tr> <tr> <td>Crystal</td> <td>pcre</td> <td>2.92s</td> </tr> <tr> <td>Rust</td> <td>regex crate</td> <td>3.9s</td> </tr> <tr> <td>Go</td> <td>go regex std</td> <td>38.14s</td> </tr> </tbody></table> <p>What these benchmarks actually do: 1. Etc::LogParser - parse big log file with real-world patterns:</p> <p><code>go patterns := []struct { name string re string }{ {&quot;errors&quot;, ` [5][0-9]{2} | [4][0-9]{2} `}, {&quot;bots&quot;, `(?i)bot|crawler|scanner|spider|indexing|crawl|robot|spider`}, {&quot;suspicious&quot;, `(?i)etc/passwd|wp-admin|\.\./`}, {&quot;ips&quot;, `\d+\.\d+\.\d+\.35`}, {&quot;api_calls&quot;, `/api/[^ &quot; ]+`}, {&quot;post_requests&quot;, `POST [^ ]* HTTP`}, {&quot;auth_attempts&quot;, `(?i)/login|/signin`}, {&quot;methods&quot;, `(?i)get|post|put`}, {&quot;emails&quot;, `[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}`}, {&quot;passwords&quot;, `password=[^&amp;\s&quot;]+`}, {&quot;tokens&quot;, `token=[^&amp;\s&quot;]+|api[_-]?key=[^&amp;\s&quot;]+`}, {&quot;sessions&quot;, `session[_-]?id=[^&amp;\s&quot;]+`}, {&quot;peak_hours&quot;, `\[\d+/\w+/\d+:1[3-7]:\d+:\d+ [+\-]\d+\]`}, } </code></p> <ol> <li>Template::Regex - implements replace html template by <code>{{(.*?)}}</code> regexp. Also realistic pattern and usecase.</li> </ol> <p>Without regex, Go is competitive with Rust/C++. With regex, it&#39;s not even close.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/kostya27"> /u/kostya27 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1rr2evh/why_is_gos_regex_so_slow/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1rr2evh/why_is_gos_regex_so_slow/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/golang/comments/1rqvqsk/does_go_error_handling_verbosity_actually_hurt/" target="_blank">Does Go error handling verbosity actually hurt developer velocity or is it just endless debate</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Go&#39;s explicit error handling is probably the most divisive language feature among developers. Some people love that errors are values and you&#39;re forced to handle them explicitly at each call site, others find the repetitive if err != nil checks tedious and hard to read. The verbosity argument is legitimate, functions with lots of error-returning calls end up being 50% error handling boilerplate. This makes it harder to see the actual business logic when scanning code, especially during review. The signal-to-noise ratio suffers. On the flip side, the explicitness means you can&#39;t accidental ignore errors, which prevents a whole category of bugs. And the verbosity makes it obvious when code isn&#39;t handling errors properly.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/No-Shake-8375"> /u/No-Shake-8375 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1rqvqsk/does_go_error_handling_verbosity_actually_hurt/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1rqvqsk/does_go_error_handling_verbosity_actually_hurt/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/golang/comments/1rqtid3/cli_toolkits_and_which_to_use/" target="_blank">CLI toolkits and which to use</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I wanted to make a CLI tool and searched on what language to use and how to make it and GO was almost always on top of that list.</p> <p>I searched for the toolkits to use and found 3 mainly used ones, Cobra, urfave/cli, Kong and I am unsure what to use but all I know is to not use cobra when I have the other 2 options.</p> <p>All I want is to learn something and not need to change it later, so something that while currently needed for a simple project, can later expand with me for complex projects, and wanted to know what do you use and why? </p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/bdhd656"> /u/bdhd656 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1rqtid3/cli_toolkits_and_which_to_use/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1rqtid3/cli_toolkits_and_which_to_use/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/golang/comments/1rqs8tj/logfile_a_library_to_implement_ssd_optimized/" target="_blank">logfile - A library to implement SSD optimized Write-Ahead Log</a>
-            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/golang/comments/1rqs8tj/logfile_a_library_to_implement_ssd_optimized/">  </a> </td><td> <!-- SC_OFF --><div class="md"><p>A <a href="https://github.com/alialaee/logfile">library</a> I extracted from a custom database engine I built sometime ago. It ran in production, so it&#39;s reasonably &quot;battle-tested&quot;.</p> <p>It&#39;s a simple, optimized append-only log file, that can be used to build a write-ahead log for a database or a message broker.</p> <p>The design is very much inspired by the write-ahead log in ScyllaDB. The main features that differentiate it from other Go log file libraries are:</p> <ul> <li>SSD-Optimized: Writes are explicitly padded to 4KB sector boundaries to maximize SSD performance.</li> <li>No flush timers: Flushes are triggered immediately after every write, but as it uses group commit, under heavy load, multiple concurrent writes are batched into a single fsync.</li> <li>Group Commit: under concurrency, writes are batched into a single IO + fsync using pingpong buffers. Basically one batch is being flushed, new writes keep accumulating.</li> <li>Very simple API: <code>Write()</code> is blocking and safe to call from hundreds of goroutines. Actually with more <code>goroutines</code>, you get better performance (until a certain point). But it can come close to saturating the disk.</li> </ul> <p>I intentionally left out file management and rotation since every database handles that differently. But I might add it. Also The reader is very basic right now. I&#39;m working on it.</p> <p>If you are interested in this kind of thing or have any suggestion, shoot me a message or comment. I&#39;d appreciate it.</p> <p>There&#39;s another library from the same codebase for fast <code>Marshal</code>/<code>Unmarshal</code> into a binary format that is very suitable for log files and databases.</p> <p>It&#39;s called <a href="https://github.com/alialaee/raf">RAF</a>. It has zero heap allocations and random access to fields without unmarshalling the whole record. It&#39;s also schema-less. I did lots of tricks to have a reasonable performance using <code>reflect</code> package. But I have some more improvements that I&#39;m working on (<code>op-codes</code> and internal interpreters).</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/eternalcas"> /u/eternalcas </a> <br/> <span><a href="https://github.com/alialaee/logfile">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1rqs8tj/logfile_a_library_to_implement_ssd_optimized/">[comments]</a></span> </td></tr></table></div>
+            <a href="https://www.reddit.com/r/rust/comments/1rrjjkw/parametricity_or_comptime_is_bonkers/" target="_blank">Parametricity, or Comptime is Bonkers</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/soareschen"> /u/soareschen </a> <br/> <span><a href="https://noelwelsh.com/posts/comptime-is-bonkers/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1rrjjkw/parametricity_or_comptime_is_bonkers/">[comments]</a></span></div>
           </li>
   
         </ul>
@@ -1591,18 +480,23 @@ By putting all of the smarts into the inliner, users can simply apply an “Inli
         <ul class="item-list">
   
           <li>
-            <a href="https://www.reddit.com/r/rust_gamedev/comments/1rqzxe0/tealr_011_released_generate_documentation_for/" target="_blank">tealr 0.11 released. Generate documentation for your embedded Lua api.</a>
-            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/rust_gamedev/comments/1rqzxe0/tealr_011_released_generate_documentation_for/">  </a> </td><td> &#32; submitted by &#32; <a href="https://www.reddit.com/user/lenscas"> /u/lenscas </a> <br/> <span><a href="/r/rust/comments/1rqxhhp/tealr_011_released_generate_documentation_for/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust_gamedev/comments/1rqzxe0/tealr_011_released_generate_documentation_for/">[comments]</a></span> </td></tr></table></div>
+            <a href="https://www.reddit.com/r/rust_gamedev/comments/1rs03li/i_wrote_a_purerust_video_codec_that_compiles_to/" target="_blank">I wrote a pure-Rust video codec that compiles to WASM, no FFI</a>
+            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/rust_gamedev/comments/1rs03li/i_wrote_a_purerust_video_codec_that_compiles_to/">  </a> </td><td> <!-- SC_OFF --><div class="md"><p>Hi all, long time game engine nerd here. This time I wanted to give something back :) I needed video playback in a WASM game engine, every option required C FFI, so I wrote my own codec in pure Rust.</p> <p> I&#39;m actually pretty proud of this one. It beats MPEG-1 and MPEG-2 on quality, encodes faster than VP9, has a formally specified bitstream, and compiles to wasm32-unknown-unknown with zero native dependencies. All that in a<br/> weekend-project-sized codebase.</p> <p>Live demo: <a href="https://coffeecupentertainment.com/static/riv2-player/index.html?bbb.riv">here</a></p> <p>Code, Documentation and Benchmarks : <a href="https://github.com/xhighway999/riv2">here</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/xhighway999"> /u/xhighway999 </a> <br/> <span><a href="https://i.redd.it/0nbv7kkgynog1.png">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust_gamedev/comments/1rs03li/i_wrote_a_purerust_video_codec_that_compiles_to/">[comments]</a></span> </td></tr></table></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust_gamedev/comments/1rqvtoc/how_would_you_design_a_system_that_queries_for_a/" target="_blank">How would you design a system that queries for a component that should only have a single instance in ECS?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Imagine you have a component called &quot;Camera&quot; which is used in rendering 3d scenes. What would you do in cases where there are 2 cameras instead of 1? You need just 1 camera, do you ignore the other? Or do you make the system panic if there&#39;s more than 1 camera?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/denis870"> /u/denis870 </a> <br/> <span><a href="https://www.reddit.com/r/rust_gamedev/comments/1rqvtoc/how_would_you_design_a_system_that_queries_for_a/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust_gamedev/comments/1rqvtoc/how_would_you_design_a_system_that_queries_for_a/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust_gamedev/comments/1rrve36/creating_terminal_ui_games_in_rust_with_ratatui/" target="_blank">Creating terminal UI games in Rust with Ratatui is incredibly fun! VIRUS SCAN v0.1.0 (Beta) is live!</a>
+            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/rust_gamedev/comments/1rrve36/creating_terminal_ui_games_in_rust_with_ratatui/">  </a> </td><td> <!-- SC_OFF --><div class="md"><p>VIRUS SCAN is a Minesweeper inspired deduction puzzle game set inside a fake operating system file explorer.</p> <p><a href="https://meapps.itch.io/virus-scan">https://meapps.itch.io/virus-scan</a><br/> <a href="https://ratatui.rs/">https://ratatui.rs/</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Big_Membership9737"> /u/Big_Membership9737 </a> <br/> <span><a href="https://i.redd.it/sphmgsu94nog1.png">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust_gamedev/comments/1rrve36/creating_terminal_ui_games_in_rust_with_ratatui/">[comments]</a></span> </td></tr></table></div>
           </li>
   
+        </ul>
+  
+        <h3 class="subreddit">r/golang</h3>
+        <ul class="item-list">
+  
           <li>
-            <a href="https://www.reddit.com/r/rust_gamedev/comments/1rqke0c/project_update_skeleton_animations_working/" target="_blank">Project Update: Skeleton Animations Working</a>
-            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/rust_gamedev/comments/1rqke0c/project_update_skeleton_animations_working/">  </a> </td><td> <!-- SC_OFF --><div class="md"><p>Just an update I wanted to share with everyone on my Rust/winit/wgpu-rs project:</p> <p>I recently got an entity skeleton system and animations working, just an idle and running forward for now until I was able to get the systems working. It&#39;s pretty botched, but it&#39;s a start. </p> <p>I&#39;m currently authoring assets in Blender and exporting to .glTF and parsing mesh/skeleton/animation data at runtime based on the entity snapshot data (entity state, velocity, and rotation) from the server to client. The client side then derives the animation state and bone poses for each entity reported by the server and caches it, then each frame updates the bone poses based on the animation data blending between key frames and sends data to GPU for deforming the mesh, it also transitions animations if server snapshot entity data indicates an animation change.</p> <p>There are quite a few bugs to fix and more animation loops to add to make sure blending and state machines are working properly.</p> <p>Some next steps on my road map: - Add more animation loops for all basic movement: Walk (8) directions Run (5) directions Sneak (8) directions Crouch (idle) Jump Fall - Revise skeleton system to include attachment points (collider hit/hurt boxes, weapons, gear/armor, VFX) - Model simple sword and shield, hard code local player to include them on spawn, instantiate them to player hand attachment points - Revise client &amp; server side to utilize attachment points for rendering and game system logic - Include collider attachment points on gear (hitbox on sword, hurtbox/blockbox on shield) - Add debug rendering for local player and enemy combat collider bodies - Implement 1st person perspective animations and transitions with 3rd person camera panning - Model/Rig/Animate an enemy NPC - Implement a simple enemy spawner with a template of components - Add new UI element for floating health bars for entities - Add cross hair UI element for first person mode - Implement melee weapons for enemy NPC - Implement AI for NPCs (navigation and combat) - Get simple melee combat working Player Attacks Player DMGd Enemy Attacks Enemy DMGd Player Shield Block Enemy Shield Block - Improve Player HUD with action/ability bars - Juice the Melee combat (dodge rolls, parry, jump attacks, crit boxes, charged attacks, ranged attacks &amp; projectiles, camera focus) - Implement a VFX pipeline for particle/mesh effects - Add VFX to combat - Implement an inventory and gear system (server logic and client UI elements for rendering) - Implement a loot system (server logic and client UI elements for rendering)</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/HjeimDrak"> /u/HjeimDrak </a> <br/> <span><a href="https://v.redd.it/64kputtyicog1">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust_gamedev/comments/1rqke0c/project_update_skeleton_animations_working/">[comments]</a></span> </td></tr></table></div>
+            <a href="https://www.reddit.com/r/golang/comments/1rrwr41/what_diffrent_between_http_default_handler_and/" target="_blank">What diffrent between http default handler and NewServerMux</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Im still not knowing when or where I would use my mux instead of default one. </p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Younes709"> /u/Younes709 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1rrwr41/what_diffrent_between_http_default_handler_and/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1rrwr41/what_diffrent_between_http_default_handler_and/">[comments]</a></span></div>
           </li>
   
         </ul>
