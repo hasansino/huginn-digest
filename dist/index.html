@@ -240,8 +240,8 @@
   
       <div class="card">
         <h2>Huginn Daily</h2>
-        <p class="header-p">Wednesday, March 25, 2026</p>
-        <p class="header-p">553c9bb8-c227-4c6c-8582-ae4c26b15b8f</p>
+        <p class="header-p">Thursday, March 26, 2026</p>
+        <p class="header-p">cd6639bc-0500-4b72-b96b-d4688064512a</p>
       </div>
   
       <div class="card">
@@ -249,1312 +249,145 @@
         <table class="weather-table">
           <tr>
             <th>Summary</th>
-            <td>⛅️ Light rain in the morning.</td>
+            <td>⛅️ Partly cloudy until night.</td>
           </tr>
           <tr>
             <th>Temperature Range</th>
-            <td>10°C to 16°C (49°F to 61°F)</td>
+            <td>10°C to 18°C (49°F to 65°F)</td>
           </tr>
           <tr>
             <th>Feels Like</th>
-            <td>Low: 47°F | High: 64°F</td>
+            <td>Low: 46°F | High: 65°F</td>
           </tr>
           <tr>
             <th>Humidity</th>
-            <td>83%</td>
+            <td>72%</td>
           </tr>
           <tr>
             <th>Wind</th>
-            <td>10 km/h (6 mph), Direction: 267°</td>
+            <td>13 km/h (8 mph), Direction: 277°</td>
           </tr>
           <tr>
             <th>Precipitation</th>
-            <td>Probability: 98%, Type: rain</td>
+            <td>Probability: 100%, Type: No precipitation expected</td>
           </tr>
           <tr>
             <th>Sunrise / Sunset</th>
-            <td>🌅 05:45 AM / 🌇 06:03 PM</td>
+            <td>🌅 05:43 AM / 🌇 06:03 PM</td>
           </tr>
           <tr>
             <th>Moon Phase</th>
-            <td>Waxing Crescent (24%)</td>
+            <td>Waxing Gibbous (27%)</td>
           </tr>
           <tr>
             <th>Cloud Cover</th>
-            <td>87%</td>
+            <td>54%</td>
           </tr>
           <tr>
             <th>Pressure</th>
-            <td>1001.68 hPa</td>
+            <td>1002.74 hPa</td>
           </tr>
           <tr>
             <th>Dew Point</th>
-            <td>50.41°F</td>
+            <td>49.01°F</td>
           </tr>
           <tr>
             <th>Visibility</th>
-            <td>5.5 miles</td>
+            <td>5.78 miles</td>
           </tr>
         </table>
       </div>
   
       <div class="card">
-        <h2>Golang</h2>
-        <ul class="item-list">
+        <h2>XKCD</h2>
   
-          <li>
-            <a href="https://go.dev/blog/type-construction-and-cycle-detection" target="_blank">Type Construction and Cycle Detection</a>
-            <div class="item-content">
-<div id="blog"><div id="content">
-  <div id="content">
-
-    <div class="Article" data-slug="/blog/type-construction-and-cycle-detection">
-    
-    <h1 class="small"><a href="/blog/">The Go Blog</a></h1>
-    
-
-    <h1>Type Construction and Cycle Detection</h1>
-      
-      <p class="author">
-      Mark Freeman<br>
-      24 March 2026
-      </p>
-      
-      <div class='markdown'>
-<p>Go&rsquo;s static typing is an important part of why Go is a good fit for production
-systems that have to be robust and reliable. When a Go package is compiled, it
-is first parsed—meaning that the Go source code within that package is converted
-into an abstract syntax tree (or AST). This AST is then passed to the Go
-<em>type checker</em>.</p>
-<p>In this blog post, we&rsquo;ll dive into a part of the type checker we significantly
-improved in Go 1.26. How does this change things from a Go user&rsquo;s perspective?
-Unless one is fond of arcane type definitions, there&rsquo;s no observable change
-here. This refinement was intended to reduce corner cases, setting us up for
-future improvements to Go. Also, it&rsquo;s a fun look at something that seems quite
-ordinary to Go programmers, but has some real subtleties hiding within.</p>
-<p>But first, what exactly is <em>type checking</em>? It&rsquo;s a step in the Go compiler that
-eliminates whole classes of errors at compile time. Specifically, the Go type
-checker verifies that:</p>
-<ol>
-<li>Types appearing in the AST are valid (for example, a map&rsquo;s key type must be
-<code>comparable</code>).</li>
-<li>Operations involving those types (or their values) are valid (for example,
-one can&rsquo;t add an <code>int</code> and a <code>string</code>).</li>
-</ol>
-<p>To accomplish this, the type checker constructs an internal representation for
-each type it encounters while traversing the AST—a process informally called
-<em>type construction</em>.</p>
-<p>As we&rsquo;ll soon see, even though Go is known for its simple type system, type
-construction can be deceptively complex in certain corners of the language.</p>
-<h2 id="type-construction">Type construction</h2>
-<p>Let’s start by considering a simple pair of type declarations:</p>
-<pre><code class="language-go">type T []U
-type U *int
-</code></pre>
-<p>When the type checker is invoked, it first encounters the type declaration for
-<code>T</code>. Here, the AST records a type definition of a type name <code>T</code> and a
-<em>type expression</em> <code>[]U</code>. <code>T</code> is a <a href="/ref/spec#Types">defined type</a>; to represent
-the actual data structure that the type checker uses when constructing defined
-types, we’ll use a <code>Defined</code> struct.</p>
-<p>The <code>Defined</code> struct contains a pointer to the type for the type expression to
-the right of the type name. This <code>underlying</code> field is relevant for sourcing the
-type’s <a href="/ref/spec#Underlying_types">underlying type</a>. To help illustrate the
-type checker’s state, let’s see how walking the AST fills in the data
-structures, starting with:</p>
-
-<p>At this point, <code>T</code> is <em>under construction</em>, indicated by the color yellow. Since
-we haven’t evaluated the type expression <code>[]U</code> yet—it’s still black—<code>underlying</code>
-points to <code>nil</code>, indicated by an open arrow.</p>
-<p>When we evaluate <code>[]U</code>, the type checker constructs a <code>Slice</code> struct, the
-internal data structure used to represent slice types. Similarly to <code>Defined</code>,
-it contains a pointer to the element type for the slice. We don’t yet know what
-the name <code>U</code> refers to, though we expect it to refer to a type. So, again, this
-pointer is <code>nil</code>. We are left with:</p>
-
-<p>By now you might be getting the gist, so we’ll pick up the pace a bit.</p>
-<p>To convert the type name <code>U</code> to a type, we first locate its declaration. Upon
-seeing that it represents another defined type, we construct a separate
-<code>Defined</code> for <code>U</code> accordingly. Inspecting the right side of <code>U</code>, we see the type
-expression <code>*int</code>, which evaluates to a <code>Pointer</code> struct, with the base type of
-the pointer being the type expression <code>int</code>.</p>
-<p>When we evaluate <code>int</code>, something special happens: we get back a predeclared
-type. Predeclared types are constructed <em>before</em> the type checker even begins
-walking the AST. Since the type for <code>int</code> is already constructed, there’s
-nothing for us to do but point to that type.</p>
-<p>We now have:</p>
-
-<p>Note that the <code>Pointer</code> type is <em>complete</em> at this point, indicated by the color
-green. Completeness means that the type’s internal data structure has all of its
-fields populated and any types pointed to by those fields are complete.
-Completeness is an important property of a type because it ensures that
-accessing the internals, or <em>deconstruction</em>, of that type is sound: we have all
-the information describing the type.</p>
-<p>In the image above, the <code>Pointer</code> struct only contains a <code>base</code> field, which
-points to <code>int</code>. Since <code>int</code> has no fields to populate, it’s “vacuously”
-complete, making the type for <code>*int</code> complete.</p>
-<p>From here, the type checker begins unwinding the stack. Since the type for
-<code>*int</code> is complete, we can complete the type for <code>U</code>, meaning we can complete
-the type for <code>[]U</code>, and so on for <code>T</code>. When this process ends, we are left with
-only complete types, as shown below:</p>
-
-<p>The numbering above shows the order in which the types were completed (after the
-<code>Pointer</code>). Note that the type on the bottom completed first. Type construction
-is naturally a depth-first process, since completing a type requires its
-dependencies to be completed first.</p>
-<h2 id="recursive-types">Recursive types</h2>
-<p>With this simple example out of the way, let’s add a bit more nuance. Go’s type
-system also allows us to express recursive types. A typical example is something
-like:</p>
-<pre><code class="language-go">type Node struct {
-  next *Node
-}
-</code></pre>
-<p>If we reconsider our example from above, we can add a bit of recursion by
-swapping <code>*int</code> for <code>*T</code> like so:</p>
-<pre><code class="language-go">type T []U
-type U *T
-</code></pre>
-<p>Now for a trace: let’s start once more with <code>T</code>, but skip ahead to illustrate
-the effects of this change. As one might suspect from our previous example, the
-type checker will approach the evaluation of <code>*T</code> with the below state:</p>
-
-<p>The question is what to do with the base type for <code>*T</code>. We have an idea of what
-<code>T</code> is (a <code>Defined</code>), but it’s currently being constructed (its <code>underlying</code> is
-still <code>nil</code>).</p>
-<p>We simply point the base type for <code>*T</code> to <code>T</code>, even though <code>T</code> is incomplete:</p>
-
-<p>We do this assuming that <code>T</code> will complete when it finishes construction
-<em>in the future</em> (by pointing to a complete type). When that happens, <code>base</code> will
-point to a complete type, thus making <code>*T</code> complete.</p>
-<p>In the meantime, we&rsquo;ll begin heading back up the stack:</p>
-
-<p>When we get back to the top and finish constructing <code>T</code>, the “loop” of types
-will close, completing each type in the loop simultaneously:</p>
-
-<p>Before we considered recursive types, evaluating a type expression always
-returned a complete type. That was a convenient property because it meant the
-type checker could always deconstruct (look inside) a type returned from
-evaluation.</p>
-<p>But in the <a href="#example">example above</a>, evaluation of <code>T</code> returned an <em>incomplete</em>
-type, meaning deconstructing <code>T</code> is unsound until it completes. Generally
-speaking, recursive types mean that the type checker can no longer assume that
-types returned from evaluation will be complete.</p>
-<p>Yet, type checking involves many checks which require deconstructing a type. A
-classic example is confirming that a map key is <code>comparable</code>, which requires
-inspecting the <code>underlying</code> field. How do we safely interact with incomplete
-types like <code>T</code>?</p>
-<p>Recall that type completeness is a prerequisite for deconstructing a type. In
-this case, type construction never deconstructs a type, it merely refers to
-types. In other words, type completeness <em>does not</em> block type construction
-here.</p>
-<p>Because type construction isn&rsquo;t blocked, the type checker can simply delay such
-checks until the end of type checking, when all types are complete (note that
-the checks themselves also do not block type construction). If a type were to
-reveal a type error, it makes no difference when that error is reported during
-type checking—only that it is reported eventually.</p>
-<p>With this knowledge in mind, let’s examine a more complex example involving
-values of incomplete types.</p>
-<h2 id="recursive-types-and-values">Recursive types and values</h2>
-<p>Let’s take a brief detour and have a look at Go’s
-<a href="/ref/spec#Array_types">array types</a>. Importantly, array types have a size,
-which is a <a href="/ref/spec#Array_types">constant</a> that is part of the type. Some
-operations, like the built-in functions <code>unsafe.Sizeof</code> and <code>len</code> can return
-constants when applied to <a href="/ref/spec#Package_unsafe">certain values</a> or
-<a href="/ref/spec#Length_and_capacity">expressions</a>, meaning they can appear as array
-sizes. Importantly, the values passed to those functions can be of any type,
-even an incomplete type. We call these <em>incomplete values</em>.</p>
-<p>Let&rsquo;s consider this example:</p>
-<pre><code class="language-go">type T [unsafe.Sizeof(T{})]int
-</code></pre>
-<p>In the same way as before, we&rsquo;ll reach a state like the below:</p>
-
-<p>To construct the <code>Array</code>, we must calculate its size. From the value expression
-<code>unsafe.Sizeof(T{})</code>, that’s the size of <code>T</code>. For array types (such as <code>T</code>),
-calculating their size requires deconstruction: we need to look inside the type
-to determine the length of the array and size of each element.</p>
-<p>In other words, type construction for the <code>Array</code> <em>does</em> deconstruct <code>T</code>,
-meaning the <code>Array</code> cannot finish construction (let alone complete) before <code>T</code>
-completes. The “loop” trick that we used earlier—where a loop of types
-simultaneously completes as the type starting the loop finishes
-construction—doesn’t work here.</p>
-<p>This leaves us in a bind:</p>
-<ul>
-<li><code>T</code> cannot be completed until the <code>Array</code> completes.</li>
-<li>The <code>Array</code> cannot be completed until <code>T</code> completes.</li>
-<li>They <em>cannot</em> be completed simultaneously (unlike before).</li>
-</ul>
-<p>Clearly, this is impossible to satisfy. What is the type checker to do?</p>
-<h3 id="cycle-detection">Cycle detection</h3>
-<p>Fundamentally, code such as this is invalid because the size of <code>T</code> cannot be
-determined without knowing the size of <code>T</code>, regardless of how the type checker
-operates. This particular instance—cyclic size definition—is part of a class of
-errors called <em>cycle errors</em>, which generally involve cyclic definition of Go
-constructs. As another example, consider <code>type T T</code>, which is also in this
-class, but for different reasons. The process of finding and reporting cycle
-errors in the course of type checking is called <em>cycle detection</em>.</p>
-<p>Now, how does cycle detection work for <code>type T [unsafe.Sizeof(T{})]int</code>? To
-answer this, let’s look at the inner <code>T{}</code>. Because <code>T{}</code> is a composite literal
-expression, the type checker knows that its resulting value is of type <code>T</code>.
-Because <code>T</code> is incomplete, we call the value <code>T{}</code> an <em>incomplete value</em>.</p>
-<p>We must be cautious—operating on an incomplete value is only sound if it doesn’t
-deconstruct the value’s type. For example, <code>type T [unsafe.Sizeof(new(T))]int</code>
-<em>is</em> sound, since the value <code>new(T)</code> (of type <code>*T</code>) is never deconstructed—all
-pointers have the same size. To reiterate, it is sound to size an incomplete
-value of type <code>*T</code>, but not one of type <code>T</code>.</p>
-<p>This is because the “pointerness” of <code>*T</code> provides enough type information for
-<code>unsafe.Sizeof</code>, whereas just <code>T</code> does not. In fact, it’s never sound to operate
-on an incomplete value <em>whose type is a defined type</em>, because a mere type name
-conveys no (underlying) type information at all.</p>
-<h4 id="where-to-do-it">Where to do it</h4>
-<p>Up to now we’ve focused on <code>unsafe.Sizeof</code> directly operating on potentially
-incomplete values. In <code>type T [unsafe.Sizeof(T{})]</code>, the call to <code>unsafe.Sizeof</code>
-is just the &ldquo;root&rdquo; of the array length expression. We can readily imagine the
-incomplete value <code>T{}</code> as an operand in some other value expression.</p>
-<p>For example, it could be passed to a function (i.e.
-<code>type T [unsafe.Sizeof(f(T{}))]int</code>), sliced (i.e.
-<code>type T [unsafe.Sizeof(T{}[:])]int</code>), indexed (i.e.
-<code>type T [unsafe.Sizeof(T{}[0])]int</code>), etc. All of these are invalid because they
-require deconstructing <code>T</code>. For instance, indexing <code>T</code>
-<a href="/ref/spec#Index_expressions">requires checking</a> the underlying type of <code>T</code>.
-Because these expressions &ldquo;consume&rdquo; potentially incomplete values, let&rsquo;s call
-them <em>downstreams</em>. There are many more examples of downstream operators, some
-of which are not syntactically obvious.</p>
-<p>Similarly, <code>T{}</code> is just one example of an expression that &ldquo;produces&rdquo; a
-potentially incomplete value—let&rsquo;s call these kinds of expressions <em>upstreams</em>:</p>
-
-<p>Comparatively, there are fewer and more syntactically obvious value expressions
-that might result in incomplete values. Also, it’s rather simple to enumerate
-these cases by inspecting Go’s syntax definition. For these reasons, it&rsquo;ll be
-simpler to implement our cycle detection logic via the upstreams, where
-potentially incomplete values originate. Below are some examples of them:</p>
-<pre><code class="language-go">
-type T [unsafe.Sizeof(T(42))]int                // conversion
-
-func f() T
-type T [unsafe.Sizeof(f())]int                  // function call
-
-var i interface{}
-type T [unsafe.Sizeof(i.(T))]int                // assertion
-
-type T [unsafe.Sizeof(&lt;-(make(&lt;-chan T)))]int   // channel receive
-
-type T [unsafe.Sizeof(make(map[int]T)[42])]int  // map access
-
-type T [unsafe.Sizeof(*new(T))]int              // dereference
-
-// ... and a handful more
-</code></pre>
-<p>For each of these cases, the type checker has extra logic where that particular
-kind of value expression is evaluated. As soon as we know the type of the
-resulting value, we insert a simple test that checks that the type is complete.</p>
-<p>For instance, in the conversion example <code>type T [unsafe.Sizeof(T(42))]int</code>,
-there is a snippet in the type checker that resembles:</p>
-<pre><code class="language-go">func callExpr(call *syntax.CallExpr) operand {
-  x := typeOrValue(call.Fun)
-  switch x.mode() {
-  // ... other cases
-  case typeExpr:
-    // T(), meaning it's a conversion
-    T := x.typ()
-    // ... handle the conversion, T *is not* safe to deconstruct
-  }
-}
-</code></pre>
-<p>As soon as we observe that the <code>CallExpr</code> is a conversion to <code>T</code>, we know that
-the resulting type will be <code>T</code> (assuming no preceding errors). Before we pass
-back a value (here, an <code>operand</code>) of type <code>T</code> to the rest of the type checker,
-we need to check for completeness of <code>T</code>:</p>
-<pre><code class="language-go">func callExpr(call *syntax.CallExpr) operand {
-  x := typeOrValue(call.Fun)
-  switch x.mode() {
-  // ... other cases
-  case typeExpr:
-    // T(), meaning it's a conversion
-    T := x.typ()
-+   if !isComplete(T) {
-+     reportCycleErr(T)
-+     return invalid
-+   }
-    // ... handle the conversion, T *is* safe to deconstruct
-  }
-}
-</code></pre>
-<p>Instead of returning an incomplete value, we return a special <code>invalid</code> operand,
-which signals that the call expression could not be evaluated. The rest of the
-type checker has special handling for invalid operands. By adding this, we
-prevented incomplete values from “escaping” downstream—both into the rest of the
-type conversion logic and to downstream operators—and instead reported a cycle
-error describing the problem with <code>T</code>.</p>
-<p>A similar code pattern is used in all other cases, implementing cycle detection
-for incomplete values.</p>
-<h2 id="conclusion">Conclusion</h2>
-<p>Systematic cycle detection involving incomplete values is a new addition to the
-type checker. Before Go 1.26, we used a more complex type construction algorithm,
-which involved more bespoke cycle detection that didn’t always work. Our new,
-simpler approach addressed a number of (admittedly esoteric) compiler panics
-(issues <a href="/issue/75918">#75918</a>, <a href="/issue/76383">#76383</a>,
-<a href="/issue/76384">#76384</a>, <a href="/issue/76478">#76478</a>, and more), resulting in a more
-stable compiler.</p>
-<p>As programmers, we’ve become accustomed to features like recursive type
-definitions and sized array types such that we might overlook the nuance of
-their underlying complexity. While this post does skip over some finer details,
-hopefully we’ve conveyed a deeper understanding of (and perhaps appreciation
-for) the problems surrounding type checking in Go.</p>
-</div>
-
-    </div>
-
-    
-    <div class="Article prevnext">
-    
-    
-      
-        <p>
-        
-        
-          
-            <b>Previous article: </b><a href="/blog/inliner">//go:fix inline and the source-level inliner</a><br>
-          
-        
-        <b><a href="/blog/all">Blog Index</a></b>
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-      
-    
-    </div>
-    
-
-  </div>
-</div>
-
-<script src="/js/play.js"></script>
-
-</div>
-          </li>
+        <div class="comic">
+          <a href="//imgs.xkcd.com/comics/centimeter_wavelengths.png" target="_blank">
+            <img src="//imgs.xkcd.com/comics/centimeter_wavelengths.png" alt="Centimeter Wavelengths">
+          </a>
+        </div>
   
-        </ul>
       </div>
   
       <div class="card">
         <h2>Reddit</h2>
   
-        <h3 class="subreddit">r/golang</h3>
-        <ul class="item-list">
-  
-          <li>
-            <a href="https://www.reddit.com/r/golang/comments/1s2zz4t/i_built_a_tool_to_convert_json_into_go_structs/" target="_blank">I built a tool to convert JSON into Go structs automatically</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I built a small CLI tool that converts JSON into Go structs automatically.</p> <p>Features:</p> <p>- Supports nested objects</p> <p>- Supports arrays</p> <p>- Generates struct fields with json tags</p> <p>- Simple and fast CLI usage</p> <p>Example:</p> <p>structify-go input.json</p> <p>Output:</p> <p>type User struct {</p> <p>Name string `json:&quot;name&quot;`</p> <p>Age int `json:&quot;age&quot;`</p> <p>}</p> <p>Looking for feedback, suggestions, or feature ideas 🙏</p> <p>GitHub:</p> <p><a href="https://github.com/wasuchok/structify-go">https://github.com/wasuchok/structify-go</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Educational_End1349"> /u/Educational_End1349 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1s2zz4t/i_built_a_tool_to_convert_json_into_go_structs/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1s2zz4t/i_built_a_tool_to_convert_json_into_go_structs/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/golang/comments/1s2y2a8/i_built_an_opensource_ai_gateway_in_go_routes/" target="_blank">I built an open-source AI gateway in Go — routes, rate-limits, and secures LLM traffic across providers</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hey <a href="/r/golang">r/golang</a>,</p> <p>I just released AegisFlow, an open-source AI gateway written in Go. It sits between your applications and LLM providers (OpenAI, Anthropic, Ollama, etc.) and handles routing, rate limiting, security policies, and observability.</p> <p><strong>What it does:</strong></p> <p>- OpenAI-compatible API point any OpenAI SDK at it by changing `base_url`</p> <p>- Multi-provider routing with automatic fallback and circuit breaker</p> <p>- Policy engine that blocks prompt injection and detects PII before it reaches providers</p> <p>- Per-tenant rate limiting (sliding window, in-memory or Redis backed)</p> <p>- Usage tracking with token counts and cost estimation</p> <p>- Prometheus metrics + OpenTelemetry tracing</p> <p>- SSE streaming support</p> <p><strong>Why Go:</strong></p> <p>This is infrastructure that sits in the hot path of every AI request. Go gives me a single binary (~15MB), handles concurrent connections efficiently, and is what the cloud-native ecosystem expects for this kind of tool. Same reason Envoy alternatives, Traefik, and Kubernetes controllers are written in Go.</p> <p><strong>Tech details:</strong></p> <p>- chi router for HTTP</p> <p>- Clean internal package boundaries (provider interface, middleware chain, policy engine)</p> <p>- 40 unit tests, all passing with `-race`</p> <p>- Works with local Ollama models no API keys needed</p> <p>- Docker + Docker Compose included</p> <p>GitHub: <a href="https://github.com/saivedant169/AegisFlow">https://github.com/saivedant169/AegisFlow</a></p> <p>Would love feedback on the architecture and code quality. Issues are open for contributions several `good first issue` labels for anyone who wants to add a provider adapter.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Melodic-Platypus-956"> /u/Melodic-Platypus-956 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1s2y2a8/i_built_an_opensource_ai_gateway_in_go_routes/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1s2y2a8/i_built_an_opensource_ai_gateway_in_go_routes/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/golang/comments/1s2lqps/go_linting_with_nogo_in_bazel/" target="_blank">Go linting with nogo in Bazel</a>
-            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/golang/comments/1s2lqps/go_linting_with_nogo_in_bazel/">  </a> </td><td> &#32; submitted by &#32; <a href="https://www.reddit.com/user/birdayz"> /u/birdayz </a> <br/> <span><a href="https://nerden.de/nogo_bazel">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1s2lqps/go_linting_with_nogo_in_bazel/">[comments]</a></span> </td></tr></table></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/golang/comments/1s2kwb8/how_to_pass_data_between_service_and_repository/" target="_blank">How to pass data between service and repository layers without leaking sqlc types?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;m building a REST API in Go using the repository pattern with three layers:</p> <ul> <li><strong>Handler</strong> -&gt; takes HTTP requests, sends responses</li> <li><strong>Service</strong> -&gt; business logic</li> <li><strong>Repository</strong> -&gt; talks to the database</li> </ul> <p>I&#39;m using sqlc for the database layer, and DTOs at the handler level so I don&#39;t expose my DB structure to the API consumer.</p> <p>The part I&#39;m stuck on is: how should the service layer communicate with the repository layer? </p> <p>The repository uses sqlc-generated types like <code>db.CreateUserParams</code>, <code>db.GetUserRow</code>, etc. But if my service layer directly accepts/returns these types, it feels like I&#39;m leaking database implementation details into my business logic layer.</p> <p>Should I introduce another set of structs between the service and the repository? That means I&#39;d end up with three struct types for essentially the same entity:</p> <ol> <li><strong>DTO</strong> (handler layer)</li> <li><strong>Extra Struct</strong> (service layer)</li> <li><strong>db.XyzParams</strong> (repository/sqlc layer)</li> </ol> <p>Is this the standard approach in Go, or is it over-engineering for most CRUD APIs? How do you all handle this in production codebases?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/SoftwareDesignerDev"> /u/SoftwareDesignerDev </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1s2kwb8/how_to_pass_data_between_service_and_repository/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1s2kwb8/how_to_pass_data_between_service_and_repository/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/golang/comments/1s2kclj/epson_printer_link_with_golang/" target="_blank">EPSON Printer Link with GOlang</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Dear Communitity ,<br/> i want to link epson with golang, but i see sth wrong, the printer it identified without COM port , but with other infos </p> <h1></h1> <p>Name : EPSON USB Controller for TM/BA/EU Printers</p> <p>Manufacturer: EPSON</p> <p>Status : OK</p> <p>DeviceID : USB\VID_04B8&amp;PID_0202\5836554A0329820000</p> <p>VID : 04B8</p> <p>PID : 0202</p> <h1></h1> <p>Dirver Link: <a href="https://epson.com/Support/Point-of-Sale/Thermal-Printers/Epson-TM-T88V-Series/s/SPT_C31CA85011">https://epson.com/Support/Point-of-Sale/Thermal-Printers/Epson-TM-T88V-Series/s/SPT_C31CA85011</a></p> <p>, but when i use a tool provided with Epson that assign the printer with Virtual Com PORT , then when i connect to it i can communcatie with the printer through my code , so my question it theres any thing to do , to assign the printer automaticly without the epson tool </p> <p>i did some search to use the VID ,PID and the Device ID , but alws i got this </p> <p>searching for device: USB\VID_04B8&amp;PID_0202\5836554A0329820000</p> <p>2026/03/24 18:13:34 Could not find device path: device not found: USB\VID_04B8&amp;PID_0202\5836554A0329820000</p> <p>exit status 1</p> <p>it theres any solution to assign / communcate with printer automaticly in code with no human interaction (the user just choose the port where the printer installed) </p> <p>Thanks in advance </p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/optimus_prime955"> /u/optimus_prime955 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1s2kclj/epson_printer_link_with_golang/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1s2kclj/epson_printer_link_with_golang/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/golang/comments/1s2j3u3/go_naming_conventions_a_practical_guide/" target="_blank">Go Naming Conventions: A Practical Guide</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/alexedwards"> /u/alexedwards </a> <br/> <span><a href="https://www.alexedwards.net/blog/go-naming-conventions">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1s2j3u3/go_naming_conventions_a_practical_guide/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/golang/comments/1s2fig5/best_pure_go_sqlite_driver_for_concurrent_reads/" target="_blank">Best pure Go SQLite driver for concurrent reads and occasional writes</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;m building a small service that needs to read from a SQLite database while handling a decent amount of concurrent read requests. Writes are occasional but need to be reliable. I&#39;ve seen the recent benchmarks comparing different SQLite drivers and it seems like the pure Go options like <code>ncruces/go-sqlite</code> and <a href="http://zombiezen.com/go/sqlite"><code>zombiezen.com/go/sqlite</code></a> are getting faster, but I&#39;m still not sure which one handles concurrent reads best in practice. I&#39;d prefer to avoid CGo because I need cross-compilation to ARM and it&#39;s been a pain in CI. For anyone using pure Go SQLite drivers in production with moderate concurrency, what has your experience been. Are there any gotchas with WAL mode or connection pooling I should watch out for. I&#39;m also curious about JSON handling since I&#39;ll be storing some JSON blobs and I want to make sure the driver doesn&#39;t choke on them.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/icepix"> /u/icepix </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1s2fig5/best_pure_go_sqlite_driver_for_concurrent_reads/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1s2fig5/best_pure_go_sqlite_driver_for_concurrent_reads/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/golang/comments/1s2ewtv/building_a_linux_kernel_agent_in_go_c_with_ebpf/" target="_blank">Building a Linux kernel agent in Go + C with eBPF for autonomous anomaly detection — wrote about the architecture</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Compartilhando um projeto que venho desenvolvendo em Go e C: HOSA, um agente SRE autônomo que roda dentro do kernel do Linux via eBPF.</p> <p>O lado em Go lida com a lógica do espaço do usuário — o cálculo da Distância de Mahalanobis, as atualizações de covariância online de Welford, a orquestração de resposta gradual e o despacho de webhooks. O lado em C lida com os programas eBPF anexados aos tracepoints e kprobes do kernel.</p> <p>O desafio interessante específico do Go: realizar estatísticas multivariadas incrementais (algoritmo de Welford para matrizes de covariância online) com frequência de atualização em submilissegundos sem que a pressão do coletor de lixo se torne um problema. Ainda estou trabalhando nisso.</p> <p>Escrevi o primeiro artigo público sobre o projeto — focado no problema e na arquitetura, em vez do código (a postagem sobre a implementação detalhada em Go + eBPF virá em seguida). O código alfa está no GitHub: <a href="http://github.com/bricio-sr/hosa">github.com/bricio-sr/hosa</a></p> <p>Artigo: <a href="https://dev.to/bricio-sr/your-monitoring-stack-has-a-blind-spot-heres-the-2-second-window-where-servers-die-5fg1">https://dev.to/bricio-sr/your-monitoring-stack-has-a-blind-spot-heres-the-2-second-window-where-servers-die-5fg1</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/bricio-sr"> /u/bricio-sr </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1s2ewtv/building_a_linux_kernel_agent_in_go_c_with_ebpf/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1s2ewtv/building_a_linux_kernel_agent_in_go_c_with_ebpf/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/golang/comments/1s2caji/kumo_v050_awsim_has_been_renamed_now_with/" target="_blank">kumo v0.5.0 - awsim has been renamed, now with in-process Go testing API and Homebrew support</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hey <a href="/r/golang">r/golang</a>, I previously shared awsim here and got great feedback, so here&#39;s an update.</p> <p>awsim has been renamed to <strong>kumo</strong> (Japanese for &quot;cloud&quot;) due to a licensing issue with the old name.</p> <p>New repo: <a href="https://github.com/sivchari/kumo">https://github.com/sivchari/kumo</a></p> <p><strong>What&#39;s new since v0.3.0:</strong></p> <p>Renamed awsim to kumo:</p> <ul> <li>New repo: <a href="https://github.com/sivchari/kumo">https://github.com/sivchari/kumo</a></li> <li>New Docker image: ghcr.io/sivchari/kumo:latest</li> </ul> <p>Public Go API for in-process testing:</p> <ul> <li>Import kumo directly in your Go tests</li> <li>No Docker or separate process needed - just <code>go test</code></li> <li>Great for parallel test suites</li> </ul> <p>Homebrew support:</p> <ul> <li><code>brew install sivchari/tap/kumo</code></li> </ul> <p>Other improvements:</p> <ul> <li>All integration tests migrated to golden test pattern</li> <li>EBS Direct API fully implemented</li> </ul> <p><strong>Key features:</strong></p> <ul> <li>No AWS credentials needed</li> <li>Single binary / Docker image</li> <li>AWS SDK v2 compatible</li> <li>Fast startup, minimal resources</li> <li>71 AWS services supported</li> <li>All services tested with integration tests using the actual AWS SDK v2</li> </ul> <p><strong>Quick start:</strong></p> <p><code> docker run -p 4566:4566 ghcr.io/sivchari/kumo:latest </code></p> <p>Or install via Homebrew:</p> <p><code> brew install sivchari/tap/kumo </code></p> <p>GitHub: <a href="https://github.com/sivchari/kumo">https://github.com/sivchari/kumo</a></p> <p>Feedback, issues, and contributions welcome!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/sivchari"> /u/sivchari </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1s2caji/kumo_v050_awsim_has_been_renamed_now_with/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1s2caji/kumo_v050_awsim_has_been_renamed_now_with/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/golang/comments/1s2ajx7/raf_a_binary_format_and_a_very_fast/" target="_blank">RAF - A binary format and a very fast marshaler/unmarshaler in Go</a>
-            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/golang/comments/1s2ajx7/raf_a_binary_format_and_a_very_fast/">  </a> </td><td> <!-- SC_OFF --><div class="md"><p><a href="https://github.com/alialaee/raf">RAF</a> is a fast binary format and <code>marshaler/unmarshaler</code> in Go with possibility of looking up fields without unmarshaling the whole payload. It&#39;s a simple binary format that can represent most of what JSON can (No heterogeneous arrays).</p> <p>In the current benchmarks, <code>Unmarshal</code> is about <strong>8x faster</strong> than Go&#39;s JSON library and a lot faster than anything else I&#39;ve benchmarked, including CBOR, MessagePack, and Protobuf. No code generation is needed and you can also look up a single key without unmarshaling the payload.</p> <p>This was originally part of another project and I extracted it into a standalone library and added a lot of missing features. It&#39;s still a work in progress, but it&#39;s already very much usable and has a stable format.</p> <p><strong>Benchmarks:</strong></p> <p><strong>Unmarshal</strong></p> <table><thead> <tr> <th>Codec</th> <th align="right">ns/op</th> <th align="right">B/op</th> <th align="right">allocs/op</th> </tr> </thead><tbody> <tr> <td><strong>RAF</strong></td> <td align="right">980 (1.0x)</td> <td align="right">927</td> <td align="right">25</td> </tr> <tr> <td>JSON</td> <td align="right">8,230 (8.4x)</td> <td align="right">1,763</td> <td align="right">36</td> </tr> <tr> <td>MsgPack</td> <td align="right">3,206 (3.3x)</td> <td align="right">1,314</td> <td align="right">28</td> </tr> <tr> <td>CBOR</td> <td align="right">3,550 (3.6x)</td> <td align="right">928</td> <td align="right">25</td> </tr> <tr> <td>BSON</td> <td align="right">6,209 (6.3x)</td> <td align="right">2,891</td> <td align="right">157</td> </tr> <tr> <td>Protobuf</td> <td align="right">1,503 (1.5x)</td> <td align="right">2,082</td> <td align="right">46</td> </tr> </tbody></table> <p><strong>Marshal</strong></p> <table><thead> <tr> <th>Codec</th> <th align="right">ns/op</th> <th align="right">B/op</th> <th align="right">allocs/op</th> </tr> </thead><tbody> <tr> <td><strong>RAF</strong></td> <td align="right">948 (1.0x)</td> <td align="right">2,035</td> <td align="right">2</td> </tr> <tr> <td>JSON</td> <td align="right">1,379 (1.5x)</td> <td align="right">1,369</td> <td align="right">2</td> </tr> <tr> <td>MsgPack</td> <td align="right">1,967 (2.1x)</td> <td align="right">2,347</td> <td align="right">6</td> </tr> <tr> <td>CBOR</td> <td align="right">1,192 (1.3x)</td> <td align="right">1,054</td> <td align="right">2</td> </tr> <tr> <td>BSON</td> <td align="right">2,951 (3.1x)</td> <td align="right">1,407</td> <td align="right">2</td> </tr> <tr> <td>Protobuf (Generated)</td> <td align="right">887 (0.9x)</td> <td align="right">340</td> <td align="right">1</td> </tr> </tbody></table> <p><strong>Interesting Technicalities:</strong> If you want to understand why the <code>Marshal</code> and <code>Unmarshal</code> implementations are fast, here&#39;s the gist of it: - The format is easy to parse and cache (header/keys). - Both in <code>Marshal</code> and <code>Unmarshal</code>, it first tries to cache the structure of the structs (the fields and their types) using <code>reflect</code> and then use that cached structure to do the actual work. It means that after the first call, we can skip a lot of the reflection overhead. - Lots of unrolling and fast paths. If you see long functions and duplicated code, that&#39;s probably why. It also avoids being at the mercy of Go&#39;s escape analysis or other compiler optimizations.</p> <p>None of these techniques are particularly novel, you can see them in Go&#39;s JSON library and other high-performance libraries as well.</p> <p>Let me know if you have any questions, suggestions or if you want to use it. I have many ideas for improvements and optimizations, but the main one I&#39;m working on right now is adding an optional schema.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/eternalcas"> /u/eternalcas </a> <br/> <span><a href="https://github.com/alialaee/raf">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1s2ajx7/raf_a_binary_format_and_a_very_fast/">[comments]</a></span> </td></tr></table></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/golang/comments/1s29lbe/the_comprehensive_testbenchmark_when_you_should/" target="_blank">The comprehensive test(benchmark) when you should use pointers in slices in Go</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Added a story on Medium with links to the test code and benchmark results. </p> <p>I also added summaries on when to use pointers and when it’s a bad idea. These conclusions are based on test results, not just theories.</p> <p><a href="https://medium.com/@astronin/the-comprehensive-test-benchmark-when-you-should-use-pointers-in-slices-8e59429317e5">https://medium.com/@astronin/the-comprehensive-test-benchmark-when-you-should-use-pointers-in-slices-8e59429317e5</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Just_Role_294"> /u/Just_Role_294 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1s29lbe/the_comprehensive_testbenchmark_when_you_should/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1s29lbe/the_comprehensive_testbenchmark_when_you_should/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/golang/comments/1s295zv/decisionbox_opensource_ai_data_discovery_platform/" target="_blank">DecisionBox — open-source AI data discovery platform built in Go (plugin architecture, multi-module workspace, testcontainers)</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>We open-sourced DecisionBox, a platform where an AI agent autonomously connects to your data warehouse, writes SQL, executes it, and produces validated insights — without any human prompting. The backend is entirely Go (agent + API), with a Next.js dashboard as the frontend.</p> <p>Sharing here because the Go architecture might be interesting to this community. A few things worth noting:</p> <p><strong>Plugin system via</strong> <code>init()</code> <strong>registration</strong></p> <p>All providers (LLM, warehouse, secrets, domain packs) register themselves through <code>init()</code> functions using a <code>RegisterWithMeta()</code> pattern. Adding a new LLM provider means implementing a single interface with two methods:</p> <pre><code>type Provider interface { Chat(ctx context.Context, req ChatRequest) (*ChatResponse, error) Validate(ctx context.Context) error } </code></pre> <p>The warehouse interface is similarly narrow — <code>Query</code>, <code>ListTables</code>, <code>GetTableSchema</code>, plus a <code>SQLFixPrompt()</code> that returns dialect-specific error recovery prompts. Optional capabilities (like BigQuery&#39;s dry-run cost estimation) use type assertions against secondary interfaces:</p> <pre><code>if ce, ok := provider.(CostEstimator); ok { result, err := ce.DryRun(ctx, query) } </code></pre> <p><strong>Multi-module structure</strong></p> <p>15 Go modules across the repo — each provider is its own module with its own <code>go.mod</code>. This keeps dependency trees isolated (the BigQuery provider pulls in Google Cloud SDKs, the Redshift provider pulls in AWS SDKs, but neither contaminates the other). The shared interface library (<code>libs/go-common</code>) has zero external dependencies.</p> <p><strong>Testing</strong></p> <p>Integration tests use testcontainers for MongoDB and K3s. The Ollama LLM integration test spins up an actual Ollama container, downloads a model, and runs inference against it. All providers have factory/registration tests that verify the init() → registry → factory chain works end-to-end.</p> <p><strong>Stdlib HTTP</strong></p> <p>The API uses <code>net/http</code> from the stdlib (Go 1.25) — no frameworks. Structured logging throughout, no <code>fmt.Println</code> or <code>log.Println</code>.</p> <p><strong>Architecture overview:</strong></p> <pre><code>User&#39;s Warehouse → Agent (Go binary) → MongoDB ← API (Go, net/http) ← Dashboard (Next.js) </code></pre> <p>The only infrastructure dependency is MongoDB. The agent runs as a subprocess in dev or as a Kubernetes Job in production.</p> <p>~37K lines of Go across 177 files.</p> <p>GitHub: <a href="https://github.com/decisionbox-io/decisionbox-platform">https://github.com/decisionbox-io/decisionbox-platform</a></p> <p>Docs: <a href="https://decisionbox.io/docs">https://decisionbox.io/docs</a></p> <p>Happy to answer questions about the architecture or design decisions.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/abacigil"> /u/abacigil </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1s295zv/decisionbox_opensource_ai_data_discovery_platform/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1s295zv/decisionbox_opensource_ai_data_discovery_platform/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/golang/comments/1s27v9y/is_this_a_reasonable_way_to_cache_telegram_bots/" target="_blank">Is this a reasonable way to cache telegram bots ?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I’ve been playing around with a go service that manages telegram bots, and I’m caching bot clients in memory. Here’s a simplified version of what I’m doing:</p> <p><code>const baseTTL = time.Minute * 30</code></p> <p><code>type Service struct {</code></p> <p><code>authService AuthService</code></p> <p><code>cfg *config.BotConfig</code></p> <p><code>repo Repository</code></p> <p><code>bots map[d.BotID]*struct {</code></p> <p><code>bot *telebot.Bot</code></p> <p><code>ownerID authDomain.UserID</code></p> <p><code>expiration time.Time</code></p> <p><code>}</code></p> <p><code>mu sync.RWMutex</code></p> <p><code>}</code></p> <p><code>func New(authService AuthService, repo Repository, cfg *config.BotConfig) *Service {</code></p> <p><code>service := &amp;Service{</code></p> <p><code>authService: authService,</code></p> <p><code>cfg: cfg,</code></p> <p><code>repo: repo,</code></p> <p><code>bots: make(map[d.BotID]*struct {</code></p> <p><code>bot *telebot.Bot</code></p> <p><code>ownerID authDomain.UserID</code></p> <p><code>expiration time.Time</code></p> <p><code>}),</code></p> <p><code>}</code></p> <p><code>ticker := time.NewTicker(baseTTL)</code></p> <p><code>go func() {</code></p> <p><code>for range ticker.C {</code></p> <p><code>service.mu.Lock()</code></p> <p><code>for id, bot := range service.bots {</code></p> <p><code>if time.Now().UTC().After(bot.expiration) {</code></p> <p><code>delete(service.bots, id)</code></p> <p><code>}</code></p> <p><code>}</code></p> <p><code>service.mu.Unlock()</code></p> <p><code>}</code></p> <p><code>}()</code></p> <p><code>return service</code></p> <p><code>}</code></p> <p>So basically, each bot has an expiration time, and a goroutine cleans up expired entries. When I need a bot, I either return it from the cache or create a new one and store it.I’m curious if this is a reasonable way to handle caching bots in memory, or if there are better ways I should think about, especially if I eventually run multiple instances of the service.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Minimum-Ad7352"> /u/Minimum-Ad7352 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1s27v9y/is_this_a_reasonable_way_to_cache_telegram_bots/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1s27v9y/is_this_a_reasonable_way_to_cache_telegram_bots/">[comments]</a></span></div>
-          </li>
-  
-        </ul>
-  
-        <h3 class="subreddit">r/gamedev</h3>
-        <ul class="item-list">
-  
-          <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1s2ysts/fortnite_developers_blindsided_by_unexpected/" target="_blank">Fortnite developers blindsided by unexpected workforce reductions</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>According to a new report from Kotaku, the recent massive layoffs at Epic Games came as a total shock to the staff. Despite Fortnite’s massive success, many developers were reportedly blindsided, having received no prior warning or indication that their roles were at risk. <a href="https://kotaku.com/epic-fortnite-layoffs-developers-jobs-tim-sweeney-statement-2000681498">Source</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Own_Effective_801"> /u/Own_Effective_801 </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1s2ysts/fortnite_developers_blindsided_by_unexpected/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1s2ysts/fortnite_developers_blindsided_by_unexpected/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1s2ylc8/anyone_rocking_a_macbook_pro_windowslinux_desktop/" target="_blank">Anyone rocking a MacBook Pro + Windows/Linux Desktop Combo?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Just curious because I&#39;ve been in the market for a good laptop for school but can also tackle some lighter game dev work away from home, the MacBook Pros have caught my eye recently. Thinkpads have also been getting my attention too</p> <p>Just wanted to hear about other people&#39;s experience or recommendations who may be rocking this setup.</p> <p>Thank you!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/opsecwizard"> /u/opsecwizard </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1s2ylc8/anyone_rocking_a_macbook_pro_windowslinux_desktop/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1s2ylc8/anyone_rocking_a_macbook_pro_windowslinux_desktop/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1s2wpeg/how_to_market_games_question/" target="_blank">How to market games? (Question)</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hello, I am trying to get into indie dev and I am working on the first game that I would like to publish on steam. I have done some research and I have already decided to market on twitter and maybe tiktok. My main question is what do I actually put on there? I want to make an account for the game and an account for me as a developer. What would I post for either account to get recognized? </p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Randy_Humpedink"> /u/Randy_Humpedink </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1s2wpeg/how_to_market_games_question/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1s2wpeg/how_to_market_games_question/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1s2v2qo/good_button_non_movement_based_mini_games/" target="_blank">Good button non movement based Mini Games</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hey everyone,</p> <p>hoping to get some feedback or examples of silly little input based &quot;mini games&quot; you can think of are solely around pressing different keys or buttons (not movement)</p> <p>what I mean by this is like:</p> <ol> <li><p>where you have to press the button at the right time along a bar and the position of this changes and it gets faster each time</p></li> <li><p>button mashing (mainly trying to avoid this one)</p></li> <li><p>pressing a string of buttons or keys in a row (like A first, then X, then Y etc) and trying to do it quickly and correctly to finish in time</p></li> </ol> <p>I hope this makes sense, I could be explaining myself really poorly, but if you can think of a game that does this well, id love to hear some examples </p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/nsfwpixelart"> /u/nsfwpixelart </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1s2v2qo/good_button_non_movement_based_mini_games/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1s2v2qo/good_button_non_movement_based_mini_games/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1s2qu4i/i_failed_my_2nd_game_and_sold_my_car_3_days_of/" target="_blank">I failed my 2nd game and sold my car. 3 days of prototyping changed everything. (Data & Lessons)</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi. everyone, I’m Vincent. I sold my car to make my second commercial game and failed Instead of stopping, I started building quick prototypes on itch to validate my ideas, so I spent 3 days on making the prototype of Idle Gumball Machine. IGM was actually the very first prototype that I tried validating lol! And the data showed strong potential Based on that traction, I secured publisher funding and moved into full production.</p> <p>After 150 more days of development, the game is now sitting at 4822 wishlists. Blitz ( 4.35M Subs) just posted a video, so I’d say I’m gonna get 5000 wishlists pretty soon!</p> <p>Here’s a brief breakdown of how those wishlists were generated (the game got covered by many content creators, I am going to list the big ones below, for those I haven’t mentioned in this post, I still want to thank you for covering IGM ):</p> <ul> <li><strong>August 29, 2025:</strong> <strong>IdleCub</strong> (148k subs) covered IGM.<a href="https://www.youtube.com/watch?v=vzwUScCp9hM"> </a>Wishlists on Aug 29: <strong>0</strong>, total wishlists: <strong>0</strong>. <em>(Early prototype phase)</em></li> <li><strong>September 4, 2025:</strong> I set the Idle Gumball Machine Steam Page Live.</li> <li><strong>September 22, 2025:</strong> <strong>CRYSTAL</strong> (1.74M subs) covered IGM, Wishlists on Sep 22: <strong>21</strong>, total wishlists: <strong>146</strong>.</li> <li><strong>December 8, 2025:</strong> Idle Gumball Machine Demo live on steam, the wishlist on Dec 8: 25, and it is 40 on Dec 9,total wishlists: <strong>564</strong>.</li> <li><strong>December 15, 2025:</strong> <strong>Iamcade</strong> (1.09M subs) covered IGM, Wishlists on Dec 15: <strong>112</strong>, total wishlists: <strong>843</strong>. Also, we secured the gxgames featuring on the same day!</li> <li><strong>December 17, 2025:</strong> <strong>TheLoneGamer</strong> (964k subs) covered IGM,<a href="https://www.youtube.com/watch?v=UvI6VVmGNE0"> </a>Wishlists on Dec 17: <strong>51</strong>, total wishlists: <strong>981</strong>.</li> <li><strong>December 22, 2025:</strong> <strong>Vicio ONE MORE TIME</strong> (1.81M subs) covered IGM,Wishlists on Dec 22: <strong>14</strong>, total wishlists: <strong>1075</strong>.</li> <li><strong>January 29, 2026:</strong> <strong>DangerouslyFunny</strong> (2.75M subs) covered IGM,Wishlists on Jan 29: <strong>9</strong>, peak at <strong>178</strong> next day, total wishlists on Jan 30 : <strong>1667</strong>.</li> <li><strong>January 31, 2026:</strong> <strong>Real Civil Engineer</strong> (2.79M subs) covered IGM Wishlists on Jan 31: <strong>145</strong>, total wishlists: <strong>1806</strong>.</li> <li><strong>February 4, 2026:MaxPalaro</strong> (2.29M subs) covered IGM Wishlists on Feb 12: <strong>44</strong> total wishlists: <strong>2047</strong>.</li> <li><strong>February 12, 2026:</strong> <strong>ViteC ► Play</strong> (4.04M subs) covered IGM, Wishlists on Feb 12: <strong>65</strong>, total wishlists: <strong>2284</strong>.</li> <li><strong>March 15, 2026:</strong> <strong>IdleCub</strong> (148k subs) covered IGM,Wishlists on Mar 15: <strong>239</strong>, total wishlists: <strong>3577</strong></li> <li><strong>March 16, 2026:</strong> <strong>Game Spark</strong> (Japanese Media) featured IGM on X/Twitter.<a href="https://x.com/gamespark/status/2033487691804021083?s=20"> </a>Wishlists on Mar 16: <strong>388</strong>, total wishlists: <strong>3953</strong>.</li> <li><strong>March 22, 2026:</strong> <strong>Blitz</strong> (4.35M subs) covered IGM Wishlists on Mar 22: <strong>148</strong>, total wishlists: <strong>4,636</strong></li> </ul> <h1>My Biggest Takeaway: INSPIRATION TRUMPS EVERYTHING ELSE.</h1> <h1>If there is one thing I want you to learn from my story, it’s this: Do what inspires you. I got the idea for this game while sitting on the toilet. Incremental games are a trending genre, but I didn’t make this because I thought it would be trendy. I did it because I thought the idea would be good.</h1> <h1>I originally planned to write this post after my launch, but Idle Gumball Machine is releasing on March 26th. Looking at the numbers today, I realized I am agonizingly close to the &quot;Popular Upcoming&quot; list. Getting on that list is the difference between a quiet launch and a life-changing one.</h1> <p>I decided to post this today because this is my last chance to push IGM to the next level. If you’ve ever failed, sold something you loved to chase a dream, or spent 3 days on a &quot;stupid&quot; idea that actually worked,I hope this story helps you in some way,and I&#39;ll be hanging out in the comments to answer anything you may want.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/AntiqueGearGames"> /u/AntiqueGearGames </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1s2qu4i/i_failed_my_2nd_game_and_sold_my_car_3_days_of/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1s2qu4i/i_failed_my_2nd_game_and_sold_my_car_3_days_of/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1s2pymp/im_writing_a_book_on_how_to_animate_for_video/" target="_blank">I'm writing a book on how to animate for video games - would you find this useful?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Specifically, it&#39;s going to be 2D animation for smaller games.</p> <p>With how volatile AAA game production is and how accessible indie production is, and how few books there are out there on this subject, I figured it would be a great thing to produce.</p> <p>I&#39;m currently tweaking my book proposal with Routledge for publishing!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Rootayable"> /u/Rootayable </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1s2pymp/im_writing_a_book_on_how_to_animate_for_video/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1s2pymp/im_writing_a_book_on_how_to_animate_for_video/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1s2mr24/game_developer_pondering_a_change_of_career_due/" target="_blank">Game developer pondering a change of career due to the state of the industry</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hey Reddit, posted this in the jobs subreddit but thought id post here too given the nature of the job haha. After the layoffs at Epic today, and well, the entire last few years of mass redundancies and studio closures, i think i&#39;ve finally snapped and decided that a career pivot in the next little while would be very much worth considering. Theres other factors that contribute to this other than the lack of job stability(low pay vs how specialised the role is, the general burnout that comes with working a passion based job etc) but id say the gutting of talent from the industry is the primary motivator currently.</p> <p>For context; im from the UK, in my 20&#39;s (cant go much more specific than that as i don&#39;t wanna out myself more than i already have haha), i&#39;ve been in the industry over 3 years at this point, and i work as a 3D artist which is pretty hyper specialised as far as the industry goes. I currently not in any immediate danger of being laid off that i know of although that can always change on a dime. Game art is my only real vocational skill (its what i studied in uni and what i got good enough at to get hired, not to toot my own horn). I did do retail work and a brief stint doing some oddjobs in an office prior to this, but im not particularly keen to go back to those (especially not retail/service).</p> <p>My question is, with all that preamble out the way, are there any other devs on here that pivotted succesfully to another more stable (and higher paying) industry? Or does anyone have any general advice about safer jobs that are worth pivotting too that are techy/office based? Thanks in advance!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/SpodeReddit"> /u/SpodeReddit </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1s2mr24/game_developer_pondering_a_change_of_career_due/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1s2mr24/game_developer_pondering_a_change_of_career_due/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1s2mbuz/whats_the_farthest_youve_gotten_with_a_prototype/" target="_blank">What’s the farthest you've gotten with a prototype before throwing it out?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>We’re still figuring out which game mechanics feel right and fun, so we’re making a lot of rough prototypes. But what&#39;s the furthest you got with a prototype before going: nah, this isn&#39;t working?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/StayDeadGame"> /u/StayDeadGame </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1s2mbuz/whats_the_farthest_youve_gotten_with_a_prototype/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1s2mbuz/whats_the_farthest_youve_gotten_with_a_prototype/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1s2kgrw/how_do_you_guys_actually_build_and_maintain_a/" target="_blank">How do you guys actually build and maintain a community around your game?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;m talking early in the project, like how did you even get your first real followers or playtesters, where do you post updates, and what&#39;s actually worked vs what didn&#39;t? How do you build communities when you only have a small build ready?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/jojosiwa2808"> /u/jojosiwa2808 </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1s2kgrw/how_do_you_guys_actually_build_and_maintain_a/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1s2kgrw/how_do_you_guys_actually_build_and_maintain_a/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1s2hmka/misinformation_via_word_of_mouth_is_very_present/" target="_blank">Misinformation via word of mouth is very present in the game dev community especially for marketing. Be careful when taking notes/advice.</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>The problem is simple, someone with good intention shares information with 90% being good but they tend to misspeak on the important parts or they assume wrong conclusions... or conclusions that don&#39;t apply to the majority.</p> <p>A very simple example, &quot;New&amp;Trending&quot; is HEAVILY confused with &quot;Popular upcoming&quot; even by good successful devs. Most of the time they also know the &quot;truth&quot; but they misspeak, and you as a new developer you take the wrong information.</p> <p>When these new devs remember the wrong things to look for they might do bad choices because they are looking at the wrong things. We can&#39;t fix this misinformation because it&#39;s not intentional, so please be careful yourself.<br/> Always double check things and try to do tests yourself to verify what you learned on reddit.</p> <p>Main reason behind this post is because sometimes i see new devs building their whole release strategy based on some quote they saw on reddit or discord and never verify it. </p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/ZeroPercentStrategy"> /u/ZeroPercentStrategy </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1s2hmka/misinformation_via_word_of_mouth_is_very_present/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1s2hmka/misinformation_via_word_of_mouth_is_very_present/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1s2h32u/epic_just_laid_off_1000_workers/" target="_blank">Epic just laid off 1000 workers.</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p><a href="https://www.epicgames.com/site/en-US/news/todays-layoffs">Source</a></p> <p>This is not good. Reposting because the bot wouldn&#39;t let me just post the link.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/ryunocore"> /u/ryunocore </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1s2h32u/epic_just_laid_off_1000_workers/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1s2h32u/epic_just_laid_off_1000_workers/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1s2cyej/localized_my_game_into_4_languages_solo_and/" target="_blank">Localized my game into 4 languages solo and German almost broke everything</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Just finished adding Spanish, Portuguese, French, and German to my iOS game. The actual translation wasn&#39;t the hard part. German was.</p> <p>Every string is like 40% longer in German and it absolutely destroyed my UI. Buttons that fit perfectly in English suddenly had truncated text or overflowed their containers. Spanish was fine. French was mostly fine. German looked like a bomb went off in my layout.</p> <p>Other stuff I didn&#39;t expect:</p> <p>- Some button labels that made sense as abbreviations in English became confusing in other languages. &quot;Inv&quot; for inventory doesn&#39;t translate well.</p> <p>- App Store analytics showed a ton of impressions from Brazil and Spain but almost zero conversions. Turns out people just bounce when the listing is English-only, even if they can read it.</p> <p>- Testing the actual gameplay in each language found issues I never would have caught just reading the string files. Context matters a lot.</p> <p>If you&#39;re planning to localize, test your UI in German first. If your layout survives that, everything else will probably fit.</p> <p>Anyone else have localization war stories?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/JBitPro"> /u/JBitPro </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1s2cyej/localized_my_game_into_4_languages_solo_and/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1s2cyej/localized_my_game_into_4_languages_solo_and/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1s2c5w1/where_did_you_first_learn_how_to_code/" target="_blank">Where did you first learn how to code?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>And how Hard did you find it?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/ResolutionKnown8345"> /u/ResolutionKnown8345 </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1s2c5w1/where_did_you_first_learn_how_to_code/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1s2c5w1/where_did_you_first_learn_how_to_code/">[comments]</a></span></div>
-          </li>
-  
-        </ul>
-  
         <h3 class="subreddit">r/rust</h3>
         <ul class="item-list">
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1s2xivm/turbosort_simdaccelerated_radix_sort_for/" target="_blank">turbosort — SIMD-accelerated radix sort for primitives in Rust</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Just published my first crate and wanted to share it with the community.</p> <p>turbosort is an adaptive sorting library for all 10 primitive numeric types.</p> <p>Benchmarks (10M random u32): - std::sort_unstable: 301ms - turbosort::sort: 182ms (1.7x faster) - At 1M elements the gap is 3.1x</p> <p>The key idea is tiered algorithm dispatch based on input size: - 0–1: no-op - 2–16: SIMD sorting networks (AVX2, NEON ≤8) - 17–512: quicksort with SIMD leaf nodes - 513+: LSD radix sort - 131K+: parallel radix sort via rayon</p> <p>SIMD support: - x86_64: AVX2 with runtime CPUID dispatch (same binary works on all CPUs) - aarch64: NEON sorting networks (4-lane) - Scalar fallback for everything else</p> <p>Also supports no_std — disable default features and use sort_with_buffer() with a caller-provided buffer for zero-allocation sorting.</p> <p>Float sorting uses total ordering: -inf &lt; -0.0 &lt; +0.0 &lt; +inf &lt; NaN.</p> <p>Would love feedback on the approach, especially around the SIMD sorting network implementation and the dispatch thresholds. The crossover points were chosen empirically but I&#39;m curious if others have found different sweet spots.</p> <p><a href="https://github.com/ampactor-labs/turbosort">https://github.com/ampactor-labs/turbosort</a> <a href="https://crates.io/crates/turbosort">https://crates.io/crates/turbosort</a></p> <p>Dual-licensed MIT/Apache-2.0.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/TheDeepLucy"> /u/TheDeepLucy </a> <br/> <span><a href="https://crates.io/crates/turbosort">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1s2xivm/turbosort_simdaccelerated_radix_sort_for/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1s3wwzp/for_hire_rust_dev_solana_audiodsp_fullstack/" target="_blank">[For Hire] Rust dev: Solana, audio/DSP, full-stack.</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/TheDeepLucy"> /u/TheDeepLucy </a> <br/> <span><a href="/r/forhire/comments/1s3t4pl/for_hire_rust_dev_solana_audiodsp_fullstack/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1s3wwzp/for_hire_rust_dev_solana_audiodsp_fullstack/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1s2x4z3/rust_or_c_for_a_cloud_optimization_engine_not_a/" target="_blank">Rust or C++ for a cloud optimization engine: not a technical issue, but a hiring difficulty issue</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I want to build a cloud optimization startup through a platform based on an optimization engine that will be offered to customers and, if possible, also used to attract investors. This will not be a hobby or an experiment. I want to make it work and avoid failure. If possible, please read the whole question to the end, because my concern is not technical but business-related, especially regarding hiring, since I live in <code>Greece</code> where Rust is not very widespread.</p> <p>I am undecided whether to build the engine in Rust or C++. I know how to use both languages. I had started building it in Rust a few days ago, but I am now thinking about converting it entirely to C++. I know that may sound irrational and counterproductive, but I will explain my doubts, which are mainly related to business and hiring rather than technology.</p> <p><strong>THE SITUATION:</strong><br/> Naturally, for my use case, Rust is much more suitable than C++ for the technical reasons everyone already knows. At the moment I do not have a team yet, and I am still building the engine on my own. As soon as I create and launch the company, I may be able to handle everything by myself as the only programmer for the first month, even though it would be very difficult. After that, however, I will definitely need at least two or three programmers to hire, because I will not be able to manage everything alone anymore. The engine will <strong>NOT</strong> be small in the first year, and I will need at least one programmer to hire early on. Since I will initially have a very limited budget before receiving funding, the amount I can offer programmers will be quite low.</p> <p>I live in Greece, and here it is difficult to find Rust programmers compared to C++ programmers, who are much easier to find.</p> <p><strong>FEARS AND CONCERNS:</strong><br/> My fear is that I will not be able to find Rust programmers, and that is probably a realistic concern. After launching the company, it could take many months before I am able to find a Rust programmer, who will probably be intermediate-level or below. If I am lucky, I may find only one, or at most two, but I still believe that even finding one or two would be difficult. So my concerns are threefold:</p> <ol> <li>I may be able to find the first Rust programmer, at an intermediate level, only after the first 4–6 months from launching my company and selling the first subscriptions to customers, unless I hire remotely from other countries, but that is a different matter and investors may not like it.</li> <li>I may not be able to build even a small team of Rust programmers during the first year.</li> <li>If after 6–12 months I start looking for investors and micro-VCs and I am fortunate enough that they decide to invest, they will not care whether I use Rust or C++. What they will care about is whether I already have a small functional team.</li> </ol> <p>Because of this, I am thinking that, to make hiring easier and faster, it might be better to build the engine entirely in C++ and hire C++ programmers instead.</p> <p><strong>QUESTION:</strong><br/> Would you recommend that I:</p> <ol> <li>Stay with Rust because, for my cloud optimization engine, which will be very large, I will benefit from many advantages compared to building it in C++, even if I will probably have only one hired programmer whom I may find only after many months or perhaps almost a year? In addition to myself, since I use both Rust and C++, I could also get some help from Codex/Claude Code, which is still a small extra help even though I do not really like that idea. In my case, are Rust’s advantages more important than the difficulty, or near impossibility, of finding Rust programmers to hire in the first 2–6 months?</li> <li>Or would you recommend that I build it in C++ and hire C++ programmers more easily, while accepting that there will be many hard-to-find bugs, memory management issues, and security vulnerabilities? Of course I would pay very close attention to these problems and also use Codex/Claude Code to help identify and fix them, but some hidden issues would almost certainly remain. In addition to myself, since I use both Rust and C++, I could also get some help from Codex/Claude Code, which is still a small extra help even though I do not really like that idea. Or, in my case, does C++ have too many technical disadvantages even though I could find programmers more easily?</li> </ol> <p><strong>IMPORTANT:</strong><br/> - I could hire Rust programmers remotely from other countries, but investors might not like that. In addition, I could run into communication or management issues. I would prefer to avoid this option.<br/> - I had considered building the engine in Rust and everything else in C++, but the engine will be very large, so splitting things up would not be worth it.<br/> - Initially, before receiving funding, I will have a very limited budget for hiring programmers, so the salary will be fairly low.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/SaganakiMythos"> /u/SaganakiMythos </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1s2x4z3/rust_or_c_for_a_cloud_optimization_engine_not_a/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1s2x4z3/rust_or_c_for_a_cloud_optimization_engine_not_a/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1s3uxqg/fyra_an_experimental_shell_i_wrote_in_rust_for/" target="_blank">Fyra, An experimental shell I wrote in rust for learning purpose!</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hey everyone! I had attempted to create my own linux shell written in rust for the sake of learning it, about a few months ago and soon received a reality check that it&#39;s impossible to write a POSIX compatible shell from scratch without 20k+ LOC and so much research lol.</p> <p>So I ended up using many dependencies including for parsing (used brush for it), etc and made up Fyra shell. It supports many things like: - PS1 configuration - Simple pipelines - Basic Background jobs - Error diagnostics via miette - Tilde expansion - Command substitution - Variable expansion - Basic builtins and stuff like these....</p> <p>It&#39;s nowhere near an actual shell, not even 10% of it but yeah the learning experience was great imo! What do you think about it? And if you can review the code, what advice would you give to me regarding my rust programming?</p> <p>I didn&#39;t make any commits since 2 months as was busy but yeah finally decided to make it public and move on!</p> <p>Also yup it has hardcoded values too, for some reason I didn&#39;t add a config file support. Right now, I don&#39;t have the time to do it either, and I sort of abandoned it so... Though, I may add it somewhere in the future.</p> <p>Crates: <a href="https://crates.io/crates/fyra">https://crates.io/crates/fyra</a> Github: <a href="https://github.com/randomboi404/fyra">https://github.com/randomboi404/fyra</a></p> <p>Thank you so much for your time!!!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/randomboiii69420"> /u/randomboiii69420 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1s3uxqg/fyra_an_experimental_shell_i_wrote_in_rust_for/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1s3uxqg/fyra_an_experimental_shell_i_wrote_in_rust_for/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1s2wvri/wikipedia_game_solver/" target="_blank">Wikipedia game solver</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p><a href="https://preview.redd.it/00extd5ye3rg1.png?width=1046&amp;format=png&amp;auto=webp&amp;s=d5976df2bf326d79fb7f0246c84acfe80553ccd7">https://preview.redd.it/00extd5ye3rg1.png?width=1046&amp;format=png&amp;auto=webp&amp;s=d5976df2bf326d79fb7f0246c84acfe80553ccd7</a></p> <p>wiki-route finds the shortest path between any two Wikipedia articles using bidirectional BFS.</p> <p>It parses the actual MediaWiki database dumps, builds in-memory directed graphs and finds connections in milliseconds/seconds.</p> <p>Here&#39;s the shortest path from <strong>Jeffrey Epstein</strong> to <strong>Rust (programming language)</strong> (on simple.wikipedia.org):</p> <p>Jeffrey Epstein -&gt; NBC News -&gt; Peacock (streaming service) -&gt; Rust (programming language)</p> <p>Here&#39;s the repo if you&#39;d like to play around with it: <a href="https://github.com/michal-pielka/wiki-route">https://github.com/michal-pielka/wiki-route</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Smart_Can_1019"> /u/Smart_Can_1019 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1s2wvri/wikipedia_game_solver/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1s2wvri/wikipedia_game_solver/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1s3uoo0/this_week_in_rust_644/" target="_blank">This Week in Rust 644</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/Squeezer"> /u/Squeezer </a> <br/> <span><a href="https://this-week-in-rust.org/blog/2026/03/25/this-week-in-rust-644/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1s3uoo0/this_week_in_rust_644/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1s2u48v/2d_game_engine_using_minifb/" target="_blank">2D game engine using minifb</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I’ve been working on a small 2D game engine that’s still in its early stages. So far, it includes an ECS built using a sparse set approach, along with custom systems that receive the World, Camera, Input, and Resources as parameters and run every frame.</p> <p>There’s also an exposed draw function, so you can render things like UI or fonts manually when needed. The engine supports automatic window scaling through minifb, with scale factors like x1, x2, x4, and up to x32.</p> <p>It can load sprites from PNG files, and you can attach your own custom components to entities. I’m also using rayon to parallelize processing across components.</p> <p>It’s still under development, but here is a GIF showing the window movement.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/0EVIL9"> /u/0EVIL9 </a> <br/> <span><a href="https://i.redd.it/qc7vrwxiu2rg1.gif">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1s2u48v/2d_game_engine_using_minifb/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1s3ufll/lets_talk/" target="_blank">Let's talk</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Since a mod removed my post about Tutorial-OS calling it &quot;Slop and Low Effort&quot;; Let&#39;s talk a bit about Tutorial-OS.</p> <p>Tutorial-OS began life as a rewrite of a bare-metal GameBoy emulator project that itself started as an x86 (Pentium 3) project and later ported to ARM64 with the Raspberry Pi Zero 2W and the GPi Case 2W hardware in mind. The goal was to make it so that it could run on not only the Pi Zero, but other Pi boards which then ballooned into supporting Orange Pi RV 2, LattePanda IOTA, Milk-V Mars, and the LattePanda MU (N100 and N305) as well.</p> <p>Tutorial-OS is written in both C and Rust, however, the Rust and C code do not talk to each other at all, in fact, they are parity implementations to one another. I had the C and Rust implementations in separate projects and then decided that I should merge them together into a single, cohesive project because I thought it made much more sense to have the Rust and C equivalent code sitting next to each other. That way, someone coming from a C background can look at the Rust implementation and have a general sense of the structure and how it works before getting into the Rustisms that exist.</p> <p>Why parity and not 1 to 1? I wanted the implementations to be true to both languages and not be a direct 1 to 1 port of the other. The core contract is the same, but the details differ between one another. That means, I could have the assembly code that I wrote be used by both languages with the same boot flow, have the same HAL (Hardware Abstraction Layer) contracts (with it being expressed as traits in Rust), support the same SOC or hardware, both be zero dependency on external libraries and utilize the same UI and display output results.<br/> As for the why, it is because I hate the culture of &quot;blindly port to Rust&quot;, it is fine to want to try to rewrite something from one language to another, but do so with not only idiomatic intent, but also with a clear mind for if it is justified or not. Porting to Rust simply for the sake of &quot;Memory Safety&quot; is not a justifiable reason.</p> <p>This means that the Rust version makes heavy usage of the feature flag (cfg) and Cargo workspace approach, the behavior is similar to what Makefiles do with C but without the headaches of writing Makefiles.</p> <p>Since this is a teaching project, I wrote the directory structure by hand in the <a href="http://Readme.md">Readme.md</a> file so a person looking at the project can understand what each file is and get a basic understanding of what their role is in the project. Every single code file is heavily commented to explain why it exists and what it does as well as includes notes from portions that were absolutely kicking my ass with debugging along with why the solution works after performing a postmortem.</p> <p>Let&#39;s look at an example of some of the code. I think the BCM2710&#39;s mailbox caller is a great example:</p> <p><code>/// Send a mailbox message and wait for the response.</code></p> <p><code>///</code></p> <p><code>/// Returns \</code>true` if the GPU responded with `RESPONSE_OK`.`</p> <p><code>pub fn call(buf: &amp;mut MailboxBuffer, channel: u8) -&gt; bool {</code></p> <p><code>let addr = buf as *const MailboxBuffer as u32;</code></p> <p><code>let bus_addr = regs::arm_to_bus(addr);</code></p> <p><code>// Wait for mailbox not full</code></p> <p><code>while (unsafe { common::mmio::read32(regs::MBOX_STATUS) } &amp; regs::MBOX_FULL) != 0 {</code></p> <p><code>hal::cpu::nop();</code></p> <p><code>}</code></p> <p><code>// Write address with channel in low 4 bits</code></p> <p><code>unsafe { common::mmio::write32(regs::MBOX_WRITE, (bus_addr &amp; !0xF) | (channel as u32 &amp; 0xF)) };</code></p> <p><code>// Wait for response</code></p> <p><code>loop {</code></p> <p><code>while (unsafe { common::mmio::read32(regs::MBOX_STATUS) } &amp; regs::MBOX_EMPTY) != 0 {</code></p> <p><code>hal::cpu::nop();</code></p> <p><code>}</code></p> <p><code>let response = unsafe { common::mmio::read32(regs::MBOX_READ) };</code></p> <p><code>if (response &amp; 0xF) == channel as u32 {</code></p> <p><code>return buf.data[1] == regs::MBOX_RESPONSE_OK;</code></p> <p><code>}</code></p> <p><code>}</code></p> <p><code>}</code></p> <p><code>bool bcm_mailbox_call(bcm_mailbox_buffer_t *buffer, uint8_t channel)</code></p> <p><code>{</code></p> <p><code>uint32_t addr = (uint32_t)(uintptr_t)buffer;</code></p> <p><code>/*</code></p> <p><code>* Convert ARM physical address to VC bus address.</code></p> <p><code>* The VideoCore sees memory through a different mapping than the ARM core.</code></p> <p><code>* 0xC0000000 = L2 cache coherent alias (required for mailbox DMA).</code></p> <p><code>*/</code></p> <p><code>addr = BCM_ARM_TO_BUS(addr);</code></p> <p><code>/* Wait for mailbox to not be full */</code></p> <p><code>while ((hal_mmio_read32(BCM_MBOX_STATUS) &amp; BCM_MBOX_FULL) != 0) {</code></p> <p><code>HAL_NOP();</code></p> <p><code>}</code></p> <p><code>/* Write address with channel in low 4 bits */</code></p> <p><code>hal_mmio_write32(BCM_MBOX_WRITE, (addr &amp; ~0xF) | (channel &amp; 0xF));</code></p> <p><code>/* Wait for response */</code></p> <p><code>while (1) {</code></p> <p><code>/* Wait for mailbox to not be empty */</code></p> <p><code>while ((hal_mmio_read32(BCM_MBOX_STATUS) &amp; BCM_MBOX_EMPTY) != 0) {</code></p> <p><code>HAL_NOP();</code></p> <p><code>}</code></p> <p><code>/* Read response */</code></p> <p><code>uint32_t response = hal_mmio_read32(BCM_MBOX_READ);</code></p> <p><code>/* Check if it&#39;s for our channel */</code></p> <p><code>if ((response &amp; 0xF) == channel) {</code></p> <p><code>return buffer-&gt;data[1] == BCM_MBOX_RESPONSE_OK;</code></p> <p><code>}</code></p> <p><code>}</code></p> <p><code>}</code></p> <p>We can see that not only is the code similar, but conform to how both languages are naturally written. With C using a boolean for true or false response to Rust using results for response messages.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/JescoInc"> /u/JescoInc </a> <br/> <span><a href="https://i.redd.it/yvjug63uparg1.png">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1s3ufll/lets_talk/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1s2pf1z/how_c_finally_beats_rust_at_json_serialization/" target="_blank">How C++ Finally Beats Rust at JSON Serialization - Daniel Lemire & Francisco Geiman Thiesen</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/_bijan_"> /u/_bijan_ </a> <br/> <span><a href="https://www.youtube.com/watch?v=Mcgk3CxHYMs">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1s2pf1z/how_c_finally_beats_rust_at_json_serialization/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1s3ufhw/building_my_own_crates_for_a_modular_rust_game/" target="_blank">Building my own crates for a modular Rust game engine (window, pixel buffer, mesh loader so far)</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hey everyone,</p> <p>I’m working on a Rust game engine from scratch, building my own crates instead of relying on external ones. So far, I’ve got:</p> <ul> <li><strong>Window crate</strong> – windowed</li> <li><strong>Pixel buffer crate</strong> – softbuf</li> <li><strong>Mesh loader crate</strong> – rmmesh</li> </ul> <p>These crates will form the core of a new, improved engine. We’re rewriting Project32 to make it more modular, safer and flexible. The new source isn’t being dropped yet, as I want the crates to be mature first.</p> <p>The idea is to keep everything modular so each system can be reused or swapped easily and tons of other pros. I’d love feedback, suggestions, or just to share progress with anyone interested in Rust game development.</p> <p><em>Made with 🖤 by</em> <em>Retroboi64</em></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/retroboi64_"> /u/retroboi64_ </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1s3ufhw/building_my_own_crates_for_a_modular_rust_game/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1s3ufhw/building_my_own_crates_for_a_modular_rust_game/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1s2o9zs/thoughts_on_panicking_in_embedded_rust/" target="_blank">Thoughts on Panicking (in Embedded Rust)</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/jahmez"> /u/jahmez </a> <br/> <span><a href="https://onevariable.com/blog/panicking-thoughts/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1s2o9zs/thoughts_on_panicking_in_embedded_rust/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1s3tead/building_a_chess_game_analyzer_that_identifies/" target="_blank">Building a chess game analyzer that identifies your actual weaknesses — looking for contributors!</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hey everyone, I&#39;m starting a project I&#39;ve wanted for a while and can&#39;t find anywhere: a program that analyzes your last 50–200 games and generates a real, in-depth report on your recurring weaknesses.</p> <p>Not just &quot;you blundered a piece&quot; — I mean pattern-level stuff like:</p> <ul> <li>Repeatedly allowing your opponent to fork your pieces</li> <li>Leaving pawns hanging in similar positions</li> <li>Overloaded or overdefended pieces you don&#39;t notice</li> <li>Opening gaps that keep getting exploited</li> <li>Tactical motifs you consistently miss</li> </ul> <p>The idea is to pull your games from Lichess/Chess.com, run them through Stockfish, and build smart pattern detection on top — then output an actual readable report that tells you <em>what</em> your weaknesses are and <em>why</em> they keep happening.</p> <p>Down the line I want to add a website with targeted puzzles and training based on your specific mistakes, but for now the focus is purely on the analysis engine.</p> <p><strong>Tech stack I&#39;m thinking:</strong> Rust + Stockfish, Lichess/Chess.com APIs, and frontend down the line.</p> <p>I&#39;m a solid web developer and an avid chess player, so I know what useful output actually looks like from a chess improvement perspective. Looking for anyone interested in contributing — whether that&#39;s Python, chess engine logic, data analysis, or just brainstorming the pattern detection side.</p> <p>If this sounds interesting, drop a comment or DM me. Will be open sourcing it from day one.</p> <p>Thanks!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Adventurous_Bet9583"> /u/Adventurous_Bet9583 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1s3tead/building_a_chess_game_analyzer_that_identifies/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1s3tead/building_a_chess_game_analyzer_that_identifies/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1s2o52r/defaultnew_010/" target="_blank">DefaultNew 0.1.0</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p><a href="https://crates.io/crates/default_new">https://crates.io/crates/default_new</a></p> <p>I got tired of manually implementing <code>Default</code> for structs that had <code>new()</code> functions to satisfy the clippy lint. Rather than disable the lint, I created a simple <code>DefaultNew</code> derive to do it in basic (no generics) cases.</p> <p>Zero dependencies, simple as. For a given struct <code>Foo</code>, this generates</p> <pre><code>impl Default for Foo { #[inline] fn default() -&gt; Self { Self::new() } } </code></pre> <p>I pulled it out of my personal utility crate because I figured others might find it useful.</p> <p>If something like this already exists, I&#39;d be happy to learn about it. Ideally something lightweight, not a large kitchen-sink general derive utility library.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Recatek"> /u/Recatek </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1s2o52r/defaultnew_010/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1s2o52r/defaultnew_010/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1s3saew/highlevel_rust_getting_80_of_the_benefits_with_20/" target="_blank">High-Level Rust: Getting 80% of the Benefits with 20% of the Pain</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/SIRHAMY"> /u/SIRHAMY </a> <br/> <span><a href="https://hamy.xyz/blog/2026-01_high-level-rust">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1s3saew/highlevel_rust_getting_80_of_the_benefits_with_20/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1s2ntkt/learning_rust_how_do_i_safely_index_into_strings/" target="_blank">Learning Rust, how do I safely index into Strings?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>(update at the end)</p> <p>[Edit: I&#39;m certain I could get away with just using <code>as_bytes</code>, but I&#39;m also taking the opportunity familiarize myself with the Unicode issues, since I&#39;ve never really worked with that and it seems like Rust supports it well]. </p> <p>I&#39;m a very experienced SW Engineer, but I&#39;ve never had to work with Unicode stuff. I&#39;m using last year&#39;s Advent of Code as an excuse to learn Rust. </p> <p>I&#39;m using some code from &quot;Rust By Example&quot; to read lines from a file. I&#39;m pretty sure I understand this part; I can print the lines that are read in:</p> <pre><code>fn read_lines&lt;P&gt;(filename: P) -&gt; io::Result&lt;io::Lines&lt;io::BufReader&lt;File&gt;&gt;&gt; where P: AsRef&lt;Path&gt;, { let file = File::open(filename)?; Ok(io::BufReader::new(file).lines()) } </code></pre> <p>My code is</p> <pre><code>if let Ok(lines) = read_lines(fname) { for line in lines.map_while(Result::ok) { // do stuff } } </code></pre> <p>I&#39;m pretty sure that <code>line</code> is a <code>std::String</code> in my loop; if I&#39;m wrong, please let me know. If a line of input is <code>L34</code>, how can I safely get the <code>L</code> and <code>34</code> as separate values? Most of what I see online talk about using <code>chars()</code> and the iterator, but that feels like getting the <code>34</code> would be very cumbersome. </p> <p>Note: I&#39;m avoiding using the word &quot;character&quot; since that seems to be ambiguous (byte vs grapheme). </p> <p>Updated:</p> <p>After the helpful responses below, and some looking, I realized that I needed to know string iterators better (I tried to think of them more like C++ iterators). I ended up with this:</p> <pre><code>if let Ok(lines) = read_lines(fname) { for line in lines.map_while(Result::ok) { let mut chars = line.chars(); let direction = chars.next().unwrap(); let num = chars.as_str(); println!(&quot;line: {} =&gt; {} + {}&quot;, line, direction, num); } } </code></pre> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/pfp-disciple"> /u/pfp-disciple </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1s2ntkt/learning_rust_how_do_i_safely_index_into_strings/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1s2ntkt/learning_rust_how_do_i_safely_index_into_strings/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1s3gvdf/octopos_xv6_based_operating_system_for_riscv_in/" target="_blank">octopos: xv6 based operating system for risc-v in rust</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I ported <a href="https://pdos.csail.mit.edu/6.828/2025/xv6.html">xv6</a>, MIT&#39;s teaching kernel, to Rust targeting RISC-V without the standard library.</p> <p>The result is very faithful to the original codebase in C but I was able to utilize many modern features of Rust to improve both the code quality and the developer experience. This is a multi-processor kernel, and Rust&#39;s ownership model and type system were a genuine help in making the concurrency correct.</p> <p>Since the environment this code runs at has nothing to start with, I had to bring in a memory allocator, make my own synchronization primitives like <code>Mutex</code>s, align structures in memory, and then some.</p> <p>I wrote a blog post about some cool features of xv6, how Rust helped me improve it, and also how Rust created more hurdles in dealing with low-level code.</p> <p>Fair warning: there&#39;s a fair amount of unsafe code involved.</p> <p><a href="https://git.boranseckin.com/boranseckin/octopos">https://git.boranseckin.com/boranseckin/octopos</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/brnsckn"> /u/brnsckn </a> <br/> <span><a href="https://www.boranseckin.com/projects/octopos">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1s3gvdf/octopos_xv6_based_operating_system_for_riscv_in/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1s2nsw2/double_mut_borrow_on_a_hashmap_woes/" target="_blank">Double mut borrow on a hashmap woes.</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;m trying to learn rust so I&#39;m experimenting with some code.</p> <p>I have a n-tree of nodes. Each node has a parent and n children.</p> <p>Nodes have ids (u32) and it seems my best choice was to have the leaves as Vec&lt;u32&gt; and a hashmap&lt;u32, node&gt;</p> <p>However I&#39;m hitting a snag.</p> <p>When I want to insert a new node, my plan was:</p> <ol> <li>I check the parent and the child have different IDs.</li> <li>I check the parent exists in the hashmap (and I grab it)</li> <li>I create the child in the hashmap if it doesn&#39;t exist (else it&#39;s an error)</li> <li>I set the child&#39;s parent, add the child to the parent (just setting IDs)</li> <li>Finally, I return the created &amp;mut child</li> </ol> <p>However 2 &amp; 3 are in conflict.</p> <p>Even if the parent and the child are different, the borrower doesn&#39;t let me.</p> <p>Given I know the nodes are different, I don&#39;t see the problem.</p> <p>Well, maybe there is the consideration the parent may move during the operations? I hope not because I expect the nodes to stay in place (and be quite big). Assuming it&#39;s that then I&#39;d use some Rc to the heap, maybe ... but I don&#39;t expect it would solve my problem.</p> <p>I&#39;d rather avoid to use &quot;unsafe&quot; if possible (it was one of the proposed solutions).</p> <p>And if Polonius ever solves this, it&#39;s not ready yet.</p> <p>Any advice?</p> <p>Thanks in advance.</p> <p>sample:</p> <pre><code>pub fn create(child_id: NodeId, parent_id: NodeId) -&gt; Result&lt;&amp;mut Node, Error&gt; { if child_id == parent_id { Err(Error::Conflict(parent_id))?; } if let Some(parent_node) = self.nodes.get_mut(&amp;parent_id) { let inserted_node = match self.nodes.entry(child_id) { Entry::Vacant(mut vacant) =&gt; { let mut node = Node::new(child_id); node.set_parent(Some(parent_id)); vacant.insert(node) }, Entry::Occupied(mut occupied) =&gt; { Err(Error::NodeAlreadyExists(child_id))? }, }; parent_node.add_child(child_id); Ok(inserted_node) } else { Err(Error::ParentDoesNotExist(parent_id))? } } </code></pre> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Thanatiel"> /u/Thanatiel </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1s2nsw2/double_mut_borrow_on_a_hashmap_woes/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1s2nsw2/double_mut_borrow_on_a_hashmap_woes/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1s3fc0r/godot_rust/" target="_blank">Godot + Rust</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;m a programming novice and I&#39;m very interested in Rust and game development, and I wanted to know what the experience of using Rust in the Godot engine is like. </p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/JovemSapien"> /u/JovemSapien </a> <br/> <span><a href="https://i.redd.it/u50p0le9v7rg1.png">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1s3fc0r/godot_rust/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1s2ncfi/beetry_behavior_tree_framework_with_plugin_system/" target="_blank">Beetry - Behavior tree framework with plugin system and editor</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi all. I would like to share a project I have been working on for more than half a year: a behavior tree framework called beetry.</p> <p>From a very high-level perspective, you can think of a behavior tree as an orchestration layer on top of actions to execute. The main advantage of a behavior tree is that it allows extracting and decoupling actions from the orchestration layer. Each tree can choose how the actions are scheduled, and there are many different control nodes that define the execution order.</p> <p>You will find most uses of behavior trees in robotics and game development (e.g. to model NPC behavior).</p> <p>Why another behavior tree in Rust?<br/> I have not found a library that ships with the editor and provides the plugin-based extension system. Also, when studying behavior trees, I didn’t become a fan of blackboard-based communication and wanted to try another approach.</p> <p>You can check it out here:<br/> repo: <a href="https://github.com/skullim/beetry">https://github.com/skullim/beetry</a><br/> crates: <a href="https://crates.io/crates/beetry">https://crates.io/crates/beetry</a></p> <p>If you are interested to get more details (or see more high quality editor videos 😉) there is also a <a href="https://beetry.pages.dev/">book</a>.</p> <p>P.S. The editor frontend is built with Dioxus.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/arcycar"> /u/arcycar </a> <br/> <span><a href="https://i.redd.it/r2n0tux5l1rg1.gif">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1s2ncfi/beetry_behavior_tree_framework_with_plugin_system/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1s3f7da/jnv_interactive_json_viewer_with_jq_released_v070/" target="_blank">jnv: Interactive JSON Viewer with jq [Released v0.7.0 🚀]</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><h2>Link</h2> <p><a href="https://github.com/ynqa/jnv">https://github.com/ynqa/jnv</a></p> <h2>Description</h2> <p><code>jnv</code> is a CLI tool that lets you interactively explore and filter JSON data while trying <code>jq</code> filters and checking results in place.</p> <p><code>jnv</code> v0.7.0 is an update focused on improving day-to-day usability and configuration experience. This release revamps configuration syntax and strengthens output integration, rendering stability, and interaction handling.</p> <h3>New Features</h3> <ul> <li>Added <code>--write-to-stdout</code> to write the current JSON result to stdout on exit (UNIX only) <ul> <li>The demo GIF uses this feature :)</li> </ul></li> <li>Adopted <a href="https://github.com/ynqa/termcfg">termcfg</a> <ul> <li>Style notation has been updated (e.g. <code>fg=blue,attr=bold</code>)</li> <li>Keybinding notation has been updated (e.g. <code>Ctrl+C</code>, <code>Shift+Down</code>)</li> </ul></li> <li>Added mouse-wheel JSON scrolling in viewer mode</li> <li>Added wrapped rendering for horizontally long JSON lines via <code>overflow_mode = &quot;Wrap&quot;</code></li> <li>Improved guide messages and fallback behavior when <code>jq</code> returns <code>null</code> or errors</li> </ul> <h3>Breaking Changes</h3> <ul> <li>TOML configuration syntax, including <code>default.toml</code>, changed due to the <code>termcfg</code> adoption <ul> <li>No migration tool is provided, so existing <code>config.toml</code> files must be updated manually</li> </ul></li> </ul> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/aqny"> /u/aqny </a> <br/> <span><a href="https://i.redd.it/9imh7lzeu7rg1.gif">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1s3f7da/jnv_interactive_json_viewer_with_jq_released_v070/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1s2lm7a/is_there_any_rust_tooling_to_only_execute_tests/" target="_blank">Is there any Rust tooling to only execute tests affected by changes?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hello.</p> <p>I wonder if there&#39;s any equivalent to the Test-Impact-Analysis or Selective Test-Execution movement known from Java and the other (outdated) languages.</p> <p>Test-Execution is eating me so much time in CI.<br/> Already using things like sccache but main bottleneck are slow and heavy integration-tests (not worth parallelizing via nextest).</p> <p>Ideally I&#39;d just want to run those tests affected by changes of the current Pull-Request.<br/> Do I gotta hack something together or is there some unknown savior?</p> <p>Thank you.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/bruderj15"> /u/bruderj15 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1s2lm7a/is_there_any_rust_tooling_to_only_execute_tests/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1s2lm7a/is_there_any_rust_tooling_to_only_execute_tests/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1s3ddjh/rust_meetup_in_paris_april_29th/" target="_blank">Rust Meetup in Paris - April 29th</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi Rustaceans, </p> <p>We&#39;re organising a Rust meet-up in Paris (8 rue du Sentier, 75002, Paris) on 29th of April at 7:30pm. </p> <p>There will be 2-3 talks by Rust developers or experts, we&#39;d love to see you there! Don&#39;t hesitate to pass on the invitation, the event is 100% free, pizzas &amp; drinks are included! </p> <p>You just need to book your ticket on the event link for capacity reasons (seats are limited).<br/> Here is the link: <a href="http://stockly.ai/rustmeetup-april2026">http://stockly.ai/rustmeetup-april2026</a> </p> <p>Hope to see you there!<br/> The organizing team</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Join-Stockly"> /u/Join-Stockly </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1s3ddjh/rust_meetup_in_paris_april_29th/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1s3ddjh/rust_meetup_in_paris_april_29th/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1s2k6ov/fyrox_game_engine_100_after_7_years_in/" target="_blank">Fyrox Game Engine 1.0.0 - after 7 years in development the first stable version of the engine is now released!</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/_v1al_"> /u/_v1al_ </a> <br/> <span><a href="https://fyrox.rs/blog/post/fyrox-game-engine-1-0-0/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1s2k6ov/fyrox_game_engine_100_after_7_years_in/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1s3c7at/inside_a_query_engine_a_7part_deep_dive_into/" target="_blank">Inside a Query Engine: A 7-Part Deep Dive into Building a Relational Query Engine</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I recently built an in-memory query engine in Rust called <strong>relop</strong>.</p> <p>The goal was to understand the lifecycle of a query without using any high-level libraries (like <code>sqlparser-rs</code>). I’ve spent the last several weeks documenting the internals of a query engine in a 7-part series, covering everything from the handwritten lexer and parser to optimized Top-K sorting and Volcano-style row execution.</p> <p>For those interested in seeing how Rust&#39;s traits and iterator model fit into building a relational processor, I hope this is a useful resource!</p> <p><strong>The Series Roadmap (All 7 Parts):</strong> <a href="https://tech-lessons.in/en/blog/inside_a_query_engine_introduction/">https://tech-lessons.in/en/blog/inside_a_query_engine_introduction/</a> </p> <p><strong>The Repository:</strong> <a href="https://github.com/SarthakMakhija/relop">https://github.com/SarthakMakhija/relop</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/sarthak_makhija"> /u/sarthak_makhija </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1s3c7at/inside_a_query_engine_a_7part_deep_dive_into/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1s3c7at/inside_a_query_engine_a_7part_deep_dive_into/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1s2j12g/a_streamlitgradio_equivalent_for_pure_rust/" target="_blank">A Streamlit/Gradio equivalent for pure Rust.</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I’m new to Rust. Over the last few weeks, I’ve been working on RustView, a Streamlit alternative for Rust. You can create web UIs with pure Rust without touching a single line of JavaScript. </p> <p>To try it out in practice, <a href="https://github.com/EdgeTypE/OldTurkicOCR/">I used it to build a web UI</a> for an Old Turkic OCR model I developed as a hobby a few months ago. </p> <p>Repo: <a href="https://github.com/EdgeTypE/rustview/">https://github.com/EdgeTypE/rustview/</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/EdgeTypE2"> /u/EdgeTypE2 </a> <br/> <span><a href="https://i.redd.it/6rosbakit0rg1.gif">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1s2j12g/a_streamlitgradio_equivalent_for_pure_rust/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1s39zng/mtorrent_a_bittorrent_client_in_rust/" target="_blank">mtorrent - a BitTorrent client in Rust</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi everyone!</p> <p>I&#39;d like to share my BitTorrent client in Rust: <a href="https://github.com/DanglingPointer/mtorrent/">https://github.com/DanglingPointer/mtorrent/</a></p> <p><a href="https://preview.redd.it/0i1rmo1007rg1.png?width=1238&amp;format=png&amp;auto=webp&amp;s=4e89037242fe19abf0fac7c86e0120f0679d153c">https://preview.redd.it/0i1rmo1007rg1.png?width=1238&amp;format=png&amp;auto=webp&amp;s=4e89037242fe19abf0fac7c86e0120f0679d153c</a></p> <p>It&#39;s a full-fledged Tokio-based client with focus on performance and low memory and CPU footprint (I&#39;m an ex-C++ developer). It supports many features like magnet links, DHT, PE, PEX, uTP etc (the full list can be found on GitHub). There is a CLI executable and a simple cross-platform GUI. Here&#39;s a list of all components:</p> <ul> <li>mtorrent: High-level library crate, <a href="https://docs.rs/mtorrent/0.4.3/mtorrent/">https://docs.rs/mtorrent/0.4.3/mtorrent/</a> Contains functions to download a torrent, launch a DHT node, and a few utilities. Primarily useful if you&#39;re writing a GUI and need a full backend.</li> <li>mtorrent-core: Low-level library crate, <a href="https://crates.io/crates/mtorrent-core">https://crates.io/crates/mtorrent-core</a> A collection of basic types for building asynchronous Tokio-based BitTorrent clients. The most suitable part to use as a library if you&#39;re building your own BitTorrent client. Contains implementations of all the necessary protocols (peer wire protocol, tracker protocol etc).</li> <li>mtorrnet-dht: Implementation of DHT (Distributed Hash Table) with high-level interface, <a href="https://crates.io/crates/mtorrent-dht">https://crates.io/crates/mtorrent-dht</a> A complete DHT engine. Doesn&#39;t expose low-level primitives like the DHT message types, but is convenient to use in any application that wants to launch a DHT node as part of it.</li> <li>mtorrent-utils: library containing some shared utilities, <a href="https://crates.io/crates/mtorrent-utils">https://crates.io/crates/mtorrent-utils</a> It is used by all other crates as a dependency. Some of the utilities are BitTorrent-specific, others are generic.</li> <li>mtorrent-cli: cross-platform CLI executable, <a href="https://crates.io/crates/mtorrent-cli">https://crates.io/crates/mtorrent-cli</a> Simple CLI for downloading one torrent at a time. Precompiled releases available on GitHub.</li> <li>mtorrent-gui: cross-platform GUI based on Tauri, <a href="https://github.com/DanglingPointer/mtorrent-gui">https://github.com/DanglingPointer/mtorrent-gui</a> Simple GUI that allows downloading multiple torrents simultaneously. The releases section on GitHub contains installers for Windows and Debian-based Linux.</li> </ul> <p>The use of AI in this project is limited to unit tests and javascript code for the GUI.</p> <p>Most of the library code requires Tokio and needs to run inside a LocalRuntime or LocalSet. The executables use tokio_unstable with multiple LocalRuntimes.</p> <p>I&#39;ve been using this regularly on my Ubuntu during the last couple of years and happy with its performance and reliability. I&#39;ve also occasionally tested it on Windows.</p> <p>For a blog post on the history of this project and the challenges I encountered in the process, see <a href="https://mikhailv.substack.com/p/the-story-of-mtorrent">https://mikhailv.substack.com/p/the-story-of-mtorrent</a></p> <p>Will be happy to implement more features if needed, and/or fix any bugs. Also feel free to contribute :)</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Key_Walk_1608"> /u/Key_Walk_1608 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1s39zng/mtorrent_a_bittorrent_client_in_rust/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1s39zng/mtorrent_a_bittorrent_client_in_rust/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1s2hchh/deadlocking_a_tokio_mutex_without_holding_a_lock/" target="_blank">Deadlocking a Tokio mutex without holding a lock</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I recently ran into a weird bug where a Tokio mutex was unlocked, but no other task was able to acquire it. While debugging this, I learnt a lot about the internals of Tokio&#39;s mutexes and semaphores. I wrote up a short blog post on how it happened and the root cause.</p> <p>To be clear, there&#39;s no bug in Tokio. This happened because of the way I messed with Rust futures.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/samyak210"> /u/samyak210 </a> <br/> <span><a href="https://www.e6data.com/blog/deadlocking-tokio-mutex-without-holding-lock">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1s2hchh/deadlocking_a_tokio_mutex_without_holding_a_lock/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1s37v20/i_tried_to_break_as_much_rust_rules_as_possible/" target="_blank">I tried to break as much Rust rules as possible within unsafe blocks just to replace (2+3) * 2.</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Also I probably made the most unconvertable, Linux-only code possible. But somehow, it works, even with using FFI setjmp and longjmp across Rust stack frames, which breaks LLVM&#39;s control flow graph and ignores Drop semantics. UB bingo code.</p> <p>Exactly what i did:</p> <p>- STATIC MUT :)) with zero synchronization.<br/> - Reading and writing the program&#39;s own memory by opening /proc/self/mem and using the process_vm_readv syscall.<br/> - Storing the variable inside the x86 GS segment register via arch_prctl, and hiding it inside the OS thread name via prctl(PR_SET_NAME).<br/> - Deconstructing &amp;dyn Op and dyn Any into raw [usize; 2] fat pointers, manually calculating vtable offsets, and executing the raw function pointers (add, extract).<br/> - Overwriting an AtomicI32 by using a raw FFI memcpy on its memory address instead of atomic operations.</p> <p>...and much more weird things.</p> <p><a href="https://godbolt.org/z/ehMM1Thhz">https://godbolt.org/z/ehMM1Thhz</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/int7bh"> /u/int7bh </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1s37v20/i_tried_to_break_as_much_rust_rules_as_possible/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1s37v20/i_tried_to_break_as_much_rust_rules_as_possible/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust/comments/1s2h72n/hegel_a_propertybased_testing_library_from_the/" target="_blank">Hegel - a property-based testing library from the authors of Hypothesis</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/Tybug2"> /u/Tybug2 </a> <br/> <span><a href="https://github.com/hegeldev/hegel-rust">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1s2h72n/hegel_a_propertybased_testing_library_from_the/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1s2fqta/canonical_joins_the_rust_foundation_as_a_gold/" target="_blank">Canonical joins the Rust Foundation as a Gold Member</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/GeneReddit123"> /u/GeneReddit123 </a> <br/> <span><a href="https://canonical.com/blog/canonical-joins-the-rust-foundation-as-a-gold-member">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1s2fqta/canonical_joins_the_rust_foundation_as_a_gold/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1s2ez82/why_doesnt_rust_provide_a_map_macro_for_hashmap/" target="_blank">Why doesn't Rust provide a map! macro for HashMap, like it provides a vec! for Vec?</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/Comun4"> /u/Comun4 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1s2ez82/why_doesnt_rust_provide_a_map_macro_for_hashmap/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1s2ez82/why_doesnt_rust_provide_a_map_macro_for_hashmap/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1s2etc9/rust_threads_on_the_gpu/" target="_blank">Rust threads on the GPU</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/LegNeato"> /u/LegNeato </a> <br/> <span><a href="https://www.vectorware.com/blog/threads-on-gpu">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1s2etc9/rust_threads_on_the_gpu/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1s2bvca/little_sudoku_game_made_with_rust_and_sdl3/" target="_blank">Little Sudoku game made with Rust and SDL3</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p><a href="https://github.com/Yoppez/sudoku">https://github.com/Yoppez/sudoku</a></p> <p>Hi everyone.</p> <p>I made a while ago a Sudoku game on Rust to test the SDL3 bindings for the language.<br/> I also used it as an exercise for myself to have more familiarity with Rust</p> <p>The code is not the cleanest, but the game works and I am proud of that.</p> <p>I don&#39;t think I will touch this project any further, but if you want you can still write some suggestions here.</p> <p>This is my first time showing to the public and open sourcing a project, so be gentle please!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Yoppez"> /u/Yoppez </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1s2bvca/little_sudoku_game_made_with_rust_and_sdl3/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1s2bvca/little_sudoku_game_made_with_rust_and_sdl3/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1s290fd/i_written_a_collection_of_miniassignments_with/" target="_blank">I written a collection of mini-assignments with solutions for learning Tokio and async Rust</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;ve been deep-diving into the Tokio runtime, and to help solidify what I&#39;ve learned, I started building a series of &quot;mini-assignments&quot; that I&#39;m completing.</p> <p>These are small, practical projects designed to be well-defined and contained within a single file - perfect for anyone who prefers learning by doing over just reading docs.</p> <p>I&#39;ve completed five assignments so far and am currently planning out the sixth. Each one focuses on a different core concept:</p> <ul> <li>Concurrent Web Fetcher</li> <li>Rate-Limited Task Queue</li> <li>Chat Server</li> <li>Graceful Shutdown</li> <li>Producer-Consumer Pipeline</li> </ul> <p><strong>Example Assignment</strong></p> <p><code>text // Assignment 1: Concurrent Web Fetcher // // Objective: Build a CLI tool that fetches multiple URLs concurrently and // reports results. // // Requirements: // // 1. Accept a hardcoded list of at least 5 URLs (or take them from // command-line args - your choice) // 2. Fetch all URLs concurrently using tokio::spawn and reqwest // 3. For each URL, print: // - The URL // - The HTTP status code (or the error if the request failed) // - How long that individual request took // 4. After all requests complete, print the total elapsed time // 5. Handle errors gracefully — a single failed URL should not crash the // program // // Hints: // // - You&#39;ll need to add tokio (with full features) and reqwest to your // Cargo.toml // - std::time::Instant is fine for timing // - Think about what type JoinHandle returns and how to collect results // // Grading criteria: // // - All URLs fetched concurrently (not sequentially!) // - Errors are handled, not unwrap()&#39;d // - Clean, idiomatic code </code></p> <p>I&#39;m sharing the repo for anyone else looking for a structured way to learn async Rust. If you have suggestions for other &quot;assignments&quot; that would be good for intermediate learners, feel free to share.</p> <p>The solutions are posted, but you should try to implement them yourself first! :)</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/freddiehaddad"> /u/freddiehaddad </a> <br/> <span><a href="https://github.com/freddiehaddad/tokio-lessons">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1s290fd/i_written_a_collection_of_miniassignments_with/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1s25hnn/can_rust_compiler_handle_gigantic_match_statements/" target="_blank">Can rust compiler handle gigantic match statements?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;m making a hobbyist programming language. Currently it uses a bytecode interpreter, but I want to translate the bytecode to C or Rust.</p> <p>There&#39;re no functions in my bytecode. There are only jumps and stack push/pops. My language heavily uses tail calls (it&#39;s necessary because it&#39;s purely functional) and I put a lot of effort in the bytecode optimization.</p> <p>So, if I translate the bytecode to C, there would be a gigantic main function with a lot of goto labels. If I choose Rust, I&#39;ll use a single gigantic match statement to simulate jumps (I can&#39;t think of better solution). There will be at least thousands of match arms and some times hundreds of thousands of arms.</p> <p>I haven&#39;t written such ridiculous rust code by hand. Can the rust compiler handle such thing? Has anyone tried similar approach?</p> <p>EDIT: fix typo</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/baehyunsol"> /u/baehyunsol </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1s25hnn/can_rust_compiler_handle_gigantic_match_statements/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1s25hnn/can_rust_compiler_handle_gigantic_match_statements/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1s2536f/why_do_forloops_need_to_take_ownership_of_the/" target="_blank">Why do for-loops need to take ownership of the iterators?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Background:</p> <p>I was trying to write an <code>Iterator</code>-impl class that kept a running set of elements to iterate over that could be inserted into during iteration. I hoped to make a struct that I could use in a for-loop and simultaneously add stuff to it in the body of the loop. However, I soon found that this is impossible to make compile (at least the way I wanted to). For the sake of simplicity, I&#39;ll supply a simplified object that shows the same error here.</p> <p>Minimal example:</p> <p>The struct I&#39;m using for this example is ```rust struct RunningIterator { current: usize, max: usize, }</p> <p>impl RunningIterator { fn new(max: usize) -&gt; Self { Self { current: 0, max } }</p> <pre><code>fn increment_max(&amp;mut self) { self.max += 1; } </code></pre> <p>}</p> <p>impl Iterator for RunningIterator { type Item = usize; fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt; { if self.current &lt;= self.max { let to_return = Some(self.current); self.current += 1; to_return } else { None } } } ```</p> <p>When I try to use this as I wanted to with the following snippet, it gave me the error below: <code>rust fn main() { let mut running_iterator = RunningIterator::new(10); for element in running_iterator { println!(&quot;{element}&quot;); if (element % 2) == 0 { running_iterator.increment_max(); } } } </code></p> <p>``<code>plaintext error[E0382]: borrow of moved value:</code>running_iterator<code> --&gt; src/main.rs:34:13 | 30 | let mut running_iterator = RunningIterator::new(10); | -------------------- move occurs because</code>running_iterator<code>has type</code>RunningIterator<code>, which does not implement the</code>Copy<code>trait 31 | for element in running_iterator { | ----------------</code>running_iterator<code>moved due to this implicit call to</code>.into_iter()<code> ... 34 | running_iterator.increment_max(); | ^^^^^^^^^^^^^^^^ value borrowed here after move | note:</code>into_iter<code>takes ownership of the receiver</code>self<code>, which moves</code>running_iterator` --&gt; /Users/keithtauscher/.rustup/toolchains/stable-aarch64-apple-darwin/lib/rustlib/src/rust/library/core/src/iter/traits/collect.rs:310:18 | 310 | fn into_iter(self) -&gt; Self::IntoIter; | <sup><sup><sup>^</sup></sup></sup></p> <p>For more information about this error, try <code>rustc --explain E0382</code>. ```</p> <p>So, thanks to this very helpful error message, I can see that the for-loop works by taking ownership of the target and passing it into <code>IntoIterator::into_iter</code>. While I understand the error message, I don&#39;t really see why the for loop needs ownership of the iterator and not just an intermittent mutable reference. For example, what I ended up doing was the following:</p> <p><code>rust fn main() { let mut running_iterator = RunningIterator::new(10); while let Some(element) = running_iterator.next() { println!(&quot;{element}&quot;); if (element % 2) == 0 { running_iterator.increment_max(); } } } </code></p> <p>and it printed out the numbers 0-21 inclusive as expected.</p> <p>Conclusion:</p> <p>So, what do you all think about why this is the case? Does anyone have any firsthand knowledge? My best guess is that it was done this way for simplicity&#39;s sake: simple ownership is way less complex than an intermittent implicit mutable reference, but to me it seems less powerful.</p> <p>One last question: is this not an idiomatic use of the <code>Iterator</code> trait? In a class like this, should I put in the <code>next</code> method in the struct&#39;s main <code>impl</code> block instead of in the <code>impl Iterator</code> block?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Keithfert488"> /u/Keithfert488 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1s2536f/why_do_forloops_need_to_take_ownership_of_the/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1s2536f/why_do_forloops_need_to_take_ownership_of_the/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust/comments/1s31jfu/i_really_hate_that_they_removed_the/" target="_blank">I really hate that they removed the Option::contains function</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Like why? Now we have to write <code>my_option.is_some_and(|my_value| my_value == my_non_option_value)</code>.</p> <p>What was the reasoning behind removing this method? I remember reading a reasoning somewhere when it got removed that it was unnecessary because they were stabilizing <code>is_some_and</code>. But <code>contains</code> is just so much more ergonomic.</p> <p>EDIT: Okay you can write <code>my_option == Some(my_value)</code>. But I still think <code>contains</code> is more readable and don&#39;t see the reason it was removed</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/SirKastic23"> /u/SirKastic23 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1s31jfu/i_really_hate_that_they_removed_the/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1s31jfu/i_really_hate_that_they_removed_the/">[comments]</a></span></div>
           </li>
   
         </ul>
@@ -1563,13 +396,38 @@ for) the problems surrounding type checking in Go.</p>
         <ul class="item-list">
   
           <li>
-            <a href="https://www.reddit.com/r/rust_gamedev/comments/1s2bvnz/little_sudoku_game_made_with_rust_and_sdl3/" target="_blank">Little Sudoku game made with Rust and SDL3</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/Yoppez"> /u/Yoppez </a> <br/> <span><a href="/r/rust/comments/1s2bvca/little_sudoku_game_made_with_rust_and_sdl3/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust_gamedev/comments/1s2bvnz/little_sudoku_game_made_with_rust_and_sdl3/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust_gamedev/comments/1s3uk8f/building_my_own_crates_for_a_modular_rust_game/" target="_blank">Building my own crates for a modular Rust game engine (window, pixel buffer, mesh loader so far)</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/retroboi64_"> /u/retroboi64_ </a> <br/> <span><a href="/r/rust/comments/1s3ufhw/building_my_own_crates_for_a_modular_rust_game/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust_gamedev/comments/1s3uk8f/building_my_own_crates_for_a_modular_rust_game/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust_gamedev/comments/1s2acwq/thought_these_were_fun/" target="_blank">Thought these were fun</a>
-            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/rust_gamedev/comments/1s2acwq/thought_these_were_fun/">  </a> </td><td> &#32; submitted by &#32; <a href="https://www.reddit.com/user/h888ing"> /u/h888ing </a> <br/> <span><a href="https://www.reddit.com/gallery/1s2acwq">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust_gamedev/comments/1s2acwq/thought_these_were_fun/">[comments]</a></span> </td></tr></table></div>
+            <a href="https://www.reddit.com/r/rust_gamedev/comments/1s3ftbo/has_anyone_here_used_godot_rust/" target="_blank">Has anyone here used Godot + Rust?</a>
+            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/rust_gamedev/comments/1s3ftbo/has_anyone_here_used_godot_rust/">  </a> </td><td> <!-- SC_OFF --><div class="md"><p>I&#39;m a programming novice and I&#39;m very interested in Rust and game development, and I wanted to know what the experience of using Rust in the Godot engine is like. </p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/JovemSapien"> /u/JovemSapien </a> <br/> <span><a href="https://i.redd.it/m1x6slxdy7rg1.png">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust_gamedev/comments/1s3ftbo/has_anyone_here_used_godot_rust/">[comments]</a></span> </td></tr></table></div>
+          </li>
+  
+        </ul>
+  
+        <h3 class="subreddit">r/golang</h3>
+        <ul class="item-list">
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1s3fo6t/any_good_crdt_localfirst_sync_libraries_in_go/" target="_blank">Any good CRDT / local-first sync libraries in Go?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;m building a backend in Go and need real-time sync with offline support - think collaborative editing, multiple clients merging state after being offline, that kind of thing.</p> <p>So far I found few small CRDT libraries with &lt;20 stars.</p> <p>Am I missing something? Is anyone using CRDTs in Go in production? Or do most people just bolt on a JS layer for the sync part?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Sweet-Demand-7971"> /u/Sweet-Demand-7971 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1s3fo6t/any_good_crdt_localfirst_sync_libraries_in_go/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1s3fo6t/any_good_crdt_localfirst_sync_libraries_in_go/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1s3bjok/beyond_the_compiler_external_ssa_analysis/" target="_blank">Beyond the Compiler: External SSA Analysis Workflows</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi all,</p> <p>I’m trying to run some analysis on Go SSA and benchmark the results (specifically the # of allocations). While exploring, I found the <code>ssa/interp</code> package, which can execute SSA directly, so my initial idea was to perform the analysis (which could possibly modify the SSA) and then run it through the interpreter.</p> <p>However, <code>ssa/interp</code> docs mentions: “* The “testing” package is no longer supported because it depends on low-level details that change too often.“, which makes me think this approach might not be suitable for benchmarking.</p> <p>I also considered converting SSA back to AST and regenerating source using <code>go/printer</code>, but I’m not sure how feasible or complex that would be in practice (or if it’s even possible).</p> <p>Would appreciate any suggestions on how to proceed.</p> <p>Thanks in advance</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/0bit_memory"> /u/0bit_memory </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1s3bjok/beyond_the_compiler_external_ssa_analysis/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1s3bjok/beyond_the_compiler_external_ssa_analysis/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1s36zdy/i_made_n8n_alternative_but_better_in_go/" target="_blank">I made N8N alternative (but better) in Go</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hey guys, I am Kartik, currently working on lyzn.ai - a agentic marketplace that I built from scratch as a solo dev!</p> <p>Currently I have a N8N like no-code agentic builder ( at <a href="https://flow.lyzn.ai">https://flow.lyzn.ai</a> ), with around 150+ nodes and most of them do not need a API key!!</p> <p>Once you build and publish a agent, it will be live on our Lyzn AI app (live on both playstore and appstore, download at <a href="https://lyzn.ai">https://lyzn.ai</a> )</p> <p>It allows you to build production grade, complex agents and earn from what you build. We provide a complete ecosystem for you to deploy complete multi-agent workflows.</p> <p>The completely execution engine along with agent orchestration engine was written in Go, each workflow takes less than 10MB in memory, way less than what N8N would take in self-hosted setup.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/mellob_ai"> /u/mellob_ai </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1s36zdy/i_made_n8n_alternative_but_better_in_go/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1s36zdy/i_made_n8n_alternative_but_better_in_go/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1s33ucu/matcha_got_a_lot_of_updates/" target="_blank">Matcha got a lot of updates.</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>This is my second post about <a href="https://github.com/floatpane/matcha">matcha</a>.</p> <h3>This is small summary of what changed/was introduced since then:</h3> <ol> <li>S/MIME encryption. Now, you can sign your emails using a CA certificate and keys</li> <li>Windows is FINALLY supported! We are still awaiting on WinGet, but Widows binaries are being built and packaged in stable and nightly releases.</li> <li>More customization. We have added color themes for the client, as well as plugins (currently, only in the <a href="https://github.com/floatpane/matcha/releases/tag/nightlyv0">nightly releases</a>)</li> <li>We have a bigger team. With people liking the Matcha, some of our devs in floatpane team and outside collaborators have joined the Matcha team, reviewing the code and working on improving.</li> <li>TTY + tmux works now</li> <li>A lot of bug improvements</li> <li><p>A lot of miscellaneous features implemented (such as, IMAP IDLE, external editor support, e.t.c.)</p></li> <li><p>Gmail OAuth! </p></li> </ol> <p>Thank you, everyone, who contributed, left a star, and emailed us about the project!</p> <p>Check out the repo and the latest (v0.27.8) version here:</p> <p><a href="https://github.com/floatpane/matcha">https://github.com/floatpane/matcha</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/andrinoff"> /u/andrinoff </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1s33ucu/matcha_got_a_lot_of_updates/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1s33ucu/matcha_got_a_lot_of_updates/">[comments]</a></span></div>
           </li>
   
         </ul>
