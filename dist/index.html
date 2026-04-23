@@ -240,8 +240,8 @@
   
       <div class="card">
         <h2>Huginn Daily</h2>
-        <p class="header-p">Wednesday, April 22, 2026</p>
-        <p class="header-p">ddba0ecf-9caa-47df-bd50-facea3ebed14</p>
+        <p class="header-p">Thursday, April 23, 2026</p>
+        <p class="header-p">078fcb06-c69b-4aa6-b9cf-a36097d7c398</p>
       </div>
   
       <div class="card">
@@ -249,7 +249,7 @@
         <table class="weather-table">
           <tr>
             <th>Summary</th>
-            <td>⛅️ Mostly clear until night.</td>
+            <td>⛅️ Mostly clear throughout the day.</td>
           </tr>
           <tr>
             <th>Temperature Range</th>
@@ -257,15 +257,15 @@
           </tr>
           <tr>
             <th>Feels Like</th>
-            <td>Low: 49°F | High: 71°F</td>
+            <td>Low: 50°F | High: 71°F</td>
           </tr>
           <tr>
             <th>Humidity</th>
-            <td>77%</td>
+            <td>79%</td>
           </tr>
           <tr>
             <th>Wind</th>
-            <td>12 km/h (7 mph), Direction: 245°</td>
+            <td>12 km/h (7 mph), Direction: 259°</td>
           </tr>
           <tr>
             <th>Precipitation</th>
@@ -273,27 +273,27 @@
           </tr>
           <tr>
             <th>Sunrise / Sunset</th>
-            <td>🌅 06:08 AM / 🌇 07:25 PM</td>
+            <td>🌅 06:06 AM / 🌇 07:26 PM</td>
           </tr>
           <tr>
             <th>Moon Phase</th>
-            <td>Waxing Crescent (19%)</td>
+            <td>Waxing Crescent (23%)</td>
           </tr>
           <tr>
             <th>Cloud Cover</th>
-            <td>17%</td>
+            <td>25%</td>
           </tr>
           <tr>
             <th>Pressure</th>
-            <td>1015.24 hPa</td>
+            <td>1013.0 hPa</td>
           </tr>
           <tr>
             <th>Dew Point</th>
-            <td>53.44°F</td>
+            <td>54.59°F</td>
           </tr>
           <tr>
             <th>Visibility</th>
-            <td>6.02 miles</td>
+            <td>5.8 miles</td>
           </tr>
         </table>
       </div>
@@ -302,207 +302,1864 @@
         <h2>XKCD</h2>
   
         <div class="comic">
-          <a href="//imgs.xkcd.com/comics/types_of_board_game.png" target="_blank">
-            <img src="//imgs.xkcd.com/comics/types_of_board_game.png" alt="Types of Board Game">
+          <a href="//imgs.xkcd.com/comics/border_message.png" target="_blank">
+            <img src="//imgs.xkcd.com/comics/border_message.png" alt="Border Message">
           </a>
         </div>
   
       </div>
   
       <div class="card">
+        <h2>Golang</h2>
+        <ul class="item-list">
+  
+          <li>
+            <a href="https://go.dev/blog/go1.26" target="_blank">Go 1.26 is released</a>
+            <div class="item-content">
+<div id="blog"><div id="content">
+  <div id="content">
+
+    <div class="Article" data-slug="/blog/go1.26">
+    
+    <h1 class="small"><a href="/blog/">The Go Blog</a></h1>
+    
+
+    <h1>Go 1.26 is released</h1>
+      
+      <p class="author">
+      Carlos Amedee, on behalf of the Go team<br>
+      10 February 2026
+      </p>
+      
+      <div class='markdown'>
+<p>Today the Go team is pleased to release Go 1.26.
+You can find its binary archives and installers on the <a href="/dl/">download page</a>.</p>
+<h2 id="language-changes">Language changes</h2>
+<p>Go 1.26 introduces two significant refinements to the language
+<a href="/doc/go1.26#language">syntax and type system</a>.</p>
+<p>First, the built-in <code>new</code> function, which creates a new variable, now allows its operand to be an
+expression, specifying the initial value of the variable.</p>
+<p>A simple example of this change means that code such as this:</p>
+<pre><code class="language-go">x := int64(300)
+ptr := &amp;x
+</code></pre>
+<p>Can be simplified to:</p>
+<pre><code class="language-go">ptr := new(int64(300))
+</code></pre>
+<p>Second, generic types may now refer to themselves in their own type parameter list. This change
+simplifies the implementation of complex data structures and interfaces.</p>
+<h2 id="performance-improvements">Performance improvements</h2>
+<p>The previously experimental <a href="/doc/go1.26#new-garbage-collector">Green Tea garbage collector</a>
+is now enabled by default.</p>
+<p>The baseline <a href="/doc/go1.26#faster-cgo-calls">cgo overhead has been reduced</a>
+by approximately 30%.</p>
+<p>The compiler can now <a href="/doc/go1.26#compiler">allocate the backing store</a> for
+slices on the stack in more situations, which improves performance.</p>
+<h2 id="tool-improvements">Tool improvements</h2>
+<p>The <code>go fix</code> command has been completely rewritten to use the
+<a href="/pkg/golang.org/x/tools/go/analysis">Go analysis framework</a>, and now includes a
+couple dozen &ldquo;<a href="/pkg/golang.org/x/tools/go/analysis/passes/modernize">modernizers</a>&rdquo;, analyzers
+that suggest safe fixes to help your code take advantage of newer features of the language
+and standard library. It also includes the
+<a href="/pkg/golang.org/x/tools/go/analysis/passes/inline#hdr-Analyzer_inline"><code>inline</code> analyzer</a>, which
+attempts to inline all calls to each function annotated with a <code>//go:fix inline</code> directive.
+Two upcoming blog posts will address these features in more detail.</p>
+<h2 id="more-improvements-and-changes">More improvements and changes</h2>
+<p>Go 1.26 introduces many improvements over Go 1.25 across
+its <a href="/doc/go1.26#tools">tools</a>, the <a href="/doc/go1.26#runtime">runtime</a>,
+<a href="/doc/go1.26#compiler">compiler</a>, <a href="/doc/go1.26#linker">linker</a>,
+and the <a href="/doc/go1.26#library">standard library</a>.
+This includes the addition of three new packages: <a href="/doc/go1.26#new-cryptohpke-package"><code>crypto/hpke</code></a>,
+<a href="/doc/go1.26#cryptomlkempkgcryptomlkem"><code>crypto/mlkem/mlkemtest</code></a>, and
+<a href="/doc/go1.26#testingcryptotestpkgtestingcryptotest"><code>testing/cryptotest</code></a>.
+There are <a href="/doc/go1.26#ports">port-specific</a> changes
+and <a href="/doc/godebug#go-126"><code>GODEBUG</code> settings</a> updates.</p>
+<p>Some of the additions in Go 1.26 are in an experimental stage
+and become exposed only when you explicitly opt in. Notably:</p>
+<ul>
+<li>
+<p>An <a href="/doc/go1.26#simd">experimental <code>simd/archsimd</code> package</a> provides access to &ldquo;single instruction,
+multiple data&rdquo; (SIMD) operations.</p>
+</li>
+<li>
+<p>An <a href="/doc/go1.26#new-experimental-runtimesecret-package">experimental <code>runtime/secret</code> package</a> provides
+a facility for securely erasing temporaries used in code that manipulates secret
+information, typically cryptographic in nature.</p>
+</li>
+<li>
+<p>An <a href="/doc/go1.26#goroutineleak-profiles">experimental <code>goroutineleak</code> profile</a>
+in the <code>runtime/pprof</code> package that reports leaked goroutines.</p>
+</li>
+</ul>
+<p>These experiments are all expected to be generally available in a
+future version of Go. We encourage you to try them out ahead of time.
+We really value your feedback!</p>
+<p>Please refer to the <a href="/doc/go1.26">Go 1.26 Release Notes</a> for the complete list
+of additions, changes, and improvements in Go 1.26.</p>
+<p>Over the next few weeks, follow-up blog posts will cover some of the topics
+relevant to Go 1.26 in more detail. Check back later to read those posts.</p>
+<p>Thanks to everyone who contributed to this release by writing code, filing bugs,
+trying out experimental additions, sharing feedback, and testing the release candidates.
+Your efforts helped make Go 1.26 as stable as possible.
+As always, if you notice any problems, please <a href="/issue/new">file an issue</a>.</p>
+<p>We hope you enjoy using the new release!</p>
+</div>
+
+    </div>
+
+    
+    <div class="Article prevnext">
+    
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        <p>
+        
+          
+            <b>Next article: </b><a href="/blog/gofix">Using go fix to modernize Go code</a><br>
+          
+        
+        
+          
+            <b>Previous article: </b><a href="/blog/survey2025">Results from the 2025 Go Developer Survey</a><br>
+          
+        
+        <b><a href="/blog/all">Blog Index</a></b>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    </div>
+    
+
+  </div>
+</div>
+
+<script src="/js/play.js"></script>
+
+</div>
+          </li>
+  
+          <li>
+            <a href="https://go.dev/blog/16years" target="_blank">Go’s Sweet 16</a>
+            <div class="item-content">
+<div id="blog"><div id="content">
+  <div id="content">
+
+    <div class="Article" data-slug="/blog/16years">
+    
+    <h1 class="small"><a href="/blog/">The Go Blog</a></h1>
+    
+
+    <h1>Go’s Sweet 16</h1>
+      
+      <p class="author">
+      Austin Clements, for the Go team<br>
+      14 November 2025
+      </p>
+      
+      <div class='markdown'>
+<p>This past Monday, November 10th, we celebrated the 16th anniversary of Go’s
+<a href="https://opensource.googleblog.com/2009/11/hey-ho-lets-go.html" rel="noreferrer" target="_blank">open source
+release</a>!</p>
+<p>We released <a href="/blog/go1.24">Go 1.24 in February</a> and <a href="/blog/go1.25">Go 1.25 in
+August</a>, following our now well-established and dependable release
+cadence. Continuing our mission to build the most productive language platform
+for building production systems, these releases included new APIs for building
+robust and reliable software, significant advances in Go’s track record for
+building secure software, and some serious under-the-hood improvements.
+Meanwhile, no one can ignore the seismic shifts in our industry brought by
+generative AI. The Go team is applying its thoughtful and uncompromising mindset
+to the problems and opportunities of this dynamic space, working to bring Go’s
+production-ready approach to building robust AI integrations, products, agents,
+and infrastructure.</p>
+<h1 id="core-language-and-library-improvements">Core language and library improvements</h1>
+<p>First released in Go 1.24 as an experiment and then graduated in Go 1.25, the
+new <a href="https://pkg.go.dev/testing/synctest" rel="noreferrer" target="_blank"><code>testing/synctest</code></a> package
+significantly simplifies writing tests for <a href="/blog/testing-time">concurrent, asynchronous
+code</a>. Such code is particularly common in network services,
+and is traditionally very hard to test well. The <code>synctest</code> package works by
+virtualizing time itself. It takes tests that used to be slow, flaky, or both,
+and makes them easy to rewrite into reliable and nearly instantaneous tests,
+often with just a couple extra lines of code. It’s also a great example of Go’s
+integrated approach to software development: behind an almost trivial API, the
+<code>synctest</code> package hides a deep integration with the Go runtime and other parts
+of the standard library.</p>
+<p>This isn’t the only boost the <code>testing</code> package got over the past year. The new
+<a href="https://pkg.go.dev/testing#B.Loop" rel="noreferrer" target="_blank"><code>testing.B.Loop</code></a> API is both easier to use
+than the original <code>testing.B.N</code> API and addresses many of the traditional—and
+often invisible!—<a href="/blog/testing-b-loop">pitfalls</a> of writing Go benchmarks. The
+<code>testing</code> package also has new APIs that <a href="https://pkg.go.dev/testing#T.Context" rel="noreferrer" target="_blank">make it easy to
+cleanup</a> in tests that use
+<a href="https://pkg.go.dev/context#Context" rel="noreferrer" target="_blank"><code>Context</code></a>, and that <a href="https://pkg.go.dev/testing#T.Output" rel="noreferrer" target="_blank">make it
+easy</a> to write to the test’s log.</p>
+<p>Go and containerization grew up together and work great with each other. Go 1.25
+launched <a href="/blog/container-aware-gomaxprocs">container-aware scheduling</a>, making
+this pairing even stronger. Without developers having to lift a finger, this
+transparently adjusts the parallelism of Go workloads running in containers,
+preventing CPU throttling that can impact tail latency and improving Go’s
+out-of-the-box production-readiness.</p>
+<p>Go 1.25’s new <a href="/blog/flight-recorder">flight recorder</a> builds on our already
+powerful execution tracer, enabling deep insights into the dynamic behavior of
+production systems. While the execution tracer generally collected <em>too much</em>
+information to be practical in long-running production services, the flight
+recorder is like a little time machine, allowing a service to snapshot recent
+events in great detail <em>after</em> something has gone wrong.</p>
+<h2 id="secure-software-development">Secure software development</h2>
+<p>Go continues to strengthen its commitment to secure software development, making
+significant strides in its native cryptography packages and evolving its
+standard library for enhanced safety.</p>
+<p>Go ships with a full suite of native cryptography packages in the standard
+library, which reached two major milestones over the past year. A security
+audit conducted by independent security firm <a href="https://www.trailofbits.com/" rel="noreferrer" target="_blank">Trail of
+Bits</a> yielded <a href="/blog/tob-crypto-audit">excellent
+results</a>, with only a single low-severity finding.
+Furthermore, through a collaborative effort between the Go Security Team and
+<a href="https://geomys.org/" rel="noreferrer" target="_blank">Geomys</a>, these packages achieved CAVP certification,
+paving the way for <a href="/blog/fips140">full FIPS 140-3 certification</a>. This is a
+vital development for Go users in certain regulated environments. FIPS 140
+compliance, previously a source of friction due to the need for unsupported
+solutions, will now be seamlessly integrated, addressing concerns related to
+safety, developer experience, functionality, release velocity, and compliance.</p>
+<p>The Go standard library has continued to evolve to be <em>safe by default</em> and
+<em>safe by design</em>. For example, the <a href="https://pkg.go.dev/os#Root" rel="noreferrer" target="_blank"><code>os.Root</code></a>
+API—added in Go 1.24—enables <a href="/blog/osroot">traversal-resistant file system
+access</a>, effectively combating a class of vulnerabilities where an
+attacker could manipulate programs into accessing files intended to be
+inaccessible. Such vulnerabilities are notoriously challenging to address
+without underlying platform and operating system support, and the new
+<a href="https://pkg.go.dev/os#Root" rel="noreferrer" target="_blank"><code>os.Root</code></a> API offers a straightforward,
+consistent, and portable solution.</p>
+<h2 id="under-the-hood-improvements">Under-the-hood improvements</h2>
+<p>In addition to user-visible changes, Go has made significant improvements under
+the hood over the past year.</p>
+<p>For Go 1.24, we completely <a href="/blog/swisstable">redesigned the <code>map</code>
+implementation</a>, building on the latest and greatest ideas in
+hash table design. This change is completely transparent, and brings significant
+improvements to <code>map</code> performance, lower tail latency of <code>map</code> operations, and
+in some cases even significant memory wins.</p>
+<p>Go 1.25 includes an experimental and significant advancement in Go’s garbage
+collector called <a href="/blog/greenteagc">Green Tea</a>. Green Tea reduces garbage
+collection overhead in many applications by at least 10% and sometimes as much
+as 40%. It uses a novel algorithm designed for the capabilities and constraints
+of today’s hardware and opens up a new design space that we’re eagerly
+exploring. For example, in the forthcoming Go 1.26 release, Green Tea will
+achieve an additional 10% reduction in garbage collector overhead on hardware
+that supports AVX-512 vector instructions—something that would have been nigh
+impossible to take advantage of in the old algorithm. Green Tea will be enabled
+by default in Go 1.26; users need only upgrade their Go version to benefit.</p>
+<h1 id="furthering-the-software-development-stack">Furthering the software development stack</h1>
+<p>Go is about far more than the language and standard library. It’s a software
+development platform, and over the past year, we’ve also made four regular
+releases of the <a href="/gopls">gopls language server</a>, and have formed partnerships to
+support emerging new frameworks for agentic applications.</p>
+<p>Gopls provides Go support to VS Code and other LSP-powered editors and IDEs.
+Every release sees a litany of features and improvements to the experience of
+reading and writing Go code (see the <a href="/gopls/release/v0.17.0">v0.17.0</a>,
+<a href="/gopls/release/v0.18.0">v0.18.0</a>, <a href="/gopls/release/v0.19.0">v0.19.0</a>, and
+<a href="/gopls/release/v0.20.0">v0.20.0</a> release notes for full details, or our new
+<a href="/gopls/features">gopls feature documentation</a>!). Some highlights include many
+new and enhanced analyzers to help developers write more idiomatic and robust Go
+code; refactoring support for variable extraction, variable inlining, and JSON
+struct tags; and an <a href="/gopls/features/mcp">experimental built-in server</a> for the
+Model Context Protocol (MCP) that exposes a subset of gopls’ functionality to AI
+assistants in the form of MCP tools.</p>
+<p>With gopls v0.18.0, we began exploring <em>automatic code modernizers</em>. As Go
+evolves, every release brings new capabilities and new idioms; new and better
+ways to do things that Go programmers have been finding other ways to do. Go
+stands by its <a href="/doc/go1compat">compatibility promise</a>—the old way will continue
+to work in perpetuity—but nevertheless this creates a bifurcation between old
+idioms and new idioms. Modernizers are static analysis tools that recognize old
+idioms and suggest faster, more readable, more secure, more <em>modern</em>
+replacements, and do so with push-button reliability. What <code>gofmt</code> did for
+<a href="/blog/gofmt">stylistic consistency</a>, we hope modernizers can do for idiomatic
+consistency. We’ve integrated modernizers as IDE suggestions, where they can
+help developers not only maintain more consistent coding standards, but where we
+believe they will help developers discover new features and keep up with the
+state of the art. We believe modernizers can also help AI coding assistants keep
+up with the state of the art and combat their proclivity to reinforce outdated
+knowledge of the Go language, APIs, and idioms. The upcoming Go 1.26 release
+will include a total overhaul of the long-dormant <code>go fix</code> command to make it
+apply the full suite of modernizers in bulk, a return to its <a href="/blog/introducing-gofix">pre-Go 1.0
+roots</a>.</p>
+<p>At the end of September, in collaboration with
+<a href="https://www.anthropic.com/" rel="noreferrer" target="_blank">Anthropic</a> and the Go community, we released
+<a href="https://github.com/modelcontextprotocol/go-sdk/releases/tag/v1.0.0" rel="noreferrer" target="_blank">v1.0.0</a> of
+the <a href="https://github.com/modelcontextprotocol/go-sdk" rel="noreferrer" target="_blank">official Go SDK</a> for the
+<a href="https://modelcontextprotocol.io/" rel="noreferrer" target="_blank">Model Context Protocol (MCP)</a>. This SDK
+supports both MCP clients and MCP servers, and underpins the new MCP
+functionality in gopls. Contributing this work in open source helps empower
+other areas of the growing open source agentic ecosystem built around Go, such
+as the recently released <a href="https://github.com/google/adk-go" rel="noreferrer" target="_blank">Agent Development Kit (ADK) for
+Go</a> from <a href="https://www.google.com/" rel="noreferrer" target="_blank">Google</a>.
+ADK Go builds on the Go MCP SDK to provide an idiomatic framework for building
+modular multi-agent applications and systems. The Go MCP SDK and ADK Go
+demonstrate how Go’s unique strengths in concurrency, performance, and
+reliability differentiate Go for production AI development and we are expecting
+more AI workloads to be written in Go in the coming years.</p>
+<h1 id="looking-ahead">Looking ahead</h1>
+<p>Go has an exciting year ahead of it.</p>
+<p>We’re working on advancing developer productivity through the brand new <code>go fix</code>
+command, deeper support for AI coding assistants, and ongoing improvements to
+gopls and VS Code Go. General availability of the Green Tea garbage collector,
+native support for Single Instruction Multiple Data (SIMD) hardware features,
+and runtime and standard library support for writing code that scales even
+better to massive multicore hardware will continue to align Go with modern
+hardware and improve production efficiency. We’re focusing on Go’s “production
+stack” libraries and diagnostics, including a massive (and long in the making)
+<a href="/issue/71497">upgrade to <code>encoding/json</code></a>, driven by Joe Tsai and people across
+the Go community; <a href="/design/74609-goroutine-leak-detection-gc">leaked goroutine
+profiling</a>, contributed by
+<a href="https://www.uber.com/us/en/about/" rel="noreferrer" target="_blank">Uber’s</a> Programming Systems team; and many
+other improvements to <code>net/http</code>, <code>unicode</code>, and other foundational packages.
+We’re working to provide well-lit paths for building with Go and AI, evolving
+the language platform with care for the evolving needs of today’s developers,
+and building tools and capabilities that help both human developers and AI
+assistants and systems alike.</p>
+<p>On this 16th anniversary of Go’s open source release, we’re also looking to the
+future of the Go open source project itself. From its <a href="https://www.youtube.com/watch?v=wwoWei-GAPo" rel="noreferrer" target="_blank">humble
+beginnings</a>, Go has formed a
+thriving contributor community. To continue to best meet the needs of our
+ever-expanding user base, especially in a time of upheaval in the software
+industry, we’re working on ways to better scale Go&rsquo;s development
+processes—without losing sight of Go’s fundamental principles—and more deeply
+involve our wonderful contributor community.</p>
+<p>Go would not be where it is today without our incredible user and contributor
+communities. We wish you all the best in the coming year!</p>
+</div>
+
+    </div>
+
+    
+    <div class="Article prevnext">
+    
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+        <p>
+        
+          
+            <b>Next article: </b><a href="/blog/survey2025">Results from the 2025 Go Developer Survey</a><br>
+          
+        
+        
+          
+            <b>Previous article: </b><a href="/blog/greenteagc">The Green Tea Garbage Collector</a><br>
+          
+        
+        <b><a href="/blog/all">Blog Index</a></b>
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    </div>
+    
+
+  </div>
+</div>
+
+<script src="/js/play.js"></script>
+
+</div>
+          </li>
+  
+        </ul>
+      </div>
+  
+      <div class="card">
         <h2>Reddit</h2>
-  
-        <h3 class="subreddit">r/rust</h3>
-        <ul class="item-list">
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1ss7zqa/litext_a_zerodependency_crate_for_procmacro/" target="_blank">litext: a zero-dependency crate for proc-macro authors to extract string literals from a TokenStream</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Tired of pulling in all of <code>syn</code> just to do: <code>rust let input = parse_macro_input!(input as LitStr); let value = input.value(); </code></p> <p><code>litext</code> does exactly that, nothing more, with zero dependencies. add it to your proc-macro crate and use the <code>litext!</code> macro:</p> <p>```rust</p> <h1>[proc_macro]</h1> <p>pub fn my_macro(input: TokenStream) -&gt; TokenStream { let value: String = litext!(input); // value is the fully unescaped string, just like syn gives you } ```</p> <p>Plain strings, raw strings (<code>r#&quot;...&quot;#</code>), all escape sequences including <code>\x1b</code>, <code>\u{...}</code>, line continuations, with proper <code>compile_error!</code> output on bad input.</p> <p>The trick that makes it work without <code>proc-macro = true</code> is just <code>extern crate proc_macro</code> in a normal lib crate. Simple once you know it, but took some digging.</p> <p>This is as a learning project to understand how proc-macros work at the token level without hiding everything behind <code>syn</code>, but it turned into something useful so I figured I&#39;d publish it.</p> <p>Source on Codeberg: <a href="https://codeberg.org/razkar/litext">https://codeberg.org/razkar/litext</a> Crates-io 0.2: <a href="https://crates.io/crates/litext">https://crates.io/crates/litext</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/razkarstudio"> /u/razkarstudio </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1ss7zqa/litext_a_zerodependency_crate_for_procmacro/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1ss7zqa/litext_a_zerodependency_crate_for_procmacro/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1ss3w89/leetrs_a_tui_application_to_search_pick_and/" target="_blank">Leetrs - A TUI application to search, pick, and submit leetcode problems.</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Built a LeetCode TUI called leetrs so you can solve and submit problems directly from the terminal</p> <p>I built a terminal-based UI for LeetCode that lets you browse problems, code solutions, run tests, and submit — all without leaving your terminal.</p> <p>I made it because I wanted a faster, more focused workflow without constantly switching between the browser, editor, and terminal. If you like working in the CLI, this might be useful.</p> <p>What it does</p> <p>Browse LeetCode problems from the terminal</p> <p>View problem details and metadata</p> <p>Write solutions in your preferred terminal workflow</p> <p>Run tests</p> <p>Submit solutions directly from the TUI</p> <p>Stay fully inside the terminal while solving</p> <p>Looking for feedback + contributors</p> <p>The project is open source, and I’d love:</p> <p>feedback on the UX and workflow</p> <p>bug reports</p> <p>feature suggestions</p> <p>contributions from anyone interested in TUIs, developer tools, or LeetCode integrations</p> <p>If you want to contribute, check out the repo here: <a href="https://github.com/shadowmkj/leetrs.git">https://github.com/shadowmkj/leetrs.git</a></p> <p>If people are interested, I can also share more details about the architecture, implementation choices, and roadmap.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/milanpramod"> /u/milanpramod </a> <br/> <span><a href="https://i.redd.it/4f3mxpqhkmwg1.png">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1ss3w89/leetrs_a_tui_application_to_search_pick_and/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1ss214t/did_you_know_its_possible_to_determine_if_a_type/" target="_blank">Did you know it's possible to determine if a type is impossible to construct?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><h1><strong>Edit</strong>: <em>I discovered all too late that this method doesn&#39;t work in all cases. I could have sworn that I tested the failing case already, but I guess not. Sorry about that, folks. I&#39;ll come back and post an update if I manage to get it working for all cases.</em></h1> <p>I&#39;ve been working on a low-level library that includes a bunch of compile time assertion functions that can do a wide variety of things.</p> <p>One of the functionalities of the checks module is a check that can determine whether or not a type has a niche, which is to say, you can determine if <code>Option&lt;T&gt;</code> has the same size as <code>T</code>. Simple enough. But I wanted to also have an assertion that could assert minimum number of niches. While working on the solution to that problem, I stumbled across the solution to a problem that I wasn&#39;t even looking for the solution for. I discovered a way to check if a type is impossible to construct in safe Rust.</p> <p>Here is an example of a type that is impossible to construct:</p> <p><code> pub enum ImpossibleZst {} </code></p> <p>This enum has no variants, which means that there&#39;s no way to create an instance of it. That also makes it a zero-sized type, and there&#39;s no way to apply a <code>repr</code> to these enums that will change the size, so they will always be zero-sized.</p> <p>I should probably take some time to explain niches in Rust to those that might not have heard of them. In Rust, niches are bit representations that are considered impossible to construct for a type. For example, the <code>NonNull</code> type as well as the <code>NonZero</code> types have a single niche, which makes it possible for <code>Option&lt;NonNull&lt;T&gt;&gt;</code> to have the same size and alignment as <code>NonNull&lt;T&gt;</code>.</p> <p>This is a very useful memory saving optimization that the Rust foundation has provided us with.</p> <p>Now that I&#39;ve gotten that out of the way, I&#39;ll explain the trick that makes it possible to determine if a type is impossible to construct.</p> <p>First, you&#39;ll need some helper types.</p> <p>A type that occupies 255 niches, and has one typed variant. We&#39;ll call this <code>Niche255</code>.</p> <p><code> pub enum Niche255&lt;T&gt; { T(T), Nx01, Nx02, Nx03, ..., Nxff, } </code></p> <p>I&#39;ll spare you the wall of variants. But trust me, this enum has 256 variants total.</p> <p>You can&#39;t apply <code>repr(C, packed)</code> to this enum, but we&#39;ll need a packed type or else this won&#39;t work.</p> <p>```</p> <h1>[repr(C, packed)]</h1> <p>pub struct PackedNiche255&lt;T&gt;(Niche255&lt;T&gt;); ```</p> <p>Finally, we&#39;ll need another packed type, but this one will have a &quot;header&quot; byte.</p> <p>```</p> <h1>[repr(C, packed)]</h1> <p>pub struct PackedWithByte&lt;T&gt;(u8, T); ```</p> <p>Now that we have these helper types, we can now check whether or not a type is impossible to construct:</p> <p><code> pub const fn is_impossible_to_construct&lt;T&gt;() -&gt; bool { size_of::&lt;PackedNiche255&lt;Option&lt;T&gt;&gt;&gt;() == size_of::&lt;PackedWithByte&lt;T&gt;&gt;() } </code></p> <p>And that&#39;s all there is to it.</p> <p>Now for the explanation.</p> <p><code>Option&lt;T&gt;</code> needs two discriminants, one of the <code>Some</code> variant, and one for the <code>None</code> variant. For some types, <code>Option&lt;T&gt;</code> (and other similar enums) can store the discriminant in of the <code>None</code> variant as one of the impossible bit representations of the <code>T</code> type. As I said before, this makes it possible for <code>Option&lt;T&gt;</code> to have the same size as <code>T</code> when <code>T</code> has impossible representations.</p> <p>With <code>Niche255</code>, 255 discriminant slots are occupied already. The only slot remaining is for the <code>T</code> variant. If <code>T</code> is a zst (zero-sized type), then <code>Niche255&lt;T&gt;</code> will a size of <code>1</code>.</p> <p>When you then store an <code>Option&lt;T&gt;</code> inside <code>Niche255</code>, it needs at least one discriminant for the <code>None</code> variant. If the Some variant is impossible to construct, then it does not need the discriminant for <code>Some</code>, which means that there will be 256 total occupied slots for discriminants. If the type of <code>T</code> were possible to construct, then <code>Option&lt;T&gt;</code> would need two discriminants, and as a result <code>Niche255&lt;Option&lt;T&gt;&gt;</code> would occupy 257 discriminant slots, meaning that the discriminant will occupy two bytes. If the type were impossible to construct, the discriminant would only be a single byte, since there would only be 256 slots occupied. This means that the size of <code>PackedNiche255&lt;Option&lt;T&gt;&gt;</code> is 1 byte greater than <code>T</code> if <code>T</code> is impossible to construct, but if it is possible to construct, it will be 2 bytes greater.</p> <p>I hope you enjoyed my write-up, I haven&#39;t done one of these in a while.</p> <p><strong>Edit</strong>: <a href="https://play.rust-lang.org/?version=stable&amp;mode=debug&amp;edition=2024&amp;gist=80e1c391808229de936d7b6f833e5224">Playground Link</a></p> <p>Also, I have been informed that the correct terminology is <code>inhabited</code> and <code>uninhabited</code>. Sorry for the confusion to anyone that understood the difference unlike myself.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/foofnordbaz"> /u/foofnordbaz </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1ss214t/did_you_know_its_possible_to_determine_if_a_type/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1ss214t/did_you_know_its_possible_to_determine_if_a_type/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1ss0w73/new_release_of_rustsploit_4_years_of_development/" target="_blank">new release of rustsploit 4 years of development</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>RustSploit v0.4.9 is LIVE – The Rust pentest framework just leveled up HARD!Zero unwraps. </p> <p>Post-quantum crypto. 239 modules. DoS rewritten for Gbps. New Telnet/Bluetooth/RCE exploits. Bruteforce streaming 250MB+ wordlists. SSRF &amp; command injection nuked. </p> <p>Universal targets. MCP + WebSocket full parity. 100% metadata. Security hardened to the core.Full release + one-liner install:</p> <p><a href="https://github.com/s-b-repo/rustsploit/releases/tag/v0.4.9#RustSploit">https://github.com/s-b-repo/rustsploit/releases/tag/v0.4.9#RustSploit</a> </p> <p>#RustPentest #CyberSecurity #InfoSec #PenTest #EthicalHacking #RedTeam #RustLang #PostQuantum #CVE #Hacking #CyberTools #DoS #BruteForce #PentestFramework #RustPoweredSploit #ZeroDayHunter #PenTestInRustEverything mentioned in the v0.4.9 release notes (full exhaustive list):</p> <p>Core Stats &amp; Buildv0.4.9 (latest)</p> <p>0 errors, 0 warnings</p> <p>Dependency sweep across 9 crates (tokio 1.51, rand 0.10, clap 4.6, btleplug 0.12, + more)</p> <p><a href="http://hex.rs">hex.rs</a> now fully vendored (no external hex crate)</p> <p>All 71 module banners are batch-safe</p> <p>100% credential module metadata coverage</p> <p>Dropped aws-lc-sys (317s build) → ring (~15s build)</p> <p>Minimum Rust 1.85 (edition 2024)</p> <p>Docs fully overhauled:</p> <p>11 files corrected, phantom API endpoints removed, module catalog updated to 239 entries</p> <p>Install one-liner added</p> <p>183 exploits | 27 scanners | 29 creds</p> <p>New Modules &amp; FeaturesNew Telnet IAC flood module + full parser hardening (WILL/DO storm, subnegotiation bombs, NOP interleave, combined mode;</p> <p>MAX_IAC_ROUNDS=64, MAX_DRAIN_BYTES=64KB, 4096-byte SB cap, batched responses)</p> <p>Bluetooth Fast Pair exploitation module (WPair):</p> <p>Device DB expanded 18→51 targets (Pixel Buds, Sony WH/WF, JBL, Bose QC35 II, Razer Hammerhead, B&amp;O, etc.); new ActionRequest strategy (6th KBP mode); TUI → rustyline REPL; full API + check() support</p> <p>9 new credential modules:</p> <p>MySQL, PostgreSQL, VNC, IMAP, Redis, HTTP Basic, Elasticsearch, CouchDB, Memcached (native wire protocols, Arc-shared reqwest, RFC 3501 IMAP quoting, packet limits 1MB→64KB)</p> <p>8 new scanner modules:</p> <p>ssl_scanner, redis_scanner, vnc_scanner, snmp_scanner (BER/ASN.1), waf_detector (10 signatures), subdomain_scanner (wildcard detection), nbns_scanner → scanners now 15→23</p> <p>20 new exploit modules (total 148 in this section, overall exploits 183):</p> <p>erlang_otp_ssh_rce (CVE-2025-32433, CVSS 10.0), hpe_oneview_rce (CVE-2025-37164, CVSS 10.0), sonicwall_sma_rce (CVE-2025-40602, CVSS 9.8), tomcat_put_rce (CVE-2025-24813, CVSS 9.8), citrixbleed2 (CVE-2025-5777); all with info(), check(), full API</p> <p>Universal target support: single IPs, CIDR, comma lists, file lists, random internet scan (no per-module changes)</p> <p>Unlimited subnet scanning: hard 1M-host caps removed; configurable concurrency/max random/timeout via setg; lazy /0 iteration, adaptive progress %</p> <p>Security &amp; Hardening 6 GlobalOptions findings fixed (silent failures, key/value validation, lock contention)</p> <p>Semaphore drain refactored to single syscall</p> <p>10+ error-silence sites eliminated (loot, port scanner, SSH, jobs, MCP, workspace)</p> <p>SSH/FTP/RDP combo overflow protection added</p> <p>SSH/FTP/spool fixes:</p> <p>command injection in sshpwn_session.rs (cd path) fixed with shell-escape; credential files → 0o600; FTP connection leak on FTPS fallback fixed; O_NOFOLLOW on spool; </p> <p>DNS panic in ssh_bruteforce eliminated</p> <p>SSRF hardening:</p> <p>is_blocked_ip now full RFC private space (incl. IPv6 ::1, fe80::/10, fc00::/7); URL parsing bypass fixed (url::Url::parse handles @ and percent-encoded); file:// blocked; DNS fail-closed</p> <p>Security hardening round 1:</p> <p>path traversal (spool.rs, loot.rs), CSV injection (export.rs), command injection (2 exploits), silent JSON corruption (3 storage modules), lock-held-during-I/O (workspace.rs) → 17 fixes</p> <p>Security hardening round 2: </p> <p>6 bruteforce modulo-by-zero (empty wordlists), ssh_user_enum blocking async runtime (fixed via spawn_blocking), 5 scanner bugs (IPMI integer overflow, char-as-u8 truncation)</p> <p>Zero .unwrap(): </p> <p>15 Rust panicking paths eliminated across 7 files; 0 .unwrap(), 0 TODO/FIXME, 0 panic!/unreachable!/unimplemented!, 0 #[allow(dead_code)]; regex moved to once_cell::Lazy</p> <p>DoS Overhaul &amp; PerformanceFull DoS module overhaul: </p> <p>8 raw-socket modules (SYN flood, DNS/NTP/SSDP/Memcached amp, ICMP/UDP flood) rewritten with shared socket pools, pre-flight tests, proper error handling; 128KB thread stacks (64x less memory); null_syn_exhaustion now uses sendmmsg (32 packets/syscall)</p> <p>DoS performance: </p> <p>SYN flood (4MB buffer, 1400B MTU payloads, 32-packet batches, Gbps stats); TCP flood (concurrency 500→2000, RST teardown, multi-port RR); HTTP/2 Rapid Reset matches CVE-2023-44487 (50 HEADERS + RST burst)</p> <p>Bruteforce EngineBruteforce engine refactor: </p> <p>creds/utils.rs → src/utils/bruteforce.rs (~203 files updated); wordlists &gt;250MB now stream 500K-line batches (no OOM); 10 duplicate EXCLUDED_RANGES removed; global lockout pause + backoff; FTP/Redis/HTTP false-positive fixes</p> <p>15 critical/high bruteforce fixes: </p> <p>CPU busy-spin drain loop, IPv6 /64 OOM (capped 1M hosts), Telnet IAC chunk corruption, concurrent file writes (mpsc single writer), MQTT CONNACK cap, L2TP avp_len==0 loop, channel deadlock</p> <p>Major Telnet bruteforce overhaul: </p> <p>verify_shell (&quot;echo RS_VERIFIED&quot;), new AuthSignal enum (Success/Failure/Reprompt/Lockout/Ambiguous), lockout detection (30s pause + cooperative wait), 15-device fingerprinting + cred prioritization, 55 default creds, multi-port, streaming wordlists</p> <p>Scanning &amp; AuditingScanner audit fixes: </p> <p>/0 CIDR OOM (ping_sweep), unbounded HTTP body → 256KB streaming, Port 0 validation, wildcard DNS (3 random subdomains), TOCTOU file perms (cred_store/loot/global_options/pq_channel), saturating_mul capacity calcs</p> <p>181-module audit: </p> <p>all std::thread::sleep → tokio in SSH modules; 39 empty CVE refs populated; new require_root() for 9 raw-socket modules; 47 sites to unified build_http_client_with(); ~14 TcpStream::connect wrapped in tcp_connect_addr(); <a href="http://build.rs">build.rs</a> regex caching</p> <p>Networking &amp; APINetworking fixes: </p> <p>6 unwraps removed; udp_bind IPv6-aware; RDP BER lengths &gt;65535 (3/4-byte); 10 TcpStream::connect with timeout; SSH banner buffer 1024B; TCP_NODELAY on SMTP/POP3</p> <p>MCP server + WebSocket API parity: </p> <p>full MCP with stdout isolation/1MiB line cap/SSRF/binary-safe; WebSocket gains 15 commands (info/check/setg/creds/hosts/workspace/loot/export/jobs) → 27 endpoints total with shell parity; background jobs get per-run config</p> <p>Concurrent API (breaking): </p> <p>gag → task-local OutputBuffer; 4683 println! → mprintln!; std → tokio RwLock; semaphore 1 → num_cpus; structured Finding/Severity types</p> <p>Async prompt system: </p> <p>132+ modules no longer block tokio on stdin; 7 prompt + 8 cfg_prompt_* → async via spawn_blocking; mass scan no longer stalls</p> <p>Output &amp; BatchClean batch/mass-scan output: </p> <p>163 banner functions skip in batch; prompt cache (concurrent tasks share one answer); mprintln_block! macro; per-task timeout from setg; BatchGuard race fixed with AtomicUsize</p> <p>100% module metadata: </p> <p>all 152 modules now have info(); 13 cred modules persist to ~/.rustsploit/creds.json (0o600 locked); 5 modules API compatibility fixed; MQTT real TLS; SSH Spray stop-on-success; POP3 exponential backoff</p> <p>Post-Quantum &amp; Breaking ChangesPost-quantum encryption (breaking): </p> <p>TLS + Bearer tokens removed; replaced with ML-KEM-768 + X25519 hybrid (SSH-style identity keys, mutual auth, Double Ratchet ChaCha20-Poly1305 forward secrecy, 3 combined shared secrets); auto host key on first run; no TLS, no API keys, no #[allow] in PQ code</p> <p>Framework Intro RustSploit core: </p> <p>persistent global options, credential store, workspace/host tracking, loot management, JSON/CSV export, background jobs, spool logging, resource scripts, compile-time auto-discover modules, Shell + REST API from day one</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Cold_Leg_392"> /u/Cold_Leg_392 </a> <br/> <span><a href="https://github.com/s-b-repo/rustsploit/releases/tag/v0.4.9">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1ss0w73/new_release_of_rustsploit_4_years_of_development/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1srynck/wrkflw_v080_run_github_actions_locally_now_with_a/" target="_blank">wrkflw v0.8.0 — run GitHub Actions locally, now with a real `${{ ... }}` evaluator</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hello everyone,</p> <p>Today I&#39;m releasing <strong>v0.8.0</strong> of wrkflw with a bunch of features I&#39;ve been working on for a while.</p> <p>wrkflw is a CLI that validates and runs GitHub Actions workflows locally, so you can iterate on CI without pushing a dozen &quot;fix ci&quot; commits to see if something works. It runs jobs in Docker, Podman, or directly on your machine via runtime emulation. There&#39;s a TUI for picking workflows and watching live logs, a validator that catches schema issues and bad expressions before you push, and it also works on GitLab CI files.</p> <p>These are the new features:</p> <ul> <li>Real <code>${{ ... }}</code> expression evaluator</li> </ul> <p>GitHub Actions expressions are now evaluated the same way GitHub evaluates them. That means <code>matrix.os</code>, <code>secrets.TOKEN</code>, <code>needs.build.outputs.version</code>, <a href="http://steps.foo.outputs.bar"><code>steps.foo.outputs.bar</code></a>, workflow-level <code>env</code>, and nested <code>toJSON(needs)</code> all work as you&#39;d expect — returning proper nested objects instead of stringified blobs. If you&#39;ve ever had a local runner silently pass a broken expression and execute a step it shouldn&#39;t have, this is the thing that fixes it.</p> <ul> <li>Composite action support</li> </ul> <p>Composite actions now work end-to-end, step outputs propagate back to the caller, env expressions resolve inside composite steps, and required inputs are cross-checked against the call site during validation. This was the biggest gap between &quot;runs my workflow&quot; and &quot;actually emulates GitHub Actions.&quot;</p> <ul> <li>Watch mode and diff-aware execution</li> </ul> <p>New <code>wrkflw watch</code> subcommand that watches your repo and auto-reruns only the workflows whose <code>paths:</code> filter matches the changed files.</p> <p><code>wrkflw run</code> also gained <code>--event</code>, <code>--diff</code>, <code>--changed-files</code>, and <code>--base-branch</code> for simulating specific trigger contexts locally, including pull requests against a target branch. Strict-filter mode is on by default and refuses to run with <code>--event</code> but no change set, because that used to silently skip every <code>paths:</code>-gated workflow and the failure mode was invisible.</p> <ul> <li>Artifacts, cache, inter-job outputs</li> </ul> <p>Under <code>--runtime emulation</code>, wrkflw now handles <code>upload-artifact</code> / <code>download-artifact,</code> the GitHub cache protocol, and inter-job outputs between dependent jobs. These were the pieces that used to make emulation feel like &quot;jobs run in isolation and nothing is shared&quot; — they now share things correctly.</p> <ul> <li>TUI rewrite</li> </ul> <p>The TUI got a full redesign on top of <a href="https://github.com/ratatui/ratatui">ratatui</a>. New design system, properly laid out screens, job selection mode so you can pick individual jobs to run from the list, a tweaks overlay for toggles, and cleaner keybinding discoverability. It&#39;s also behind a cargo feature flag now, so you can install the plain CLI if you don&#39;t want the TUI.</p> <p>Other improvements:</p> <ul> <li>Shell now matches GitHub&#39;s invocation: <code>bash --noprofile --norc -e -o pipefail</code>, so failures no longer get silently skipped</li> <li>Artifact actions fixed under <code>--runtime emulation</code></li> <li><code>--job</code> flag to run a specific job, <code>--jobs</code> to list them</li> <li>Encrypted secret store moved to a per-secret random nonce (nonce reuse under AES-GCM was a real problem)</li> <li>Validator rejects non-mapping <code>env:</code> values</li> </ul> <p>Breaking changes</p> <p>A few worth checking before you upgrade, mostly around the strict-filter default, the new shell semantics, and the secret store format change. All documented with migration steps in <a href="https://github.com/bahdotsh/wrkflw/blob/main/BREAKING_CHANGES.md">BREAKING_CHANGES.md</a>.</p> <p>Installation:</p> <pre><code>cargo install wrkflw </code></pre> <p>Runs via Docker, Podman, or <code>--runtime emulation</code> for a native process path.</p> <p>Would love to hear your feedback, especially edge cases where a workflow behaves differently under wrkflw than on actual GitHub Actions. Those are the bugs I want to hunt.</p> <p><strong>Demo:</strong> <a href="https://github.com/bahdotsh/wrkflw/blob/main/demo.gif">https://github.com/bahdotsh/wrkflw/blob/main/demo.gif</a></p> <p><strong>Project:</strong> <a href="https://github.com/bahdotsh/wrkflw">https://github.com/bahdotsh/wrkflw</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/New-Blacksmith8524"> /u/New-Blacksmith8524 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1srynck/wrkflw_v080_run_github_actions_locally_now_with_a/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1srynck/wrkflw_v080_run_github_actions_locally_now_with_a/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1srycfq/truce_crossplatform_audio_plugin_framework_for/" target="_blank">Truce - Cross-platform Audio Plugin Framework for Rust</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hey y’all, Truce <a href="https://github.com/truce-audio/truce">https://github.com/truce-audio/truce</a> is an audio plugin framework for Rust that can compile to any plugin format from a single codebase. JUCE exists, but I never liked how JUCE is owned by iLok, and JUCE just felt very 2005. It’s also incredibly bloated after 20 years. With truce, you can get your own plugin up and running in a matter of minutes, with nothing you don’t need (do you really need that JavaScript interpreter in your audio plugin?)</p> <p>If there are any other fellow audio/music heads out there, I’d love to get some feedback!</p> <p>Here’s a free analyzer plugin I built with truce, aimed at debugging/reverse engineering plugins: <a href="https://github.com/truce-audio/truce-analyzer">https://github.com/truce-audio/truce-analyzer</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Expensive-Click-123"> /u/Expensive-Click-123 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1srycfq/truce_crossplatform_audio_plugin_framework_for/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1srycfq/truce_crossplatform_audio_plugin_framework_for/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1srvke9/announcing_oxanus_v1_redisbacked_job_processing/" target="_blank">Announcing Oxanus v1 - Redis-backed job processing library</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi <a href="/r/rust">r/rust</a>,</p> <p>I wanted to share <a href="https://github.com/pragmaplatform/oxanus">Oxanus</a>, a Redis-backed job processing library for Rust that we&#39;ve been working on for almost a year now.</p> <p>It has been powering the background job infrastructure behind Player.gg and Firstlook.gg, serving hundreds of studios and millions of players.</p> <p>The project is opinionated in a pretty simple way - it focuses on one backend and tries to do that well instead of abstracting over multiple backends.</p> <p>Some of the things it supports today:</p> <ul> <li>Isolated queues with independent concurrency/config</li> <li>Retries with configurable backoff</li> <li>Scheduled jobs and cron jobs</li> <li>Dynamic queues</li> <li>Throttling</li> <li>Unique jobs</li> <li>Resumable jobs</li> <li>Graceful shutdown</li> <li>Prometheus metrics</li> <li>A built-in web dashboard (pure Rust, no JS toolchain)</li> </ul> <p>Repository: <a href="https://github.com/pragmaplatform/oxanus">https://github.com/pragmaplatform/oxanus</a></p> <p>Any feedback is appreciated!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/reneklacan"> /u/reneklacan </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1srvke9/announcing_oxanus_v1_redisbacked_job_processing/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1srvke9/announcing_oxanus_v1_redisbacked_job_processing/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1srv9hp/wrote_a_cli_tool_in_rust_that_indexes_youtube/" target="_blank">wrote a cli tool in rust that indexes youtube transcripts and lets you grep across them. it's absurdly fast</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>i&#39;ve been looking for a project to actually learn rust beyond the book examples and tutorials. wanted something practical that i&#39;d use daily. ended up building a cli tool that pulls youtube video transcripts, stores them locally, and lets you full-text search across all of them.</p> <p>the use case is simple. i watch a lot of technical talks and interviews on youtube and i can never find things again. youtube search only matches titles. i wanted grep but for things people said in videos.</p> <p>for pulling transcripts i use transcript api. setup was:</p> <pre><code>npx skills add ZeroPointRepo/youtube-skills --skill youtube-full </code></pre> <p>the cli takes a youtube url, pulls the transcript, and writes it to a local sqlite database using rusqlite. i use sqlite&#39;s fts5 extension for the search index. the workflow is basically:</p> <p><code>yt-grep add</code> <a href="https://youtube.com/watch?v=whatever"><code>https://youtube.com/watch?v=whatever</code></a> <code>yt-grep search &quot;borrow checker&quot;</code></p> <p>and it returns matching snippets with the video title, timestamp, and surrounding context. like grep output but for youtube.</p> <p>the performance is what made me fall in love with rust for this. searching across 900 transcripts takes 2ms. not seconds. milliseconds. the binary is 4mb. it starts instantly. no runtime, no jvm warmup. just a binary that does one thing fast.</p> <p>i also added a <code>yt-grep related</code> command that uses tf-idf to find transcripts that are similar to a given one. wanted to play with the tantivy crate but realized for my scale sqlite fts5 with a bit of custom ranking was more than enough. tantivy would be cool for 100k+ documents but at 900 it&#39;s overkill.</p> <p>the whole project is about 1500 lines of rust. the borrow checker only made me want to quit twice which i&#39;m counting as a win. clap for arg parsing, reqwest for http calls. rusqlite handles all the storage. compiles in about 8 seconds on my m2.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/scheemunai_"> /u/scheemunai_ </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1srv9hp/wrote_a_cli_tool_in_rust_that_indexes_youtube/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1srv9hp/wrote_a_cli_tool_in_rust_that_indexes_youtube/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1sruyw5/the_world_of_legacy_software_and_rust/" target="_blank">The world of legacy software and Rust</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>First, let me clarify: I&#39;m not a programmer, engineer, or anything like that. I&#39;m just starting to learn, so this discussion is more about my ignorance, and I&#39;d like to hear the opinions of actual programmers and engineers.</p> <p>Another clarification: I&#39;m Spanish, so please excuse me if I make any mistakes in English while writing this.</p> <p>Does the software world depend on a single thread? Legacy software written before best practices were defined? Software with languages ​​that didn&#39;t even support other languages? (e.g., the letter ñ in Spanish?) Insecure and unstable languages ​​due to memory errors (I know these are also programmer mistakes).</p> <p>I&#39;ve been thinking that if everything were built from scratch, in languages ​​like Rust, or perhaps Rust isn&#39;t even necessary (though still better), but rather modern versions of each language and best practices, could it be a better world?</p> <p>Is this true, or am I wrong?</p> <p>I&#39;ve heard of some technologies that weren&#39;t even made with this in mind; they were simply made for another purpose, but due to popularity and massive growth, they got out of the creators&#39; hands (like Javascript).</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/AgustinEditev"> /u/AgustinEditev </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1sruyw5/the_world_of_legacy_software_and_rust/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1sruyw5/the_world_of_legacy_software_and_rust/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1srssjf/ibhook_windows_binary_and_system_hooking_library/" target="_blank">ib-hook: Windows binary and system hooking library</a>
-            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/Chaoses_Ib"> /u/Chaoses_Ib </a> <br/> <span><a href="https://github.com/Chaoses-Ib/ib-hook">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1srssjf/ibhook_windows_binary_and_system_hooking_library/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1srp59j/celerity_011_pure_rust_zmtp_31_with_a_sansio_core/" target="_blank">Celerity 0.1.1: pure Rust ZMTP 3.1 with a sans-IO core, Tokio transport, and CURVE-RS</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi all,</p> <p>I’ve been working on <code>celerity</code>, a pure Rust implementation of ZMTP 3.1 for guys who want ZeroMQ-style messaging semantics without really depending on <code>libzmq</code>.</p> <p>The main design choice is that the protocol engine is sans-IO. <code>CelerityPeer</code> owns greeting, handshake, framing, multipart assembly, and security state, while the optional Tokio layer handles TCP and Unix domain sockets. That split kept the wire protocol testable in isolation and kept transport issues separate from protocol state.</p> <p>Current scope:</p> <ul> <li>ZMTP 3.1 greeting, handshake, framing, and multipart messages</li> <li><code>PUB/SUB</code> and <code>REQ/REP</code></li> <li>Tokio transport wrappers for TCP and Unix sockets</li> <li><code>CURVE-RS</code> for authenticated/encrypted non-local links</li> <li>a small <code>cel-cat</code> CLI for local smoke testing</li> </ul> <p>A few implementation details:</p> <ul> <li>Security is scope-aware: loopback TCP and IPC default to <code>NULL</code> for local workflows, while non-local links fail closed unless <code>CURVE</code> is configured or insecure <code>NULL</code> is explicitly enabled.</li> <li>The <code>CURVE-RS</code> path uses X25519 key agreement, HKDF-SHA256 for derivation, and ChaCha20-Poly1305 for traffic protection.</li> <li>High-water mark configuration supports either backpressure or <code>DropNewest</code> behavior.</li> <li>Handshake metadata is case-insensitive on lookup while preserving original bytes on the wire.</li> </ul> <p>The API currently has two layers:</p> <ul> <li>low-level: <code>CelerityPeer</code> as a protocol state machine</li> <li>higher-level: <code>celerity::io</code> with Tokio adapters and helpers like <code>PubSocket</code>, <code>SubSocket</code>, <code>ReqSocket</code>, and <code>RepSocket</code></li> </ul> <p>I’ve been validating it with <code>cargo test --all-features</code>; the current test matrix covers handshake edge cases, CURVE flows, IPC authorization checks, queue policy behavior, and end-to-end Tokio socket roundtrips.</p> <p>I’d be interested in feedback on:</p> <ul> <li>the sans-IO API shape</li> <li>the local vs non-local security defaults</li> <li>missing ZMTP patterns or interoperability cases worth prioritizing next</li> </ul> <p>I&#39;m open to any other suggestions</p> <p>Repo:<a href="https://github.com/ShemShadrack/celerity">https://github.com/ShemShadrack/celerity</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/DesperateBad4880"> /u/DesperateBad4880 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1srp59j/celerity_011_pure_rust_zmtp_31_with_a_sansio_core/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1srp59j/celerity_011_pure_rust_zmtp_31_with_a_sansio_core/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1srowe3/is_rust_the_best_way_to_write_inside_an_enclave/" target="_blank">Is rust the best way to write inside an enclave?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>So I&#39;m trying smth new(for me*)and I wanted to have more opinion on: is rust the most optimal way to write on TEE, been seeing a lot of discussion on rust, microsoft removing C / C++ so would appreciate an advise from someone hands on this.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/norichclub"> /u/norichclub </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1srowe3/is_rust_the_best_way_to_write_inside_an_enclave/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1srowe3/is_rust_the_best_way_to_write_inside_an_enclave/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1srkq2e/is_there_an_alternative_toml_formatter/" target="_blank">Is there an alternative TOML formatter?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>ESLint, Taplo, and Tombi are what&#39;s listed on the TOML git wiki, but: - eslint: I don&#39;t want to touch the javascript ecosystem - taplo: worked really well, but is now in maintenance mode, no 1.1.0 spec support - tombi: fixation on support <em>sorting</em> first, has shot down multiple suggestions before in the name of &quot;interfering with auto sorting&quot;. Didn&#39;t even want to allow blank lines in toml files at one point, and only very recently did the dev allow you to disable sorting <em>per schema</em>.</p> <p>As much as I don&#39;t like, tombi seems to be the only actively maintained toml formatter, is there an alternative?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/E723BCFD"> /u/E723BCFD </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1srkq2e/is_there_an_alternative_toml_formatter/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1srkq2e/is_there_an_alternative_toml_formatter/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1sri96h/my_rust_oss_project_grew_quite_a_lot_this_past/" target="_blank">My Rust oss project grew (quite) a lot this past month. Would love advice on what to do next</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I’ve been building Proxelar, a Rust CLI project, and over the last month it got a lot more attention than I expected. It also recently hit 750 stars on GitHub, which I’m really grateful for.</p> <p>I also just got it published on Homebrew, which is a big milestone for me.</p> <p>I’m not posting to promote it so much as to ask for advice from people here who’ve turned OSS projects into tools people actually use.</p> <p>Right now I’m trying to think less about “what feature should I add next?” and more about bigger questions like:</p> <ul> <li>what use cases are actually worth doubling down on</li> <li>how to avoid growing the project in the wrong direction</li> <li>what makes a CLI tool go from “interesting” to something people keep installed and actually use in production?</li> <li>how to make the project easier for contributors to join without creating a lot of overhead</li> </ul> <p>I’d also love to bring in contributors over time, but I want to do that in a way that feels genuine and sustainable.</p> <p>If you’ve been at this stage with a oss project before, I’d really appreciate any advice on what matters most next.</p> <p>GitHub: <a href="https://github.com/emanuele-em/proxelar">https://github.com/emanuele-em/proxelar</a> </p> <p>Homebrew: <a href="https://formulae.brew.sh/formula/proxelar">brew install proxelar</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/allmudi"> /u/allmudi </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1sri96h/my_rust_oss_project_grew_quite_a_lot_this_past/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1sri96h/my_rust_oss_project_grew_quite_a_lot_this_past/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1srg7wi/is_it_normal_to_progress_slowly_while_working_on/" target="_blank">Is It Normal to Progress Slowly While Working on a Rust Project?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p><strong>Hi everyone,</strong></p> <p>I took a long break from programming due to some psychiatric challenges that made it difficult to focus, but I&#39;m happy to share that I&#39;ve recently found my way back.</p> <p>I decided to return by learning something entirely new Rust. I picked up the Rust book and worked through it, though the process was slow at times. I was still in the middle of psychiatric treatment during this period, so my concentration wasn&#39;t always where I wanted it to be. Despite that, I managed to finish the book, which felt like a real milestone.</p> <p>Shortly after, I went through a difficult depressive episode lasting a week or two, but I received treatment and I&#39;m doing better now.</p> <p>For the past day or two, I&#39;ve started working on a small project where I&#39;m exploring the `clap` and `image` crates. Progress feels a little slow, but I think that&#39;s probably to be expected it&#39;s been a long time since I&#39;ve coded actively, I&#39;m approaching programming with a fresh perspective, and I&#39;m simultaneously getting familiar with two new libraries.</p> <p>Is this pace normal? I believe it is, but I&#39;d love to hear from others who&#39;ve been in a similar situation.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Jumpy-Win-2973"> /u/Jumpy-Win-2973 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1srg7wi/is_it_normal_to_progress_slowly_while_working_on/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1srg7wi/is_it_normal_to_progress_slowly_while_working_on/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1srdmxp/protovalidate_for_anthropics_buffaconnectrpc/" target="_blank">Protovalidate for Anthropic's Buffa/ConnectRPC (Protobuf)</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Sharing this for others who are looking for protovalidate support in Rust using Anthropic&#39;s Buffa/ConnectRPC ecosystem.</p> <p>For those new to CRPC and Buffa,</p> <p>Anthropic made a ConnectRPC/gRPC library for Rust which uses views instead of native types like Tonic. IMO, this is superior (which is indicated by bench) but also closer to true gRPC.</p> <p>Protovalidate is used to validate incoming requests (it can also handle arbitrary messages), so you don&#39;t have to program this yourself. It&#39;s flexible through CEL.</p> <p>[EDIT: v0.1.0 is up]</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Accomplished-Emu8030"> /u/Accomplished-Emu8030 </a> <br/> <span><a href="https://github.com/mathematic-inc/protovalidate-buffa">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1srdmxp/protovalidate_for_anthropics_buffaconnectrpc/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1srd0fk/a_dsl_for_full_stack_development/" target="_blank">A DSL for Full Stack Development</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;ve been working on a schema language for full stack development for around nine months now, built with Rust.</p> <p>I&#39;ve always thought full stack development was overly complex. A system design on a whiteboard does not cleanly translate to code. Even something simple like a web page with a persistent counter can be thousands of lines of code/config across infrastructure, backend, frontend, and database schemas.</p> <p>Tools exist to connect specific parts. OpenAPI and RPC-langs allow you to define a schema to make stubs for the backend and client. ORMs exist to allow your code to define database schemas. Infrastructure-as-Code reduces the amount of time you spend on a shitty cloud provider UI.</p> <p>Trying to set up these tools puts you in environment hell, and really still writing just as much code to connect X to Y. Additionally, the toolset changes drastically depending on what language you use.</p> <p>My language <strong>Cloesce</strong> is (as far as I can tell) the first language to replace the whole stack:</p> <ul> <li>RPC generation</li> <li>SQL ORM + Migrations Engine</li> <li>Migrations engine</li> <li>Infrastructure as Code</li> <li>Runtime type validation</li> </ul> <p>Additionally, Cloesce&#39;s ORM extends to cloud-native storage, meaning you can relate SQL tables to things like an Object Storage bucket.</p> <p>Cloesce is implemented as a four stage compiler, and has a runtime state machine mostly implemented in Web Assembly. It runs on Cloudflare Workers, and currently compiles to TypeScript, but will some day include any client-side language and the full Cloudflare supported subset of backend languages.</p> <p>I&#39;ve spent my entire senior year of college thoroughly thinking through the theory, developer experience, and implementation. That is to say, it is not vibe coded.</p> <p><a href="https://preview.redd.it/y62xzr21ygwg1.png?width=964&amp;format=png&amp;auto=webp&amp;s=0c2f2baa7d8547c8948e9313de7db36adcb32b58">A Cloesce Model which defines the database, backend, frontend, and infrastructure.</a></p> <p>I&#39;m hoping to garner some discussion. Could you ever see yourself using a tool like this? How can I improve my repo to make it more friendly to contributions?</p> <p><a href="https://github.com/bens-schreiber/cloesce">https://github.com/bens-schreiber/cloesce</a><br/> <a href="https://cloesce.pages.dev/">https://cloesce.pages.dev/</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Resident-Letter3485"> /u/Resident-Letter3485 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1srd0fk/a_dsl_for_full_stack_development/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1srd0fk/a_dsl_for_full_stack_development/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/rust/comments/1srbqgk/x509_path_validation_with_ring_awslcrs_graviola/" target="_blank">X.509 path validation with Ring, Aws-lc-rs, Graviola or Rust-crypto</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>`WTX` now has support for `X.509` certificates and you can choose the underlying crypto project that verifies signatures.</p> <p><a href="https://github.com/c410-f3r/wtx">https://github.com/c410-f3r/wtx</a></p> <p>The following image was taken from a script that runs the `x509-limbo` testsuite.</p> <p><a href="https://preview.redd.it/oq6xr9i3ngwg1.png?width=978&amp;format=png&amp;auto=webp&amp;s=af9920e7d7283e5bd5a2a90a462c1b487b7797c5">Benchmark</a></p> <p>Signature verification is just one of the several other checks that happen in chain validation but it is still possible to see the runtime weight of each backend.</p> <p>The script is in <a href="https://github.com/c410-f3r/wtx/blob/main/.scripts/x509-limbo.sh">https://github.com/c410-f3r/wtx/blob/main/.scripts/x509-limbo.sh</a> if you want to run it yourself.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/c410-f3r"> /u/c410-f3r </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1srbqgk/x509_path_validation_with_ring_awslcrs_graviola/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1srbqgk/x509_path_validation_with_ring_awslcrs_graviola/">[comments]</a></span></div>
-          </li>
-  
-        </ul>
-  
-        <h3 class="subreddit">r/gamedev</h3>
-        <ul class="item-list">
-  
-          <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1ss55qk/which_part_of_the_polishing_phase_is_the_absolute/" target="_blank">Which part of the "Polishing Phase" is the absolute biggest time-sink?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><ol> <li><p>Squashing &quot;Edge-Case&quot; Bugs</p></li> <li><p>UI/UX Refinement (Making it not look like a prototype)</p></li> <li><p>Sound Design &amp; Ambient Audio</p></li> <li><p>Marketing &amp; Getting actual eyes on the game</p></li> </ol> <p>I recently was reflecting on these questions. For me it seems that the biggest problem is the last one. Marketing always seems to be the most difficult, especially when you don’t have any budget for marketing - money or time.</p> <p>How about you, what is your biggest time-sink?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/JBitPro"> /u/JBitPro </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1ss55qk/which_part_of_the_polishing_phase_is_the_absolute/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1ss55qk/which_part_of_the_polishing_phase_is_the_absolute/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1ss3o2b/doki_doki_literature_club_removed_from_google/" target="_blank">Doki Doki Literature Club removed from Google Play because of the depiction of sensitive content</a>
-            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/gamedev/comments/1ss3o2b/doki_doki_literature_club_removed_from_google/">  </a> </td><td> <!-- SC_OFF --><div class="md"><p>Basically they banned the game from play store because they considered it too dark.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Slight_Intention_695"> /u/Slight_Intention_695 </a> <br/> <span><a href="https://www.gamedeveloper.com/business/doki-doki-literature-club-removed-from-google-play-over-depiction-of-sensitive-themes">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1ss3o2b/doki_doki_literature_club_removed_from_google/">[comments]</a></span> </td></tr></table></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1ss0y5g/hiring_a_composer_whats_it_like_whats_the_rate/" target="_blank">Hiring a composer: what's it like, what's the rate, and when to do it?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;m currently in the ideation stage of making a 6-10hr game, and I already know I want to incorporate music that will resonate with the emotional tones of the game&#39;s narrative and action (with one song even being incorporated as part of the gameplay). I don&#39;t have much skill in terms of composing, and think I would prefer going the route of hiring a composer instead of taking additional time learning those skills or relying on free assets.</p> <p>That being said, I&#39;ve no idea what the ballpark would be in terms of a fair cost for a custom soundtrack, what working with a composer is like, nor do I know if there&#39;s a recommended stage in the production pipeline to start creating compositions.</p> <p>I know I&#39;m far from being at that point, but was curious if anyone had any insights or experience into this particular area?</p> <p>EDIT: Not currently looking for offers. Please do not reach to me offering services.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/semageon"> /u/semageon </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1ss0y5g/hiring_a_composer_whats_it_like_whats_the_rate/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1ss0y5g/hiring_a_composer_whats_it_like_whats_the_rate/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1ss0tcq/is_it_safe_to_allow_your_games_save_data_to_be/" target="_blank">Is it "safe" to allow your game's save data to be exported and imported?</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>For my game, I added the ability to export and import the save data that you can copy paste as a text string. <a href="https://i.imgur.com/POJmgf5.png">https://i.imgur.com/POJmgf5.png</a></p> <p>I&#39;ve added some basic security features like obfuscation and a checksum so players can&#39;t just easily edit it, but now I&#39;m second guessing if an export/import feature is even the right thing to add.</p> <p>I&#39;m planning to release the game on both web and Steam and the idea is that players who tried out the web demo can export their save and keep playing from there on the Steam version. This is a singleplayer game, <em>maybe</em> with some leaderboards, so I guess it&#39;s fine even if players &quot;cheat&quot; by copying the export data of other players.</p> <p>But I&#39;m also wondering if there are any other pitfalls I&#39;m missing? Can this feature somehow blow up in my face down the line?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/adayofjoy"> /u/adayofjoy </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1ss0tcq/is_it_safe_to_allow_your_games_save_data_to_be/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1ss0tcq/is_it_safe_to_allow_your_games_save_data_to_be/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1ss03fx/japanese_indie_adult_game_developer_says_local/" target="_blank">Japanese indie adult game developer says local bank blocked their overseas revenue transfers despite legal compliance and the creator it's also going through a cancer treatment.</a>
-            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/gamedev/comments/1ss03fx/japanese_indie_adult_game_developer_says_local/">  </a> </td><td> <!-- SC_OFF --><div class="md"><p>They don&#39;t wanna be associated with a 18+ game because they don&#39;t wanna tarnish their brand, so what they&#39;re saying hentai it&#39;s bad but PRETTY MUCH FUCKING UP THE WORK AND INCOME OF SEMEONE WHO&#39;S ALSO GOING THROUGH CANCER it&#39;s ok?.This is vile.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Slight_Intention_695"> /u/Slight_Intention_695 </a> <br/> <span><a href="https://automaton-media.com/en/news/japanese-indie-adult-game-developer-says-local-bank-blocked-their-overseas-revenue-transfers-despite-legal-compliance-citing-undisclosed-risks/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1ss03fx/japanese_indie_adult_game_developer_says_local/">[comments]</a></span> </td></tr></table></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1srx5ey/gamedev_job_market/" target="_blank">GameDev Job Market</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hey there, </p> <p>Does anyone have any reliable sources that provide detailed information on the current state of the market?</p> <p>Or something about how to optimize your professional profile to be more competitive?</p> <p>I am actually looking for a job as a 2d or concept artist and also with a decent experience (3 years in AAA production and 5 years in general) after months of searching I still can&#39;t get an interview, so maybe is the moment for me to understand deeply what&#39;s going on and how to navigate the problem and improve my profile.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/SimonaArt"> /u/SimonaArt </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1srx5ey/gamedev_job_market/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1srx5ey/gamedev_job_market/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1srujpc/behaviour_interactive_lay_offs/" target="_blank">Behaviour Interactive lay offs</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Just a heads up, Behaviour Interactive in Montreal (Creators of Dead by Daylight) just laid off about 30 people. I know folks at the company directly. No direct evidence yet but a union organization group approached the building and handed out flyers a few weeks ago, and from the list of folks that were laid off it appears the majority of them were pro-union, as well as anti-generative AI.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Commando_Joe"> /u/Commando_Joe </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1srujpc/behaviour_interactive_lay_offs/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1srujpc/behaviour_interactive_lay_offs/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1srs27e/mindseye_studio_employees_sue_management_over/" target="_blank">MindsEye Studio Employees Sue Management Over Installing Secret Monitoring Software on Staff Devices</a>
-            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/gamedev/comments/1srs27e/mindseye_studio_employees_sue_management_over/">  </a> </td><td> <!-- SC_OFF --><div class="md"><p>A group of unionized employees at Build a Rocket Boy (BARB), the studio behind the action game MindsEye, have initiated legal proceedings against the company. The workers allege that management installed “invasive” surveillance software on their devices without proper consent, violating UK data protection laws.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Extreme_Maize_2727"> /u/Extreme_Maize_2727 </a> <br/> <span><a href="https://www.techtroduce.com/unionized-employees-build-a-rocket-boy-legal-action/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1srs27e/mindseye_studio_employees_sue_management_over/">[comments]</a></span> </td></tr></table></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1srr9pu/the_prelaunch_timeline_i_would_actually_follow_if/" target="_blank">The pre-launch timeline I would actually follow if I were launching on Steam today</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>There&#39;s a lot of advice about when to announce your game, when to launch your Steam page, and when to start marketing. Most of it is too vague to be useful. Here is the specific framework I think makes the most sense based on how the platform works.</p> <p><strong>The core insight:</strong></p> <p>Steam rewards wishlist momentum, not just wishlist totals. A game with 2,000 wishlists accumulated over 3 months of consistent activity will often outperform a game with 3,000 wishlists accumulated in one week, because the former shows Steam that the audience is genuinely interested.</p> <p><strong>The timeline I would use:</strong></p> <ul> <li><p>6 months before launch: Open the Steam page in Coming Soon state. Do not announce it widely yet. Run paid ads to a very small audience ($5 to $10 per day) to seed initial wishlists and let Steam index the page. This matters because Steam uses early engagement data to calibrate what the algorithm shows you.</p></li> <li><p>5 months before launch: Start your community presence. Reddit posts sharing development content. Short-form clips on TikTok and Reels showing development progress or interesting mechanics. The goal here is not viral reach. It is consistent presence so you have an engaged audience when you actually need them.</p></li> <li><p>3 months before launch: Full marketing push begins. Prioritize Steam Next Fest if your timing aligns. Having a playable demo on Steam Next Fest can generate more wishlists in one week than 3 months of regular marketing.</p></li> <li><p>6 weeks before launch: Contact streamers. Not huge streamers. Streamers with 500 to 10,000 followers in your specific genre. Smaller streamers have audiences that actually watch and actually buy. Reach out 6 weeks out because streamers plan their content in advance.</p></li> <li><p>2 weeks before launch: Your trailer goes everywhere. This is not the time to introduce your game to new audiences. This is the time to remind the audience you have already built that the launch is coming.</p></li> <li><p>Launch day: Do not leave the computer. Respond to every comment, review, and question within hours. The first 72 hours of reviews and wishlist conversions determine Steam&#39;s early algorithmic treatment of your game. This window matters more than any single marketing activity.</p></li> <li><p>1 week after launch: Most developers go quiet here. This is a mistake. Post a &quot;one week update&quot; everywhere. Share the numbers if they are positive. Share what you learned if they are not. This keeps the momentum going and generates additional coverage.</p></li> </ul> <p>That&#39;s pretty much it. What would you add or change to this timeline based on your experiences?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/TheEntityEffect"> /u/TheEntityEffect </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1srr9pu/the_prelaunch_timeline_i_would_actually_follow_if/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1srr9pu/the_prelaunch_timeline_i_would_actually_follow_if/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1srq6fk/what_ive_been_learning_about_the_quieter_side_of/" target="_blank">What I've been learning about the quieter side of key distribution - who actually delivers coverage vs who flips keys</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Spent the last few months watching what actually happens AFTER an indie dev sends out Steam keys - which turn into coverage, which get resold, which sit forever, which get claimed by what&#39;s basically a bot farm. Patterns are more consistent than you&#39;d think. Sharing in case someone&#39;s about to ship their first big key campaign.</p> <p>What the &quot;legit coverage&quot; pile has in common:</p> <ol> <li><p>They redeem within 48 hours. A key that sits unredeemed past a week stays that way about 90% of the time. A fresh-keen creator is the one who&#39;ll actually play and post. Chasing the slow redeemers is almost always wasted effort.</p></li> <li><p>They&#39;re verifiable across the platforms they claim. YouTube channel ID matches the claimed subs. Twitch channel streamed in the last 30 days. TikTok engagement ratios look human. If the math is off even a little, you&#39;re subsidizing a reseller.</p></li> <li><p>When content drops, it ties clearly to YOUR game. Title mentions it, Steam link in description, tags accurate. That&#39;s the signal they&#39;re treating it as coverage, not filler for their upload schedule.</p></li> <li><p>Their audience looks like yours. Open 3 of their recent videos - are the comments from real players in your genre, or is it &quot;first&quot;, emoji spam, and two-word praise? Audience being real matters more than audience being big.</p></li> </ol> <p>What the &quot;never should have sent that key&quot; pile has in common:</p> <ol> <li><p>The &quot;500k combined reach&quot; pitch where 490k is an inactive TikTok and 10k is a YouTube with 200-view videos. Platforms aren&#39;t interchangeable. Multi-platform reach where one dead platform carries the whole number is a flag.</p></li> <li><p>Email handles that match no public persona. Real creators are findable - a YouTube/Twitch handle tied to a mailable inbox. An untraceable Gmail that matches nothing is the key heading to the grey market.</p></li> <li><p>Multiple &quot;creators&quot; redeeming from the same IP or device. If you have any tracking at all, repeat-device redemption across different claimed identities is the cleanest scam signal you&#39;ll find.</p></li> <li><p>Ultra-generic praise with zero specifics. &quot;Loved it, great game!&quot; - no level, no mechanic, no character, not even a bug mentioned. They redeemed and bounced. A player who actually played will mention something weird or specific, even if their take is lukewarm.</p></li> <li><p>Asking for a second or third key &quot;for my team&quot; before posting a single piece of content. Unless you&#39;ve already seen real coverage from this creator, every extra key is a resale waiting to happen.</p></li> </ol> <p>Obvious caveats: legit creators sometimes redeem slowly, sometimes email from a generic inbox, sometimes post vague praise. Single signals aren&#39;t evidence - stacks of them are. And 2026 grey market is weirder than it was two years ago; the resellers are getting better at looking legit.</p> <p>What signals have you found most reliable for filtering real reach from the grift?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/GlobalPlayers"> /u/GlobalPlayers </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1srq6fk/what_ive_been_learning_about_the_quieter_side_of/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1srq6fk/what_ive_been_learning_about_the_quieter_side_of/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1srlxjj/my_first_game_was_a_financial_disaster_what_i/" target="_blank">My first game was a financial disaster. What I learned and why I'd do it again!</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><blockquote> <p>TLDR: I spent 2 years making my dream game. It sold 7 copies on launch day.</p> </blockquote> <p>A little over two years ago, I decided to finally build my dream game: Paddlenoid. At that time, I wasn&#39;t into the indie gaming scene at all. I just needed a break from my regular work. Also, I thought that if you make a good, fun game, there must be some money in it, right?</p> <h1>Funding</h1> <p>I run a small software company that builds enterprise software. Our software isn&#39;t subscription-based, so I need to sell new licenses to generate income. I decided to spend a little less time on that company to work on the game, trading some income for freedom.</p> <h1>Getting started</h1> <p>Honestly, I had no plan at all, only a vague idea of what I wanted to make. I went and sat down at a local co-working space because I thought that some external &#39;entropy&#39; might help the process.</p> <p>I wasn&#39;t going to use an existing game engine. Why? Well, I don&#39;t think it&#39;s as much fun as rolling your own.</p> <h1>Game design</h1> <p>I have this really old memory of playing a game that mixed Pong with Arkanoid. It must have been on the C64, but I can&#39;t remember the name. I was fascinated by this idea. Also, I really liked the idea of making a coop first game (a paddle on each side). My GF and I love coop games and there aren&#39;t nearly enough quality ones!</p> <p>Before long, I had something resembling a game: two paddles and some blocks. Only it was really ugly. This is where I met my artist. She was a designer working at the same co-working space, and we decided to make the game together. She would be the art director, on a contract basis, of course.</p> <p>Before long, she had created some really cool pieces that impressed me, and I knew we were on the right path.</p> <h1>Honeymoon over</h1> <p>Well... as you may know, building a game takes a long time. And if you&#39;re both inexperienced, you&#39;re going to have to do a lot of work and rework.</p> <p>My artist and I quickly realized that I wouldn&#39;t be able to afford her on this project. But since we&#39;re both very bad at giving up, we worked out a deal where we&#39;d trade &quot;hour for hour.&quot; This isn&#39;t something I would generally recommend, but it worked well for us. I helped her build out her company website, and she helped me design Paddlenoid.</p> <h1>Sound design</h1> <p>I&#39;ve held a guitar before. Why wouldn&#39;t I be able to do my own SFX and music?</p> <p>This was an adventure all on its own, which is why I already made a Reddit <a href="https://www.reddit.com/r/gamedev/comments/1qofaq9/how_i_composed_my_own_game_music_as_an_indie_no/">post</a> about it :) But what&#39;s not in that post is the constant self-doubt and anxiety that came with it.</p> <p>I was constantly putting off working on sound effects. It&#39;s remarkably hard to imagine what a &quot;sticky paddle&quot; sounds like, or what material your ball should be made of.</p> <p>It took so much time to try different things: speeding up, slowing down, layering, tweaking volume. In the end, I built an entire &quot;poor man&#39;s FMOD&quot; to test sounds more quickly.</p> <p>Making music was a challenge too. I probably made well over an hour of music before settling on the 7 minutes that made it into the game.</p> <h1>Game story</h1> <p>The artist asked about the setting of the game...</p> <p>That was all the prompt I needed... I&#39;ve had this sci-fi idea for a long time, and I thought it was simple enough. But when I tried to explain it, I realized it was a bit abstract and lacked some definition.</p> <p>It became a personal challenge to tell it properly, without being obnoxious. That became my white whale...</p> <p>The story has two endings. It&#39;s very layered and I wanted to tell it as succinctly as possible in all skippable cutscenes. Also, you&#39;d still need to be able to enjoy the game even if you skip everything.</p> <p>All in all, I spent way too much time trying to tell that story. I&#39;m happy with how it turned out, but my next game will definitely not have a story told like that.</p> <h1>The pivot</h1> <p>Building this game had many twists and turns, mainly because I hadn&#39;t thought deeply enough about what the game should be.</p> <ul> <li>Tilting paddles For a long time, you could tilt the paddles. I thought that would be a fun mechanic but, unfortunately, most playtesters disagreed. It felt clumsy and introduced physics issues. I scrapped it in favor of the classic Arkanoid style mechanic, where the bounce angle depends on where the ball hits the paddle.</li> <li>Tilting galaxy, respawning blocks and a very generous time limit All of these solve the same problem: levels becoming boring once most blocks are gone. Respawning blocks kept things interesting, but also allowed score farming. So I added a time limit, but made it generous, since I don&#39;t like time pressure as a mechanic.The final breakthrough was tilting the level. Both players can tilt, and if they tilt in the same direction, you dip deeper. The ball speed stays the same, but the lateral curve changes, adding a new feel.Most levels were already done at this point, but since tilting added depth, we redesigned them to be at least three layers deep.</li> <li>Scrolling backgrounds Originally, levels scrolled horizontally through repeating landscapes to emphasize traveling through the world. We spent a lot of time building these before scrapping them completely, they were just too distracting.</li> <li>Multi staged levels When does Arkanoid become pinball? We first tried to have larger levels, that made levels more interesting, but it never really felt right for this type of game.In the end, we settled on teleporters. Where if you enter, you&#39;re transported to a different sublevel. That makes the game a lot more interesting as levels can now have hidden parts and sublevels.</li> </ul> <h1>Buildup and release (Ad debacle)</h1> <p>Originally, we planned to release on mobile first, then Steam. Since I already had a Windows build, a Steam release seemed easy.</p> <p>But as I learned more about indie dev and marketing, I noticed a strong bias toward Steam. Releasing there first started to make more sense.</p> <p>Around November 2025, the game was nearly finished, and we could have soft-launched on Android. But by then, I was deep into &quot;how to market your game&quot; content and became convinced we should aim for a big Steam launch. Surely I could hit 7K wishlists, right?</p> <p>I&#39;d already started building up X, Bluesky, and Instagram accounts, but growth was slow. Still, it felt like going viral was possible with Steam Next Fest and a well-targeted paid ad campaign.</p> <p>The plan: join Next Fest in October, build momentum with ads, and release with a discount shortly after, no matter if we had 5,000 or 12,000 wishlists.</p> <p>Entering Next Fest is easy. Paid ads... not so much. I wrote another Reddit post about <a href="https://www.reddit.com/r/gamedev/comments/1pkru90/we_tried_paid_ads_on_reddit_for_our_indie_game/">that.</a>.</p> <p>Suffice it to say: there are no shortcuts. Building an audience from scratch takes a lot of time. And the math on ads is brutal: If your game doesn&#39;t have broad appeal or generate high revenue per player, paid ads just don&#39;t seem to make sense.</p> <p>Launching with a discount failed. Unfortunately, a discount is something you need to plan at least 72 hours in advance... When it came time to launch, it was too late to setup a discount.</p> <h1>Numbers</h1> <p>Which brings us to the numbers:</p> <p>At launch, we had 240 wishlists. On release day, we sold a whopping 7 copies.</p> <h1>Lessons</h1> <ul> <li>Marketing should start well before your first line of code</li> <li>If you&#39;re surprised by your game&#39;s reception or conversion rate, you didn&#39;t test enough</li> <li>Paid ads don&#39;t work for ~$10 indie games. The cost per customer is just too high</li> <li>Making your own game engine is a <em>lot</em> of work. Be sure you really like programming</li> <li>Big &quot;build-up&quot; launches don&#39;t really make sense for most indie games</li> <li>Launch your game on Steam with a discount</li> <li>Don&#39;t marry an idea. Listen to feedback and experiment</li> <li>Find your intrinsic motivation. You&#39;ll need it</li> <li>You&#39;re capable of more than you think!</li> </ul> <h1>Retrospect</h1> <p>I love Paddlenoid, and I loved making it. Financially, it set me back, a lot, mostly because I could have been working for clients or my company.</p> <p>It was an incredibly stressful period. But I liked how it got me closer to the people around me. My GF, my friends, everyone is curious about the game you&#39;re making and they all have fun ideas.</p> <p>I also discovered a creative side of myself. At first, I was okay with things looking or sounding bad because I was afraid of what people would think of my honest effort. Now, I feel a lot more confident as a creator.</p> <p>Also, I learned a lot. I discovered amazing devs making inspiring things. I&#39;m starting to understand the market and the process.</p> <p>And that&#39;s why, even though it was stressful and financially painful, I&#39;m really excited at the prospect of starting my next project!</p> <p>Paddlenoid is definitely one of the projects I&#39;m most proud of. Building it has been a personal Mount Everest.</p> <p>If you&#39;re curious, here&#39;s a link to game:<br/> <a href="https://store.steampowered.com/app/2789390/Paddlenoid/">https://store.steampowered.com/app/2789390/Paddlenoid/</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/DeadbugProjects"> /u/DeadbugProjects </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1srlxjj/my_first_game_was_a_financial_disaster_what_i/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1srlxjj/my_first_game_was_a_financial_disaster_what_i/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1srlcsw/i_spent_3_years_stuck_at_800_wishlists_heres_what/" target="_blank">I spent 3 years stuck at ~800 wishlists — here’s what finally helped me reach 5,000</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi! I’m a solo developer working on my first commercial game, an action RPG (a niche that’s quite difficult to monetize).</p> <p>Since I started working on the game, my wishlist growth was really low. In fact, until just a few months ago I was barely reaching around 800 wishlists.</p> <p>Sometimes I even doubt how I managed things, but then suddenly, in just a few months, I’ve managed to go past 5,000.</p> <p>I’d like to share what I think were my biggest mistakes, and what seem to have been the things that worked:</p> <p><strong>1. Joining showcases too early</strong></p> <p>From the beginning, people told me the game looked good, so I decided to submit it to my first showcase. I got my first 400–500 wishlists, but the truth is the game was still in very early stages, so the traction was quite low. Now I can’t go back to those showcases, and I’m sure that if I had waited, the results would have been much better.</p> <p><strong>2. Not understanding early marketing properly</strong></p> <p>This is closely related to the previous point. Early development should definitely be shared and promoted, but mainly with the goal of getting honest feedback.</p> <p>I think it’s important to understand what kind of actions make sense at that stage. Social media, devlogs, etc. are good channels, but it might not be the right moment to target your final audience yet, since the impact will be much lower than when the game is more polished, and you may lose momentum. That’s why showcases, festivals, and Next Fest (where you only get one shot) are better saved for when you truly have something you’re proud of.</p> <p><strong>3. Overusing the “solo dev” angle</strong></p> <p>The reality is that the end user doesn’t really care if your game was made by a solo developer. In my case, it even caused some issues:</p> <ul> <li>Lack of credibility: many people thought I was exaggerating or using it as a marketing tactic</li> <li>Lack of trust: others assumed that as a solo dev I wouldn’t be able to finish a game like this</li> </ul> <p>⸻</p> <p>Given all these mistakes and seeing my wishlists stagnate, I seriously considered dropping the project. But luckily, over the last few months I tried a few new things that helped things start growing again:</p> <ul> <li>Released a solid demo on Steam</li> <li>Created a proper studio brand and stopped promoting myself as a solo dev</li> <li>Joined some showcases I hadn’t participated in before, this time with a much more polished game and a proper trailer</li> <li>Started posting more consistently on social media (TikTok, Reddit &amp; X), although Reddit has clearly been the most effective when posting in subreddits aligned with the game</li> <li>Took part in Steam Next Fest just as my wishlists were growing again, which helped generate momentum inside Steam itself and increased visibility</li> </ul> <p>⸻ </p> <p>I’m sure none of these actions alone are game-changing, but together they’ve significantly improved my wishlist growth.</p> <p>I know that for many people 5,000 wishlists might not sound like much, but for me, as this is my first commercial game, it has given me a lot of hope. For the first time I can realistically see reaching the 7,500 wishlist benchmark that is often recommended for a successful Steam launch.</p> <p>I hope my experience can be useful to other developers, and if you’re just starting out like me, keep in mind:</p> <ul> <li>Don’t fire all your shots too early, rushing rarely helps</li> <li>Make sure your demo reflects exactly what your game delivers, it’s key for a successful Next Fest</li> <li>Be patient: things often take time</li> </ul> <p>I’d love to hear other experiences as well. If you feel like sharing, I’m sure we can all learn from them.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/KabbaSenpai"> /u/KabbaSenpai </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1srlcsw/i_spent_3_years_stuck_at_800_wishlists_heres_what/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1srlcsw/i_spent_3_years_stuck_at_800_wishlists_heres_what/">[comments]</a></span></div>
-          </li>
-  
-          <li>
-            <a href="https://www.reddit.com/r/gamedev/comments/1srdfnu/name_the_dumbest_thing_youve_done_recently_so_we/" target="_blank">Name the dumbest thing you’ve done recently so we can all feel less alone in the dev struggle</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Spent forever debugging why my input didn’t work on an incredibly complex system and it turned out to be a string input typo. I read it at least 5 times looking for mistakes but never ONCE caught the error. </p> <p>I want a refund on my brain. </p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/NeonFraction"> /u/NeonFraction </a> <br/> <span><a href="https://www.reddit.com/r/gamedev/comments/1srdfnu/name_the_dumbest_thing_youve_done_recently_so_we/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/gamedev/comments/1srdfnu/name_the_dumbest_thing_youve_done_recently_so_we/">[comments]</a></span></div>
-          </li>
-  
-        </ul>
   
         <h3 class="subreddit">r/golang</h3>
         <ul class="item-list">
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1srybjg/choosing_a_go_logging_library_in_2026/" target="_blank">Choosing a Go Logging Library in 2026</a>
-            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/golang/comments/1srybjg/choosing_a_go_logging_library_in_2026/">  </a> </td><td> &#32; submitted by &#32; <a href="https://www.reddit.com/user/finallyanonymous"> /u/finallyanonymous </a> <br/> <span><a href="https://www.dash0.com/guides/golang-logging-libraries#1-slog">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1srybjg/choosing_a_go_logging_library_in_2026/">[comments]</a></span> </td></tr></table></div>
+            <a href="https://www.reddit.com/r/golang/comments/1st6koe/can_someone_educate_me_on_garbage_collectors_in/" target="_blank">Can someone educate me on garbage collectors in golang?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I want to stay updated on the golang and really know the language well but i find it very difficult to read the documentation.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/RareDistribution5507"> /u/RareDistribution5507 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1st6koe/can_someone_educate_me_on_garbage_collectors_in/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1st6koe/can_someone_educate_me_on_garbage_collectors_in/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1srr5ey/tmplx_reactive_hypermedia_framework_in_go_html/" target="_blank">tmplx - Reactive hypermedia framework in Go & HTML</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi all, it&#39;s been a while since I last introduced tmplx :)</p> <p>But now we have a working site that&#39;s built on top of tmplx!</p> <p>If this is the first time you&#39;re hearing about the project:</p> <p><strong>tmplx</strong> is a framework for building full-stack web applications using only Go and HTML. Its goal is to make building web apps simple, intuitive, and fun again. It features:</p> <ul> <li>Full Go backend logic and HTML in the same file</li> <li>Reactive UIs driven by plain Go variables</li> <li>Reusable components written as regular HTML files</li> </ul> <p>Developing with tmplx feels like writing a more intuitive version of Go templates — where the UI magically becomes reactive.</p> <p>I&#39;d be grateful if you could try it out, play with the demos, or even build something on your own!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/hsuyuting1993"> /u/hsuyuting1993 </a> <br/> <span><a href="https://tmplx.org/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1srr5ey/tmplx_reactive_hypermedia_framework_in_go_html/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1ssvusm/mlsgo_pure_go_implementation_of_rfc_9420_built_to/" target="_blank">mls-go — pure Go implementation of RFC 9420, built to avoid CGo when adding DAVE support to a Discord bot</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>It started with a music bot. I was using disgo, Discord added DAVE (their E2E encryption for voice calls) and the only Go option was wrapping libdave via CGo. Cross-compilation became a nightmare so I figured I&#39;d just implement DAVE directly in Go. </p> <p>Turns out to do that you need MLS first. The RFC is 180 pages. I read it. </p> <p>At some point I stopped thinking of it as &quot;MLS for DAVE&quot; and started thinking about building a proper general-purpose implementation — something that could be useful outside of Discord too.</p> <p>That became two repos: <a href="https://github.com/thomas-vilte/mls-go">mls-go</a> for the full RFC 9420 implementation and <a href="https://github.com/thomas-vilte/dave-go">dave-go</a> for the Discord-specific layer on top. The music bot now uses dave-go directly, no CGo, no libdave, cross-compiles fine.</p> <p>mls-go is pure Go, stdlib crypto only. Passes the RFC test vectors and cross-interops against mlspp and OpenMLS. Also opened a PR to get it listed in the IETF MLS WG implementations list.</p> <p>One thing that was fun to figure out: during a commit, HPKE encryptions across the copath are all independent so they run in parallel — one goroutine per level, tree mutation stays sequential. Makes a real difference in large groups.</p> <p>Still missing CS4 (P-521, blocked on a stdlib issue). PRs welcome. </p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Pythondesurubi"> /u/Pythondesurubi </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1ssvusm/mlsgo_pure_go_implementation_of_rfc_9420_built_to/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1ssvusm/mlsgo_pure_go_implementation_of_rfc_9420_built_to/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1srqm2c/hedge_adaptive_hedged_requests_for_go_looking_for/" target="_blank">hedge: adaptive hedged requests for Go, looking for users and feedback</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Follow-up to my earlier posts on adaptive hedging. Finally cleaned up the code enough to share.</p> <p><a href="https://github.com/bhope/hedge">https://github.com/bhope/hedge</a></p> <p>Drop-in <code>http.RoundTripper</code>, also a gRPC interceptor. Default is one line:</p> <p>go</p> <pre><code>client := &amp;http.Client{Transport: hedge.New(http.DefaultTransport)} </code></pre> <p>How it works: per-host DDSketch tracks latency, ~35ns per update, 30s window. When a request goes past the current p90, it fires a backup. Winner wins and stragler gets cancelled.</p> <p>What makes this unique is the budget. Token bucket capped at 10% of RPS. Without it, when your backend goes bad, hedging doubles the load and makes everything worse (So best to stop hedging when things are on fire)</p> <p><strong>Benchmark (lognormal backend, 5% stragglers, 50k requests):</strong></p> <ul> <li>no hedging: p99 65ms</li> <li>static threshold I tuned by hand after looking at the data: p99 17.5ms</li> <li>hedge, no config: p99 17.3ms</li> </ul> <p>The static number is kinda cheating because I picked it after seeing the distribution, you probably don&#39;t have to.</p> <p>One thing I haven&#39;t done a full fledged testing in real production environments is the LLM inference. TTFT tails aren&#39;t great - queueing + cold replicas + KV cache stuff. If you run a Go proxy in front of vLLM or TGI, I&#39;d love to know if this helps.</p> <p><strong>What I am looking for:</strong></p> <ul> <li>people to try it on actual traffic. happy to help you wire it in</li> <li>anyone hitting weird behaviour, feel free to open an issue. gRPC side has had less real use than HTTP so that&#39;s wherewe may find some interesting unknowns</li> <li>thoughts on the API. Especially <code>WithEstimatedRPS</code> probably the library should figure it out?</li> <li>collaborators if any of this sounds fun</li> </ul> <p>Please feel free to ask me anything. Especially interested to know what you think about the DDSketch choice (I went back and forth with t-digest).</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/That_Perspective9440"> /u/That_Perspective9440 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1srqm2c/hedge_adaptive_hedged_requests_for_go_looking_for/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1srqm2c/hedge_adaptive_hedged_requests_for_go_looking_for/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1ssox9q/i_built_deadenv_to_stop_storing_secrets_in/" target="_blank">I built deadenv to stop storing secrets in plaintext .env files (and avoid being read by agents)</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>It&#39;s a CLI tool that stores your secrets in the OS keychain (Keychain on macOS, Credential Manager on Windows, libsecret on Linux) instead of plaintext files. Your credentials never touch the disk.</p> <p><strong>Features:</strong></p> <ul> <li>Secrets stored in OS-native encrypted storage</li> <li>Touch ID / biometrics protect access</li> <li>Team sharing via encrypted export files</li> <li>Git-backed audit log for changes</li> <li>Drop-in replacement for existing workflows</li> </ul> <p><strong>Quick usage:</strong></p> <p><code>deadenv profile new myapp --from=.env</code></p> <p><code>deadenv run myapp -- npm start</code></p> <p><code>deadenv export myapp --out=myapp # share with teammate</code></p> <p><strong>Install</strong>: </p> <pre><code>go install github.com/funinkina/deadenv@latest </code></pre> <p><strong>CLI Reference:</strong></p> <p><a href="https://github.com/funinkina/deadenv#cli-reference">https://github.com/funinkina/deadenv#cli-reference</a></p> <p><strong>Repository:</strong> <a href="https://github.com/funinkina/deadenv">https://github.com/funinkina/deadenv</a></p> <p>Would love feedback from the community!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/ashtraxk"> /u/ashtraxk </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1ssox9q/i_built_deadenv_to_stop_storing_secrets_in/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1ssox9q/i_built_deadenv_to_stop_storing_secrets_in/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1sroaa8/ember_realtime_terminal_dashboard_for_caddy/" target="_blank">Ember: Real-time terminal dashboard for Caddy, written in Go</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hey everyone,</p> <p>I got tired of choosing between raw Prometheus text and a full Grafana stack just to check on a Caddy server, so I built Ember. This is a zero-config TUI dashboard (using Bubble Tea) with live RPS, latency percentiles, status codes, certs and upstream health. Also ships JSONL, Prometheus daemon and one-shot <code>status</code> modes for cloud env.</p> <p>If you&#39;d like to see it in action, there&#39;s a GIF showcasing it in the repository.</p> <p><a href="https://github.com/alexandre-daubois/ember">https://github.com/alexandre-daubois/ember</a></p> <p>Feedback and issues very welcome!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/AlexandreDaubois"> /u/AlexandreDaubois </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1sroaa8/ember_realtime_terminal_dashboard_for_caddy/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1sroaa8/ember_realtime_terminal_dashboard_for_caddy/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1ssohj1/raftly_a_raft_consensus_implementation_in_go_that/" target="_blank">Raftly: a Raft consensus implementation in Go that reproduces AWS EBS 2011 and etcd 2018 bugs</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>For the past few days, I had been working on Raftly: (<a href="https://github.com/ani03sha/raftly">GitHub</a>), a from-scratch Raft consensus implementation in Go.</p> <p>I wanted something that did two things I wasn&#39;t able to find elsewhere when I was learning distributed systems:</p> <p><strong>1. Reproduce real incidents:</strong></p> <p>Raftly has chaos scenarios for the &quot;AWS EBS split-brain (2011)&quot;, &quot;etcd isolation-without-lease (2018)&quot;, WAL torn-write corruption, and the stale-log election restriction bug.</p> <p>Each runs on a laptop without much hassle, with Grafana dashboards.</p> <p><strong>2. Full production mechanics, more than a toy implementation:</strong></p> <p>Pre-vote, log replication, fast log backtracking, heartbeat-driven commits, WAL with torn-write detection, in-memory and gRPC transports, a replicated KV HTTP API, and Prometheus metrics.</p> <p><strong>Benchmarks on a 3-node local cluster:</strong></p> <ul> <li>23.65 MB/s WAL throughput</li> <li>~6.6ms proposal latency</li> <li>155ms election time.</li> </ul> <p>Design choices I would be happy to defend or be pushed on:</p> <ol> <li>Pre-vote instead of just raising terms on timeout</li> <li>Heartbeat-driven commit advancement vs. piggybacking on AppendEntries</li> <li>Torn-write detection via per-record checksums + a crash-safe segment rotation scheme</li> </ol> <p>I also wrote a long-form walkthrough linking each chaos scenario to its real-world postmortem: <a href="https://anirudhology.com/blog/building-raftly-reproducing-production-failures">Building Raftly</a>.</p> <p>The README has the quickstart. Looking for the feedback especially from people who have operated Raft in production and have opinions on what&#39;s missing.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/anirudhology"> /u/anirudhology </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1ssohj1/raftly_a_raft_consensus_implementation_in_go_that/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1ssohj1/raftly_a_raft_consensus_implementation_in_go_that/">[comments]</a></span></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/golang/comments/1srf5l8/i_add_cgroups_and_chroot_in_my_container_that_i/" target="_blank">I add cgroups and chroot in my container that I built from scratch</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Here is the link to previous reddit thread: <a href="https://www.reddit.com/r/golang/comments/1spj2bu/i_built_a_container_from_scratch_in_go_to/">https://www.reddit.com/r/golang/comments/1spj2bu/i_built_a_container_from_scratch_in_go_to/</a></p> <p><strong>An update to the above</strong>:<br/> So in the first Part I implemented namespace isolation while building a container from scratch. Now I have also implemented resource limits using cgroups and file system isolation using chroot.</p> <p>I implemented the next level of isolation of process in the container by implementing cgroups and chroot. It runs in its own Alpine Linux filesystem, which is easily replaceable with other distros, just like how we use it for Docker.</p> <p>The container now has hard limits on the amount of RAM it uses and the number of processes it can spawn. </p> <p>Although it is not as feature-full compared to Docker or production-ready, it is a great experience, and I got to know a lot of caveats and drawbacks of the raw implementation and how Docker handles it under the hood.</p> <p>Do give a read here: <a href="https://blog.iamvedant.in/containers-are-not-magic-cgroups-and-chroot-from-scratch">https://blog.iamvedant.in/containers-are-not-magic-cgroups-and-chroot-from-scratch</a></p> <p>I would love the feedback on what went good, if it helped you and what can be improved.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Anoman1121"> /u/Anoman1121 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1srf5l8/i_add_cgroups_and_chroot_in_my_container_that_i/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1srf5l8/i_add_cgroups_and_chroot_in_my_container_that_i/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/golang/comments/1sslqoj/pdf_oxide_for_go_pdf_library_with_rust_engine_via/" target="_blank">PDF Oxide for Go — PDF library with Rust engine via cgo, now on pkg.go.dev (0.8ms, MIT)</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>We&#39;ve released Go bindings for pdf_oxide recently. Rust core, Go binding via cgo. MIT / Apache-2.0.</p> <p>The binding exposes the full toolkit, not just text extraction: plain / markdown / HTML extraction with heading and paragraph structure preserved, structured text (words, lines, chars with coordinates), table extraction, full-text search, image extraction, form field read and edit, annotations, font info, and page rendering to PNG/JPEG or thumbnails. A separate DocumentEditor handles metadata edits, page rotation / move / delete, crop, annotation flatten, and save-with-encryption. PDFs can be created from markdown, HTML, plain text, or images, and N-way merge is built in. Concurrent reads are safe via an internal RWMutex.</p> <p>Mean text extraction is 0.8ms on a 3,830-file real-world corpus (veraPDF, Mozilla pdf.js, DARPA SafeDocs), p99 at 9ms, 100% pass rate. The parser is written in Rust, so there&#39;s no manual memory management on the untrusted-input path. cgo overhead over direct Rust is ~15% on real-world fixtures.</p> <p>Install:</p> <p>``` go get github.com/yfedoseev/pdf_oxide/go</p> <h1>One-time per machine — fetches the prebuilt native staticlib</h1> <h1>for your OS/arch from GitHub Releases:</h1> <p>go run github.com/yfedoseev/pdf_oxide/go/cmd/install@latest ```</p> <p>The installer prints the <code>CGO_CFLAGS</code> / <code>CGO_LDFLAGS</code> to export. <code>go build</code> output is a single static binary — works in <code>scratch</code> Docker images.</p> <p>Usage:</p> <p>``` import pdfoxide &quot;github.com/yfedoseev/pdf_oxide/go&quot;</p> <p>doc, _ := pdfoxide.Open(&quot;paper.pdf&quot;) defer doc.Close() text, _ := doc.ExtractText(0) md, _ := doc.ToMarkdown(0) ```</p> <p>GitHub: <a href="https://github.com/yfedoseev/pdf_oxide">https://github.com/yfedoseev/pdf_oxide</a></p> <p>Docs: <a href="https://oxide.fyi">https://oxide.fyi</a></p> <p>Go API: <a href="https://pkg.go.dev/github.com/yfedoseev/pdf_oxide/go">https://pkg.go.dev/github.com/yfedoseev/pdf_oxide/go</a></p> <p>Benchmark on 3,830 real PDFs:</p> <table><thead> <tr> <th>Library</th> <th>Mean</th> <th>p99</th> <th>Pass Rate</th> <th>License</th> </tr> </thead><tbody> <tr> <td><strong>pdf_oxide</strong></td> <td><strong>0.8ms</strong></td> <td><strong>9ms</strong></td> <td><strong>100%</strong></td> <td><strong>MIT / Apache-2.0</strong></td> </tr> <tr> <td>PyMuPDF</td> <td>4.6ms</td> <td>28ms</td> <td>99.3%</td> <td>AGPL-3.0</td> </tr> <tr> <td>pypdfium2</td> <td>4.1ms</td> <td>42ms</td> <td>99.2%</td> <td>Apache-2.0</td> </tr> <tr> <td>pypdf</td> <td>12.1ms</td> <td>97ms</td> <td>98.4%</td> <td>BSD-3</td> </tr> <tr> <td>pdfplumber</td> <td>23.2ms</td> <td>189ms</td> <td>98.8%</td> <td>MIT</td> </tr> </tbody></table> <p>This is the first public release of the Go bindings, so feedback from Go developers would be genuinely useful — on the API shape (does it feel idiomatic, are the error sentinels right, does the <code>PdfDocument</code> / <code>DocumentEditor</code> split make sense), on the cgo install flow across your OS/arch, on the ergonomics of the installer step, and on any real-world PDFs that break the parser. Open an issue on GitHub or reply here.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/yfedoseev"> /u/yfedoseev </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1sslqoj/pdf_oxide_for_go_pdf_library_with_rust_engine_via/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1sslqoj/pdf_oxide_for_go_pdf_library_with_rust_engine_via/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1sskbl1/project_nokv_a_distributed_kv_storage_research/" target="_blank">[Project] NoKV: a distributed KV storage research platform written entirely in Go</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi</p> <p>I’ve been building NoKV, an open-source distributed KV storage project in Go:</p> <p><a href="https://github.com/feichai0017/NoKV">https://github.com/feichai0017/NoKV</a></p> <p>Interactive demo:</p> <p><a href="https://demo.eric-sgc.cafe/">https://demo.eric-sgc.cafe/</a></p> <p>The idea is not just “yet another KV store”, but a full-stack storage/research platform where the major pieces are built inside one repo:</p> <p>- its own LSM engine</p> <p>- its own Raft implementation</p> <p>- its own control plane</p> <p>- its own MVCC layer</p> <p>- a Redis-compatible frontend</p> <p>- TLA+ specs for parts of the control-plane correctness story</p> <p>A few parts that might be interesting to Go/distributed-systems people here:</p> <p>- clear separation between truth plane / control plane / execution plane</p> <p>- multi-Raft execution with a rooted metadata/control model</p> <p>- SST-based snapshot install</p> <p>- failure injection and recovery-oriented testing</p> <p>- a live demo dashboard that shows coordinator lease holder, meta-root raft leader, and per-region leaders</p> <p>I’m not presenting this as a production database. It’s much more of a serious engineering/research platform for exploring storage internals and distributed control-plane design.</p> <p>If anyone here works on Go storage systems / databases / infra, I’d especially love feedback on:</p> <ol> <li>the overall architecture split</li> <li>the control-plane design</li> <li>whether the repo/docs make the system easy enough to understand from the outside</li> </ol> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Thick-Bar1279"> /u/Thick-Bar1279 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1sskbl1/project_nokv_a_distributed_kv_storage_research/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1sskbl1/project_nokv_a_distributed_kv_storage_research/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1sse24r/dont_stop_learning_by_building/" target="_blank">Don't stop learning by building</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I think that AI tools bring the risk that people will stop learning. One of the best ways to learn is by doing. Here&#39;s what I mean: <a href="https://gomonk.substack.com/p/building-a-tiny-tcp-port-scanner">https://gomonk.substack.com/p/building-a-tiny-tcp-port-scanner</a></p> <p>AI is useful, but if you never build small tools yourself, you skip the struggle that actually teaches you.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/reisinge"> /u/reisinge </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1sse24r/dont_stop_learning_by_building/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1sse24r/dont_stop_learning_by_building/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1ss4m2o/hl7_a_zerodependency_go_library_with_three/" target="_blank">hl7: a zero-dependency Go library with three parsing modes that coexist in the same project</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>After a few healthcare integration projects, I got tired of choosing between two bad options in Go: rigid struct-tag parsers that break on anything unexpected, or raw byte-splitting. Wrote my own library that handles the three situations you actually hit — often all in the same project.</p> <p>Three parsing modes, one library, same internals:</p> <ol> <li><strong>Generic</strong> — for the vendor whose messages you&#39;ve never seen before and need to explore. Parse anything into a navigable tree.</li> <li><strong>Schema-based</strong> — for the vendor whose quirks you&#39;ve learned but whose format isn&#39;t frozen. Define the shape in JSON, load at runtime, no recompile when the business adds a field.</li> <li><strong>Struct-based</strong> — for the stable, long-lived feed where you want compile-time safety.</li> </ol> <p>The point isn&#39;t that you graduate from one to the next. The point is that a real integration project has all three <em>simultaneously</em> — and with this library, you don&#39;t need three different dependencies or any glue code between them. All three modes are bidirectional (parse AND build), share the same types, and have zero external dependencies. Works with any HL7 v2.x version, ships with a CLI.</p> <p>Would love feedback on the API — especially from anyone who&#39;s done HL7 integrations in Go and has opinions about where existing libraries fall short.</p> <p>Repo: <a href="https://github.com/Esequiel378/hl7">https://github.com/Esequiel378/hl7</a><br/> Go reference: <a href="https://pkg.go.dev/github.com/esequiel378/hl7">https://pkg.go.dev/github.com/esequiel378/hl7</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/esequiel378"> /u/esequiel378 </a> <br/> <span><a href="https://www.reddit.com/r/golang/comments/1ss4m2o/hl7_a_zerodependency_go_library_with_three/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1ss4m2o/hl7_a_zerodependency_go_library_with_three/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1srxfht/lefevre_text_shaping_and_rastering_in_pure_go/" target="_blank">Lefevre - Text shaping and rastering in pure Go</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Since many of you will ask it is assisted in great part by LLMs, as the README says. </p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/whittileaks"> /u/whittileaks </a> <br/> <span><a href="https://github.com/soypat/lefevre/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1srxfht/lefevre_text_shaping_and_rastering_in_pure_go/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/golang/comments/1srvjgn/i_built_a_threadsafe_generic_queue_package_for_go/" target="_blank">I built a thread-safe, generic Queue package for Go. v1.7.0 just dropped with a new Delay Queue for timers and retries.</a>
+            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/golang/comments/1srvjgn/i_built_a_threadsafe_generic_queue_package_for_go/">  </a> </td><td> <!-- SC_OFF --><div class="md"><p>This package started as a personal itch. I needed a priority queue, couldn&#39;t find an implementation I trusted, and wrote my own, trying to get every Go and FOSS best practice right along the way. The other four queues came later. Always open to feedback, cheers.</p> <p>For version 1.7.0, I have the following updates:</p> <ul> <li>A new Delay queue for timers, retries, and TTL expiry (joining the existing Blocking, Priority, Circular, and Linked queues).</li> <li>Zero-alloc performance fixes.</li> <li>All queues satisfy the same <code>Queue[T comparable]</code> interface.</li> </ul> <p>Always open to feedback, cheers.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/bradinatorus"> /u/bradinatorus </a> <br/> <span><a href="https://github.com/adrianbrad/queue">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/golang/comments/1srvjgn/i_built_a_threadsafe_generic_queue_package_for_go/">[comments]</a></span> </td></tr></table></div>
+          </li>
+  
+        </ul>
+  
+        <h3 class="subreddit">r/rust</h3>
+        <ul class="item-list">
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1st4irq/cntour_noise_generated_images/" target="_blank">[cntour] Noise generated images</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>been messing with procedural noise for fun and it turned into an actual project. you POST some JSON describing noise params, get a PNG back. supports layering up to 16 noise types (perlin, simplex, worley, etc.) with weights so you can blend them together.</p> <p>the sharp mode on perlin accidentally creates contour lines that look like light through water. did not plan that. it’s still kinda rough but i’ll be working on it</p> <p><a href="https://github.com/nllvoid/cntour">https://github.com/nllvoid/cntour</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/imnotzsh"> /u/imnotzsh </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1st4irq/cntour_noise_generated_images/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1st4irq/cntour_noise_generated_images/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1st3tl0/44cves_found_in_rust_coreutils_audit/" target="_blank">44CVEs found in Rust CoreUtils audit.</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/germandiago"> /u/germandiago </a> <br/> <span><a href="https://www.phoronix.com/news/Ubuntu-Rust-Coreutils-Audit">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1st3tl0/44cves_found_in_rust_coreutils_audit/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1st2en4/resonators_01_a_rust_crate_for_realtime_spectral/" target="_blank">resonators 0.1: a Rust crate for real-time spectral analysis, with Python and WASM bindings</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hello, <a href="/r/rust">r/rust</a>!</p> <p>I&#39;ve been a lurker for many years, but today I released my first crate which implements <a href="https://alexandrefrancois.org/Resonate/">Alexandre François&#39; Resonate algorithm</a> (along with Python and WASM bindings). It enables computing STFT &amp; CQT-like spectrograms in real-time without windows or buffers. Alexandre has a great <a href="https://github.com/alexandrefrancois/noFFT">reference implementation</a> in C++, but it uses Apple&#39;s Accelerate framework under the hood, so wouldn&#39;t run on my Ubuntu desktop. Great excuse to write some Rust if you ask me!</p> <p>It&#39;s pretty niche, I&#39;ll admit, but I&#39;ve been using it to compute features for training real-time music transcription models. I added Python bindings so I can easily integrate it into my PyTorch training setup, and WASM bindings because the inference code is designed to work in the browser.</p> <p>As part of the project, I created a <a href="https://jhartquist.github.io/resonators/spectrogram/">browser demo</a> (shown above), which can visualize microphone input with log-scaled (think musical) frequency bins in real-time. It runs on both desktop and mobile, and actually runs faster on my iPhone than it does on my M2 MacBook Pro.</p> <p>I had a lot of fun learning about <code>cargo bench</code>/<code>criterion</code>, SIMD, <code>maturin</code>, <code>PyO3</code>, <code>wasm-bindgen</code>/<code>wasm-pack</code>, single-file <code>uv</code> scripts, and <code>AudioWorkletNode</code>, among other things.</p> <p>Let me know if you have any feedback on the repo, or if you run into any issues with the demo. Cheers!</p> <p>Repo: <a href="https://github.com/jhartquist/resonators">https://github.com/jhartquist/resonators</a><br/> Browser Demo: <a href="https://jhartquist.github.io/resonators/spectrogram/">https://jhartquist.github.io/resonators/spectrogram/</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/sevenfx"> /u/sevenfx </a> <br/> <span><a href="https://i.redd.it/xgwv8erxvtwg1.png">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1st2en4/resonators_01_a_rust_crate_for_realtime_spectral/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1st1a16/how_do_you_learn_the_language_deeply/" target="_blank">How do you learn the language deeply?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>First off, the language feels awesome and powerful. I love what the community has done and the ecosystem. The hype is a bit too much and I wouldn&#39;t use the language everywhere except when I need real performance and safety.</p> <p>I&#39;ve been thinking about whether I need to learn it deeply at all and I think the answer is yes. While most other modern languages like Golang are easy to pickup without going in-depth until you hit the usecase. Rust forces you to learn the concepts which is a good thing. However, all my workflows at Work and sideprojects have been so AI oriented since last two years that I find myself struggling to handcode Rust.</p> <p>I do seem to get a hang of the concepts by glossing over a small codebase built via prompting and with time this has helped me solidfy concepts and I keep returning to the Rust book. But without an agent, my brain short circuits. With other languages, this happens too, but I can still force myself to edit by hand as needed. I worry I might be sacrificing some of the advanced Rust skills by using AI. What&#39;s your strategy? Does it have to be a strict full no AI till I pick it up thoroughly?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/conqrr"> /u/conqrr </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1st1a16/how_do_you_learn_the_language_deeply/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1st1a16/how_do_you_learn_the_language_deeply/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1st0jun/20260423_grpc_benchmark_results/" target="_blank">2026-04-23 gRPC benchmark results</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I revived this humble benchmark suite, check the README for methodology. Rust fares quite well, as always!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/MaterialFerret"> /u/MaterialFerret </a> <br/> <span><a href="https://github.com/LesnyRumcajs/grpc_bench/discussions/559">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1st0jun/20260423_grpc_benchmark_results/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1sszh23/i_made_a_headless_eda_profiler_cli_tool_using/" target="_blank">I made a headless EDA Profiler cli tool using Rust and Polars for dataset profiling.</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>As a AI&amp;ML student i have to work on datasets and i hate to always open a notebook and write a bunch of pandas (codes) just to view and understand about the dataset. So, i decided to create a simple tool to inspect datasets (CSV) without the need for writing a bunch of codes.</p> <p>I ended building &quot;Statline&quot; which is obviouslu not perfect on the go but it provides me with basic insight of the dataset with a single command</p> <p>Example: <code>statline SalesRecords.csv --full</code></p> <p><a href="https://preview.redd.it/1nxfyylm9twg1.png?width=1920&amp;format=png&amp;auto=webp&amp;s=097a13f56bffb8203b8860ed94163887c452c4e7">https://preview.redd.it/1nxfyylm9twg1.png?width=1920&amp;format=png&amp;auto=webp&amp;s=097a13f56bffb8203b8860ed94163887c452c4e7</a></p> <p>It shows me the basic stats for the datasets such as<br/> 1. mean, std, data types, min, max, etc<br/> 2. null counts, unique counts</p> <p>On my machine, it ran a 10k row dataset in ~20-25 ms (as shown on screenshot). Internally it is just Polars (lazyFrame where it is needed), with some heuristic insights for columns (identifier, numerical, etc.) which are not perfect for now.</p> <p>It is still pretty rough: 1. insights are very basic (makes mistakes on dirty or incomplete datasets) | 2. some data type edge cases (esp parquet which not ready for now) needed manual handling and | 3. percentiles are not optimized yet. I mostly built this to learn Polars better and have a quick CLI tool for inspecting datasets. </p> <p>It would be interesting if there are better patterns for doing this kind of aggregation lazily without collecting. It will be appreciating if i can get feed backs on my project from you guys and how to improve it more. You guys can check it out on my github, link below. Thank You. </p> <p>Repo: <a href="https://github.com/a6ir/statline">https://github.com/a6ir/statline</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/expensivePele0202"> /u/expensivePele0202 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1sszh23/i_made_a_headless_eda_profiler_cli_tool_using/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1sszh23/i_made_a_headless_eda_profiler_cli_tool_using/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1ssz3z7/welcoming_symposium_to_the_rust_innovation_lab/" target="_blank">Welcoming Symposium to the Rust Innovation Lab - The Rust Foundation</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/rjray"> /u/rjray </a> <br/> <span><a href="https://rustfoundation.org/media/welcoming-symposium-to-the-rust-innovation-lab/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1ssz3z7/welcoming_symposium_to_the_rust_innovation_lab/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1ssyil2/coroutines_yielding_a_reference_to_a_local/" target="_blank">coroutines yielding a reference to a local variable</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>hi hello so i wanna make a super cool useless coroutine that iters on every integer for some reason:</p> <p>```rust</p> <p>#[coroutine] || {</p> <p>let mut n = 0;</p> <p>loop {</p> <p>yield &amp;n; // can&#39;t yield value referencing local variable</p> <p>n += 1; // n is borrowed by the yield</p> <p>}</p> <p>}</p> <p>```</p> <p>how can i make so that rust borrows the n only during the yield. the user will not be able to use the reference after resuming or dropping the coroutine, so it&#39;s supposed to be safe</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/zylosophe"> /u/zylosophe </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1ssyil2/coroutines_yielding_a_reference_to_a_local/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1ssyil2/coroutines_yielding_a_reference_to_a_local/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1ssydzh/question_on_best_practices/" target="_blank">Question on best practices</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Hi I have been using Rust now for a while (mostly learned it from others during the advent of code challenges). Seeing how others find these beautiful simple yet powerful iterations and functions literally melting pages of codes into a couple of clean nice lines.</p> <p>I am thriving to mimic this but typically can&#39;t especially when working on larger projects. </p> <p>At some point I started using AI tools (although they can round up my projects within minutes) when reading the code I see pages of implementations, traits and definitions and just 5 lines of actual logic. But by the time it finished I gave up and said okay ... It works you won (I just can&#39;t read all that..).</p> <p>Anyhow .. how to write clean nice code? And can you still use AI tools in a way that things are architecturally good? What&#39;s your suggestion?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Super-Cool-Seaweed"> /u/Super-Cool-Seaweed </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1ssydzh/question_on_best_practices/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1ssydzh/question_on_best_practices/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1sswuia/peb_walking/" target="_blank">PEB walking</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I’ve been studying cybersecurity and writing everything in Rust. Personally, it’s easier to work in C due to the abundance of examples and other conveniences, but I enjoy Rust so much that I’m pushing it to see how far I can go.</p> <p>My latest study focused on PEB walking to resolve Windows APIs dynamically. I wrote an article explaining both the concept and the code. I’d appreciate any feedback. <a href="https://cyberspitfire.com/posts/peb_walk/">https://cyberspitfire.com/posts/peb_walk/</a></p> <p>Also, what do you think about this approach to generating a cleaner binary (only 2 KB)? <a href="https://cyberspitfire.com/posts/minimal_binary/">https://cyberspitfire.com/posts/minimal_binary</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Dear-Hour3300"> /u/Dear-Hour3300 </a> <br/> <span><a href="https://cyberspitfire.com/posts/peb_walk">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1sswuia/peb_walking/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1sswu6a/rust_for_scala_and_haskell_developers/" target="_blank">Rust for Scala and Haskell developers</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>Recently, there was an online meetup at Func Prog Sweden. I did a gentle introduction to Rust for developers coming from languages like Scala or Haskell.</p> <p>A few weeks ago, there was a post here on this subreddit asking about the experience of transitioning from Scala to Rust. This presentation addresses that question. This is my way of giving back to the community :) Hope someone will find it useful. Enjoy!</p> <p><a href="https://www.youtube.com/watch?v=fboHzVVfknU&amp;t=340s">https://www.youtube.com/watch?v=fboHzVVfknU&amp;t=340s</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/EncodePanda"> /u/EncodePanda </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1sswu6a/rust_for_scala_and_haskell_developers/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1sswu6a/rust_for_scala_and_haskell_developers/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1sswsze/mdstitch_streaming_markdown_preprocessor/" target="_blank">mdstitch - streaming markdown preprocessor</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/OpeningOpening7436"> /u/OpeningOpening7436 </a> <br/> <span><a href="https://bsky.app/profile/molesen.ch/post/3mk4bggy3e22k">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1sswsze/mdstitch_streaming_markdown_preprocessor/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1ssvo7a/the_edge_of_safe_rust_horribly_misusing_rust/" target="_blank">The Edge of Safe Rust: Horribly misusing Rust features to provide provable memory safety and tracing garbage collection for pointer soup</a>
+            <div class="item-content">&#32; submitted by &#32; <a href="https://www.reddit.com/user/ts826848"> /u/ts826848 </a> <br/> <span><a href="https://kyju.org/blog/tokioconf-2026/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1ssvo7a/the_edge_of_safe_rust_horribly_misusing_rust/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1ssuw36/polonius_inactive/" target="_blank">Polonius inactive?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I have been in a Rust rabbit hole and was reading up on this alleged theoretical replacement for the borrow-checker. The last commit to polonius was 10 months ago- is it just abandoned? Idk why I can&#39;t find anything on it, the roadmap/progress link just takes me to rust-lang docs</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/cachebags"> /u/cachebags </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1ssuw36/polonius_inactive/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1ssuw36/polonius_inactive/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1sssi6y/how_do_you_ensure_deterministic_execution_in_rust/" target="_blank">How do you ensure deterministic execution in Rust across OS/Arch/Locale/Timezone?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I’m working on a larger Rust system where deterministic execution is a hard requirement — meaning truly <em>byte‑identical</em> results across:</p> <ul> <li>OS (Linux / macOS / Windows)</li> <li>CPU architecture (x64 / arm64)</li> <li>Locale / encoding</li> <li>Timezone</li> <li>Environment / seed</li> </ul> <p>I’ve already handled some of the usual suspects (e.g. HashMap iteration order, filesystem timestamp drift, randomness, thread scheduling), but I’m looking for <strong>real‑world examples</strong> of things that have broken determinism for you in Rust projects.</p> <p>Specifically:</p> <ul> <li>Which Rust crates or std APIs have caused nondeterministic behavior in your experience?</li> <li>Have you seen OS or architecture differences cause subtle drift?</li> <li>Any surprising issues with locale, encoding, filesystem ordering, syscalls, or time sources?</li> <li>Do you have patterns or best practices that worked well for enforcing determinism?</li> </ul> <p>I’m not looking for theoretical answers — more the “we lost two days debugging because X wasn’t deterministic” kind of stories.</p> <p>Thanks in advance for any insights. I’m collecting real‑world cases to harden my own system against them.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Ok_Strike8068"> /u/Ok_Strike8068 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1sssi6y/how_do_you_ensure_deterministic_execution_in_rust/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1sssi6y/how_do_you_ensure_deterministic_execution_in_rust/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1ssrbdc/ferrisrs_ferris_plushies/" target="_blank">ferris.rs: Ferris Plushies!</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p><a href="https://preview.redd.it/r94vuojjvrwg1.jpg?width=1867&amp;format=pjpg&amp;auto=webp&amp;s=ede02b77f3cf955b62f2c7b0fae4ab3134cb964e">https://preview.redd.it/r94vuojjvrwg1.jpg?width=1867&amp;format=pjpg&amp;auto=webp&amp;s=ede02b77f3cf955b62f2c7b0fae4ab3134cb964e</a></p> <p>Hi Rust reddit! A few months ago I launched <a href="https://ferris.rs">https://ferris.rs</a>, where you can get one (or more ^^) of these awesome Ferris Plushies.<br/> Since January over 50 people have already received theirs, so now I&#39;m confident enough in the whole shipping / customs process to make this post.</p> <p>A bit about me:<br/> I&#39;m Lars (<a href="https://github.com/lars-schumann">https://github.com/lars-schumann</a>) and have been in the Rust community a bit over a year and have recently started contributing to Rust itself (please join us in the holy mission to `const` the world). If you frequent the Community Discord server you might already know me, I&#39;m quite active there.<br/> I decided to make this Plushie because I felt we had a lack of options.</p> <p>If you are from the US, you will notice that shipping is quite a bit more expensive than to other countries, you can probably imagine why this is the case :]</p> <p>This post is self-advertising, and as such I cleared it with the mod team before posting it.</p> <p>Happy to answer any questions under this post!</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Lasuman"> /u/Lasuman </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1ssrbdc/ferrisrs_ferris_plushies/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1ssrbdc/ferrisrs_ferris_plushies/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1ssr9k6/open_sourcing_apierror_a_proc_macro_to_define/" target="_blank">Open sourcing api-error, a proc macro to define http errors in a thiserror style</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>We are currently building a product at my company with a lot of rest endpoints with each endpoint having its own errors. And because we kept implementing <code>IntoResponse</code> for each of these errors we made a proc macro to automate it and decided to open source it.</p> <p>It works exactly like <code>thiserror</code>: you can add an <code>ApiError</code> derive macro on your enum and use the <code>api_error</code> attribute to specify http response codes, user facing error message or just inherit the error message from the display impl.</p> <p>The nice thing is that it also automatically implement <code>axum::IntoResponse</code> on your type.</p> <p><a href="https://docs.rs/api-error/latest/api_error/">https://docs.rs/api-error/latest/api_error/</a></p> <p><a href="https://github.com/centreon/rs-api-error">https://github.com/centreon/rs-api-error</a></p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Elariondakta"> /u/Elariondakta </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1ssr9k6/open_sourcing_apierror_a_proc_macro_to_define/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1ssr9k6/open_sourcing_apierror_a_proc_macro_to_define/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1ssmmzj/filevec_i_made_a_thing_for_using_memory_mapping/" target="_blank">file-vec: I made a thing for using memory mapping to store big vectors in the file system</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;m usually a neurologically unusual loner so I don&#39;t talk to others about my code very much; it&#39;s stylistically different; what design/formatting/framework decisions are readable/usable to me vs a normal person is different; I get myself into different CS situations; etc, but I thought this might be more worth sharing than my average personal work <a href="https://crates.io/crates/file-vec">https://crates.io/crates/file-vec</a> . I&#39;m curious what you all think of it.</p> <p>An early version of this was useful in one of my many personal AI projects for managing locally stored training data that is much bigger than my RAM but not convenient through the usual file system functions. I&#39;m sure ways to do some more broadly recognized similar think to whatever I was doing exist with more standard database software but idk how to use those and I feel like memory mapping had less barriers to entry even though I had to wrap in vec like abstraction myself. But it might just be because coding comes much easier to me than communicating with humans.. </p> <p>anyways, 🦀</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/8000thCube"> /u/8000thCube </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1ssmmzj/filevec_i_made_a_thing_for_using_memory_mapping/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1ssmmzj/filevec_i_made_a_thing_for_using_memory_mapping/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1ssip9b/why_do_the_standard_libarary_have_so_many/" target="_blank">Why do the standard libarary have so many internal layers?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>When I was reading the source code of various standard library functions, I often need to jump through more than multiple hoops to find the actual implementation. Why is this the case?</p> <p>Take the function <code>std::mem::swap</code>. Internally it is defined as:</p> <pre><code>pub const fn swap&lt;T&gt;(x: &amp;mut T, y: &amp;mut T) { // SAFETY: `&amp;mut` guarantees these are typed readable and writable // as well as non-overlapping. unsafe { intrinsics::typed_swap_nonoverlapping(x, y) } } </code></pre> <p>... which in turn calls ...</p> <pre><code>pub const unsafe fn typed_swap_nonoverlapping&lt;T&gt;(x: *mut T, y: *mut T) { // SAFETY: The caller provided single non-overlapping items behind // pointers, so swapping them with `count: 1` is fine. unsafe { ptr::swap_nonoverlapping(x, y, 1) }; } </code></pre> <p>... which in turn calls (after much safety checks) ...</p> <pre><code>let slice = slice_from_raw_parts_mut(x, count); // SAFETY: This is all readable from the pointer, meaning it&#39;s one // allocation, and thus cannot be more than isize::MAX bytes. let bytes = unsafe { mem::size_of_val_raw::&lt;[T]&gt;(slice) }; if let Some(bytes) = NonZero::new(bytes) { // SAFETY: These are the same ranges, just expressed in a different // type, so they&#39;re still non-overlapping. unsafe { swap_nonoverlapping_bytes(x.cast(), y.cast(), bytes) }; } </code></pre> <p>... and on and on, until it eventually calls this:</p> <pre><code>fn swap_chunk&lt;const N: usize&gt;(x: &amp;mut MaybeUninit&lt;[u8; N]&gt;, y: &amp;mut MaybeUninit&lt;[u8; N]&gt;) { let a = *x; let b = *y; *x = b; *y = a; } </code></pre> <p>Why is the standard library going through all the hoops? Why not just write this (or a swap of transmuted bytes) directly in <code>std::mem::swap</code>? Since it already takes 2 mutable references, surely all the non-overlapping / alignment UB checks would be unnecessary?</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/chokomancarr"> /u/chokomancarr </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1ssip9b/why_do_the_standard_libarary_have_so_many/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1ssip9b/why_do_the_standard_libarary_have_so_many/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1ssgpl9/i_thought_rust_was_overcomplicated_but_changed_my/" target="_blank">I thought rust was overcomplicated but changed my mind</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>When I was at the beginning of the 3rd year of uni, I think, I decided to start working hard and actually learning programming instead of just procrastinating all day, so I spent about a year with Python. Doing small projects with Pandas, scikit-learn, langchain, some Django and Flask. It was comfortable but 0 rewarding, no emotion, just following YouTube and course tutorials, like &quot;wtf I am actually doing?&quot;</p> <p>Back at uni&#39;s 2nd year I remembered I had a tiny bit of C from the DSA class and genuinely liked it more than I expected. So when I heard about Rust I got curious. Read the first 3 chapters of the famous book, built the damn guessing game, thought &quot;this is really cool&quot; but then never touched it again. Python was where the AI hype was happening, and I told myself Rust was just too complex, unnecessary.</p> <p>A few months later a friend suggested me to get actual coding experience through open source. He was already contributing to a project and nudged me to check it out. I found a small easy issue, literally write 1 line, so I made the change, pushed it, opened a PR, got my first ever code review and then something clicked that no tutorial ever made click. It rushed into my brain like pure dopamine. I got hooked. Started picking up more issues. Started reviewing other people&#39;s PRs. Became a contributor. Learned a lot of git, low level web stuff and of course, Rust, by doing it. If tutorials won&#39;t give you that, a real project with real people might, you know, that human will to act in group. That was what worked for me at least.</p> <p>The project that pulled me in is a Rust web framework called Rapina btw, if you&#39;re curious. The issues are approachable and the team is welcoming. But honestly the framework doesn&#39;t matter, find any open source project in the language you want to learn and try one issue. Search for &quot;good first issues&quot; and just start.</p> <p>TLDR: Spent a year doing Python tutorials going nowhere. A friend dragged me into contributing to an open source Rust project and it changed everything. Find a real project, try one issue, that&#39;s it.</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/DudolsBr"> /u/DudolsBr </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1ssgpl9/i_thought_rust_was_overcomplicated_but_changed_my/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1ssgpl9/i_thought_rust_was_overcomplicated_but_changed_my/">[comments]</a></span></div>
+          </li>
+  
+          <li>
+            <a href="https://www.reddit.com/r/rust/comments/1ssd826/should_hotloop_avoid_option_instance_and/" target="_blank">Should hot-loop avoid Option instance and immediate match?</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>This is a micro-optimization for a hot-loop.</p> <p>I&#39;m curious of the following. Take the following code for example:</p> <pre><code>fn return_opt(arg: MyArg) -&gt; Option&lt;usize&gt; { If runtime_check() { Some(runtime_var) } Else { None } } // In the calling code match return_opt(arg) { Some(var) =&gt; { branch_a(var) }, None =&gt; { branch_b() } } </code></pre> <p>I would like to know if that code is equivalent when compiled to the following:</p> <pre><code>fn inline_branches(arg: MyArg) { If runtime_check() { branch_a(runtime_var) } Else { branch_b() } } // In the calling code inline_branches(); </code></pre> <p>Essentially, are branches inlined eliminating any performance overhead of &#39;match&#39;? I suppose this would be a reasonable use case of #[inline] if there are few callers. But I&#39;m not sure. Can anyone give some advice? I&#39;d rather functions are reasonable separated rather than inlining branches...</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Resres2208"> /u/Resres2208 </a> <br/> <span><a href="https://www.reddit.com/r/rust/comments/1ssd826/should_hotloop_avoid_option_instance_and/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust/comments/1ssd826/should_hotloop_avoid_option_instance_and/">[comments]</a></span></div>
           </li>
   
         </ul>
@@ -511,13 +2168,13 @@
         <ul class="item-list">
   
           <li>
-            <a href="https://www.reddit.com/r/rust_gamedev/comments/1srt8oy/lets_understand_quaternions_part_1/" target="_blank">Let's Understand Quaternions - Part 1</a>
-            <div class="item-content"><!-- SC_OFF --><div class="md"><h1>Quaternions: Let&#39;s Get Real (and Imaginary, and then Some!)</h1> <p>Quaternions usually considered hard and complex but they are king of rotations crucial for games and maths to understand quaternions, if we go the academic route it will sound like a waiter using long, expensive words to explain a simple carrot salad. </p> <p>We do not need any of that here. That is why we will not use academic language and we will start with imaginary numbers. </p> <p>Imaginary word sound like fiction, things that do not exist in our world right? </p> <blockquote> <p>But what exactly does not belong here? If you multiply two negative numbers (two number with subtraction signs) together and the result is still a negative (subtraction sign) that just does not happen in our world. This is imaginary. </p> </blockquote> <p>Now, suppose we have a number like the square root of -1. When I say underroot -1 what am I actually trying to say? I am saying find a number that makes -1 when you multiply it by itself. But how is that possible because in this world the law of negative X negative positive follows? It is totally impossible and that is exactly why we call it an imaginary number. Now see the following calculation.</p> <p><a href="https://preview.redd.it/eyy85gf8nkwg1.jpg?width=963&amp;format=pjpg&amp;auto=webp&amp;s=09eb9564732a1e8305651175631ca25ed97ed726">https://preview.redd.it/eyy85gf8nkwg1.jpg?width=963&amp;format=pjpg&amp;auto=webp&amp;s=09eb9564732a1e8305651175631ca25ed97ed726</a></p> <blockquote> <p>This kindergarten calculation has a significant role in quaternions. yes it is simple, but it is very powerful, and the entire quaternion is built on it. I have shared this calculation right now because we are currently discussing imaginary numbers. I will not talk about this calculation right now, but we will discuss it further ahead, where you will find out that this is the foundation of quaternions.</p> </blockquote> <h1>From Imaginary Numbers to Quaternions:</h1> <p>So, now we are going to step away from imaginary numbers and jump right into quaternions. We&#39;ll use the exact same formula you usually see written in textbooks to represent them. You know the one: <em>xi</em>, <em>yj</em>, and <em>zk</em>. And if you come from a computer background, you&#39;ve probably seen a <em>w</em> attached to that. But if we just talk about the <em>x</em>, <em>y</em>, and <em>z</em>, those are simply the physical axes you see on a standard 3D graph. Quaternions add imaginary numbers directly to these. Let&#39;s look at how these imaginary numbers actually interact with our axes. If I take the term <em>xi</em>, the <em>x</em> is our physical axis, and the <em>i</em> is our imaginary number. And here, that imaginary number literally just means 90 degrees. So, what does <em>xi</em> actually mean? It means a strict 90-degree turn.</p> <p><a href="https://preview.redd.it/4w924hsankwg1.jpg?width=1280&amp;format=pjpg&amp;auto=webp&amp;s=a43d9eaacf3198acf713826649b2b9c3e48710bb">https://preview.redd.it/4w924hsankwg1.jpg?width=1280&amp;format=pjpg&amp;auto=webp&amp;s=a43d9eaacf3198acf713826649b2b9c3e48710bb</a></p> <p>But hold on. How did <em>i</em> suddenly become 90 degrees? Wasn&#39;t it supposed to be the square root of -1? How did it jump to being an angle? You won&#39;t find the answer to this in high-level physics. You actually find the answer right back in simple, basic kindergarten math we have done previously. Let&#39;s break that down right now. To do this, we just need to go back to our standard graph. We take our point <em>xi</em> and place it on the y-axis. Now, let&#39;s say we multiply one more <em>i</em> into it. That means we are taking <em>xi</em> and multiplying it by <em>i</em>. Physically, this means we are adding 90 degrees and another 90 degrees menas i<sup>2</sup>. The answer hits exactly 180 and <strong>i</strong><strong><sup>2</sup></strong> <strong>=180 degree then i =180/2 means 90 degree</strong>. So what does this mean?</p> <p><a href="https://preview.redd.it/1lzoxynenkwg1.jpg?width=1280&amp;format=pjpg&amp;auto=webp&amp;s=60f4319cee700cf4bb7f962e84bdb4c261d0a8b8">https://preview.redd.it/1lzoxynenkwg1.jpg?width=1280&amp;format=pjpg&amp;auto=webp&amp;s=60f4319cee700cf4bb7f962e84bdb4c261d0a8b8</a></p> <blockquote> <p>If we multiply imaginary numbers together, it directly picks us up and physically drops us on the exact opposite, negative axis <strong>(If we start on the positive x-axis, we flip straight to the negative x-axis)</strong> and the exact same mechanical thing happens with all the other axes if we start from them.</p> </blockquote> <p>The Strange Co-Dependence of i and i<sup>2</sup><strong>:</strong></p> <p>Now, let&#39;s assume for a second that this <em>i</em><em><sup>2</sup></em> just doesn&#39;t exist. Should that have any effect on standalone <em>i</em>? Normal human logic says that <em>i</em> should be independent. It should be completely whole on its own. That means <em>i</em> should totally exist even without <em>i²</em> being a thing. Because obviously, <em>i²</em> can never be formed without having an <em>i</em> first.</p> <p>So, the real question pops up. If we assume there is no such thing as <em>i²</em>, can a single <em>i</em> still perform that 90-degree turn? The answer is hidden inside some very strange mathematical logic. Because actually, whatever value or identity <em>i</em> has, it comes entirely from <em>i²</em>. If there is no <em>i²</em> in the math, then a single <em>i</em> simply does not have any physical value of its own.</p> <blockquote> <p>This is a kind of math that literally moves backward instead of forward. It works from back to front. Think about it like this. In normal life, 1 and 1 together make 2. If your base number 1 isn&#39;t there, then the number 2 can never be formed. But in this specific game of imaginary numbers, the rule runs completely in reverse. Here, the math clearly tells us that if <em>i²</em> (which is supposed to be the result) doesn&#39;t exist, then <em>i</em> (which is supposed to be the base) will not exist either.</p> </blockquote> <p>PART 2: 3D Quaternions</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/IamRustyRust"> /u/IamRustyRust </a> <br/> <span><a href="https://www.reddit.com/r/rust_gamedev/comments/1srt8oy/lets_understand_quaternions_part_1/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust_gamedev/comments/1srt8oy/lets_understand_quaternions_part_1/">[comments]</a></span></div>
+            <a href="https://www.reddit.com/r/rust_gamedev/comments/1st3x1v/the_impatient_programmers_guide_to_bevy_and_rust/" target="_blank">The Impatient Programmer's Guide to Bevy and Rust: Chapter 12 - Let There Be Networking</a>
+            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/rust_gamedev/comments/1st3x1v/the_impatient_programmers_guide_to_bevy_and_rust/">  </a> </td><td> <!-- SC_OFF --><div class="md"><p><a href="https://aibodh.com/posts/bevy-rust-game-development-chapter-12/">Tutorial Link</a></p> <p>By the end of this chapter, you&#39;ll learn to:</p> <ul> <li>Understand how multiplayer games actually work under the hood, the four systems every online game needs (identity, persistence, real-time sync, and server authority).</li> <li>See why SpacetimeDB is a fundamentally different approach: instead of stitching together a web server, a database, a WebSocket layer, and an auth system, you write one Rust module.</li> <li>Set up SpacetimeDB locally, publish your first server module.</li> <li>Implement the server side: a player table that stores who exists in your world, and reducers that automatically handle players joining, leaving, and coming back.</li> <li>Connect your Bevy game to the server so that clicking Multiplayer opens a live connection screen showing your player name and who else is currently online.</li> <li>Run two instances of your game side by side and watch them recognize each other as separate players on the same shared server.</li> </ul> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/febinjohnjames"> /u/febinjohnjames </a> <br/> <span><a href="https://v.redd.it/u6ld6acc9uwg1">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust_gamedev/comments/1st3x1v/the_impatient_programmers_guide_to_bevy_and_rust/">[comments]</a></span> </td></tr></table></div>
           </li>
   
           <li>
-            <a href="https://www.reddit.com/r/rust_gamedev/comments/1srknty/progress_update_multiple_matches_in_my_anime/" target="_blank">Progress Update: Multiple matches in my Anime Tennis game</a>
-            <div class="item-content"><table> <tr><td> <a href="https://www.reddit.com/r/rust_gamedev/comments/1srknty/progress_update_multiple_matches_in_my_anime/">  </a> </td><td> <!-- SC_OFF --><div class="md"><p>I wanted to share this small milestone. After months spent talking about it during my livestreams I finally have multiple matches going in my Tennis game with Anime girls!</p> <p>The objective is to bring to life a different kind of tennis rarely seen in videogames.. the junior/college environment, far from the fanfare of big centre courts and where you&#39;re gridinding your way in smaller tournaments.. and having other matches running around you was an essential part of the entire vision.</p> <p>Tech stack:</p> <p>Rust custom engine with Vulkan via Ash.. target platform PC/Steam Deck</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/kunos"> /u/kunos </a> <br/> <span><a href="https://i.redd.it/b8m4p9ir1jwg1.jpeg">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust_gamedev/comments/1srknty/progress_update_multiple_matches_in_my_anime/">[comments]</a></span> </td></tr></table></div>
+            <a href="https://www.reddit.com/r/rust_gamedev/comments/1st1k1m/jobs_as_a_rust_programmer/" target="_blank">Jobs as a Rust programmer</a>
+            <div class="item-content"><!-- SC_OFF --><div class="md"><p>I&#39;m learning Rust, as my first programming language (previous jobs were completely irrelevant). I am highly skilled in Excel (complex equations) and I think I&#39;ll pick it up faster than your average Complete Newbie. What can I expect in what is expected for a job ? Are the jobs paying well?</p> <p>btw, I live close enough to Silicon Valley</p> </div><!-- SC_ON --> &#32; submitted by &#32; <a href="https://www.reddit.com/user/Pumpkin_King_7"> /u/Pumpkin_King_7 </a> <br/> <span><a href="https://www.reddit.com/r/rust_gamedev/comments/1st1k1m/jobs_as_a_rust_programmer/">[link]</a></span> &#32; <span><a href="https://www.reddit.com/r/rust_gamedev/comments/1st1k1m/jobs_as_a_rust_programmer/">[comments]</a></span></div>
           </li>
   
         </ul>
@@ -529,22 +2186,22 @@
         <ul class="item-list">
   
           <li>
-            <a href="http://www.filmjabber.com/movie-trailers/focker-in-law.html" target="_blank">Focker-In-Law Movie Trailer</a>
+            <a href="http://www.filmjabber.com/movie-trailers/idiots.html" target="_blank">Idiots Movie Trailer</a>
             
           </li>
   
           <li>
-            <a href="http://www.filmjabber.com/movie-trailers/focker-in-law.html" target="_blank">Focker-In-Law Movie Trailer</a>
+            <a href="http://www.filmjabber.com/movie-trailers/coyote-vs-acme.html" target="_blank">Coyote vs. Acme Movie Trailer</a>
             
           </li>
   
           <li>
-            <a href="http://www.filmjabber.com/movie-trailers/super-troopers-3.html" target="_blank">Super Troopers 3 Movie Trailer</a>
+            <a href="http://www.filmjabber.com/movie-trailers/leviticus.html" target="_blank">Leviticus Movie Trailer</a>
             
           </li>
   
           <li>
-            <a href="http://www.filmjabber.com/movie-trailers/practical-magic-2.html" target="_blank">Practical Magic 2 Movie Trailer</a>
+            <a href="http://www.filmjabber.com/movie-trailers/clayface.html" target="_blank">Clayface Movie Trailer</a>
             
           </li>
   
